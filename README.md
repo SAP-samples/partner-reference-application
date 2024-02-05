@@ -1,41 +1,129 @@
-# SAP-samples/repository-template
-This default template for SAP Samples repositories includes files for README, LICENSE, and .reuse/dep5. All repositories on github.com/SAP-samples will be created based on this template.
+# SAP Samples: Partner Reference Application
 
-# Containing Files
-
-1. The LICENSE file:
-In most cases, the license for SAP sample projects is `Apache 2.0`.
-
-2. The .reuse/dep5 file: 
-The [Reuse Tool](https://reuse.software/) must be used for your samples project. You can find the .reuse/dep5 in the project initial. Please replace the parts inside the single angle quotation marks < > by the specific information for your repository.
-
-3. The README.md file (this file):
-Please edit this file as it is the primary description file for your project. You can find some placeholder titles for sections below.
-
-# [Title]
-<!-- Please include descriptive title -->
-
-<!--- Register repository https://api.reuse.software/register, then add REUSE badge:
-[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/REPO-NAME)](https://api.reuse.software/info/github.com/SAP-samples/REPO-NAME)
--->
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/partner-reference-application)](https://api.reuse.software/info/github.com/SAP-samples/partner-reference-application)
 
 ## Description
-<!-- Please include SEO-friendly description -->
+
+Our Partner Reference Application provides you with a golden path to build, run, and integrate full-stack cloud applications on SAP Business Technology Platform.
+
+<p align="center">
+    <img src="./Tutorials/images/Partner-Persona.png" width="40%">  
+</p>
+
+With this repository, we give SAP partners guidance on how to extend SAP ERP solutions with side-by-side cloud applications running on SAP Business Technology Platform (SAP BTP). It includes:
+- a preselection of SAP BTP components with architecture guidance tailored to meet the cost requirements of small and midsize enterprises (SME), 
+- best practices (golden path) to build, deploy, and provision full-stack SAP BTP applications, and
+- information on the interoperability and integration with cloud ERP solutions such as SAP Business ByDesign and SAP S/4HANA Cloud Public Edition.
+
+The repository includes a sample application that is ready to be deployed and run, and tutorials to rebuild it from scratch following an incremental development approach from one-off to multi-consumer solutions.
+
+<img src="./Tutorials/images/readme_incremental-approach.png" width="100%">  
+
+### About the Sample Application *Poetry Slam Manager*
+
+Imagine you're an event manager, for example, Peter, and your job is to organize and host poetry slams. 
+
+As your company runs its business on a cloud ERP system provided by SAP, you use its project management component to plan and staff events, to collect costs, and to purchase equipment.
+Additionally, an SAP partner provided you with a side-by-side application called Poetry Slam Manager (PSM) to publish poetry slam events and to register visitors and artists such as Julie.
+
+<p align="center">
+    <img src="./Tutorials/images/End-User_Flow-Persona.png" width="80%">  
+</p>
+
+For security and compliance reasons, it's crucial to you that event publishing and visitor registration are clearly separated from your ERP system. Nevertheless, as a power user working in both systems, you asked the partner to ensure a seamless user experience and navigation between the SAP system and Poetry Slam Manager.
+
+<img src="./Tutorials/images/readme_sample-use-case.png" width="100%">
+
+The sample showcases how a side-by-side application benefits from using SAP BTP. The qualities relevant for enterprise-grade partner applications, supported by SAP BTP services and programming models, include:
+
+<p align="center">
+    <img src="./Tutorials/images/End-User_Flow-Peter-Part1.png" width="80%">  
+</p>
+
+Upcoming versions of the sample application might include further features provided by the SAP BTP:
+
+<p align="center">
+    <img src="./Tutorials/images/End-User_Flow-Peter-Part2-and-Julie.png" width="80%">  
+</p>
+
+### Features
+
+- Create and change poetry slam events, publish and cancel poetry slams.
+- Add and remove visitors, cancel registrations.
+- Calculate the number of free seats and block overbookings.
+- Create projects for poetry slam events in one click and preview project information on the Poetry Slam Manager UI (here, ERP authorizations must apply in the partner application as well!).
+- As an ERP user, start Poetry Slam Manager from your ERP launchpad and navigate from Poetry Slam Manager to the associated project in the ERP system.
+- Synchronize the status of the poetry slam with the status of the associated project.
+- Make use of a standardized online development environment using SAP Business Application Studio.
+- Use a state-of-the-art web application architecture based on HTML5, Node.js, and SAP HANA Cloud.
+- Make use of a model-driven development based on the SAP Cloud Application Programming Model, core data services (CDS), and SAP Fiori elements.
+- Offer a user experience that matches the SAP standard due to standard floorplan patterns, and out-of-the-box theming and personalization.
+- Use a draft concept to allow users to change data in multiple steps without having to publish incomplete changes.
+- Benefit from enterprise-grade security by authentication and role-based authorizations in line with SAP product standards and technology alignments.
+- Have enterprise-ready compliance by personal data management and audit log.
+- Offer seamless and secure front-end and back-channel integration with SAP ERP solutions.
+- Deliver open solutions by integration-ready OData APIs and business events following SAP technology alignments.
+- Deploy the app as a one-off and/or as a multi-customer solution.
+
+**Join our community!**
+
+Would you like to share your own ideas and best practices? Join our discussions about the Partner Reference Application in our [SAP Community](https://blogs.sap.com/2022/06/03/build-and-run-cloud-applications-on-the-sap-btp/).
 
 ## Requirements
 
-## Download and Installation
+The application is based on SAP Business Technology Platform (SAP BTP) and SAP Cloud ERP solutions. Therefore, here's what you need:
+- administrative access to an SAP BTP account with entitlements for SAP Business Application Studio, SAP BTP Cloud Foundry runtime, SAP HANA Cloud, SAP HANA Schemas & HDI Containers, SAP Build Work Zone, SAP Audit Log service, SAP Audit Log Viewer service, and
+- administrator access to an Identity Authentication service tenant.
+
+You use SAP Business Application Studio as a standardized development environment and GitHub as your code repository.
+
+## Tutorials
+
+1. Build a full-stack SAP BTP application with a **one-off deployment** in a customer SAP BTP account:
+    1. [Prepare your SAP BTP account for development](Tutorials/11-Prepare-BTP-Account.md) 
+    2. [Prepare your SAP BTP subaccount for deployment](Tutorials/12-Prepare-Deployment.md)
+    3. [Deploy the sample application to a customer SAP BTP account](Tutorials/13-Deploy-Sample-Application.md)
+    4. [Develop the core of the SAP BTP application](Tutorials/14-Develop-Core-Application.md)
+    5. [Deploy your SAP BTP application](Tutorials/15-One-Off-Deployment.md)
+    6. [Test, trace, and debug](Tutorials/16-Test-Trace-Debug.md)
+    7. [Go on a guided tour to explore the capabilities of the sample application](Tutorials/17-Guided-Tour.md)
+
+2. Enhance the application to support **multiple customers** using shared SAP BTP resources:
+    1. [Enable multitenancy](Tutorials/21-Multi-Tenancy.md)
+    2. [Deploy the multi-tenant application to a provider subaccount](Tutorials/22-Multi-Tenancy-Deployment.md)
+    3. [Provision tenants of the multi-tenant application to customers](Tutorials/23-Multi-Tenancy-Provisioning.md)
+
+3. Integrate the application with the **ERP back end** of your customer:
+    1. [Go on a guided tour to explore the ERP integration](Tutorials/31-Guided-Tour-ERP-Integration.md)
+    2. [Test, trace, and debug the ERP integration](Tutorials/32-Test-Trace-Debug-ERP.md)
+    3. SAP S/4HANA Cloud Public Edition as ERP back end: 
+        1. [Integrate the SAP BTP application with SAP S/4HANA Cloud Public Edition](Tutorials/34a-S4HC-Integration.md)
+        2. [Configure the integration with SAP S/4HANA Cloud Public Edition](Tutorials/34b-Multi-Tenancy-Provisioning-Connect-S4HC.md)
+    4. SAP Business ByDesign as ERP back end:
+        1. [Integrate the SAP BTP application with SAP Business ByDesign](Tutorials/35a-ByD-Integration.md)
+        2. [Configure the integration with SAP Business ByDesign](Tutorials/35b-Multi-Tenancy-Provisioning-Connect-ByD.md)
+
+4. To extend your market reach, add **additional features** and integrate your SAP BTP application with more SAP BTP features and services:
+    1. [Manage data privacy](Tutorials/41-Manage-Data-Privacy.md)
+    2. Open the APIs of the SAP BTP application for third-party integrations:
+        1. [Enable API access to SAP BTP applications using service broker](Tutorials/42a-Multi-Tenancy-Service-Broker.md)
+        2. [Configure and consume the APIs of the SAP BTP application](Tutorials/42b-Multi-Tenancy-Provisioning-Service-Broker.md)
+
+## More Information
+- [SAP Cloud Application Programming Model](https://cap.cloud.sap/docs/)
+- [SAP Cloud SDK](https://sap.github.io/cloud-sdk/)
+- [SAP Discovery Center](https://discovery-center.cloud.sap/missionssearch)
+- [SAP Business ByDesign API Overview](https://blogs.sap.com/2019/09/26/sap-business-bydesign-an-api-overview/)
+- [SAP Business ByDesign OData API Usage Samples](https://blogs.sap.com/2019/02/27/sap-business-bydesign-api-usage-samples/)
 
 ## Known Issues
-<!-- You may simply state "No known issues. -->
 
-## How to obtain support
-[Create an issue](https://github.com/SAP-samples/<repository-name>/issues) in this repository if you find a bug or have questions about the content.
- 
-For additional support, [ask a question in SAP Community](https://answers.sap.com/questions/ask.html).
+There aren't any known issues.
 
-## Contributing
-If you wish to contribute code, offer fixes or improvements, please send a pull request. Due to legal reasons, contributors will be asked to accept a DCO when they create the first pull request to this project. This happens in an automated fashion during the submission process. SAP uses [the standard DCO text of the Linux Foundation](https://developercertificate.org/).
+## Get Support 
+
+This repository is provided "as-is", we don't offer support. For questions and comments, [join the SAP Community](https://answers.sap.com/questions/ask.html).
 
 ## License
+
 Copyright (c) 2024 SAP SE or an SAP affiliate company. All rights reserved. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.

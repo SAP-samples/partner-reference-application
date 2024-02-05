@@ -1,0 +1,39 @@
+# CAP Poetry Slam Manager implementation
+_out
+*.db
+connection.properties
+default-*.json
+.cdsrc-private.json
+gen/
+node_modules/
+target/
+dist/
+resources/
+app/
+approuter/
+*.*-mt_mta_build_tmp
+
+# Web IDE, App Studio
+.che/
+.gen/
+cli/
+.vscode
+.idea
+
+# MTA
+*_mta_build_tmp
+*.mtar
+mtad.yaml
+mta_archives/
+Makefile*.mta
+
+# Other
+.DS_Store
+*.orig
+*.log
+
+*.iml
+*.flattened-pom.xml
+
+default-*.json
+package-lock.json

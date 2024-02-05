@@ -1,0 +1,78 @@
+# This file contains sample calls to explain the usage of the service broker to access tenant-specific endpoints with a "technical user"
+# It can be used with the Business Application Studion extenstion "Rest Client" which is pre-installed with Dev Spaces of type "Full Stack Cloud Application"
+# Please follow the tutorial "Enabling API access of SAP BTP applications using Service Broker" to configure the service broker
+
+# Start with the service binding you created for the service broker instance in the consumer account, the name in the service tutorial was psm-sb-sub1-full
+# From that service binding take the fields
+#  "endpoints-psm-servicebroker" (Service Key API-Endpoint),
+#  "uaa-clientid" (Service Key UAA Client-ID), 
+#  "uaa-clientsecret" (Service Key UAA Client-Secret), 
+#  "uaa-url" (Service Key UAA-URL)
+# and copy them into the below fields
+# Afterwards you can Send the Requests listed below. Start with getting an access token
+
+@endpoint = <put the Service Key API-Endpoint without quotation marks here>
+@client_id = <put the Service Key UAA Client-ID without quotation marks here>
+@client_secret = <put the Service Key UAA Client-Secret without quotation marks here>
+@uaa_url = <put the Service Key UAA-URL without quotation marks here>
+            
+### Get access token from uaa-url providing client-id and client-secret as user/pw for Basic authentication
+# @name tokenrequest
+GET {{uaa_url}}/oauth/token?grant_type=client_credentials&response_type=token HTTP/1.1
+Authorization: Basic {{client_id}}:{{client_secret}}
+
+### Store Token
+@token = {{tokenrequest.response.body.access_token}}
+
+### Get all PoetrySlams
+GET {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams
+Authorization: Bearer {{token}}
+
+### Get a single PoetrySlam
+GET {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams?$filter=number%20eq%20'3'
+Authorization: Bearer {{token}}
+
+### Create a new slam (draft)
+### This (and all subsequent examples) will fail in case you use a service binding for a service plan with ReadOnly scope (response will be 403 - forbidden)
+# @name createdraft
+POST {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{}
+
+### Store ID
+@newid = {{createdraft.response.body.ID}}
+
+### Read draft PoetrySlam
+GET {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams(ID={{newid}},IsActiveEntity=false)
+Authorization: Bearer {{token}}
+
+### Update draft PoetrySlam
+PATCH {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams(ID={{newid}},IsActiveEntity=false)
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "title": "Created through Service Broker",
+    "description": "This Poetry Slam was created and updated with a technical user access",
+    "maxVisitorsNumber": 10,
+    "visitorsFeeAmount": 0,
+    "visitorsFeeCurrency_code": "EUR",
+    "dateTime": "2024-01-01T12:00:00+01:00"
+}
+
+### Activate (Save) draft PoetrySlam
+POST {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams(ID={{newid}},IsActiveEntity=false)/PoetrySlamManager.draftActivate
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{}
+
+### Read active PoetrySlam
+GET {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams(ID={{newid}},IsActiveEntity=true)
+Authorization: Bearer {{token}}
+
+### Delete active PoetrySlam
+DELETE {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams(ID={{newid}},IsActiveEntity=true)
+Authorization: Bearer {{token}}
