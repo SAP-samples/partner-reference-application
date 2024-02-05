@@ -40,6 +40,7 @@ modules:
       - name: poetry-slams-destination-service
       - name: poetry-slams-service-manager
       - name: poetry-slams-registry
+      - name: poetry-slams-auditlog
     provides:
       - name: srv-api
         properties:
@@ -96,6 +97,7 @@ modules:
       - name: poetry-slams-auth
       - name: poetry-slams-destination-service
       - name: poetry-slams-service-manager
+      - name: poetry-slams-auditlog
         properties:
           SUBSCRIPTION_URL: ${protocol}://\${tenant_subdomain}.${app-url}.${domain}/poetryslammanager # ${default-url}
     parameters:
@@ -145,6 +147,7 @@ modules:
       - name: poetry-slams-destination-service
       - name: poetry-slams-registry
       - name: poetry-slams-html5-runtime
+      - name: poetry-slams-auditlog
     properties:
       TENANT_HOST_PATTERN: '^(.*).${app-url}.${domain}'
       # prettier-ignore
@@ -154,6 +157,42 @@ modules:
           allowedOrigin:
             - host: '*.${app-url}.${domain}'
               protocol: 'https'
+
+  # The service broker for the poetry slam manager
+  # Directly exposes the author reading service
+
+  - name: poetry-slams-servicebroker
+    type: nodejs
+    path: broker
+    parameters:
+      disk-quota: 1024M
+      memory: 128M
+      health-check-timeout: 180
+    requires:
+      - name: poetry-slams-auth
+      - name: poetry-slams-auditlog
+      - name: srv-api
+    build-parameters:
+      builder: npm
+    properties:
+      SBF_CATALOG_SUFFIX: ${space} # Make the service broker unique in the deployed space
+      SBF_ENABLE_AUDITLOG: true
+      SBF_BROKER_CREDENTIALS: '{ "${generated-user}": "${generated-password}" }' # use a random password that is generated during deployment (not that this will change the password with every deplyoment)
+      #SBF_BROKER_CREDENTIALS: '{ "<BrokerUser>": "<plain-broker-password>" }'      # alternatively: use command  "npx hash-broker-password -b" to generate a random password and use the plain password here
+      SBF_SERVICE_CONFIG:
+        psm-servicebroker:
+          extend_xssecurity:
+            per_plan:
+              fullaccess:
+                authorities:
+                  - '$XSMASTERAPPNAME.PoetrySlamFull'
+              readonlyaccess:
+                authorities:
+                  - '$XSMASTERAPPNAME.PoetrySlamReadonly'
+          extend_credentials:
+            shared:
+              endpoints:
+                psm-servicebroker: '~{srv-api/srv-url}' # Tenant-specific OData endpoint for remote integrations
 
 # -------------------------------------------------------------------------
 # Resources/Services that are required to run the deployed application
@@ -233,3 +272,11 @@ resources:
       service-plan: container
     properties:
       hdi-service-name: ${service-name}
+
+  # Audit Log Service
+  # For automatic audit logging
+  - name: poetry-slams-auditlog
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: auditlog
+      service-plan: premium

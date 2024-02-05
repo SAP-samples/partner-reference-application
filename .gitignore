@@ -16,6 +16,7 @@ resources/
 # Web IDE, App Studio
 .che/
 .gen/
+cli/
 
 # MTA
 *_mta_build_tmp

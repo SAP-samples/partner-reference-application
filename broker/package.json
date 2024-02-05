@@ -1,0 +1,16 @@
+{
+  "name": "psmbroker",
+  "version": "1.0.0",
+  "description": "Servicebroker for the Poetry Slam Manager sample application",
+  "scripts": {
+    "start": "start-broker"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sap/sbf": "^6.6.7"
+  },
+  "engines": {
+    "node": ">=16.17.1 <19.0.0"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "services": [
+    {
+      "name": "psm-servicebroker",
+      "description": "PSM service broker",
+      "id": "7c507216-8761-4ba5-9bfa-333f999dccdc",
+      "bindable": true,
+      "plans": [
+        {
+          "name": "fullaccess",
+          "description": "Full Access plan",
+          "id": "c5057ebd-d408-4e33-89ec-cd97c4af511f"
+        },
+        {
+          "name": "readonlyaccess",
+          "description": "Read-only Access plan",
+          "id": "855e0eb8-fc08-469c-802c-9954e6b586de"
+        }
+      ]
+    }
+  ]
+}

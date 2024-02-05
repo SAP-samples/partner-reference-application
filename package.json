@@ -11,6 +11,7 @@
     "BusinessTechnologyPlatform"
   ],
   "dependencies": {
+    "@cap-js/audit-logging": "^0.5.2",
     "@sap-cloud-sdk/connectivity": "^3.9.0",
     "@sap-cloud-sdk/http-client": "^3.9.0",
     "@sap/cds": "^7.4.2",

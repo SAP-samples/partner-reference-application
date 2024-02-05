@@ -4,7 +4,8 @@ using {PoetrySlamManager} from './poetrySlamManagerService';
 // Required authorization roles
 annotate PoetrySlamManager with @(requires: [
     'PoetrySlamFull',          // Full authorization for managers
-    'PoetrySlamRestricted'     // Restricted access for visitors
+    'PoetrySlamRestricted',    // Restricted access for visitors
+    'PoetrySlamReadonly'       // Read-only access for APIs
 ]);
 
 // ----------------------------------------------------------------------------
@@ -20,6 +21,11 @@ annotate PoetrySlamManager.PoetrySlams with @(restrict: [
         grant: ['READ'],
         to   : 'PoetrySlamRestricted',
         where: 'status_code = 2 or status_code = 3'
+    },
+    {
+        // Read-only access
+        grant: ['READ'],
+        to   : 'PoetrySlamReadonly'
     }
 ]);
 
@@ -34,6 +40,11 @@ annotate PoetrySlamManager.Visitors with @(restrict: [
         grant: ['READ'],
         to   : 'PoetrySlamRestricted',
         where: 'createdBy = $user'
+    },
+    {
+        // Read-only access
+        grant: ['READ'],
+        to   : 'PoetrySlamReadonly'
     }
 ]);
 
@@ -48,6 +59,11 @@ annotate PoetrySlamManager.Visits with @(restrict: [
         grant: ['READ'],
         to   : 'PoetrySlamRestricted',
         where: 'createdBy = $user or artistIndicator=true'
+    },
+    {
+        // Read-only access
+        grant: ['READ'],
+        to   : 'PoetrySlamReadonly'
     }
 ]);
 

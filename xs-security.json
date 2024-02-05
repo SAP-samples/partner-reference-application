@@ -10,6 +10,10 @@
       "description": "Restricted Read/Write Access to PoetrySlams"
     },
     {
+      "name": "$XSAPPNAME.PoetrySlamReadonly",
+      "description": "Read-only Access to PoetrySlams"
+    },
+    {
       "name": "$XSAPPNAME.mtcallback",
       "description": "Subscribe to applications",
       "grant-as-authority-to-apps": [
@@ -55,5 +59,6 @@
       "role-template-references": ["$XSAPPNAME.PoetrySlamVisitorRole"]
     }
   ],
-  "authorities": ["$XSAPPNAME.mtdeployment", "$XSAPPNAME.mtcallback"]
+  "authorities": ["$XSAPPNAME.mtdeployment", "$XSAPPNAME.mtcallback"],
+  "authorities-inheritance": false
 }
