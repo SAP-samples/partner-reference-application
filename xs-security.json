@@ -1,0 +1,39 @@
+{
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.PoetrySlamFull",
+      "description": "Full Read/Write Access to PoetrySlams"
+    },
+    {
+      "name": "$XSAPPNAME.PoetrySlamRestricted",
+      "description": "Restricted Read/Write Access to PoetrySlams"
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "PoetrySlamManagerRole",
+      "description": "Full Access to PoetrySlams",
+      "scope-references": ["$XSAPPNAME.PoetrySlamFull"],
+      "attribute-references": []
+    },
+    {
+      "name": "PoetrySlamVisitorRole",
+      "description": "Restricted Access to PoetrySlams for Visitors",
+      "scope-references": ["$XSAPPNAME.PoetrySlamRestricted"],
+      "attribute-references": []
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "PoetrySlamManagerRoleCollection",
+      "description": "Poetry Slam Manager",
+      "role-template-references": ["$XSAPPNAME.PoetrySlamManagerRole"]
+    },
+    {
+      "name": "PoetrySlamVisitorRoleCollection",
+      "description": "Poetry Slam Visitor",
+      "role-template-references": ["$XSAPPNAME.PoetrySlamVisitorRole"]
+    }
+  ]
+}

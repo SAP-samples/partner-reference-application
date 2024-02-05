@@ -1,0 +1,182 @@
+_schema-version: '3.1'
+ID: poetry-slams
+description: SAP Partner Reference Application v2.0
+version: 2.0.0
+
+# -------------------------------------------------------------------------
+# Parameters
+# -------------------------------------------------------------------------
+parameters:
+  # Defines the deploy mode to HTML5 repository and allows parallel deployments
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    #  Defines the build parameter
+    - builder: custom
+      commands:
+        - npm ci --omit=dev
+        - npx -p @sap/cds-dk cds build --production
+
+# -------------------------------------------------------------------------
+#  Modules that are required to deploy the application
+# -------------------------------------------------------------------------
+modules:
+  # Service module
+  # Defines the microservice or application that will be serviced.
+  # Contract between the service and the used microservices, and the rest of the application. It specifies what is required from the environment, and what it provides to the environment.
+  - name: poetry-slams-srv
+    type: nodejs
+    path: gen/srv
+    requires:
+      - name: poetry-slams-db
+      - name: poetry-slams-auth
+      - name: poetry-slams-destination-service
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+
+  # DB deployer module
+  # Defines and executes tasks related to database deployments
+  - name: poetry-slams-db-deployer
+    type: hdb
+    path: gen/db
+    requires:
+      - name: poetry-slams-db
+      - name: poetry-slams-auth
+    parameters:
+      buildpack: nodejs_buildpack
+
+  # App UI resources module
+  # Creates and packages the static content of the HTML5 application
+  - name: poetryslammanager
+    type: html5
+    path: app/poetryslammanager
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+
+  # App UI content deployer module
+  # Uploads the static content of the HTML5 application and deploys it to the HTML5 repository
+  - name: poetry-slams-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: poetry-slams-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - poetryslammanager.zip
+          name: poetryslammanager
+          target-path: resources/
+
+  # Destination content module
+  # Manages and deploys destinations. Defines service key for XSUAA access, which establishes secure and authenticated access
+  - name: poetry-slams-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: poetry-slams-destination-service
+        parameters:
+          content-target: true
+      - name: poetry-slams-repo-host
+        parameters:
+          service-key:
+            name: poetry-slams-repo-host-key
+      - name: poetry-slams-auth
+        parameters:
+          service-key:
+            name: poetry-slams-auth-key
+    build-parameters:
+      no-source: true
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: poetryslammanager-repo-host-dest
+              ServiceInstanceName: poetry-slams-html5-srv
+              ServiceKeyName: poetry-slams-repo-host-key
+              sap.cloud.service: poetryslammanager
+            - Name: poetryslammanager-auth-fiori-dest
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: poetry-slams-auth
+              ServiceKeyName: poetry-slams-auth-key
+              sap.cloud.service: poetryslammanager
+          existing_destinations_policy: update
+
+# -------------------------------------------------------------------------
+# Resources/Services that are required to run the deployed application
+# -------------------------------------------------------------------------
+resources:
+  # Database
+  # Manages database artifacts. It provides database schema separation and allows micro-services to interact with SAP HANA database
+  - name: poetry-slams-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}
+
+  # HTML5 app repository
+  # Hosts and serves the HTML5 application so that it is accessible via internet browsers
+  - name: poetry-slams-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: poetry-slams-html5-srv
+      service-plan: app-host
+
+  # Destination service
+  # Offers a predefined configuration that simplifies connecting to the service
+  - name: poetry-slams-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            destinations:
+              - Authentication: NoAuthentication
+                Name: ui5
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+              - Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+                Name: launchpad
+                ProxyType: Internet
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+            existing_destinations_policy: update
+        version: 1.0.0
+      service: destination
+      service-name: poetry-slams-destination-service
+      service-plan: lite
+    requires:
+      - name: srv-api
+
+  # Authorization XSUAA service
+  # Manages authentication, single sign-on (SSO), user management, and provides a way to manage authorizations based on scopes and role collections
+  - name: poetry-slams-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        tenant-mode: dedicated
+        xsappname: poetry-slams-${space}
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: poetry-slams-auth
+      service-plan: application

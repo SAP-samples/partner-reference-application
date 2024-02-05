@@ -1,0 +1,27 @@
+{
+  "requires": {
+    "[development]": {
+      "auth": {
+        "kind": "mocked",
+        "users": {
+          "Peter": {
+            "password": "welcome",
+            "id": "peter",
+            "roles": ["PoetrySlamFull", "authenticated-user"]
+          },
+          "Julie": {
+            "password": "welcome",
+            "id": "julie",
+            "roles": ["PoetrySlamRestricted", "authenticated-user"]
+          },
+          "Denise": {
+            "password": "welcome",
+            "id": "denise",
+            "roles": ["authenticated-user"]
+          },
+          "*": true
+        }
+      }
+    }
+  }
+}
