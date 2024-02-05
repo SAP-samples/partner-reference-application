@@ -7,8 +7,6 @@ sap.ui.define(['sap/ui/test/opaQunit'], function (opaTest) {
 
       opaTest('Start application', function (Given, When, Then) {
         Given.iStartMyApp();
-        // onTheShell event added due to sap-ushell-config in webapp/index.html
-        When.onTheShell.iPressTile('fe-lrop-v4');
         Then.onThePoetrySlamsList.iSeeThisPage();
       });
 

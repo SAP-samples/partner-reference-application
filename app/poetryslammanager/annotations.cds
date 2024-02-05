@@ -1,14 +1,16 @@
 using PoetrySlamManager as service from '../../srv/poetrySlamManagerService';
 
 annotate service.PoetrySlams with {
-    status              @Common.Text: {
+    status                   @Common.Text: {
         $value                : status.name,
         ![@UI.TextArrangement]: #TextOnly
     };
-    description         @UI.MultiLineText;
-    ID                  @UI.Hidden;
-    statusCriticality   @UI.Hidden;
-    visitorsFeeCurrency @UI.Hidden;
+    description              @UI.MultiLineText;
+    ID                       @UI.Hidden;
+    statusCriticality        @UI.Hidden;
+    visitorsFeeCurrency      @UI.Hidden;
+    createByDProjectEnabled  @UI.Hidden;
+    createS4HCProjectEnabled @UI.Hidden;
 };
 
 annotate service.PoetrySlams with @(
@@ -101,6 +103,16 @@ annotate service.PoetrySlams with @(
                 Label : '{i18n>administativeData}',
                 ID    : 'AdministrativeData',
                 Target: '@UI.FieldGroup#AdministrativeData'
+            },
+            {
+                $Type : 'UI.CollectionFacet',
+                Label : '{i18n>projectData}',
+                ID    : 'ProjectData',
+                Facets: [{
+                    $Type : 'UI.ReferenceFacet',
+                    Target: ![@UI.FieldGroup#ProjectData],
+                    ID    : 'ProjectData'
+                }]
             }
         ],
         // Bundle multiple fields into a group
@@ -179,6 +191,173 @@ annotate service.PoetrySlams with @(
                 }
             ]
         },
+        FieldGroup #ProjectData       : {Data: [
+            // Project system independend fields:
+            {
+                $Type: 'UI.DataFieldWithUrl',
+                Value: projectID,
+                Url  : projectURL
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: projectSystemName
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: projectSystem
+            },
+            // SAP Business ByDesign specific fields
+            {
+                $Type     : 'UI.DataField',
+                Label     : '{i18n>projectTypeCodeText}',
+                Value     : toByDProject.typeCodeText,
+                @UI.Hidden: {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'ByD'
+                    ]},
+                    false,
+                    true
+                ]}}
+            },
+            {
+                $Type     : 'UI.DataField',
+                Label     : '{i18n>projectStatusCodeText}',
+                Value     : toByDProject.statusCodeText,
+                @UI.Hidden: {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'ByD'
+                    ]},
+                    false,
+                    true
+                ]}}
+            },
+            {
+                $Type     : 'UI.DataField',
+                Label     : '{i18n>projectCostCenter}',
+                Value     : toByDProject.costCenter,
+                @UI.Hidden: {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'ByD'
+                    ]},
+                    false,
+                    true
+                ]}}
+            },
+            {
+                $Type     : 'UI.DataField',
+                Label     : '{i18n>projectStartDateTime}',
+                Value     : toByDProject.startDateTime,
+                @UI.Hidden: {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'ByD'
+                    ]},
+                    false,
+                    true
+                ]}}
+            },
+            {
+                $Type     : 'UI.DataField',
+                Label     : '{i18n>projectEndDateTime}',
+                Value     : toByDProject.endDateTime,
+                @UI.Hidden: {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'ByD'
+                    ]},
+                    false,
+                    true
+                ]}}
+            },
+            // S4HC specific fields
+            {
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>projectDescription}',
+                Value                  : toS4HCProject.ProjectDescription,
+                @UI.Hidden             : {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'S4HC'
+                    ]},
+                    false,
+                    true
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
+            },
+            {
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>projectProfile}',
+                Value                  : projectProfileCodeText,
+                @UI.Hidden             : {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'S4HC'
+                    ]},
+                    false,
+                    true
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
+            },
+            {
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>responsibleCostCenter}',
+                Value                  : toS4HCProject.ResponsibleCostCenter,
+                @UI.Hidden             : {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'S4HC'
+                    ]},
+                    false,
+                    true
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
+            },
+            {
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>processingStatus}',
+                Value                  : processingStatusText,
+                @UI.Hidden             : {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'S4HC'
+                    ]},
+                    false,
+                    true
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
+            },
+            {
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>projectStartDateTime}',
+                Value                  : toS4HCProject.ProjectStartDate,
+                @UI.Hidden             : {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'S4HC'
+                    ]},
+                    false,
+                    true
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
+            },
+            {
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>projectEndDateTime}',
+                Value                  : toS4HCProject.ProjectEndDate,
+                @UI.Hidden             : {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'S4HC'
+                    ]},
+                    false,
+                    true
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
+            }
+        ]},
         // Facets shown in the header of an object page
         HeaderFacets                  : [
             {
@@ -248,6 +427,46 @@ annotate service.PoetrySlams with @(
                     true,
                     false
                 ]}}
+            },
+            // Create a project in the connected ByD system
+            {
+                $Type     : 'UI.DataFieldForAction',
+                Label     : '{i18n>createByDProject}',
+                Action    : 'PoetrySlamManager.createByDProject',
+                @UI.Hidden: {$edmJson: {$If: [
+                    {$And: [
+                        {$Eq: [
+                            {$Path: 'createByDProjectEnabled'},
+                            true
+                        ]},
+                        {$Eq: [
+                            {$Path: 'IsActiveEntity'},
+                            true
+                        ]}
+                    ]},
+                    false,
+                    true
+                ]}}
+            },
+            // Create a project in the connected S4HC system
+            {
+                $Type        : 'UI.DataFieldForAction',
+                Label        : '{i18n>createS4HCProject}',
+                Action       : 'PoetrySlamManager.createS4HCProject',
+                ![@UI.Hidden]: {$edmJson: {$If: [
+                    {$And: [
+                        {$Eq: [
+                            {$Path: 'createS4HCProjectEnabled'},
+                            true
+                        ]},
+                        {$Eq: [
+                            {$Path: 'IsActiveEntity'},
+                            true
+                        ]}
+                    ]},
+                    false,
+                    true
+                ]}}
             }
         ],
         // Definition of fields shown on the list page / table
@@ -292,7 +511,10 @@ annotate service.PoetrySlams with @(
             title,
             description,
             status_code,
-            dateTime
+            dateTime,
+            projectID,
+            projectSystem,
+            projectSystemName
         ]
     }
 );

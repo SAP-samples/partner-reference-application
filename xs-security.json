@@ -1,4 +1,5 @@
 {
+  "tenant-mode": "shared",
   "scopes": [
     {
       "name": "$XSAPPNAME.PoetrySlamFull",
@@ -7,6 +8,24 @@
     {
       "name": "$XSAPPNAME.PoetrySlamRestricted",
       "description": "Restricted Read/Write Access to PoetrySlams"
+    },
+    {
+      "name": "$XSAPPNAME.mtcallback",
+      "description": "Subscribe to applications",
+      "grant-as-authority-to-apps": [
+        "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
+      ]
+    },
+    {
+      "name": "$XSAPPNAME.Callback",
+      "description": "Multi Tenancy Callback Access (approuter)",
+      "grant-as-authority-to-apps": [
+        "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
+      ]
+    },
+    {
+      "name": "$XSAPPNAME.mtdeployment",
+      "description": "Deploy applications"
     }
   ],
   "attributes": [],
@@ -35,5 +54,6 @@
       "description": "Poetry Slam Visitor",
       "role-template-references": ["$XSAPPNAME.PoetrySlamVisitorRole"]
     }
-  ]
+  ],
+  "authorities": ["$XSAPPNAME.mtdeployment", "$XSAPPNAME.mtcallback"]
 }

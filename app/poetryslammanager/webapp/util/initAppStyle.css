@@ -1,0 +1,7 @@
+html,
+body,
+body > div,
+#container,
+#container-uiarea {
+  height: 100%;
+}

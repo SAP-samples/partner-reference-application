@@ -4,6 +4,15 @@
 const cds = require('@sap/cds');
 const codes = require('./util/codes');
 const uniqueNumberGenerator = require('./util/uniqueNumberGenerator');
+const destinationUtil = require('./util/destination');
+
+// Buffer status and name of project management systems
+let ByDIsConnectedIndicator, ByDSystemName;
+const connectorByD = require('./connector-byd');
+
+// Buffer status and name of project management systems
+let S4HCIsConnectedIndicator, S4HCSystemName;
+const connectorS4HC = require('./connector-s4hc');
 
 module.exports = cds.service.impl(async (srv) => {
   const db = await cds.connect.to('db');
@@ -64,6 +73,47 @@ module.exports = cds.service.impl(async (srv) => {
     }
   });
 
+  // Check connected backend systems
+  srv.before('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req) => {
+    // SAP Business ByDesign
+    ByDIsConnectedIndicator = await destinationUtil.checkDestination(
+      req,
+      'byd'
+    );
+    ByDSystemName = await destinationUtil.getDestinationDescription(
+      req,
+      'byd-url'
+    );
+    // S4HC
+    S4HCIsConnectedIndicator = await destinationUtil.checkDestination(
+      req,
+      's4hc'
+    );
+    S4HCSystemName = await destinationUtil.getDestinationDescription(
+      req,
+      's4hc-url'
+    );
+  });
+
+  // Expand poetry slams to remote projects
+  srv.on('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
+    // Read the PoetrySlams instances
+    let poetrySlams = await next();
+
+    // Check and Read SAP Business ByDesign project related data
+    if (ByDIsConnectedIndicator) {
+      poetrySlams = await connectorByD.readProject(poetrySlams);
+    }
+
+    // Check and Read S4HC project related data
+    if (S4HCIsConnectedIndicator) {
+      poetrySlams = await connectorS4HC.readProject(poetrySlams);
+    }
+
+    // Return remote project data
+    return poetrySlams;
+  });
+
   // Apply a colour code based on the poetry slam status
   srv.after('READ', ['PoetrySlams.drafts', 'PoetrySlams'], (data) => {
     const asArray = (x) => (Array.isArray(x) ? x : [x]);
@@ -85,6 +135,24 @@ module.exports = cds.service.impl(async (srv) => {
           break;
         default:
           poetrySlam.statusCriticality = null;
+      }
+
+      [
+        'projectSystemName',
+        'processingStatusText',
+        'projectProfileCodeText'
+      ].forEach((item) => {
+        poetrySlam[item] = poetrySlam[item] || '';
+      });
+
+      if (poetrySlam.projectID) {
+        const systemNames = { ByD: ByDSystemName, S4HC: S4HCSystemName };
+        poetrySlam.createByDProjectEnabled = false;
+        poetrySlam.createS4HCProjectEnabled = false;
+        poetrySlam.projectSystemName = systemNames[poetrySlam.projectSystem];
+      } else {
+        poetrySlam.createByDProjectEnabled = ByDIsConnectedIndicator;
+        poetrySlam.createS4HCProjectEnabled = S4HCIsConnectedIndicator;
       }
     }
   });
@@ -392,6 +460,201 @@ module.exports = cds.service.impl(async (srv) => {
 
     return visit;
   });
+  // Implementation of entity events (entity PoetrySlams) with impact on remote services
+
+  // Entity action: Create ByD Project
+  srv.on('createByDProject', async (req) => {
+    try {
+      const poetrySlamID = req.params[req.params.length - 1].ID;
+      const poetrySlam = await SELECT.one
+        .from('PoetrySlamManager.PoetrySlams')
+        .where({ ID: poetrySlamID });
+
+      // Allow action for active entity instances only
+      if (!poetrySlam) {
+        req.error(400, 'ACTION_CREATE_PROJECT_DRAFT');
+        return;
+      }
+
+      if (poetrySlam.projectSystem && poetrySlam.projectSystem !== 'ByD') {
+        console.info(
+          'No valid Business ByDesign system found. Project could not be created.'
+        );
+        return;
+      }
+
+      const poetrySlamIdentifier = poetrySlam.number;
+      const poetrySlamTitle = poetrySlam.title;
+      const poetrySlamDate = poetrySlam.date;
+
+      const projectRecord = await connectorByD.projectDataRecord(
+        poetrySlamIdentifier,
+        poetrySlamTitle,
+        poetrySlamDate
+      );
+
+      // Check and create the project instance
+      // If the project already exist, then read and update the local project elements in entity PoetrySlams
+
+      // Get the entity service (entity "ByDProjects")
+      const { ByDProjects } = srv.entities;
+      let remoteProjectID, remoteProjectObjectID;
+
+      // GET service call on remote project entity
+      const existingProject = await srv.run(
+        SELECT.one.from(ByDProjects).where({
+          projectID: projectRecord.ProjectID
+        })
+      );
+
+      if (existingProject) {
+        remoteProjectID = existingProject.projectID;
+        remoteProjectObjectID = existingProject.ID;
+      } else {
+        // POST request to create the project via remote service
+        const remoteCreatedProject = await srv.run(
+          INSERT.into(ByDProjects).entries(projectRecord)
+        );
+        if (remoteCreatedProject) {
+          remoteProjectID = remoteCreatedProject.projectID;
+          remoteProjectObjectID = remoteCreatedProject.ID;
+        }
+      }
+
+      if (!remoteProjectID) {
+        console.info(
+          'Remote Project ID is not available. PoetrySlam could not be updated.'
+        );
+        return;
+      }
+
+      // Generate remote S4HC Project URL and update the URL
+
+      // Read the ByD system URL dynamically from BTP destination "byd-url"
+      const bydRemoteSystem = await destinationUtil.getDestinationURL(
+        req,
+        'byd-url'
+      );
+
+      // Set the URL of ByD project overview screen for UI navigation
+      const bydRemoteProjectExternalURL =
+        '/sap/ap/ui/runtime?bo_ns=http://sap.com/xi/AP/ProjectManagement/Global&bo=Project&node=Root&operation=OpenByProjectID&object_key=' +
+        projectRecord.ProjectID +
+        '&key_type=APC_S_PROJECT_ID';
+      const bydRemoteProjectExternalCompleteURL = encodeURI(
+        bydRemoteSystem?.concat(bydRemoteProjectExternalURL)
+      );
+
+      // Update project elements in entity PoetrySlams
+      await UPDATE('PoetrySlamManager.PoetrySlams')
+        .set({
+          projectID: remoteProjectID,
+          projectObjectID: remoteProjectObjectID,
+          projectURL: bydRemoteProjectExternalCompleteURL,
+          projectSystem: 'ByD'
+        })
+        .where({ ID: poetrySlamID });
+    } catch (error) {
+      // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
+      console.log('ACTION_CREATE_PROJECT_CONNECTION' + '; ' + error);
+    }
+  });
+
+  // Entity action: Create S4HC Enterprise Project
+  srv.on('createS4HCProject', async (req) => {
+    try {
+      const poetrySlamID = req.params[req.params.length - 1].ID;
+      const poetrySlam = await SELECT.one
+        .from('PoetrySlamManager.PoetrySlams')
+        .where({ ID: poetrySlamID });
+      // Allow action for active entity instances only
+      if (!poetrySlam) {
+        req.error(400, 'ACTION_CREATE_PROJECT_DRAFT');
+        return;
+      }
+
+      if (poetrySlam.projectSystem && poetrySlam.projectSystem !== 'S4HC') {
+        console.info(
+          'No valid S4/Hana Cloud system found. Project could not be created.'
+        );
+        return;
+      }
+
+      const poetrySlamIdentifier = poetrySlam.number;
+      const poetrySlamTitle = poetrySlam.title;
+      const poetrySlamDate = poetrySlam.date;
+
+      const projectRecord = await connectorS4HC.projectDataRecord(
+        poetrySlamIdentifier,
+        poetrySlamTitle,
+        poetrySlamDate
+      );
+
+      // Check and create the project instance
+      // If the project already exist, then read and update the local project elements in entity poetrySlams
+
+      // Get the entity service (entity "S4HCProjects")
+      const { S4HCProjects } = srv.entities;
+      let remoteProjectID, remoteProjectObjectID;
+
+      // GET service call on remote project entity
+      const existingProject = await srv.run(
+        SELECT.one.from(S4HCProjects).where({
+          Project: projectRecord.Project
+        })
+      );
+
+      if (existingProject) {
+        remoteProjectID = existingProject.Project;
+        remoteProjectObjectID = existingProject.ProjectUUID;
+      } else {
+        // POST request to create the project via remote service
+        const remoteCreatedProject = await srv.run(
+          INSERT.into(S4HCProjects).entries(projectRecord)
+        );
+        if (remoteCreatedProject) {
+          remoteProjectID = remoteCreatedProject.Project;
+          remoteProjectObjectID = remoteCreatedProject.ProjectUUID;
+        }
+      }
+
+      if (!remoteProjectID) {
+        console.info(
+          'Remote Project ID is not available. PoetrySlam could not be updated.'
+        );
+        return;
+      }
+
+      // Generate remote S4HC Project URL and update the URL
+
+      // Read the S4HC system URL dynamically from BTP destination "s4hc-url"
+      const s4hcRemoteSystem = await destinationUtil.getDestinationURL(
+        req,
+        's4hc-url'
+      );
+
+      // Set the URL of S4HC project overview screen for UI navigation
+      const s4hcRemoteProjectExternalURL =
+        '/ui#EnterpriseProject-planProject?EnterpriseProject=' +
+        projectRecord.Project;
+      const s4hcRemoteProjectExternalCompleteURL = encodeURI(
+        s4hcRemoteSystem?.concat(s4hcRemoteProjectExternalURL)
+      );
+
+      // Update project elements in entity poetrySlams
+      await UPDATE('PoetrySlamManager.PoetrySlams')
+        .set({
+          projectID: remoteProjectID,
+          projectObjectID: remoteProjectObjectID,
+          projectURL: s4hcRemoteProjectExternalCompleteURL,
+          projectSystem: 'S4HC'
+        })
+        .where({ ID: poetrySlamID });
+    } catch (error) {
+      // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
+      console.log('ACTION_CREATE_PROJECT_CONNECTION' + '; ' + error);
+    }
+  });
 
   // ----------------------------------------------------------------------------
   // Implementation of oData function
@@ -580,4 +843,191 @@ module.exports = cds.service.impl(async (srv) => {
 
     return visitor?.name;
   }
+
+  // Implementation of remote OData services (back-channel integration with ByD)
+  // Delegate OData requests to remote project entities
+  srv.on('READ', 'ByDProjects', async (req) => {
+    return await connectorByD.delegateODataRequests(req, 'byd_khproject');
+  });
+  srv.on('READ', 'ByDProjectSummaryTasks', async (req) => {
+    return await connectorByD.delegateODataRequests(req, 'byd_khproject');
+  });
+  srv.on('READ', 'ByDProjectTasks', async (req) => {
+    return await connectorByD.delegateODataRequests(req, 'byd_khproject');
+  });
+
+  srv.on('CREATE', 'ByDProjects', async (req) => {
+    return await connectorByD.delegateODataRequests(req, 'byd_khproject');
+  });
+  srv.on('CREATE', 'ByDProjectSummaryTasks', async (req) => {
+    return await connectorByD.delegateODataRequests(req, 'byd_khproject');
+  });
+  srv.on('CREATE', 'ByDProjectTasks', async (req) => {
+    return await connectorByD.delegateODataRequests(req, 'byd_khproject');
+  });
+  srv.on('UPDATE', 'ByDProjects', async (req) => {
+    return await connectorByD.delegateODataRequests(req, 'byd_khproject');
+  });
+  srv.on('UPDATE', 'ByDProjectSummaryTasks', async (req) => {
+    return await connectorByD.delegateODataRequests(req, 'byd_khproject');
+  });
+  srv.on('UPDATE', 'ByDProjectTasks', async (req) => {
+    return await connectorByD.delegateODataRequests(req, 'byd_khproject');
+  });
+  srv.on('DELETE', 'ByDProjects', async (req) => {
+    return await connectorByD.delegateODataRequests(req, 'byd_khproject');
+  });
+  srv.on('DELETE', 'ByDProjectSummaryTasks', async (req) => {
+    return await connectorByD.delegateODataRequests(req, 'byd_khproject');
+  });
+  srv.on('DELETE', 'ByDProjectTasks', async (req) => {
+    return await connectorByD.delegateODataRequests(req, 'byd_khproject');
+  });
+
+  // Implementation of remote OData services (back-channel integration with S4HC)
+  // Delegate OData requests to S4HC remote project entities
+  srv.on('READ', 'S4HCProjects', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('READ', 'S4HCEnterpriseProjectElement', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('READ', 'S4HCEntProjEntitlement', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('READ', 'S4HCEntProjTeamMember', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('READ', 'S4HCProjectsProcessingStatus', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_ENTPROJECTPROCESSINGSTATUS_0001'
+    );
+  });
+  srv.on('READ', 'S4HCProjectsProjectProfileCode', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_ENTPROJECTPROFILECODE_0001'
+    );
+  });
+  srv.on('CREATE', 'S4HCProjects', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('CREATE', 'S4HCEnterpriseProjectElement', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('CREATE', 'S4HCEntProjEntitlement', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('CREATE', 'S4HCEntProjTeamMember', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('CREATE', 'S4HCProjectsProcessingStatus', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_ENTPROJECTPROCESSINGSTATUS_0001'
+    );
+  });
+  srv.on('CREATE', 'S4HCProjectsProjectProfileCode', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_ENTPROJECTPROFILECODE_0001'
+    );
+  });
+  srv.on('UPDATE', 'S4HCProjects', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('UPDATE', 'S4HCEnterpriseProjectElement', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('UPDATE', 'S4HCEntProjEntitlement', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('UPDATE', 'S4HCEntProjTeamMember', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('UPDATE', 'S4HCProjectsProcessingStatus', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_ENTPROJECTPROCESSINGSTATUS_0001'
+    );
+  });
+  srv.on('UPDATE', 'S4HCProjectsProjectProfileCode', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_ENTPROJECTPROFILECODE_0001'
+    );
+  });
+  srv.on('DELETE', 'S4HCProjects', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('DELETE', 'S4HCEnterpriseProjectElement', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('DELETE', 'S4HCEntProjEntitlement', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('DELETE', 'S4HCEntProjTeamMember', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+  });
+  srv.on('DELETE', 'S4HCProjectsProcessingStatus', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_ENTPROJECTPROCESSINGSTATUS_0001'
+    );
+  });
+  srv.on('DELETE', 'S4HCProjectsProjectProfileCode', async (req) => {
+    return await connectorS4HC.delegateODataRequests(
+      req,
+      'S4HC_ENTPROJECTPROFILECODE_0001'
+    );
+  });
 });

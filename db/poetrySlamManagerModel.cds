@@ -24,6 +24,10 @@ entity PoetrySlams : cuid, managed {
     status              : Association to one PoetrySlamStatusCodes @assert.integrity;
     visits              : Composition of many Visits
                               on visits.parent = $self;
+    projectID           : String;
+    projectObjectID     : String;
+    projectURL          : String;
+    projectSystem       : String;
 }
 
 //Enforces uniqueness checks on all CREATE and UPDATE operations for the specified fields
@@ -77,6 +81,10 @@ annotate PoetrySlams with @fiori.draft.enabled {
     visitorsFeeCurrency @title: '{i18n>visitorsFeeCurrency}';
     status              @title: '{i18n>status}'             @readonly;
     visits              @title: '{i18n>visits}';
+    projectID           @title: '{i18n>projectID}'          @readonly;
+    projectObjectID     @title: '{i18n>projectObjectID}'    @readonly;
+    projectURL          @title: '{i18n>projectURL}'         @readonly;
+    projectSystem       @title: '{i18n>projectSystem}'      @readonly;
 }
 
 annotate Visits with {
