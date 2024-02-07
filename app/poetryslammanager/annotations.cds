@@ -218,7 +218,8 @@ annotate service.PoetrySlams with @(
                     ]},
                     false,
                     true
-                ]}}
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
             },
             {
                 $Type     : 'UI.DataField',
@@ -231,7 +232,8 @@ annotate service.PoetrySlams with @(
                     ]},
                     false,
                     true
-                ]}}
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
             },
             {
                 $Type     : 'UI.DataField',
@@ -244,7 +246,8 @@ annotate service.PoetrySlams with @(
                     ]},
                     false,
                     true
-                ]}}
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
             },
             {
                 $Type     : 'UI.DataField',
@@ -257,7 +260,8 @@ annotate service.PoetrySlams with @(
                     ]},
                     false,
                     true
-                ]}}
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
             },
             {
                 $Type     : 'UI.DataField',
@@ -270,7 +274,8 @@ annotate service.PoetrySlams with @(
                     ]},
                     false,
                     true
-                ]}}
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
             },
             // S4HC specific fields
             {
