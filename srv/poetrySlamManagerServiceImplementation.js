@@ -145,6 +145,7 @@ module.exports = cds.service.impl(async (srv) => {
         poetrySlam[item] = poetrySlam[item] || '';
       });
 
+      // Update project system name and visibility of the "Create Project"-buttons
       if (poetrySlam.projectID) {
         const systemNames = { ByD: ByDSystemName, S4HC: S4HCSystemName };
         poetrySlam.createByDProjectEnabled = false;
