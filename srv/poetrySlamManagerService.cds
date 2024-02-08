@@ -62,14 +62,12 @@ service PoetrySlamManager @(
             )
             action publish()           returns PoetrySlams;
 
-            //Action: Create
+            // SAP Business ByDesign projects: action to create a project in SAP Business ByDesign
             @(
-                // Defines that poetryslam entity is affected and targeted by the action
                 Common.SideEffects             : {TargetEntities: [
                     '_poetryslam',
                     '_poetryslam/toByDProject'
                 ]},
-                // Determines that poetryslam entitiy is used when the action is performed
                 cds.odata.bindingparameter.name: '_poetryslam'
             )
             action createByDProject()  returns PoetrySlams;
