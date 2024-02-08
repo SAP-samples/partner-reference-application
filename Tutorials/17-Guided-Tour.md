@@ -13,7 +13,7 @@ Buckle up and let us take you on a guided tour through the sample solution:
 2. On the site, you find Poetry Slam Manager, the partner application. To start the app, click on the tile.
     
     > Note: The Partner Reference Application is embedded in SAP Build Work Zone. Additionally, you can launch other SAP BTP apps relevant for key users and administrators such as Identity Authentication service to manage user authentications and authorizations. To launch these apps, you don't need to log in again as they're linked to your corporate IdP and you can use single sign-on.
-
+    
     <img src="./images/one_off_guided_tour_workzone.png" width="30%">
 
 3. In the Poetry Slam Manager app, you find multiple poetry slams: Some are still in preparation, others have already been published. 
