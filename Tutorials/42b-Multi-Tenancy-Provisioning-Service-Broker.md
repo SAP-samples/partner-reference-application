@@ -98,34 +98,21 @@ This section describes how to use the SAP BTP command line interface. For more d
       btp register services/broker --name poetry-slams-servicebroker --url <provider service broker url> --user "<user>" --password "<password>" --subaccount <consumer subaccount id>
       ```
 
-5. (Optional) Update or unregister the consumer subaccount.
+      > Note: In the previous section about [Enabling API Access of SAP BTP Applications Using Service Broker](./42a-Multi-Tenancy-Service-Broker.md), a generated user/password combination was introduced in the provider subaccount. This means that this combination will get regenerated with new values during every redeployment. Nevertheless, the service keys that you create below will still work. However, for new subscriptions, use the updated values.
 
-   1.  In the previous section about [Enabling API Access of SAP BTP Applications Using Service Broker](./42a-Multi-Tenancy-Service-Broker.md), a generated user/password combination was introduced in the provider subaccount. This means that this combination will get regenerated with new values during every redeployment. The service keys that you create below will still work, however, you need to update your consumer registration. To do so, use the commands:
-     
-         ```
-         btp list services/broker
-         btp update services/broker --name <name> --url <provider service broker url> --user "<user>" --password "<password>" --subaccount <id>
-         ```
-
-   2. If you want to unregister the consumer, execute the command: 
-      
-      ```
-      btp unregister services/broker --id <id>
-      ```
-
-6. Create an instance of the service broker in the consumer subaccount.
+5. Create an instance of the service broker in the consumer subaccount.
    1. Run the following command.
      ```
      btp create services/instance --subaccount <consumer subaccount id> --plan-name fullaccess --offering-name psm-servicebroker-dev --parameters '{ "xs-security": { "xsappname": "psm-sb-sub1-full", "oauth2-configuration": { "credential-types": ["binding-secret"] } } }' --name psm-sb-sub1-full
      ```
    2. Afterward, you will find the instance in the SAP BTP consumer subaccount cockpit under *Services* - *Instances and Subscriptions* - *Instances*.
 
-7. To create credentials for the consumer service broker, run the command:
+6. To create credentials for the consumer service broker, run the command:
      ```
      btp create services/binding --subaccount <consumer subaccount id> --binding binding_full --instance-name psm-sb-sub1-full
      ```
 
-8. Read the credentials.
+7. Read the credentials.
    1. Run the following command.
      ```
      btp list services/binding
@@ -142,9 +129,9 @@ With these details, you're ready to explore and test the OData services.
 
 ### Alternatively: Use the SAP BTP Subaccount Cockpit
 
-Alternatively, you can perform the steps 6 and 7 of the description above in the SAP BTP cockpit of the consumer subaccount. The results are the same, but you might find the procedure more straightforward: 
+Alternatively, you can perform the steps 5, 6, and 7 of the description above in the SAP BTP cockpit of the consumer subaccount. The results are the same, but you might find the procedure more straightforward: 
 
-6. Create an instance of the service broker in the consumer subaccount:
+5. Create an instance of the service broker in the consumer subaccount:
    1. In the SAP BTP cockpit of the consumer subaccount, go to *Services* and *Service Marketplace*. 
    2. Search for the tile with the name and description defined in the *catalog.json* of the *broker* folder (in the Partner Reference Application: *psm-servicebroker-dev* / *PSM service broker*, the suffix *-dev* is the space in the provider subaccount where the application is deployed). 
    3. In the *Actions* menu of this tile, choose *Create*.
@@ -158,12 +145,12 @@ Alternatively, you can perform the steps 6 and 7 of the description above in the
    8. Choose *Create*.
    9. Afterward, you will find the instance in the SAP BTP consumer subaccount cockpit under *Services* - *Instances and Subscriptions* - *Instances*.
 
-7. Create credentials for the consumer service broker:
+6. Create credentials for the consumer service broker:
    1. In the SAP BTP consumer subaccount cockpit, go to *Services*, *Instances and Subscriptions*, and *Instances*. 
    2. Open the *Actions* menu of the service broker instance you just created. 
    3. Select *Create Service Binding* and choose a name for the binding, for example, `binding_full`.
 
-8. Read the credentials:
+7. Read the credentials:
    1. In the SAP BTP consumer subaccount cockpit, go to *Services*, *Instances and Subscriptions*, and *Instances*. 
    2. Click on the link of the service binding. When you view the created credentials, copy the values of the fields
    

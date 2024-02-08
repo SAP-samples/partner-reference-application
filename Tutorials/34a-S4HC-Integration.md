@@ -52,57 +52,57 @@ You use the SAP S/4HANA Cloud Public Edition OData services for enterprise proje
                 "kind": "odata-v2",
                 "model": "srv/external/S4HC_API_ENTERPRISE_PROJECT_SRV_0002",
                 "[development]": {
-                "credentials": {
-                    "url": "https://{{S4HC-hostname}}/sap/opu/odata/sap/API_ENTERPRISE_PROJECT_SRV;v=0002",
-                    "authentication": "BasicAuthentication",
-                    "username": "{{test-user}}",
-                    "password": "{{test-password}}"
-                }
+                    "credentials": {
+                        "url": "https://{{S4HC-hostname}}/sap/opu/odata/sap/API_ENTERPRISE_PROJECT_SRV;v=0002",
+                        "authentication": "BasicAuthentication",
+                        "username": "{{test-user}}",
+                        "password": "{{test-password}}"
+                    }
                 },
                 "[production]": {
-                "credentials": {
-                    "destination": "s4hc",
-                    "path": "/sap/opu/odata/sap/API_ENTERPRISE_PROJECT_SRV;v=0002"
-                }
+                    "credentials": {
+                        "destination": "s4hc",
+                        "path": "/sap/opu/odata/sap/API_ENTERPRISE_PROJECT_SRV;v=0002"
+                    }
                 }
             },
             "S4HC_ENTPROJECTPROCESSINGSTATUS_0001": {
                 "kind": "odata",
                 "model": "srv/external/S4HC_ENTPROJECTPROCESSINGSTATUS_0001",
                 "[development]": {
-                "credentials": {
-                    "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojprocessingstat/srvd_a2x/sap/entprojectprocessingstatus/0001",
-                    "authentication": "BasicAuthentication",
-                    "username": "{{test-user}}",
-                    "password": "{{test-password}}"
-                }
+                    "credentials": {
+                        "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojprocessingstat/srvd_a2x/sap/entprojectprocessingstatus/0001",
+                        "authentication": "BasicAuthentication",
+                        "username": "{{test-user}}",
+                        "password": "{{test-password}}"
+                    }
                 },
                 "[production]": {
-                "credentials": {
-                    "destination": "s4hc-tech-user",
-                    "path": "/sap/opu/odata4/sap/api_entprojprocessingstat/srvd_a2x/sap/entprojectprocessingstatus/0001"
-                }
+                    "credentials": {
+                        "destination": "s4hc-tech-user",
+                        "path": "/sap/opu/odata4/sap/api_entprojprocessingstat/srvd_a2x/sap/entprojectprocessingstatus/0001"
+                    }
                 }
             },
             "S4HC_ENTPROJECTPROFILECODE_0001": {
                 "kind": "odata",
                 "model": "srv/external/S4HC_ENTPROJECTPROFILECODE_0001",
                 "[development]": {
-                "credentials": {
-                    "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojectprofilecode/srvd_a2x/sap/entprojectprofilecode/0001",
-                    "authentication": "BasicAuthentication",
-                    "username": "{{test-user}}",
-                    "password": "{{test-password}}"
-                }
+                    "credentials": {
+                        "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojectprofilecode/srvd_a2x/sap/entprojectprofilecode/0001",
+                        "authentication": "BasicAuthentication",
+                        "username": "{{test-user}}",
+                        "password": "{{test-password}}"
+                    }
                 },
                 "[production]": {
-                "credentials": {
-                    "destination": "s4hc-tech-user",
-                    "path": "/sap/opu/odata4/sap/api_entprojectprofilecode/srvd_a2x/sap/entprojectprofilecode/0001"
-                }
+                    "credentials": {
+                        "destination": "s4hc-tech-user",
+                        "path": "/sap/opu/odata4/sap/api_entprojectprofilecode/srvd_a2x/sap/entprojectprofilecode/0001"
+                    }
                 }
             }
-        },
+        }
     ```
 
     > Note: The *package.json* refers to the destinations *s4hc* and *s4hc-tech-user* that must be created in the consumer SAP BTP subaccount. The destination *s4hc* is used for remote service calls with principal propagation. See the next section for more details.
@@ -195,7 +195,7 @@ You use the SAP S/4HANA Cloud Public Edition OData services for enterprise proje
 2. Enhance the service model of service *PoetrySlamManager* by an association to the remote project in SAP S/4HANA Cloud:
 
     ```javascript
-    // Poetry Slams (combined with remote project using mixin)
+    // Poetry Slams (draft enabled)
     @odata.draft.enabled
     entity PoetrySlams as select from poetrySlamManagerModel.PoetrySlams
         mixin {
@@ -206,23 +206,27 @@ You use the SAP S/4HANA Cloud Public Edition OData services for enterprise proje
 
 3. Enhance the service model of service *PoetrySlamManager* by virtual elements to control the visualization of actions and the coloring of status information:
     ```javascript
-    // Poetry slams (combined with remote project using mixin)
+    // Poetry slams (draft enabled)
     @odata.draft.enabled
-    entity PoetrySlams as select from poetrySlamManagerModel.PoetrySlams
+    entity PoetrySlams                    as
+        select from poetrySlamManagerModel.PoetrySlams
         mixin {
             // S4HC projects: Mix-in of S4HC project data
-            toS4HCProject: Association to RemoteS4HCProject.A_EnterpriseProject on toS4HCProject.Project = $projection.projectID
-        } 
-        into  {
+            toS4HCProject : Association to RemoteS4HCProject.A_EnterpriseProject
+                                on toS4HCProject.Project = $projection.projectID;
+        }
+        into {
+            // Selects all fields of the PoetrySlams domain model,
             *,
-            virtual null as statusCriticality    : Integer @title : '{i18n>statusCriticality}',
-            virtual null as projectSystemName    : String  @title : '{i18n>projectSystemName}' @odata.Type : 'Edm.String',
-
+            maxVisitorsNumber - freeVisitorSeats as bookedSeats              : Integer  @title: '{i18n>bookedSeats}',
+            // Relevant for coloring of status in UI to show criticality
+            virtual null                         as statusCriticality        : Integer  @title: '{i18n>statusCriticality}',
+            virtual null                         as projectSystemName        : String   @title: '{i18n>projectSystemName}'         @odata.Type: 'Edm.String',
             // S4HC projects: visibility of button "Create project in S4HC", code texts
-            virtual null as createS4HCProjectEnabled : Boolean  @title : '{i18n>createS4HCProjectEnabled}'  @odata.Type : 'Edm.Boolean',
+            virtual null                         as createS4HCProjectEnabled : Boolean  @title: '{i18n>createS4HCProjectEnabled}'  @odata.Type: 'Edm.Boolean',
             toS4HCProject,
-            virtual null as projectProfileCodeText : String @title : '{i18n>projectProfile}' @odata.Type : 'Edm.String',
-            virtual null as processingStatusText   : String @title : '{i18n>processingStatus}' @odata.Type : 'Edm.String',
+            virtual null                         as projectProfileCodeText   : String   @title: '{i18n>projectProfile}'            @odata.Type: 'Edm.String',
+            virtual null                         as processingStatusText     : String   @title: '{i18n>processingStatus}'          @odata.Type: 'Edm.String'
         }
     ```
     
@@ -242,45 +246,38 @@ You use the SAP S/4HANA Cloud Public Edition OData services for enterprise proje
 
 1. In SAP Business Application Studio, to extend the authorization annotation of the SAP Cloud Application Programming Model service model by restrictions referring to the remote services, open the file [*poetrySlamManagerServiceAuthorizations.cds*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceAuthorizations.cds) with the authorization annotations.
 
-2. Enhance the authorization model for the service entities *S4HCProjects*, *S4HCEnterpriseProjectElement*, *S4HCEntProjTeamMember*, and *S4HCEntProjEntitlement*:
+2. Enhance the authorization model for the service entities *S4HCProjects*, *S4HCEnterpriseProjectElement*, *S4HCEntProjTeamMember*, *S4HCEntProjEntitlement*, *S4HCProjectsProjectProfileCode*, *S4HCProjectsProcessingStatus*:
     ```javascript
     // S/4 projects: Managers and Administrators can read and create remote projects
-    annotate PoetrySlamManager.S4HCProjects with @(restrict : [
-        {
-            grant : ['*'],
-            to    : 'PoetrySlamFull',
-        }
-    ]);
-    annotate PoetrySlamManager.S4HCEnterpriseProjectElement with @(restrict : [
-        {
-            grant : ['*'],
-            to    : 'PoetrySlamFull',
-        }
-    ]);
-    annotate PoetrySlamManager.S4HCEntProjTeamMember with @(restrict : [
-        {
-            grant : ['*'],
-            to    : 'PoetrySlamFull',
-        }
-    ]);
-    annotate PoetrySlamManager.S4HCEntProjEntitlement with @(restrict : [
-        {
-            grant : ['*'],
-            to    : 'PoetrySlamFull',
-        }
-    ]);
-    annotate PoetrySlamManager.S4HCProjectsProjectProfileCode with @(restrict : [
-        {
-            grant : ['*'],
-            to    : 'PoetrySlamFull',
-        }
-    ]);
-    annotate PoetrySlamManager.S4HCProjectsProcessingStatus with @(restrict : [
-        {
-            grant : ['*'],
-            to    : 'PoetrySlamFull',
-        }
-    ]);
+    annotate PoetrySlamManager.S4HCProjects with @(restrict: [{
+        grant: ['*'],
+        to   : 'PoetrySlamFull'
+    }]);
+
+    annotate PoetrySlamManager.S4HCEnterpriseProjectElement with @(restrict: [{
+        grant: ['*'],
+        to   : 'PoetrySlamFull'
+    }]);
+
+    annotate PoetrySlamManager.S4HCEntProjTeamMember with @(restrict: [{
+        grant: ['*'],
+        to   : 'PoetrySlamFull'
+    }]);
+
+    annotate PoetrySlamManager.S4HCEntProjEntitlement with @(restrict: [{
+        grant: ['*'],
+        to   : 'PoetrySlamFull'
+    }]);
+
+    annotate PoetrySlamManager.S4HCProjectsProjectProfileCode with @(restrict: [{
+        grant: ['*'],
+        to   : 'PoetrySlamFull'
+    }]);
+
+    annotate PoetrySlamManager.S4HCProjectsProcessingStatus with @(restrict: [{
+        grant: ['*'],
+        to   : 'PoetrySlamFull'
+    }]);
     ```
     
 ### Create a File with Reuse Functions for SAP S/4HANA Cloud Public Edition
@@ -308,8 +305,14 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
     // Check connected backend systems
     srv.before("READ", "PoetrySlams", async (req) => {
         // S4HC
-        S4HCIsConnectedIndicator = await destinationUtil.checkDestination(req,"s4hc");  
-        S4HCSystemName           = await destinationUtil.getDestinationDescription(req,"s4hc-url");
+        S4HCIsConnectedIndicator = await destinationUtil.checkDestination(
+            req,
+            's4hc'
+        );
+        S4HCSystemName = await destinationUtil.getDestinationDescription(
+            req,
+            's4hc-url'
+        );
     });
     ```
     > Note: The reuse function *getDestinationDescription* in the file [*destination.js*](../../../tree/main-multi-tenant/srv/util/destination.js) returns the destination description from the SAP BTP consumer subaccount.
@@ -318,14 +321,15 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 
 3.  Set the virtual element *createS4HCProjectEnabled* to control the visualization of the action to create projects dynamically in the for loop of the after-read event of poetry slams and pass on the project system name:
     ```javascript
-    // Update project system name and visibility of the "Create Project in S4HC"-button
     poetrySlam.projectSystemName = poetrySlam.projectSystemName ?? '';
     poetrySlam.processingStatusText = poetrySlam.processingStatusText ?? '';
     poetrySlam.projectProfileCodeText = poetrySlam.projectProfileCodeText ?? '';
     if (poetrySlam.projectID) {
         poetrySlam.createS4HCProjectEnabled = false;   
-        if(poetrySlam.projectSystem == 'S4HC') poetrySlam.projectSystemName = S4HCSystemName;        
-    }else{            
+        if (poetrySlam.projectSystem == 'S4HC') {
+            poetrySlam.projectSystemName = S4HCSystemName;
+        }
+    } else {            
         poetrySlam.createS4HCProjectEnabled = S4HCIsConnectedIndicator;
     }
     ```
@@ -341,8 +345,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
     3. Add two global variables to buffer the status and the name of remote project management systems at the beginning of the file:
     ```javascript
     // Buffer status and name of project management systems
-    let S4HCIsConnectedIndicator;
-    let S4HCSystemName;
+    let S4HCIsConnectedIndicator, S4HCSystemName;
     ```
 
 5. Create a file to check and get the destinations in path */srv/util/destination.js* and add the functions *getDestinationURL*, *checkDestination*, and *getDestinationDescription* from the file [*/srv/util/destination.js*](../../../tree/main-multi-tenant/srv/util/destination.js). 
@@ -359,14 +362,13 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 
 7. Add system message to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant/srv/i18n/messages.properties).
     ```javascript
-    ACTION_CREATE_PROJECT_DRAFT=Projects cannot be created for draft poetry slams
+    ACTION_CREATE_PROJECT_DRAFT = Projects cannot be created for draft poetry slams
 
 8. Expand poetry slams to remote projects in [*/srv/poetrySlamManagerServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js) by filling OData parameter `/PoetrySlams?$expand=toS4HCProject` in the on-read of the *PoetrySlams* entity:
 
     ```javascript
     // Expand poetry slams to remote projects
     srv.on('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
-
         // Read the PoetrySlams instances
         let poetrySlams = await next();
     
@@ -387,7 +389,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
     
     - Enhance annotation of PoetrySlams: 
         ```javascript
-            createS4HCProjectEnabled   @UI.Hidden;
+        createS4HCProjectEnabled   @UI.Hidden;
         ```
     
     - Enhance selection fields:
@@ -396,7 +398,6 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
             number,
             title,
             description,
-            dateTime,
             status_code,
             dateTime,
             projectID,
@@ -423,43 +424,90 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
                 $Type : 'UI.DataField',
                 Value : projectSystem
             },
-            
             // S4HC specific fields
             {
-                $Type : 'UI.DataField',
-                Label : '{i18n>projectDescription}',
-                Value : toS4HCProject.ProjectDescription,
-                @UI.Hidden : { $edmJson : { $If : [ { $Eq : [ {$Path : 'projectSystem'}, 'S4HC' ] }, false, true ] } }
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>projectDescription}',
+                Value                  : toS4HCProject.ProjectDescription,
+                @UI.Hidden             : {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'S4HC'
+                    ]},
+                    false,
+                    true
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
             },
             {
-                $Type : 'UI.DataField',
-                Label : '{i18n>projectProfile}',
-                Value : projectProfileCodeText,
-                @UI.Hidden : { $edmJson : { $If : [ { $Eq : [ {$Path : 'projectSystem'}, 'S4HC' ] }, false, true ] } }
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>projectProfile}',
+                Value                  : projectProfileCodeText,
+                @UI.Hidden             : {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'S4HC'
+                    ]},
+                    false,
+                    true
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
             },
             {
-                $Type : 'UI.DataField',
-                Label : '{i18n>responsibleCostCenter}',
-                Value : toS4HCProject.ResponsibleCostCenter,
-                @UI.Hidden : { $edmJson : { $If : [ { $Eq : [ {$Path : 'projectSystem'}, 'S4HC' ] }, false, true ] } }
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>responsibleCostCenter}',
+                Value                  : toS4HCProject.ResponsibleCostCenter,
+                @UI.Hidden             : {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'S4HC'
+                    ]},
+                    false,
+                    true
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
             },
             {
-                $Type : 'UI.DataField',
-                Label : '{i18n>processingStatus}',
-                Value : processingStatusText,
-                @UI.Hidden : { $edmJson : { $If : [ { $Eq : [ {$Path : 'projectSystem'}, 'S4HC' ] }, false, true ] } }
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>processingStatus}',
+                Value                  : processingStatusText,
+                @UI.Hidden             : {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'S4HC'
+                    ]},
+                    false,
+                    true
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
             },
             {
-                $Type : 'UI.DataField',
-                Label : '{i18n>projectStartDateTime}',
-                Value : toS4HCProject.ProjectStartDate,
-                @UI.Hidden : { $edmJson : { $If : [ { $Eq : [ {$Path : 'projectSystem'}, 'S4HC' ] }, false, true ] } }
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>projectStartDateTime}',
+                Value                  : toS4HCProject.ProjectStartDate,
+                @UI.Hidden             : {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'S4HC'
+                    ]},
+                    false,
+                    true
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
             },
             {
-                $Type : 'UI.DataField',
-                Label : '{i18n>projectEndDateTime}',
-                Value : toS4HCProject.ProjectEndDate,
-                @UI.Hidden : { $edmJson : { $If : [ { $Eq : [ {$Path : 'projectSystem'}, 'S4HC' ] }, false, true ] } }
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>projectEndDateTime}',
+                Value                  : toS4HCProject.ProjectEndDate,
+                @UI.Hidden             : {$edmJson: {$If: [
+                    {$Eq: [
+                        {$Path: 'projectSystem'},
+                        'S4HC'
+                    ]},
+                    false,
+                    true
+                ]}},
+                ![@Common.FieldControl]: #ReadOnly
             }
         ]}
         ```
@@ -467,21 +515,26 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 3. Add a button to the identification area:
     ```javascript
     {
-        $Type  : 'UI.DataFieldForAction',
-        Label  : '{i18n>createS4HCProject}',
-        Action : 'PoetrySlamManager.createS4HCProject',            
-        @UI.Hidden : { $edmJson : 
-            { $If : 
-                [
-                    { $Eq : [ {$Path : 'createS4HCProjectEnabled'}, false ] },
-                    true,
-                    false
-                ]
-            }   
-        }
+        $Type        : 'UI.DataFieldForAction',
+        Label        : '{i18n>createS4HCProject}',
+        Action       : 'PoetrySlamManager.createS4HCProject',
+        ![@UI.Hidden]: {$edmJson: {$If: [
+            {$And: [
+                {$Eq: [
+                    {$Path: 'createS4HCProjectEnabled'},
+                    true
+                ]},
+                {$Eq: [
+                    {$Path: 'IsActiveEntity'},
+                    true
+                ]}
+            ]},
+            false,
+            true
+        ]}}
     }
     ```
-    > Note: You dynamically control the visibility of the *Create Project in S4HC* button based on the value of the *createS4HCProjectEnabled* transient field.    
+    > Note: You dynamically control the visibility of the *Create Project in S4 HANA Cloud* button based on the value of the *createS4HCProjectEnabled* transient field.    
 
 4. To edit language-dependent labels in the file [i18n.properties](../../../tree/main-multi-tenant/db/i18n/i18n.properties), in the *db* folder, add labels for project fields:
 
@@ -501,7 +554,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
     # -------------------------------------------------------------------------------------
     # Service Actions
 
-    createS4HCProject        = Create Project in S4HC
+    createS4HCProject       = Create Project in S4 HANA Cloud
 
     # -------------------------------------------------------------------------------------
     # Remote Project Elements
@@ -517,7 +570,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
     processingStatus        = Processing Status
     ```        
 
-6. In the web app folder, edit language-dependent labels in the file [*app/poetryslammanger/i18n.properties*](../../../tree/main-multi-tenant/app/poetryslammanger/i18n/i18n.properties). Add a label for facet project data:
+6. In the web app folder, edit language-dependent labels in the file [*app/poetryslammanager/i18n/i18n.properties*](../../../tree/main-multi-tenant/app/poetryslammanager/i18n/i18n.properties). Add a label for facet project data:
 
     ```
     projectData             = Project Data
@@ -531,24 +584,19 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 
     1. Test the *Service Endpoints* for *S4HCProjects*, *S4HCEnterpriseProjectElement*, *S4HCEntProjTeamMember*, *S4HCEntProjEntitlement*, *S4HCProjectsProcessingStatus*, and *S4HCProjectsProjectProfileCode*: The system returns the respective data from SAP S/4HANA Cloud Public Edition (without filtering).
 
-    2. The *Create Project in S4HC* button is dependent on the setup of the destinations. Once the destinations are correctly configured and the application is deployed to SAP BTP Cloud Foundry runtime, the *Create Project in S4HC* button will be active.
-    To test this button locally, in _poetrySlamManagerServiceImplementation.js_, change **_poetrySlam.createByDProjectEnabled = ByDIsConnectedIndicator;_** to  **_poetrySlam.createS4HCProjectEnabled = true;_**. 
+    2. The *Create Project in S4 Hana Cloud* button is dependent on the setup of the destinations. Once the destinations are correctly configured and the application is deployed to SAP BTP Cloud Foundry runtime, the *Create Project in S4 Hana Cloud* button will be active.
+    To test this button locally, in _poetrySlamManagerServiceImplementation.js_, change the value of **S4HCIsConnectedIndicator** to **true**:
 
-            ``javascript
-                poetrySlam.projectSystemName = poetrySlam.projectSystemName ?? '';
-                if (poetrySlam.projectID) {
-                    poetrySlam.createS4HCProjectEnabled = false;
-                    if (poetrySlam.projectSystem == 'S4HC')
-                    poetrySlam.projectSystemName = S4HCSystemName;
-                } else {
-                    poetrySlam.createS4HCProjectEnabled = S4HCIsConnectedIndicator;
-                }
-            ``
-
-    > Note: This change is required as the *S4HCIsConnectedIndicator* value is dependent on the setup of destinations. Destinations only work on a deployed application and cannot be tested locally.
+        ```javascript
+        S4HCIsConnectedIndicator = await destinationUtil.checkDestination(
+            req,
+            's4hc'
+        );
+        ```
+        > Note: This change is required as the *S4HCIsConnectedIndicator* value is dependent on the setup of destinations. Destinations only work on a deployed application and cannot be tested locally.
 
 4. Open the */poetryslammanager/webapp/index.html* web application and open one of the poetry slams. 
-5. Choose *Create Project in S4HC*. The system creates a project in SAP S/4HANA Cloud Public Edition and displays the details in the *Project Details* section.
+5. Choose *Create Project in S4 Hana Cloud*. The system creates a project in SAP S/4HANA Cloud Public Edition and displays the details in the *Project Details* section.
 
 6. After clicking on the project link, the system opens a browser window with the SAP S/4HANA Cloud Public Edition project overview.
 
