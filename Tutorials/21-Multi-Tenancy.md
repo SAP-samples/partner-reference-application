@@ -2,7 +2,7 @@
 
 Multitenancy is the ability to serve multiple tenants through single clusters of microservice instances, while serving the tenants from a single deployment and strictly isolating the tenants' data. This significantly reduces costs and efforts. You can find further information in the [SAP Cloud Application Programming Model documentation on multitenancy](https://cap.cloud.sap/docs/guides/multitenancy). 
 
-In this approach of progressive development from a customer-specific single-tenant application to a multi-customer application, you keep the core of your single-tenant application (as contained in the branch [main-single-tenant](../../../tree/main-single-tenant)) and add changes to enable the deployment as a multi-tenant application (as contained in the branch [main-multi-tenant](../../../tree/main-multi-tenant)). You can easily compare both branches using [git comparison](https://github.tools.sap/erp4sme/partner-reference-application/compare/main-multi-tenant...main-single-tenant). 
+In this approach of progressive development from a customer-specific single-tenant application to a multi-customer application, you keep the core of your single-tenant application (as contained in the branch [main-single-tenant](../../../tree/main-single-tenant)) and add changes to enable the deployment as a multi-tenant application (as contained in the branch [main-multi-tenant](../../../tree/main-multi-tenant)). You can easily compare both branches using [git comparison](../../../compare/main-single-tenant...main-multi-tenant). 
 
 > Note: The comparison contains both the multi-tenant enablement and the enhancement for the integration with different ERP back ends.
 
@@ -354,7 +354,7 @@ In this step, the project deployment configuration is refactored to run a multi-
     
     ```
 
-    x. Remove the modules *poetry-slams-db-deployer*, *poetry-slams-destination-content*, and *poetry-slams-db*. [See git comparison for *mta.yaml*](https://github.tools.sap/erp4sme/partner-reference-application/compare/main-multi-tenant...main-single-tenant).
+    x. Remove the modules *poetry-slams-db-deployer*, *poetry-slams-destination-content*, and *poetry-slams-db*. [See git comparison for *mta.yaml*](../../../compare/main-single-tenant...main-multi-tenant).
 
     > Note: You can check the [mta.yaml of Poetry Slam Manager](../../../tree/main-multi-tenant/mta.yaml) for comparison.
 

@@ -37,7 +37,7 @@ it('ensures the uniqueness of the combination of visitor ID and poetry slam ID',
 
 #### Example of an HTTP API
 
-The HTTP API is used to test the Poetry Slam Manager service in [poetrySlamManagerModel.test.js](../../../tree/main-single-tenant/test/srv/poetrySlamManagerService.test.js). Axios is used as HTTP client. The authorization is set to the user Peter.
+The HTTP API is used to test the Poetry Slam Manager service in [poetrySlamManagerService.test.js](../../../tree/main-single-tenant/test/srv/poetrySlamManagerService.test.js). Axios is used as HTTP client. The authorization is set to the user Peter.
 
 In the following example, all poetry slams are read via OData GET call in the *before* function. In the test, a published poetry slam is selected and the *Cancel* action is executed via OData. It checks if the status is correctly set to *Canceled*. Afterwards, the entry is read and the status code and statusCriticality are checked.
 
@@ -97,7 +97,7 @@ The tests are located in the directory [*app/poetryslammanager/webapp/test*](../
 
 > Note: The directory **app/poetryslammanager/webapp/localService/** was created by the wizard, but it was deleted from this project as there was no usage in this application and, to keep it up-to-date with the service definition, manual adjustments would have been necessary.
 
-> Note: Before you can execute the file **opaTests.qunit.html**, adjust it manually. To run the tests, add `https://sapui5.hana.ondemand.com/<version>` in front of the referenced resources in the file. You can have a look at the [*app/poetryslammanager/webapp/test/integration/opaTests.qunit.html*](../../../tree/main-single-tenant/app/poetryslammanager/webapp/test/integration/opaTest.qunit.html) of the reference application.
+> Note: Before you can execute the file **opaTests.qunit.html**, adjust it manually. To run the tests, add `https://sapui5.hana.ondemand.com/<version>` in front of the referenced resources in the file. You can have a look at the [*app/poetryslammanager/webapp/test/integration/opaTests.qunit.html*](../../../tree/main-single-tenant/app/poetryslammanager/webapp/test/integration/opaTests.qunit.html) of the reference application.
 
 > Note: Before you can execute the file **FirstJourney.js**, adjust it manually. Add  `When.onTheShell.iPressTile('fe-lrop-v4');` in the `opaTest` method after the app is started. You can have a look at the [*app/poetryslammanager/webapp/test/integration/FirstJourney.js*](../../../tree/main-single-tenant/app/poetryslammanager/webapp/test/integration/FirstJourney.js) of the reference application.
 
@@ -133,7 +133,7 @@ For general guidelines on how to connect your local test against services in the
 
 ### Prerequisites
 When this project was created, the SAP HANA Cloud capability was included. As a result, the dependency @sap/cds_hana is listed in the file *package.json* and the
-file *[.hdconfig](../../../tree/main-single-tenant/db/src/.hdconfig)* has been added to the project.
+file *[.hdiconfig](../../../tree/main-single-tenant/db/src/.hdiconfig)* has been added to the project.
 
 Now, you need to provide the credentials to connect to the SAP HANA Cloud database.
 
