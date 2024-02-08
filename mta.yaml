@@ -178,7 +178,6 @@ modules:
       SBF_CATALOG_SUFFIX: ${space} # Make the service broker unique in the deployed space
       SBF_ENABLE_AUDITLOG: true
       SBF_BROKER_CREDENTIALS: '{ "${generated-user}": "${generated-password}" }' # use a random password that is generated during deployment (not that this will change the password with every deplyoment)
-      #SBF_BROKER_CREDENTIALS: '{ "<BrokerUser>": "<plain-broker-password>" }'      # alternatively: use command  "npx hash-broker-password -b" to generate a random password and use the plain password here
       SBF_SERVICE_CONFIG:
         psm-servicebroker:
           extend_xssecurity:
