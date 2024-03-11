@@ -3,11 +3,25 @@
 // Include cds libraries and reuse files
 const cds = require('@sap/cds');
 
+// Constants Definition
+const generatedIDPrefix = 'POETRYSLAM_';
+const generatedIDSuffixPlan = '-PLAN';
+const generatedIDSuffixExe = '-EXE';
+const S4HC_DESTINATION = 's4hc';
+const S4HC_DESTINATION_URL = 's4hc-url';
+const S4HC_PROJECT_SYSTEM = 'S4HC';
+
+// Project data for SAP S/4HANA Cloud; needs to be adopted according to SAP S/4HANA Cloud configuration
+const responsibleCostCenter = '10101101';
+const profitCenter = '9900000000';
+const projectProfileCode = 'YP03';
+const projectCurrency = 'EUR';
+
 // ----------------------------------------------------------------------------
-// S4HC specific reuse functions
+// SAP S/4HANA Cloud specific reuse functions
 // ----------------------------------------------------------------------------
 
-// Delegate OData requests to remote S4HC project entities
+// Delegate OData requests to remote SAP S/4HANA Cloud project entities
 async function delegateODataRequests(req, remoteService) {
   try {
     const s4hcProject = await cds.connect.to(remoteService);
@@ -17,7 +31,7 @@ async function delegateODataRequests(req, remoteService) {
   }
 }
 
-// Return json-payload to create S4HC projects
+// Return json-payload to create SAP S/4HANA Cloud projects
 async function projectDataRecord(
   poetrySlamIdentifier,
   poetrySlamTitle,
@@ -25,9 +39,9 @@ async function projectDataRecord(
 ) {
   try {
     // Set project ID with pattern PRA-{{poetrySlam identifier}}
-    const generatedID = 'POETRYSLAM_' + poetrySlamIdentifier;
-    const generatedPLANID = generatedID + '-PLAN';
-    const generatedEXEID = generatedID + '-EXE';
+    const generatedID = generatedIDPrefix + poetrySlamIdentifier;
+    const generatedPLANID = generatedID + generatedIDSuffixPlan;
+    const generatedEXEID = generatedID + generatedIDSuffixExe;
 
     // Set project start date 30 days before poetrySlam date
     const moment = require('moment');
@@ -57,10 +71,10 @@ async function projectDataRecord(
       ProjectStartDate: generatedStartDate,
       ProjectEndDate: generatedEndDate,
       EntProjectIsConfidential: false,
-      ResponsibleCostCenter: '10101101',
-      ProfitCenter: '9900000000',
-      ProjectProfileCode: 'YP03',
-      ProjectCurrency: 'EUR',
+      ResponsibleCostCenter: responsibleCostCenter,
+      ProfitCenter: profitCenter,
+      ProjectProfileCode: projectProfileCode,
+      ProjectCurrency: projectCurrency,
       to_EnterpriseProjectElement: [
         {
           ProjectElement: generatedPLANID,
@@ -97,17 +111,20 @@ async function readProject(poetrySlams) {
     let isProjectIDs = false;
     const asArray = (x) => (Array.isArray(x) ? x : [x]);
 
-    // Read Project ID's related to S4HC
+    // Read Project ID's related to SAP S/4HANA Cloud
     let projectIDs = [];
     for (const poetrySlam of asArray(poetrySlams)) {
-      // Check if the Project ID exists in the poetryslam record AND backend ERP is S4HC => then read project information from S4HC
-      if (poetrySlam.projectSystem == 'S4HC' && poetrySlam.projectID) {
+      // Check if the Project ID exists in the poetryslam record AND backend ERP is SAP S/4HANA Cloud => then read project information from SAP S/4HANA Cloud
+      if (
+        poetrySlam.projectSystem == S4HC_PROJECT_SYSTEM &&
+        poetrySlam.projectID
+      ) {
         projectIDs.push(poetrySlam.projectID);
         isProjectIDs = true;
       }
     }
 
-    // Read S4HC projects data
+    // Read SAP S/4HANA Cloud projects data
     if (!isProjectIDs) {
       return poetrySlams;
     }
@@ -127,7 +144,7 @@ async function readProject(poetrySlams) {
     for (const poetrySlam of asArray(poetrySlams)) {
       poetrySlam.toS4HCProject = projectsMap[poetrySlam.projectID];
 
-      // Get Project Profile Code Text from S4HC
+      // Get Project Profile Code Text from SAP S/4HANA Cloud
       const projectProfileCode = poetrySlam.toS4HCProject.ProjectProfileCode;
       const S4HCProjectsProjectProfileCodeRecords =
         await s4hcProjectsProjectProfileCode.run(
@@ -140,7 +157,7 @@ async function readProject(poetrySlams) {
           S4HCProjectsProjectProfileCodeRecord.ProjectProfileCodeText;
       }
 
-      // Get Project Processing Status Text from S4HC
+      // Get Project Processing Status Text from SAP S/4HANA Cloud
       const processingStatus = poetrySlam.toS4HCProject.ProcessingStatus;
       const S4HCProjectsProcessingStatusRecords =
         await s4hcProjectsProcessingStatus.run(
@@ -164,5 +181,8 @@ async function readProject(poetrySlams) {
 module.exports = {
   readProject,
   projectDataRecord,
-  delegateODataRequests
+  delegateODataRequests,
+  S4HC_DESTINATION,
+  S4HC_DESTINATION_URL,
+  S4HC_PROJECT_SYSTEM
 };

@@ -1,0 +1,20 @@
+{
+  "name": "partner-reference-application-mtx",
+  "dependencies": {
+    "@sap/cds": "^7",
+    "@sap/cds-hana": "^2",
+    "@sap/cds-mtxs": "^1.9",
+    "@sap/xssec": "^3",
+    "express": "^4",
+    "passport": ">=0.6.0"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^1"
+  },
+  "scripts": {
+    "start": "cds-serve"
+  },
+  "cds": {
+    "profile": "mtx-sidecar"
+  }
+}
