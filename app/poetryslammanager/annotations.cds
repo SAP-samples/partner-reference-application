@@ -3,7 +3,7 @@ using PoetrySlamManager as service from '../../srv/poetrySlamManagerService';
 annotate service.PoetrySlams with {
     status              @Common.Text: {
         $value                : status.name,
-        ![@UI.TextArrangement]: #TextOnly,
+        ![@UI.TextArrangement]: #TextOnly
     };
     description         @UI.MultiLineText;
     ID                  @UI.Hidden;
@@ -219,7 +219,7 @@ annotate service.PoetrySlams with @(
                 $Type        : 'UI.DataFieldForAction',
                 Action       : 'PoetrySlamManager.publish',
                 Label        : '{i18n>publish}',
-                ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}},
+                ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
 
             },
             {
