@@ -27,19 +27,22 @@ The service API is used to test the Poetry Slam Manager entity model in [poetryS
 In the following example, a visit is selected from the database and is to be recreated. However, the creation must be rejected due to uniqueness of the pair *poetrySlam_ID* and *visitor_ID*. 
 
 ```javascript
-it('ensures the uniqueness of the combination of visitor ID and poetry slam ID', async () => {
-    const { Visits } = db.model.entities;
-    const result = await SELECT.from(Visits).columns('poetrySlam_ID', 'visitor_ID', 'artistIndicator').limit(1); 
+it('should ensure the uniquness of combination of visitor ID and poetry slam ID', async () => {
+  const { Visits } = db.model.entities;
+  const result = await SELECT.one
+    .from(Visits)
+    .columns('parent_ID', 'visitor_ID');
 
-    expect(db.create(Visits).entries(result[0])).to.be.rejected;
+  // Asynchronous calls require a return to be checked correclty
+  return expect(db.create(Visits).entries(result)).to.rejected;
 });
 ```
 
 #### Example of an HTTP API
 
-The HTTP API is used to test the Poetry Slam Manager service in [poetrySlamManagerService.test.js](../../../tree/main-single-tenant/test/srv/poetrySlamManagerService.test.js). Axios is used as HTTP client. The authorization is set to the user Peter.
+The HTTP API is used to test the Poetry Slam Manager service. There is one test file for each entity and a file to test the OData function of the service. Axios is used as HTTP client in the tests. The authorization is set to the user Peter.
 
-In the following example, all poetry slams are read via OData GET call in the *before* function. In the test, a published poetry slam is selected and the *Cancel* action is executed via OData. It checks if the status is correctly set to *Canceled*. Afterwards, the entry is read and the status code and statusCriticality are checked.
+In the following example, all poetry slams are read via OData GET call in the *before* function. In the test, a published poetry slam is selected and the *Cancel* action is executed via OData. It checks if the status is correctly set to *Canceled*. Afterwards, the entry is read and the status code and statusCriticality are checked. You can find the tests in [poetrySlamManagerService-PoetrySlams.test.js](../../../tree/main-single-tenant/test/srv/poetrySlamManagerService-PoetrySlams.test.js).
 
 ```javascript
 
@@ -49,27 +52,44 @@ axios.defaults.auth = { username: 'peter', password: 'welcome' };
 
 describe('Poetryslams in PoetrySlamManager Service', () => {
     let poetrySlams;
-    before( async () => {
-        // Read all poetry slams for usage in the tests
-        poetrySlams = await GET (`/odata/v4/poetryslammanager/PoetrySlams` , {
+
+    before(async () => {
+      // Connect to the database of the current project
+      db = await cds.connect.to('db');
+      expect(db).to.exist;
+
+      test.data.reset;
+
+      // Read all poetry slams for usage in the tests
+      poetrySlams = await GET(`/odata/v4/poetryslammanager/PoetrySlams`, {
         params: { $select: `ID,status_code,statusCriticality` }
-        });
-        expect (poetrySlams.data.value.length).to.greaterThan(0);
+      });
+      expect(poetrySlams.data.value.length).to.greaterThan(0);
+    });
+
+    beforeEach(async () => {
+      await test.data.reset();
     });
 
     it('changes the status of poetryslams during action cancel on published entities', async () => {
-        const id = poetrySlams.data.value.filter((poetrySlam) => poetrySlam.status_code === 2)[0].ID;
+      const id = poetrySlams.data.value.find(
+        (poetrySlam) => poetrySlam.status_code === poetrySlamStatusCode.published
+      ).ID;
 
-        const actionResult = await ACTION (`/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=true)`, "cancel");
-        expect (actionResult.data.status_code).to.eql(4);
-    
-        // Read the status of the poetry slam and check if it was not changed
-        const result =  await GET (`/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=true)?`, {
-        params: { $select: `ID,status_code,statusCriticality` }
-        });
-    
-        expect (result.data.status_code).to.eql(4);
-        expect (result.data.statusCriticality).to.eql(1);
+      const actionResult = await ACTION(
+        `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=true)`,
+        'cancel'
+      );
+      expect(actionResult.data.status_code).to.eql(poetrySlamStatusCode.canceled);
+
+      // Read the status of the poetry slam and check that it was canceled
+      const result = await GET(
+        `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=true)`,
+        {
+          params: { $select: `ID,status_code` }
+        }
+      );
+      expect(result.data.status_code).to.eql(poetrySlamStatusCode.canceled);
     });
 });
 ```
@@ -152,20 +172,20 @@ Now, you need to provide the credentials to connect to the SAP HANA Cloud databa
 
 3. Adapt the *package.json* file with new CDS profile hybrid:
 
-```json
- "cds": {
-    "requires": {
-      "db": {
-        "kind": "sql"
-      },
-      "[hybrid]": {
+    ```json
+    "cds": {
+      "requires": {
         "db": {
-          "kind": "hana"
+          "kind": "sql"
+        },
+        "[hybrid]": {
+          "db": {
+            "kind": "hana"
+          }
         }
       }
     }
-  }
-```
+    ```
 
 4. To run your application using the SAP HANA Cloud database, execute: `cds serve --profile hybrid`.
 5. To run your unit tests, execute: `cds bind --exec --profile hybrid npm test`.

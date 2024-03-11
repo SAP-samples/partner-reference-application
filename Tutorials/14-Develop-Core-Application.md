@@ -95,14 +95,14 @@ Data can be calculated and enriched in the service. Poetry Slam Manager includes
 - An example of a calculation of a stored entity is the attribute *freeVisitorSeats*, which is calculated based on the visits that were created and booked. 
 - A [virtual element](https://cap.cloud.sap/docs/cds/cdl#virtual-elements) is shown with the *statusCriticality* attribute, which is read-only and calculated after the read event of the PoetrySlam entity.
 
-```cds
+  ```cds
     entity PoetrySlams as select from poetrySlamManagerModel.PoetrySlams  {
-        ...
-        maxVisitorsNumber - freeVisitorSeats as bookedSeats : Integer @title : '{i18n>bookedSeats}', //calculated element
-        // Relevant for color-coding the status on the UI to show priority
-        virtual null as statusCriticality : Integer, 
+      ...
+      maxVisitorsNumber - freeVisitorSeats as bookedSeats : Integer @title : '{i18n>bookedSeats}', //calculated element
+      // Relevant for color-coding the status on the UI to show priority
+      virtual null as statusCriticality : Integer, 
     }
-```
+  ```
 
 ### Status Handling
 A status is defined as a codelist with code, text, and a description. The values of the codelist can be added by [providing initial data](https://cap.cloud.sap/docs/guides/databases#providing-initial-data). As a reference, you can use the [PoetrySlamStatusCodes](../../../tree/main-single-tenant/db/data).
@@ -189,25 +189,25 @@ You can find further details in the [documentation on the sandbox environment fo
 Replace the SAPUI5 bootstraping script with a script to configure an SAPUI5 shell [setShellConfig.js](../../../tree/main-single-tenant/app/poetryslammanager/webapp/util/setShellConfig.js), to load the sandbox and SAPUI5. Additionally, the shell needs to be rendered and placed on the HTML body as soon as the SAPUI5 core is initialized ([*setContent.js*](../../../tree/main-single-tenant/app/poetryslammanager/webapp/util/setContent.js)).
 
 ```html
-    <script type="text/javascript" src="util/setShellConfig.js"></script>
+<script type="text/javascript" src="util/setShellConfig.js"></script>
 
-    <script src="https://sapui5.hana.ondemand.com/1.120.4/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
-    <script
-      src="https://sapui5.hana.ondemand.com/1.120.4/resources/sap-ui-core.js"
-      data-sap-ui-libs="sap.m, sap.ushell, sap.fe.templates, sap.uxap"
-      data-sap-ui-compatVersion="edge"
-      data-sap-ui-theme="sap_horizon"
-      data-sap-ui-frameOptions="allow"
-      data-sap-ui-bindingSyntax="complex"
-      data-sap-ui-async="true"
-    ></script>
-    <script type="text/javascript" src="util/setContent.js"></script>
+<script src="https://sapui5.hana.ondemand.com/1.120.4/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
+<script
+    src="https://sapui5.hana.ondemand.com/1.120.4/resources/sap-ui-core.js"
+    data-sap-ui-libs="sap.m, sap.ushell, sap.fe.templates, sap.uxap"
+    data-sap-ui-compatVersion="edge"
+    data-sap-ui-theme="sap_horizon"
+    data-sap-ui-frameOptions="allow"
+    data-sap-ui-bindingSyntax="complex"
+    data-sap-ui-async="true"
+></script>
+<script type="text/javascript" src="util/setContent.js"></script>
 ```
 
 Additionally, replace the body tag to remove the component loading.
 
 ```html
-  <body class="sapUiBody" id="content"></body>
+<body class="sapUiBody" id="content"></body>
 ```
 
 #### Autoload Data
@@ -237,23 +237,35 @@ To implement a color-coding system for specific columns on the user interface, a
 - Field definition in [*poetrySlamManagerService.cds*](../../../tree/main-single-tenant/srv/poetrySlamManagerService.cds)
 - Logic to fill it in [*poetrySlamManagerServiceImplementation.js*](../../../tree/main-single-tenant/srv/poetrySlamManagerServiceImplementation.js)
     ```javascript
-    const status = poetrySlam.status?.code || poetrySlam.status_code;
-    switch (status) {
-        case codes.poetrySlamStatusCode.inPreparation:
+    for (const poetrySlam of convertToArray(data)) {
+        const status = poetrySlam.status?.code || poetrySlam.status_code;
+        // Set status colour code
+        switch (status) {
+            case codes.poetrySlamStatusCode.inPreparation:
             poetrySlam.statusCriticality = codes.color.grey; // New poetry slams are grey
             break;
-        case codes.poetrySlamStatusCode.published:
+            case codes.poetrySlamStatusCode.published:
             poetrySlam.statusCriticality = codes.color.green; // Published poetry slams are green
             break;
-        case codes.poetrySlamStatusCode.booked:
-            poetrySlam.statusCriticality = codes.color.yellow; // Booked poetry slams are yellow
+            case codes.poetrySlamStatusCode.booked:
+            poetrySlam.statusCriticality = codes.color.yellow; // Fully booked poetry slams are yellow
             break;
-        case codes.poetrySlamStatusCode.canceled:
+            case codes.poetrySlamStatusCode.canceled:
             poetrySlam.statusCriticality = codes.color.red; // Canceled poetry slams are red
             break;
-        default:
+            default:
+            poetrySlam.statusCriticality = null;
+        }
     }
-    
+    ```
+
+-  Add the helper function to convert an object to an array to the beginning of the file (above the module.export).
+
+    ```javascript
+    // Helper function to convert an object to an array
+    function convertToArray(x) {
+        return Array.isArray(x) ? x : [x];
+    }
     ```
 - Entries in the i18n files to set the column headers
 - An entry in the [*annotations.cds*](../../../tree/main-single-tenant/app/poetryslammanager/annotations.cds) to use the field on the user interface
@@ -364,7 +376,7 @@ Additionally, replace the CDS section in the *package.json*. It tells the CDS fr
 For details, refer to the [SAP Cloud Application Programming Model documentation on database constraints](https://cap.cloud.sap/docs/guides/databases#db-constraints).
 
 ```json
- "cds": {
+"cds": {
     "features": {
         "fetch_csrf": true,
         "assert_integrity": "db"
@@ -430,7 +442,8 @@ To keep the project up-to-date, update a few dependencies on a regular basis:
 - Node Modules:
   - package.json
   - app/poetryslammanager/package.json
-  - approuter/package.json (_Only Multi-Tenancy_)
+  - app/package.json (_Only Multi-Tenancy_)
+  - mtx/sidecar/package.json (_Only Multi-Tenancy_)
 - SAPUI5 version:
   - app/poetryslammanager/webapp/manifest.json
   - app/poetryslammanager/webapp/index.html

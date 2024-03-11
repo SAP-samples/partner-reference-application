@@ -5,17 +5,17 @@ The goal is to provide a multi-customer application as a partner-managed applica
 
 As a result of this setup, all customers use shared SAP BTP resources such as SAP BTP Cloud Foundry runtime and the SAP HANA Cloud service. At the same time, SAP BTP multitenancy ensures a clear and secure separation of customer data (by database schemas) and user access management.
 
-<img src="./images/mt_deployment_model.png" width="40%">
+<p align="center">
+  <img src="./images/mt_deployment_model.png" width="40%">
+</p>
 
 
 ## Set Up SAP BTP Consumer Subaccount
 
 To start the provisioning procedure, create an SAP BTP consumer subaccount for a specific customer:
 1. Open the SAP BTP cockpit (use the global account that hosts the provider subaccount of the SAP BTP application).
-2. Create a new *Multi-Environment* subaccount with a name referring to the tenant number or the customer. 
+2. Create a new *Multi-Environment* subaccount with the name `PoetrySlamsMTSubscriber1` (you can use any naming pattern for additional subaccounts to serve additional customers). 
 3. As a provider, choose *Amazon Web Services (AWS)*. 
-
-> Note: In this example, the subaccount is called *Poetry Slams MT Subscriber 1*.
 
 ### Subscribe to the SAP BTP Multi-Tenant Application
 
@@ -71,17 +71,17 @@ In this example, Identity Authentication service user groups are used to assign 
 	
 2. Open the menu item *Groups* under *Users & Authorizations* and add user groups that represent typical user roles. Enter a unique (technical) *Name* and a meaningful *Display Name*, for example:
 
-	| Name                         | Display Name		             	|
+	| Name                         	| Display Name		             	|
 	| :------------------------- 	| :-------------------------		|
-	| `PoetrySlamManager`   		| `Poetry Slam Manager`			|
-	| `PoetrySlamVisitor`             | `Poetry Slam Visitor`              	|
+	| `PoetrySlamManager`   		| `Poetry Slam Manager`				|
+	| `PoetrySlamVisitor`           | `Poetry Slam Visitor`             |
    > Note: To add users to the user group, choose *Add* and select the user from the list of users and save your changes.
 3. In the SAP BTP consumer subaccount, open the menu item *Role Collections* and create the required roles or use existing ones. For each role, add a new user group by selecting the previously configured identity provider and set the name of the *User Group* (using the unique technical name of the user group of the Identity Authentication service). Assign the respective users to the role collection that you want to use the group:
 
 	| Role Collection                   				| User Groups         		|
-	| :---                               				| :---			        |
-	| PoetrySlamManagerRoleCollection 	| Poetry_Slam_Manager 	|				|
-	| PoetrySlamVisitorRoleCollection   	| Poetry_Slam_Visitor   	|				|
+	| :---                               				| :---			        	|
+	| PoetrySlamManagerRoleCollection 					| Poetry_Slam_Manager 		|		
+	| PoetrySlamVisitorRoleCollection   				| Poetry_Slam_Visitor   	|	
 
 4. To test the login using single sign-on, launch the SAP BTP application and select the Identity Authentication service tenant as IdP. 
 

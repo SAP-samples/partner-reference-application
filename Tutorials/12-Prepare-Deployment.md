@@ -4,7 +4,7 @@ When you want to deploy your SAP BTP application to a subaccount, first, you nee
 
 ## Set Up the SAP BTP Subaccount
 
-1. In the SAP BTP cockpit (global account), create a subaccount to host the application runtime (in this example, the data center of *Amazon Web Services (AWS)* and *Europe (Frankfurt)* as region are used). To keep things simple, you can reuse the subaccount used for development.
+1. In the SAP BTP cockpit (global account), create a subaccount to host the application runtime (in this example, the data center of *Amazon Web Services (AWS)* and *Europe (Frankfurt)* as region are used).
 
 2. Optional: Assign the subaccount to a directory as a parent.
 
@@ -15,12 +15,16 @@ When you want to deploy your SAP BTP application to a subaccount, first, you nee
 	- SAP Build Work Zone 
 
 4. Open *Entity Assignments* and assign quotas for the following entities to your subaccount you want to deploy the application to: 
-	- *Foundry runtime* (3 units of application runtime)
+	- *SAP BTP Cloud Foundry runtime* (3 units of application runtime)
+    	> Note: If the value help doesn't offer an item referring to *Cloud Foundry*, select *Application runtime*. Save your changes and the name of the list item changes to *Cloud Foundry*. In your Test, Develop, Deploy (TDD) environment, this entitlement may already have been added by default.
+		- As *Plan*, select *standard-edition (Application)*.
 	- *SAP HANA Cloud* (1 unit)
+		- As *Plan*, select *hana*.
 	- *SAP HANA Schemas & HDI Containers*
-	- *SAP Build Work Zone* (plan: *standard (Application)*)
+		- As *Plan*, select *hdi-shared*.
+	- *SAP Build Work Zone*
+		- As *Plan*, select *standard (Application)*. 
 
-> Note: If the value help doesn't offer an item referring to *Cloud Foundry*, select *Application runtime*. Save your changes and the name of the list item changes to *Cloud Foundry*. 
 
 ## Enable SAP BTP Cloud Foundry Runtime
 
@@ -30,10 +34,20 @@ When you want to deploy your SAP BTP application to a subaccount, first, you nee
 	- As *Plan*, select *standard*.
 	- As *Landscape*, select *cf-eu10*. 
 	- As *Instance Name*, enter `poetryslams`.
-	- As *Org Name*, enter `poetryslams`.
-5. Choose *Create*. 
-6. Choose *Create Space* and enter a name, for example, `runtime` as *Space Name*.
-7. Keep the standard roles and add [Cloud Foundry org members](https://help.sap.com/docs/btp/sap-business-technology-platform/add-org-members-using-cockpit) and [Cloud Foundry space members](https://help.sap.com/docs/btp/sap-business-technology-platform/add-space-members-using-cockpit).
+	- As *Org Name*, enter a name, e.g. abbreviation for you as a partner and the solution you want to host.
+	  > Note: When choosing the org name, make sure that it meets the following requirements: 
+	  > - It must not exceed 12 characters.
+	  > - Use a unique name.
+	  > - Include an element that identifies you as a partner.
+	  > - Use only lower-case letters. 
+	  >
+	  > Here’s why: At a later stage, you will use SAP Custom Domain service to create a server certificate for your application. This certificate will be valid for the application URL, which has the value *{org name}-{space name}-poetry-slams.{domain}*. The certificate requires that this URL doesn’t exceed 64 characters. The domain in the eu10 landscape is *cfapps.eu10-004.hana.ondemand.com*. With a 3-letter name for the space (for example, `app`), this leaves only 12 characters for the org name. At the same time, the org name must be unique and must, therefore, include an element that identifies you as a partner. Also, use only lower-case letters in the org name to avoid routing issues.
+	  >
+	  > For example: For Poetry Slam Manager delivered by SAP, it could be `sap-psm`.
+
+4. Choose *Create*. 
+5. Choose *Create Space* and enter a name, for example, `app` as *Space Name*.
+6. Keep the standard roles and add [Cloud Foundry org members](https://help.sap.com/docs/btp/sap-business-technology-platform/add-org-members-using-cockpit) and [Cloud Foundry space members](https://help.sap.com/docs/btp/sap-business-technology-platform/add-space-members-using-cockpit).
 
 ## Create an SAP HANA Cloud Database
 
