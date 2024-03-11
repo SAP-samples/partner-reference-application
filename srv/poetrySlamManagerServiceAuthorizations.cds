@@ -113,3 +113,9 @@ annotate PoetrySlamManager.S4HCProjectsProcessingStatus with @(restrict: [{
     grant: ['*'],
     to   : 'PoetrySlamFull'
 }]);
+
+// SAP Business One purchase orders: Managers can read and create remote purchase orders
+annotate PoetrySlamManager.B1PurchaseOrder with @(restrict: [{
+    grant: ['*'],
+    to   : 'PoetrySlamFull'
+}]);

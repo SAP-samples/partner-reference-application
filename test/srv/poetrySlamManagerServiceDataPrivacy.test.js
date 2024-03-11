@@ -1,10 +1,8 @@
 // ----------------------------------------------------------------------------
 // Initialization of test
+// CAP Unit Testing: https://cap.cloud.sap/docs/node.js/cds-test?q=cds.test#run
 // ----------------------------------------------------------------------------
 'strict';
-
-// The project's root folder
-const project = __dirname + '/../..';
 
 // Executes an action, like draftActivate, draftEdit or publish
 const ACTION = (url, name, parameters = {}) =>
@@ -12,7 +10,9 @@ const ACTION = (url, name, parameters = {}) =>
 // Adds cds module
 const cds = require('@sap/cds');
 // Defines required CDS functions for testing
-const { expect, GET, POST, PATCH, axios, test } = cds.test(project);
+const { expect, GET, POST, PATCH, axios, test } = cds.test(
+  __dirname + '/../..'
+);
 
 // Authentication for tests; role PoetrySlamManager
 axios.defaults.auth = { username: 'peter', password: 'welcome' };
@@ -90,18 +90,28 @@ describe('personal data audit logging in CRUD', () => {
     );
 
     expect(result.data.maxVisitorsNumber).to.eql(3);
+    expect(_logs.length).to.eql(0);
 
     // Activate the draft
     await POST(
       `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=false)/PoetrySlamManager.draftActivate`,
       {}
     );
+
+    // Audit Log updates of poetry slam and two visits
+    expect(_logs.length).to.eql(3);
+    expect(_logs[0].attributes[0].name).to.eql('modifiedBy');
+    expect(_logs[0].data_subject.role).to.eql('PoetrySlams');
+    expect(_logs[1].attributes[0].name).to.eql('modifiedBy');
+    expect(_logs[1].data_subject.role).to.eql('Visits');
+    expect(_logs[2].attributes[0].name).to.eql('modifiedBy');
+    expect(_logs[2].data_subject.role).to.eql('Visits');
+
     result = await GET(
       `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=true)`
     );
 
     expect(result.data.IsActiveEntity).to.eql(true);
-    // Audit Log for poetry slam and two visits
     expect(_logs.length).to.eql(3);
   });
 

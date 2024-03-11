@@ -16,27 +16,37 @@ service PoetrySlamManager @(
         select from poetrySlamManagerModel.PoetrySlams
         mixin {
             // SAP Business ByDesign projects: Mix-in of SAP Business ByDesign project data
-            toByDProject  : Association to RemoteByDProject.ProjectCollection
-                                on toByDProject.ProjectID = $projection.projectID;
-            // S4HC projects: Mix-in of S4HC project data
-            toS4HCProject : Association to RemoteS4HCProject.A_EnterpriseProject
-                                on toS4HCProject.Project = $projection.projectID;
+            toByDProject      : Association to RemoteByDProject.ProjectCollection
+                                    on toByDProject.ProjectID = $projection.projectID;
+            // SAP S/4HANA Cloud projects: Mix-in of SAP S/4HANA Cloud project data
+            toS4HCProject     : Association to RemoteS4HCProject.A_EnterpriseProject
+                                    on toS4HCProject.Project = $projection.projectID;
+            // SAP Business One purchase orders: Mix-in of SAP Business One Purchase Order Data
+            toB1PurchaseOrder : Association to RemoteB1.PurchaseOrders
+                                    on toB1PurchaseOrder.DocNum = $projection.purchaseOrderID;
         }
         into {
             // Selects all fields of the PoetrySlams domain model,
             *,
-            maxVisitorsNumber - freeVisitorSeats as bookedSeats              : Integer  @title: '{i18n>bookedSeats}',
+            maxVisitorsNumber - freeVisitorSeats as bookedSeats                  : Integer @title     : '{i18n>bookedSeats}',
             // Relevant for coloring of status in UI to show criticality
-            virtual null                         as statusCriticality        : Integer  @title: '{i18n>statusCriticality}',
-            virtual null                         as projectSystemName        : String   @title: '{i18n>projectSystemName}'         @odata.Type: 'Edm.String',
-            // SAP Business ByDesign projects: visibility of button "Create project in SAP Business ByDesign"
-            virtual null                         as createByDProjectEnabled  : Boolean  @title: '{i18n>createByDProjectEnabled}'   @odata.Type: 'Edm.Boolean',
+            virtual null                         as statusCriticality            : Integer @title     : '{i18n>statusCriticality}',
+            virtual null                         as projectSystemName            : String  @title     : '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
+            // SAP Business ByDesign projects: visibility of button "Create Project in SAP Business ByDesign"
+            virtual null                         as createByDProjectEnabled      : Boolean @odata.Type: 'Edm.Boolean',
+            virtual null                         as isByD                        : Boolean @odata.Type: 'Edm.Boolean',
             toByDProject,
-            // S4HC projects: visibility of button "Create project in S4HC", code texts
-            virtual null                         as createS4HCProjectEnabled : Boolean  @title: '{i18n>createS4HCProjectEnabled}'  @odata.Type: 'Edm.Boolean',
+            // SAP S/4HANA Cloud projects: visibility of button "Create Project in SAP S/4HANA Cloud", code texts
+            virtual null                         as createS4HCProjectEnabled     : Boolean @odata.Type: 'Edm.Boolean',
+            virtual null                         as projectProfileCodeText       : String  @title     : '{i18n>projectProfile}'           @odata.Type: 'Edm.String',
+            virtual null                         as processingStatusText         : String  @title     : '{i18n>processingStatus}'         @odata.Type: 'Edm.String',
+            virtual null                         as isS4HC                       : Boolean @odata.Type: 'Edm.Boolean',
             toS4HCProject,
-            virtual null                         as projectProfileCodeText   : String   @title: '{i18n>projectProfile}'            @odata.Type: 'Edm.String',
-            virtual null                         as processingStatusText     : String   @title: '{i18n>processingStatus}'          @odata.Type: 'Edm.String'
+            // SAP Business One purchase order: visibility of button "Create Purchase Order in SAP Business One"
+            virtual null                         as createB1PurchaseOrderEnabled : Boolean @odata.Type: 'Edm.Boolean',
+            virtual null                         as purchaseOrderSystemName      : String  @title     : '{i18n>purchaseOrderSystemName}'  @odata.Type: 'Edm.String',
+            virtual null                         as isB1                         : Boolean @odata.Type: 'Edm.Boolean',
+            toB1PurchaseOrder
         } actions {
             // Action: Cancel
             @(
@@ -48,7 +58,7 @@ service PoetrySlamManager @(
                 // Determines that poetryslam entitiy is used when the action is performed
                 cds.odata.bindingparameter.name: 'poetryslam'
             )
-            action cancel()            returns PoetrySlams;
+            action cancel()                returns PoetrySlams;
 
             // Action: Publish
             @(
@@ -60,19 +70,21 @@ service PoetrySlamManager @(
                 // Determines that poetryslam entitiy is used when the action is performed
                 cds.odata.bindingparameter.name: 'poetryslam'
             )
-            action publish()           returns PoetrySlams;
+            action publish()               returns PoetrySlams;
 
             // SAP Business ByDesign projects: action to create a project in SAP Business ByDesign
             @(
+                // Defines that poetryslam entity is affected and targeted by the action
                 Common.SideEffects             : {TargetEntities: [
                     '_poetryslam',
                     '_poetryslam/toByDProject'
                 ]},
+                // Determines that poetryslam entity is used when the action is performed
                 cds.odata.bindingparameter.name: '_poetryslam'
             )
-            action createByDProject()  returns PoetrySlams;
+            action createByDProject()      returns PoetrySlams;
 
-            // S4HC projects: action to create a project in S4HC
+            // SAP S/4HANA Cloud projects: action to create a project in SAP S/4HANA Cloud
             @(
                 Common.SideEffects             : {TargetEntities: [
                     '_poetryslam',
@@ -80,7 +92,17 @@ service PoetrySlamManager @(
                 ]},
                 cds.odata.bindingparameter.name: '_poetryslam'
             )
-            action createS4HCProject() returns PoetrySlams;
+            action createS4HCProject()     returns PoetrySlams;
+
+            // SAP Business One purchase order: action to create a purchase order in SAP Business One
+            @(
+                Common.SideEffects             : {TargetEntities: [
+                    '_poetryslam',
+                    '_poetryslam/toB1PurchaseOrder'
+                ]},
+                cds.odata.bindingparameter.name: '_poetryslam'
+            )
+            action createB1PurchaseOrder() returns PoetrySlams;
         };
 
     // Visitors
@@ -146,7 +168,7 @@ service PoetrySlamManager @(
 }
 
 // -------------------------------------------------------------------------------
-// Extend service PoetrySlamManager by ByD projects (principal propagation)
+// Extend service PoetrySlamManager by SAP Business ByDesign projects (principal propagation)
 using {byd_khproject as RemoteByDProject} from './external/byd_khproject';
 
 extend service PoetrySlamManager with {
@@ -241,7 +263,7 @@ extend service PoetrySlamManager with {
 
 };
 
-// Extend service PoetrySlamManager by S4HC Projects ProjectProfileCode
+// Extend service PoetrySlamManager by SAP S/4HANA Cloud Projects ProjectProfileCode
 using {S4HC_ENTPROJECTPROCESSINGSTATUS_0001 as RemoteS4HCProjectProcessingStatus} from './external/S4HC_ENTPROJECTPROCESSINGSTATUS_0001';
 
 extend service PoetrySlamManager with {
@@ -252,7 +274,7 @@ extend service PoetrySlamManager with {
         }
 };
 
-// Extend service PoetrySlamManager by S4HC Projects ProcessingStatus
+// Extend service PoetrySlamManager by SAP S/4HANA Cloud Projects ProcessingStatus
 using {S4HC_ENTPROJECTPROFILECODE_0001 as RemoteS4HCProjectProjectProfileCode} from './external/S4HC_ENTPROJECTPROFILECODE_0001';
 
 extend service PoetrySlamManager with {
@@ -262,3 +284,24 @@ extend service PoetrySlamManager with {
                 ProjectProfileCodeText as ProjectProfileCodeText
         }
 };
+
+// -------------------------------------------------------------------------------
+// Extend service PoetrySlamManager by SAP Business One Purchase Orders
+
+using {b1_sbs_v2 as RemoteB1} from './external/b1_sbs_v2';
+
+extend service PoetrySlamManager with {
+    entity B1PurchaseOrder                as
+        projection on RemoteB1.PurchaseOrders {
+            key DocEntry     as DocEntry,
+                DocNum       as DocNum,
+                DocType      as DocType,
+                DocDate      as DocDate,
+                DocDueDate   as DocDueDate,
+                CreationDate as CreationDate,
+                CardCode     as CardCode,
+                CardName     as CardName,
+                DocTotal     as DocTotal,
+                DocCurrency  as DocCurrency
+        }
+}

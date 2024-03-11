@@ -14,7 +14,7 @@
 |**Application Title**<br>Poetry Slam Manager|
 |**Namespace**<br>application|
 |**UI5 Theme**<br>sap_horizon|
-|**UI5 Version**<br>1.120.4|
+|**UI5 Version**<br>1.120.7|
 |**Enable Code Assist Libraries**<br>False|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|
