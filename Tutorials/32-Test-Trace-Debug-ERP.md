@@ -40,19 +40,11 @@ You can manually test the application on your local machine.
 2. Run the command `cds watch` or `cds watch profile --development` on the command line interface. This will start a Node.js server including the web application.
 
 ## Create Action
-The *Create Project* button is dependent on the setup of the destinations. Once the destinations are correctly
-configured and the app is deployed to SAP BTP Cloud Foundry runtime, the button will be active. 
+The *Create Project* button is dependent on the setup of the destinations. Once the destinations are correctly configured and the app is deployed to SAP BTP Cloud Foundry runtime, the button will be active. 
 
-To test the button locally, change the value in [*poetrySlamManagerServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js).
+To test the button locally, make sure that the visibility of the button is independent from the destination in [*poetrySlamManagerServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js).
 
-```javascript
-        poetrySlam.createByDProjectEnabled = ByDIsConnectedIndicator;
-        poetrySlam.createByDProjectEnabled = S4HCIsConnectedIndicator;
-```
-
-Change the *IsConnectedIndicator* values to `true`, for example:
-
-**_poetrySlam.createByDProjectEnabled = ByDIsConnectedIndicator;_** change to  **_poetrySlam.createByDProjectEnabled = true;_**
+Change the *IsConnectedIndicator* value of the ERP system you want to test to *true*, for example, by adding the following line before the return statement in the *on-READ* event of the *PoetrySlams* entity: **ByDIsConnectedIndicator = true;**
 
 > Note: Change this value because the *Indicator* value is dependent on the setup of destinations. Destinations only work on a deployed app and cannot be tested locally.
 

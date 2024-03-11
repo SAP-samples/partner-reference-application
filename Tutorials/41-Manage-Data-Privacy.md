@@ -61,11 +61,11 @@ The following section describes how you enhance the **main-multi-tenant** branch
     requires:
     - name: poetry-slams-auditlog
 
-    - name: poetry-slams-mtx-srv
+    - name: poetry-slams-mtx
     requires:
     - name: poetry-slams-auditlog
     
-    - name: poetry-slams-approuter
+    - name: poetry-slams
     requires:
     - name: poetry-slams-auditlog
 
@@ -87,7 +87,7 @@ The following section describes how you enhance the **main-multi-tenant** branch
 2. Run the command `npm install` in your project root folder to install the audit log npm module. 
 
 3. Build and deploy the application. As a result, an SAP Audit Log service instance named *poetry-slams-auditlog* has been created.
-    > Note: For detailed instructions on how to deploy, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](22-Multi-Tenancy-Deployment.md#build-and-deploy-the-multi-tenant-application).
+    > Note: For detailed instructions on how to deploy, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
 
 4. Open the SAP BTP cockpit of the consumer subaccount and add the required entitlement:
     *SAP Audit Log Viewer Service* with the *free (Application)* plan to view audit logs of this subaccount.

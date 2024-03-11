@@ -26,7 +26,7 @@ In SAP Business ByDesign, create the *khproject* custom OData service:
 In this section, you learn how to import the SAP Business ByDesign OData service as a "remote service" into your SAP Cloud Application Programming Model (CAP) project and how to use the OData service to create SAP Business ByDesign projects to plan and run poetry slam events.
 
 ### Import SAP Business ByDesign OData Service
-The SAP Business ByDesign OData service is consumed by using a destination. SAP Cloud Application Programming Model uses an one-to-one binding of remote services and destinations. To propagate the logged-in business user to SAP Business ByDesign, an OAuth 2.0 SAML Bearer authentication is used. This way, the SAP Business ByDesign OData service for projects considers the user authorizations.
+The SAP Business ByDesign OData service is consumed by using a destination. SAP Cloud Application Programming Model uses a one-to-one binding of remote services and destinations. To propagate the logged-in business user to SAP Business ByDesign, an OAuth 2.0 SAML Bearer authentication is used. This way, the SAP Business ByDesign OData service for projects considers the user authorizations.
 
 1. Run the $metadata URL of the newly added SAP Business ByDesign OData service in a browser window or Postman: https://{{ByDTenantHostname}}/sap/byd/odata/cust/v1/khproject/$metadata?sap-label=true&sap-language=en. 
 
@@ -53,15 +53,15 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 1. Enhance the entity *PoetrySlams* by the following elements:
     ```javascript
-    projectID               : String;
-    projectObjectID         : String;
-    projectURL              : String;
-    projectSystem           : String;  
+    projectID       : String;
+    projectObjectID : String;
+    projectURL      : String;
+    projectSystem   : String;  
     ```  
 
 2. Enhance the annotations of entity *PoetrySlams* by the following elements:
     ```javascript
-    projectID           @title: '{i18n>projectID}'          @readonly;
+    projectID           @title: '{i18n>projectID}';
     projectObjectID     @title: '{i18n>projectObjectID}'    @readonly;
     projectURL          @title: '{i18n>projectURL}'         @readonly;
     projectSystem       @title: '{i18n>projectSystem}'      @readonly;
@@ -73,8 +73,6 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     projectObjectID         = Project UUID
     projectURL              = Project URL
     projectSystem           = Project System Type
-    projectSystemName       = Project System Name
-   
     ```
      > In the reference example, the [*/db/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/db/i18n/i18n_de.properties) file with the German texts are available, too. You can take them over accordingly.
   
@@ -125,18 +123,19 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     };
     ```
     
-2. Enhance the service model of service *PoetrySlamManager* by an association to the remote project in SAP Business ByDesign:
+2. Enhance the service model of the service *PoetrySlamManager* by an association to the remote project in SAP Business ByDesign:
     ```javascript
     // Poetry Slams (draft enabled)
     @odata.draft.enabled
     entity PoetrySlams as select from poetrySlamManagerModel.PoetrySlams
         mixin {
             // SAP Business ByDesign projects: Mix-in of SAP Business ByDesign project data
-            toByDProject: Association to RemoteByDProject.ProjectCollection on toByDProject.ProjectID = $projection.projectID
+            toByDProject      : Association to RemoteByDProject.ProjectCollection
+                                    on toByDProject.ProjectID = $projection.projectID;
         } 
     ```
 
-3. Enhance the service model of service *PoetrySlamManager* by virtual elements to pass on the name of the ERP system from the destination to the UI, and the visualization of actions:
+3. Enhance the service model of the service *PoetrySlamManager* by virtual elements to pass on the name of the ERP system from the destination to the UI, and the visualization of actions:
     ```javascript
     // Poetry Slams (draft enabled)
     @odata.draft.enabled
@@ -150,27 +149,30 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
         into {
             // Selects all fields of the PoetrySlams domain model,
             *,
-            maxVisitorsNumber - freeVisitorSeats as bookedSeats             : Integer  @title: '{i18n>bookedSeats}',
+            maxVisitorsNumber - freeVisitorSeats as bookedSeats             : Integer  @title:      '{i18n>bookedSeats}',
             // Relevant for coloring of status in UI to show criticality
-            virtual null                         as statusCriticality       : Integer  @title: '{i18n>statusCriticality}',
-            virtual null                         as projectSystemName       : String   @title: '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
-            // SAP Business ByDesign projects: visibility of button "Create project in SAP Business ByDesign"
-            virtual null                         as createByDProjectEnabled : Boolean  @title: '{i18n>createByDProjectEnabled}'  @odata.Type: 'Edm.Boolean',
+            virtual null                         as statusCriticality       : Integer  @title:      '{i18n>statusCriticality}',
+            virtual null                         as projectSystemName       : String   @title:      '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
+            // SAP Business ByDesign projects: visibility of button "Create Project in SAP Business ByDesign"
+            virtual null                         as createByDProjectEnabled : Boolean  @title:      '{i18n>createByDProjectEnabled}'  @odata.Type: 'Edm.Boolean',
+            virtual null                         as isByD                   : Boolean  @odata.Type: 'Edm.Boolean',
             toByDProject
         }
     ```
     
-4. Enhance the service model of service *PoetrySlamManager* by an action to create remote projects:
+4. Enhance the service model of the service *PoetrySlamManager* by an action to create remote projects:
     ```javascript
     // SAP Business ByDesign projects: action to create a project in SAP Business ByDesign
     @(
+        // Defines that poetryslam entity is affected and targeted by the action
         Common.SideEffects             : {TargetEntities: [
             '_poetryslam',
             '_poetryslam/toByDProject'
         ]},
+        // Determines that poetryslam entity is used when the action is performed
         cds.odata.bindingparameter.name: '_poetryslam'
     )
-    action createByDProject() returns PoetrySlams;
+    action createByDProject()      returns PoetrySlams;
     ```
     > Note: The side effect annotation refreshes the project data right after executing the action.
 
@@ -178,7 +180,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 1. To extend the authorization annotation of the SAP Cloud Application Programming Model service model by restrictions referring to the remote services, open the file [*/srv/poetrySlamManagerServiceAuthorizations.cds*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceAuthorizations.cds) with the authorization annotations.
 
-2. Enhance the authorization model for the service entities *ByDProjects*, *ByDProjectSummaryTasks* and *ByDProjectTasks*.
+2. Enhance the authorization model for the service entities *ByDProjects*, *ByDProjectSummaryTasks*, and *ByDProjectTasks*.
 
     ```javascript
     // SAP Business ByDesign projects: Managers can read and create remote projects
@@ -208,23 +210,25 @@ Some reuse functions specific to SAP Business ByDesign are defined in a separate
 
 Enhance the implementation of the SAP Cloud Application Programming Model services in the file [*/srv/poetrySlamManagerServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js) to create and read SAP Business ByDesign project data using the remote SAP Business ByDesign OData service. 
 
-1. Delegate requests to the remote OData service. Therefore, copy the on-READ, on-CREATE, on-UPDATE, and on-DELETE methods of the *ByDProjects*, *ByDProjectSummaryTasks*, and *ByDProjectTasks* from the [service implementations (refer to the end of the file)](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js).
+1. Delegate requests to the remote OData service. Therefore, copy the on-READ, on-CREATE, on-UPDATE, and on-DELETE methods of *ByDProjects*, *ByDProjectSummaryTasks*, and *ByDProjectTasks* from the [service implementations (refer to the end of the file)](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js).
 
     > Note: Without delegation, the remote entities return the error code 500 with the message: *SQLITE_ERROR: no such table* (local testing).
 
 2. Determine the connected back-end systems.
     ```javascript
-    // Check connected backend systems
+    // Check connected back-end systems
     srv.before('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req) => {
-        // SAP Business ByDesign
+       // SAP Business ByDesign
         ByDIsConnectedIndicator = await destinationUtil.checkDestination(
             req,
-            'byd'
+            connectorByD.BYD_DESTINATION
         );
-        ByDSystemName = await destinationUtil.getDestinationDescription(
-            req,
-            'byd-url'
-        );
+        if (ByDIsConnectedIndicator) {
+            ByDSystemName = await destinationUtil.getDestinationDescription(
+                req,
+                connectorByD.BYD_DESTINATION_URL
+            );
+        }
     });
     ```
 
@@ -233,18 +237,26 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
 3. Set the virtual element `createByDProjectEnabled` to control the visualization of the action to create projects dynamically in the for loop of the after-read event of poetry slams and pass on the project system name:
 
     ```javascript
-    poetrySlam.projectSystemName = poetrySlam.projectSystemName ?? '';
+    [
+        'projectSystemName'
+    ].forEach((item) => {
+        poetrySlam[item] = poetrySlam[item] || '';
+    });
+
+    // Update project system name and visibility of the "Create Project" buttons
     if (poetrySlam.projectID) {
+        const systemNames = { ByD: ByDSystemName };
         poetrySlam.createByDProjectEnabled = false;
-        if (poetrySlam.projectSystem == 'ByD') {
-            poetrySlam.projectSystemName = ByDSystemName;
-        }
-    } else {            
+        poetrySlam.projectSystemName = systemNames[poetrySlam.projectSystem];
+    } else {
         poetrySlam.createByDProjectEnabled = ByDIsConnectedIndicator;
     }
+
+    // Update the back-end system connected indicator used in UI for controlling visibility of UI elements
+    poetrySlam.isByD = ByDIsConnectedIndicator;
     ```
 
-4. Add the implementation of the action *createByDProject* by the following steps: 
+4. Add the implementation of the action *createByDProject*: 
 
     1. Copy the method *createByDProject* from the file [*/srv/poetrySlamManagerServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js) into the implementation.
 
@@ -275,7 +287,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
 
 7. Add the system message to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant/srv/i18n/messages.properties).
     ```javascript
-    ACTION_CREATE_PROJECT_DRAFT = Projects cannot be created for draft poetry slams
+    ACTION_CREATE_PROJECT_DRAFT = Projects cannot be created for draft Poetry Slams.
     ```
 
 8. Expand poetry slams to remote projects in [*/srv/poetrySlamManagerServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js) by filling OData parameter `/PoetrySlams?$expand=toByDProject` in the on-read of the `PoetrySlams` entity:
@@ -285,16 +297,34 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
         // Read the PoetrySlams instances
         let poetrySlams = await next();
 
-        // Check and Read SAP Business ByDesign project related data
+        // Check and read SAP Business ByDesign project related data
         if (ByDIsConnectedIndicator) {
             poetrySlams = await connectorByD.readProject(poetrySlams);
         }
 
-        // Return remote project data
+        // Return remote data
         return poetrySlams;
     });
     ```
     > Note: OData features such as *$expand*, *$filter*, *$orderby*, and so on need to be implemented in the service implementation.
+
+9. Extend the on-update event of the `PoetrySlams` entity with an implementation to clear all project data if the `projectID` is deleted:
+    ```javascript
+    srv.on('UPDATE', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
+        ...
+
+        // Remove all project data if the project id is cleared
+        if (req.data.projectID === '') {
+            req.data.projectID = null;
+            req.data.projectObjectID = null;
+            req.data.projectURL = null;
+            req.data.projectSystem = null;
+            req.data.projectSystemName = null;
+        }
+
+        ...
+    });
+    ```
 
 ### Enhance the Web App to Display SAP Business ByDesign Data 
 
@@ -302,166 +332,106 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
     
     - Annotation of PoetrySlams:
         ```javascript
-        createByDProjectEnabled  @UI.Hidden;
+        projectObjectID              @UI.Hidden;
+        createByDProjectEnabled      @UI.Hidden;
+        isByD                        @UI.Hidden;
         ```
-    
-    - Selection fields:
-        ```javascript
-        SelectionFields : [
-            number,
-            title,
-            description,
-            status_code,
-            dateTime,
-            projectID,
-            projectSystem,
-            projectSystemName      
-        ],
-        ``` 
-
 2. Add a facet *Project Data* to display information from the remote service by following the *toByDProject* association:
     - Add facet:
         ```javascript
         {
-            $Type  : 'UI.CollectionFacet',
-            Label  : '{i18n>projectData}',
-            ID     : 'ProjectData',
-            Facets : [{
-                $Type  : 'UI.ReferenceFacet',
-                Target : ![@UI.FieldGroup#ProjectData],
-                ID     : 'ProjectData'
-            }]
+            $Type        : 'UI.ReferenceFacet',
+            Label        : '{i18n>projectData}',
+            ID           : 'ProjectData',
+            Target       : @UI.FieldGroup #ProjectData,
+            ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'isByD'}}} // Display ProjectData only in case a SAP Business ByDesign Cloud system is connected
         }
         ```
-    - Add a field group *#ProjectData*:         
+    - Add a field group *#ProjectData* with the SAP Business ByDesign specific fields:         
         ```javascript
-        FieldGroup #ProjectData : {Data : [
+        FieldGroup #ProjectData       : {Data: [
             // Project system independend fields:
             {
-                $Type : 'UI.DataFieldWithUrl',
-                Value : projectID,
-                Url   : projectURL
-            },
-                    {
-                $Type : 'UI.DataField',
-                Value : projectSystemName
+                $Type: 'UI.DataFieldWithUrl',
+                Value: projectID,
+                Url  : projectURL
             },
             {
-                $Type : 'UI.DataField',
-                Value : projectSystem
+                $Type: 'UI.DataField',
+                Value: projectSystemName
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: projectSystem
             },
             // SAP Business ByDesign specific fields
             {
-                $Type     : 'UI.DataField',
-                Label     : '{i18n>projectTypeCodeText}',
-                Value     : toByDProject.typeCodeText,
-                @UI.Hidden: {$edmJson: {$If: [
-                    {$Eq: [
-                        {$Path: 'projectSystem'},
-                        'ByD'
-                    ]},
-                    false,
-                    true
-                ]}},
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>projectTypeCodeText}',
+                Value                  : toByDProject.typeCodeText,
+                ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isByD'}}},
                 ![@Common.FieldControl]: #ReadOnly
             },
             {
-                $Type     : 'UI.DataField',
-                Label     : '{i18n>projectStatusCodeText}',
-                Value     : toByDProject.statusCodeText,
-                @UI.Hidden: {$edmJson: {$If: [
-                    {$Eq: [
-                        {$Path: 'projectSystem'},
-                        'ByD'
-                    ]},
-                    false,
-                    true
-                ]}},
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>projectStatusCodeText}',
+                Value                  : toByDProject.statusCodeText,
+                @UI.Hidden             : {$edmJson: {$Not: {$Path: 'isByD'}}},
                 ![@Common.FieldControl]: #ReadOnly
             },
             {
-                $Type     : 'UI.DataField',
-                Label     : '{i18n>projectCostCenter}',
-                Value     : toByDProject.costCenter,
-                @UI.Hidden: {$edmJson: {$If: [
-                    {$Eq: [
-                        {$Path: 'projectSystem'},
-                        'ByD'
-                    ]},
-                    false,
-                    true
-                ]}},
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>projectCostCenter}',
+                Value                  : toByDProject.costCenter,
+                ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isByD'}}},
                 ![@Common.FieldControl]: #ReadOnly
             },
             {
-                $Type     : 'UI.DataField',
-                Label     : '{i18n>projectStartDateTime}',
-                Value     : toByDProject.startDateTime,
-                @UI.Hidden: {$edmJson: {$If: [
-                    {$Eq: [
-                        {$Path: 'projectSystem'},
-                        'ByD'
-                    ]},
-                    false,
-                    true
-                ]}},
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>projectStartDateTime}',
+                Value                  : toByDProject.startDateTime,
+                ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isByD'}}},
                 ![@Common.FieldControl]: #ReadOnly
             },
             {
-                $Type     : 'UI.DataField',
-                Label     : '{i18n>projectEndDateTime}',
-                Value     : toByDProject.endDateTime,
-                @UI.Hidden: {$edmJson: {$If: [
-                    {$Eq: [
-                        {$Path: 'projectSystem'},
-                        'ByD'
-                    ]},
-                    false,
-                    true
-                ]}},
+                $Type                  : 'UI.DataField',
+                Label                  : '{i18n>projectEndDateTime}',
+                Value                  : toByDProject.endDateTime,
+                ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isByD'}}},
                 ![@Common.FieldControl]: #ReadOnly
             }
         ]}
         ```
 
-3. Add a button to the identification area:
+3. Extend the list page with a link to the project:
     ```javascript
+    // Definition of fields shown on the list page / table
+    LineItem                      : [
+        ...,
+        {
+            $Type: 'UI.DataFieldWithUrl',
+            Value: projectID,
+            Url  : projectURL
+        }
+    ]
+    ```
+
+4. Add a button to the identification area:
+    ```javascript
+    // Create a project in the connected SAP Business ByDesign system
     {
         $Type     : 'UI.DataFieldForAction',
         Label     : '{i18n>createByDProject}',
         Action    : 'PoetrySlamManager.createByDProject',
-        @UI.Hidden: {$edmJson: {$If: [
-            {$And: [
-                {$Eq: [
-                    {$Path: 'createByDProjectEnabled'},
-                    true
-                ]},
-                {$Eq: [
-                    {$Path: 'IsActiveEntity'},
-                    true
-                ]}
-            ]},
-            false,
-            true
-        ]}}
+        @UI.Hidden: {$edmJson: {$Not: {$And: [
+            {$Path: 'createByDProjectEnabled'},
+            {$Path: 'IsActiveEntity'}
+        ]}}}
     }
     ```
     > Note: The visibility of the *Create Project in SAP Business ByDesign* button is dynamically controlled based on the value of the *createByDProjectEnabled* transient field, which is calculated in the after read-event of the entity *PoetrySlam*.    
 
-4. To edit language-dependent labels in the file [*/db/i18n/i18n.properties*](../../../tree/main-multi-tenant/db/i18n/i18n.properties), add labels for project fields and the button to create projects:
-    ```
-    # -------------------------------------------------------------------------------------
-    # Remote Project Elements
-
-    projectTypeCodeText     = Project Type
-    projectStatusCodeText   = Project Status
-    projectCostCenter       = Cost Center
-    projectStartDateTime    = Start Date
-    projectEndDateTime      = End Date
-
-    ```   
-
-5. In the *srv* folder, edit language-dependent labels in the file [*i18n.properties*](../../../tree/main-multi-tenant/srv/i18n/i18n.properties). Add labels for project fields and the button to create projects:
+4. In the *srv* folder, edit language-dependent labels in the file [*i18n.properties*](../../../tree/main-multi-tenant/srv/i18n/i18n.properties). Add labels for project fields and the button to create projects:
     ```
     # -------------------------------------------------------------------------------------
     # Service Actions
@@ -482,7 +452,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
     processingStatus        = Processing Status
     ```        
 
-6. In the web app folder, edit language-dependent labels in the file [*app/poetryslammanager/i18n/i18n.properties*](../../../tree/main-multi-tenant/app/poetryslammanager/i18n/i18n.properties). Add a label for facet project data:
+5. In the web app folder, edit language-dependent labels in the file [*app/poetryslammanager/i18n/i18n.properties*](../../../tree/main-multi-tenant/app/poetryslammanager/i18n/i18n.properties). Add a label for facet project data:
 
     ```
     projectData             = Project Data
@@ -565,6 +535,6 @@ Ensure that the CDS feature *fetch_csrf* is set in the file *package.json* to en
 
 ### Deploy the Application
 
-Update your application in the provider subaccount. For detailed instructions, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](22-Multi-Tenancy-Deployment.md#build-and-deploy-the-multi-tenant-application).
+Update your application in the provider subaccount. For detailed instructions, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
 
 > Note: Make sure any local changes have been reverted before deployment.

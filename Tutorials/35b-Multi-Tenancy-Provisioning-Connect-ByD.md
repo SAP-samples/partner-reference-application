@@ -9,7 +9,9 @@ In this section, you integrate Poetry Slam Manager, your SAP Business Technology
     4. Configure single sign-on for SAP Business ByDesign, Poetry Slam Manager, and all SAP BTP admin apps using the same Identity Authentication service tenant as a corporate identity provider (IdP).
 2. Back-channel integration: Create SAP Business ByDesign projects in Poetry Slam Manager using OData APIs with principal propagation.
 
-<img src="./images/ByD_integration_overview.png" width="70%">
+<p align="center">
+  <img src="./images/ByD_integration_overview.png" width="70%">
+</p>
 
 ## Set Up SAP BTP Consumer Subaccount
 
@@ -28,7 +30,7 @@ To start the provisioning procedure, create an SAP BTP consumer subaccount for a
 
 In this tutorial, the Identity Authentication service tenant that is used by the SAP Business ByDesign tenant for authentication is reused.  
 
-Therefore, configure a trust relationship between the SAP BTP consumer subaccount and the Identity Authentication service tenant of SAP Business ByDesign as described in section [Configure Trust Using SAML 2.0](./23-Multi-Tenancy-Provisioning.md).
+Therefore, configure a trust relationship between the SAP BTP consumer subaccount and the Identity Authentication service tenant of SAP Business ByDesign as described in [Configure Trust Using SAML 2.0](./25-Multi-Tenancy-Provisioning.md).
 
 ### Launch the SAP BTP Multi-Tenant Application
 
@@ -177,7 +179,7 @@ As a last step, Poetry Slam Manager and SAP BTP admin applications are added to 
 	
 4. To add the SAP BTP applications to the SAP Business ByDesign Launchpad, in SAP Business ByDesign, open the *Home - My Launchpad* work center view. Go to the *Me Area* in the top shell bar and select *Start Personalization Mode*. Choose the launchpad group that fits your use case best (or create a new group), choose *Add*, and pin the tiles referring to the mashups created above from the mashup gallery to the launchpad. Save your changes and leave the personalization mode.
 
-5. To test the front-end single sign-on, use the single-sign on URL (following the pattern ``https://myXXXXXX-sso.sapbydesign.com/``) and log on using your Identity Authentication service user to open SAP Business ByDesign. Launch the SAP BTP application via the SAP Business ByDesign launchpad. No additional authentication is required.
+5. To test the front-end single sign-on, use the single-sign-on URL (following the pattern ``https://myXXXXXX-sso.sapbydesign.com/``) and log on using your Identity Authentication service user to open SAP Business ByDesign. Launch the SAP BTP application via the SAP Business ByDesign launchpad. No additional authentication is required.
 
 <img src="./images/byd_launchpad.png" width="80%">
 

@@ -11,7 +11,9 @@ dist/
 resources/
 app/
 approuter/
+mtx/
 *.*-mt_mta_build_tmp
+coverage/
 
 # Web IDE, App Studio
 .che/

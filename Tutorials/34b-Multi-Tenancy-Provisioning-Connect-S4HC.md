@@ -10,7 +10,9 @@ In this section, you connect an SAP S/4HANA Cloud tenant, the Identity Authentic
 
 2. Back-channel integration: Create and read SAP S/4HANA Cloud enterprise projects from Poetry Slam Manager using OData APIs with principal propagation.
 
-<img src="./images/mt_s4hc_integration.png" width="60%">
+<p align="center">
+  <img src="./images/mt_s4hc_integration.png" width="60%">
+</p>
 
 ## Set Up SAP BTP Consumer Subaccount
 
@@ -29,7 +31,7 @@ To start the provisioning procedure, create an SAP BTP consumer subaccount for a
 
 In this tutorial, the Identity Authentication service tenant that is used by the SAP S/4HANA Cloud tenant for authentication is reused.  
 
-Therefore, configure a trust relationship between the SAP BTP consumer subaccount and the Identity Authentication service tenant of SAP S/4HANA Cloud as described in the section [Configure Trust Using SAML 2.0](./23-Multi-Tenancy-Provisioning.md).
+Therefore, configure a trust relationship between the SAP BTP consumer subaccount and the Identity Authentication service tenant of SAP S/4HANA Cloud as described in the section [Configure Trust Using SAML 2.0](./25-Multi-Tenancy-Provisioning.md).
 
 ### Launch the SAP BTP Multi-Tenant Application
 

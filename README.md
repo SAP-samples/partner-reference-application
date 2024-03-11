@@ -1,4 +1,4 @@
-# SAP Samples: Partner Reference Application
+# Partner Reference Application 'Poetry Slam Manager'
 
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/partner-reference-application)](https://api.reuse.software/info/github.com/SAP-samples/partner-reference-application)
 
@@ -71,11 +71,32 @@ Would you like to share your own ideas and best practices? Join our discussions 
 
 ## Requirements
 
-The application is based on SAP Business Technology Platform (SAP BTP) and SAP Cloud ERP solutions. Therefore, here's what you need:
-- administrative access to an SAP BTP account with entitlements for SAP Business Application Studio, SAP BTP Cloud Foundry runtime, SAP HANA Cloud, SAP HANA Schemas & HDI Containers, SAP Build Work Zone, SAP Audit Log service, SAP Audit Log Viewer service, and
-- administrator access to an Identity Authentication service tenant.
+The application is based on SAP Business Technology Platform (SAP BTP) and SAP ERP solutions. Therefore, here's what you need:
 
-You use SAP Business Application Studio as a standardized development environment and GitHub as your code repository.
+- An SAP BTP Test, Demo, Development (TDD) account, which includes SAP Business Application Studio as a standardized development environment,  
+- GitHub as your code repository, and 
+- an SAP ERP system.
+
+To get a more detailed list of the required entitlements and the proposed structure of subaccounts for the deployed Partner Reference Application, go to the [Bill of Materials](./Tutorials/01-BillOfMaterials.md).
+
+## Overview
+
+This repository explains the development journey along the path from
+1. development of the core application as a single-customer ("one-off") deployment,
+2. enhancement to a multi-customer ("multi-tenant") solution,
+3. integration with different ERP back ends,
+4. extension with additional features.
+
+A complete and working implementation of the above steps is available in separate branches:
+1. One-off deployment: branch [*main-single-tenant*](../../tree/main-single-tenant)
+2. Multi-tenant deployment and ERP integration: branch [*main-multi-tenant*](../../tree/main-multi-tenant)
+3. Additional features (based on the multi-tenant implementation): branch [*main-multi-tenant-features*](../../tree/main-multi-tenant-features)
+
+This allows you to check out those branches and directly work with the respective implementation. You can use GitHub comparisons to understand the changes required along the development journey.
+
+The tutorials are provided in the ([*main*](../../)) branch.
+
+Updates to this repository are documented in the [change history](./Tutorials/99-Change-History.md).
 
 ## Tutorials
 
@@ -89,17 +110,22 @@ You use SAP Business Application Studio as a standardized development environmen
     7. [Go on a guided tour to explore the capabilities of the sample application](Tutorials/17-Guided-Tour.md)
 
 2. Enhance the application to support **multiple customers** using shared SAP BTP resources:
-    1. [Enable multitenancy](Tutorials/21-Multi-Tenancy.md)
-    2. [Deploy the multi-tenant application to a provider subaccount](Tutorials/22-Multi-Tenancy-Deployment.md)
-    3. [Provision tenants of the multi-tenant application to customers](Tutorials/23-Multi-Tenancy-Provisioning.md)
-
+    1. [Learn about multitenancy and prepare your SAP BTP account for development](./Tutorials/21-Multi-Tenancy-Introduction.md)
+    2. [Prepare your SAP BTP subaccount for multi-tenant deployment](./Tutorials/22-Multi-Tenancy-Prepare-Deployment.md)
+    3. [Enhance the core application for multitenancy](./Tutorials/23-Multi-Tenancy-Develop-Sample-Application.md)
+    4. [Deploy your SAP BTP multi-tenant application](./Tutorials/24-Multi-Tenancy-Deployment.md)
+    5. [Provision your multi-tenant application to subscriber accounts](./Tutorials/25-Multi-Tenancy-Provisioning.md)
+    
 3. Integrate the application with the **ERP back end** of your customer:
     1. [Go on a guided tour to explore the ERP integration](Tutorials/31-Guided-Tour-ERP-Integration.md)
     2. [Test, trace, and debug the ERP integration](Tutorials/32-Test-Trace-Debug-ERP.md)
-    3. SAP S/4HANA Cloud Public Edition as ERP back end: 
+    3. SAP Business One as ERP back end:
+        1. [Integrate the SAP BTP application with SAP Business One](Tutorials/33a-B1-Integration.md)
+        2. [Configure the integration with SAP Business One](Tutorials/33b-Multi-Tenancy-Provisioning-Connect-B1.md)
+    4. SAP S/4HANA Cloud Public Edition as ERP back end: 
         1. [Integrate the SAP BTP application with SAP S/4HANA Cloud Public Edition](Tutorials/34a-S4HC-Integration.md)
         2. [Configure the integration with SAP S/4HANA Cloud Public Edition](Tutorials/34b-Multi-Tenancy-Provisioning-Connect-S4HC.md)
-    4. SAP Business ByDesign as ERP back end:
+    5. SAP Business ByDesign as ERP back end:
         1. [Integrate the SAP BTP application with SAP Business ByDesign](Tutorials/35a-ByD-Integration.md)
         2. [Configure the integration with SAP Business ByDesign](Tutorials/35b-Multi-Tenancy-Provisioning-Connect-ByD.md)
 
@@ -110,11 +136,10 @@ You use SAP Business Application Studio as a standardized development environmen
         2. [Configure and consume the APIs of the SAP BTP application](Tutorials/42b-Multi-Tenancy-Provisioning-Service-Broker.md)
 
 ## More Information
+- [SAP BTP Developer’s Guide](https://help.sap.com/docs/btp/btp-developers-guide/what-is-btp-developers-guide)
 - [SAP Cloud Application Programming Model](https://cap.cloud.sap/docs/)
 - [SAP Cloud SDK](https://sap.github.io/cloud-sdk/)
 - [SAP Discovery Center](https://discovery-center.cloud.sap/missionssearch)
-- [SAP Business ByDesign API Overview](https://blogs.sap.com/2019/09/26/sap-business-bydesign-an-api-overview/)
-- [SAP Business ByDesign OData API Usage Samples](https://blogs.sap.com/2019/02/27/sap-business-bydesign-api-usage-samples/)
 
 ## Known Issues
 
