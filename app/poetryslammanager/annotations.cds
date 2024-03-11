@@ -3,7 +3,7 @@ using PoetrySlamManager as service from '../../srv/poetrySlamManagerService';
 annotate service.PoetrySlams with {
     status              @Common.Text: {
         $value                : status.name,
-        ![@UI.TextArrangement]: #TextOnly
+        ![@UI.TextArrangement]: #TextOnly,
     };
     description         @UI.MultiLineText;
     ID                  @UI.Hidden;
@@ -13,19 +13,15 @@ annotate service.PoetrySlams with {
 
 annotate service.PoetrySlams with @(
     // Disable Delete Button for PoetrySlams not In Preperation and not canceled
-    Capabilities.DeleteRestrictions: {Deletable: {$edmJson: {$If: [
-        {$Or: [
-            {$Eq: [
-                {$Path: 'status/code'},
-                1
-            ]},
-            {$Eq: [
-                {$Path: 'status/code'},
-                4
-            ]}
+    Capabilities.DeleteRestrictions: {Deletable: {$edmJson: {$Or: [
+        {$Eq: [
+            {$Path: 'status/code'},
+            1
         ]},
-        true,
-        false
+        {$Eq: [
+            {$Path: 'status/code'},
+            4
+        ]}
     ]}}},
     Common                         : {
         // Reload target on UI in case source is changed
@@ -87,18 +83,14 @@ annotate service.PoetrySlams with @(
                 ID           : 'VisitorData',
                 Target       : 'visits/@UI.LineItem#VisitorData',
                 // Hide facet in case the PoetrySlam is in status In Preparation
-                ![@UI.Hidden]: {$edmJson: {$If: [
-                    {$Eq: [
-                        {$Path: 'status/code'},
-                        1
-                    ]},
-                    true,
-                    false
+                ![@UI.Hidden]: {$edmJson: {$Eq: [
+                    {$Path: 'status/code'},
+                    1
                 ]}}
             },
             {
                 $Type : 'UI.ReferenceFacet',
-                Label : '{i18n>administativeData}',
+                Label : '{i18n>administrativeData}',
                 ID    : 'AdministrativeData',
                 Target: '@UI.FieldGroup#AdministrativeData'
             }
@@ -227,27 +219,14 @@ annotate service.PoetrySlams with @(
                 $Type        : 'UI.DataFieldForAction',
                 Action       : 'PoetrySlamManager.publish',
                 Label        : '{i18n>publish}',
-                ![@UI.Hidden]: {$edmJson: {$If: [
-                    {$Eq: [
-                        {$Path: 'IsActiveEntity'},
-                        false
-                    ]},
-                    true,
-                    false
-                ]}}
+                ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}},
+
             },
             {
                 $Type        : 'UI.DataFieldForAction',
                 Action       : 'PoetrySlamManager.cancel',
                 Label        : '{i18n>cancel}',
-                ![@UI.Hidden]: {$edmJson: {$If: [
-                    {$Eq: [
-                        {$Path: 'IsActiveEntity'},
-                        false
-                    ]},
-                    true,
-                    false
-                ]}}
+                ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
             }
         ],
         // Definition of fields shown on the list page / table
@@ -332,14 +311,10 @@ annotate service.Visits with {
 };
 
 annotate service.Visits with @(
-    // Disable Create Button for Visits in case PoetrySlam is in Preparation
-    Capabilities.InsertRestrictions: {Insertable: {$edmJson: {$If: [
-        {$Eq: [
-            {$Path: 'parent/status_code'},
-            2
-        ]},
-        true,
-        false
+    // Enable Create Button for Visits in case PoetrySlam published
+    Capabilities.InsertRestrictions: {Insertable: {$edmJson: {$Eq: [
+        {$Path: 'parent/status_code'},
+        2
     ]}}},
     Common                         : {SideEffects #VisitorData: {
         $Type           : 'Common.SideEffectsType',
