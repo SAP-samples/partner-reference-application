@@ -1,17 +1,17 @@
 // ----------------------------------------------------------------------------
 // Initialization of test
+// CAP Unit Testing: https://cap.cloud.sap/docs/node.js/cds-test?q=cds.test#run
 // ----------------------------------------------------------------------------
 'strict';
 
-// The project's root folder
-const project = __dirname + '/../..';
 // Adds cds module
 const cds = require('@sap/cds');
 // Defines required CDS functions for testing
-const { expect, GET, POST, axios, test } = cds.test(project);
+const { expect, GET, POST, axios, test } = cds.test(__dirname + '/../..');
 
 // ----------------------------------------------------------------------------
 // Tests authorizations for authorized user without role assignment for application
+// Authorizations of PoetrySlamManager Service with User Peter are tested in poetrySlamManagerService.test.js
 // ----------------------------------------------------------------------------
 
 describe('Authorizations of PoetrySlamManager Service with User Denise (authenticated user only)', () => {
@@ -20,7 +20,9 @@ describe('Authorizations of PoetrySlamManager Service with User Denise (authenti
     axios.defaults.auth = { username: 'denise', password: 'welcome' };
   });
 
-  beforeEach(test.data.reset);
+  beforeEach(async () => {
+    await test.data.reset();
+  });
 
   it('should reject the reading of the poetry slams', async () => {
     // Read all poetry slams; shall be rejected
@@ -28,7 +30,7 @@ describe('Authorizations of PoetrySlamManager Service with User Denise (authenti
       GET(`/odata/v4/poetryslammanager/PoetrySlams`, {
         params: { $select: `ID,status_code,statusCriticality` }
       })
-    ).to.be.rejected;
+    ).to.rejected;
   });
 
   it('should reject the creation of a poetry slam', async () => {
@@ -45,7 +47,7 @@ describe('Authorizations of PoetrySlamManager Service with User Denise (authenti
     // Create a new poetry slam; shall be rejected
     return expect(
       POST(`/odata/v4/poetryslammanager/PoetrySlams`, poetrySlamToBeCreated)
-    ).to.be.rejected;
+    ).to.rejected;
   });
 
   it('should reject the reading of visitors', async () => {
@@ -54,7 +56,7 @@ describe('Authorizations of PoetrySlamManager Service with User Denise (authenti
       GET(`/odata/v4/poetryslammanager/Visitors`, {
         params: { $select: `ID,name` }
       })
-    ).to.be.rejected;
+    ).to.rejected;
   });
 
   it('should reject the creation of a visitor', async () => {
@@ -66,7 +68,7 @@ describe('Authorizations of PoetrySlamManager Service with User Denise (authenti
     // Create a new poetry slam; shall be rejected
     return expect(
       POST(`/odata/v4/poetryslammanager/Visitors`, entryToBeCreated)
-    ).to.be.rejected;
+    ).to.rejected;
   });
 
   it('should reject the reading of visits', async () => {
@@ -75,7 +77,7 @@ describe('Authorizations of PoetrySlamManager Service with User Denise (authenti
       GET(`/odata/v4/poetryslammanager/Visits`, {
         params: { $select: `ID,artists` }
       })
-    ).to.be.rejected;
+    ).to.rejected;
   });
 
   it('should reject the creation of a visits', async () => {
@@ -86,7 +88,7 @@ describe('Authorizations of PoetrySlamManager Service with User Denise (authenti
 
     // Create a new poetry slam; shall be rejected
     return expect(POST(`/odata/v4/poetryslammanager/Visits`, entryToBeCreated))
-      .to.be.rejected;
+      .to.rejected;
   });
 });
 
@@ -104,8 +106,10 @@ describe('Authorizations of PoetrySlamManager Service with User Julie (role Poet
 
   it('should return data of poetry slams in status booked and published', async () => {
     const poetrySlams = await GET(`/odata/v4/poetryslammanager/PoetrySlams`, {
-      params: { $select: `ID,status_code,statusCriticality` }
+      params: { $select: `ID,status_code` }
     });
+
+    expect(poetrySlams.status).to.eql(200);
     // Read all poetry slams; shall be possible
     expect(poetrySlams.data.value.length).to.greaterThan(0);
 
@@ -135,7 +139,7 @@ describe('Authorizations of PoetrySlamManager Service with User Julie (role Poet
     // Create a new poetry slam; shall be rejected
     return expect(
       POST(`/odata/v4/poetryslammanager/PoetrySlams`, poetrySlamToBeCreated)
-    ).to.be.rejected;
+    ).to.rejected;
   });
 
   it('should allow the reading of visitors', async () => {
@@ -143,6 +147,7 @@ describe('Authorizations of PoetrySlamManager Service with User Julie (role Poet
       params: { $select: `ID,name` }
     });
 
+    expect(visitors.status).to.eql(200);
     // Read all visitors; allowed but none were created by Julie
     expect(visitors.data.value.length).to.eql(0);
   });
@@ -155,7 +160,7 @@ describe('Authorizations of PoetrySlamManager Service with User Julie (role Poet
 
     return expect(
       POST(`/odata/v4/poetryslammanager/Visitors`, entryToBeCreated)
-    ).to.be.rejected;
+    ).to.rejected;
   });
 
   it('should allow reading of visits', async () => {
@@ -165,10 +170,16 @@ describe('Authorizations of PoetrySlamManager Service with User Julie (role Poet
 
     // Read all visits; Julie is allowed to read all visits of artists
     expect(
-      visits.data.value.filter(
+      visits.data.value.find(
         (poetrySlam) => poetrySlam.artistIndicator === false
       )
-    ).to.eql([]);
+    ).to.undefined;
+
+    expect(
+      visits.data.value.filter(
+        (poetrySlam) => poetrySlam.artistIndicator === true
+      ).length
+    ).to.greaterThan(0);
   });
 
   it('should reject the creation of a visit', async () => {
@@ -178,6 +189,6 @@ describe('Authorizations of PoetrySlamManager Service with User Julie (role Poet
     };
 
     return expect(POST(`/odata/v4/poetryslammanager/Visits`, entryToBeCreated))
-      .to.be.rejected;
+      .to.rejected;
   });
 });

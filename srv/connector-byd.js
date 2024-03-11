@@ -3,11 +3,25 @@
 // Include cds libraries and reuse files
 const cds = require('@sap/cds');
 
+// Constants Definition
+const generatedIDPrefix = 'POETRYSLAM_';
+const generatedIDSuffixPrep = '-PREP';
+const generatedIDSuffixExe = '-EXE';
+const BYD_DESTINATION = 'byd';
+const BYD_DESTINATION_URL = 'byd-url';
+const BYD_PROJECT_SYSTEM = 'ByD';
+
+// Project data for SAP Business ByDesign; needs to be adopted according to SAP Business ByDesign configuration
+const responsibleCostCenter = 'S1111';
+const projectTypeCode = '10';
+const projectLanguageCode = 'EN';
+const responsibleEmployeeID = 'E0202';
+
 // ----------------------------------------------------------------------------
-// ByD specific reuse functions
+// SAP Business ByDesign specific reuse functions
 // ----------------------------------------------------------------------------
 
-// Delegate OData requests to remote ByD project entities
+// Delegate OData requests to remote SAP Business ByDesign project entities
 async function delegateODataRequests(req, remoteService) {
   try {
     const bydProject = await cds.connect.to(remoteService);
@@ -17,7 +31,7 @@ async function delegateODataRequests(req, remoteService) {
   }
 }
 
-// Return json-payload to create ByD projects
+// Return json-payload to create SAP Business ByDesign projects
 async function projectDataRecord(
   poetrySlamIdentifier,
   poetrySlamTitle,
@@ -25,7 +39,7 @@ async function projectDataRecord(
 ) {
   try {
     // Set project ID with pattern AR-{{Poetry Slam identifier}}
-    const generatedID = 'POETRYSLAM_' + poetrySlamIdentifier;
+    const generatedID = generatedIDPrefix + poetrySlamIdentifier;
     // Set project start date 40 days before Poetry Slam date
     const moment = require('moment');
     const generatedStartDate =
@@ -44,30 +58,30 @@ async function projectDataRecord(
     const projectRecord = {
       ProjectID: generatedID,
       EstimatedCompletionPercent: 10,
-      ResponsibleCostCentreID: 'S1111',
-      ProjectTypeCode: '10',
-      ProjectLanguageCode: 'EN',
+      ResponsibleCostCentreID: responsibleCostCenter,
+      ProjectTypeCode: projectTypeCode,
+      ProjectLanguageCode: projectLanguageCode,
       PlannedStartDateTime: generatedStartDate,
       PlannedEndDateTime: poetrySlamDate,
       ProjectSummaryTask: {
         ProjectName: poetrySlamTitle,
-        ResponsibleEmployeeID: 'E0202'
+        ResponsibleEmployeeID: responsibleEmployeeID
       },
       Task: [
         {
-          TaskID: generatedID + '-PREP',
+          TaskID: generatedID + generatedIDSuffixPrep,
           TaskName: 'Event planning and preparations',
           PlannedDuration: 'P30D',
           TaskRelationship: [
             {
               DependencyTypeCode: '2',
-              SuccessorTaskID: generatedID + '-EXE',
+              SuccessorTaskID: generatedID + generatedIDSuffixExe,
               LagDuration: 'P2D'
             }
           ]
         },
         {
-          TaskID: generatedID + '-EXE',
+          TaskID: generatedID + generatedIDSuffixExe,
           TaskName: 'Event administration and execution',
           PlannedDuration: 'P5D',
           ConstraintEndDateTime: generatedTaskEndDate,
@@ -88,17 +102,20 @@ async function readProject(poetrySlams) {
     let isProjectIDs = false;
     const asArray = (x) => (Array.isArray(x) ? x : [x]);
 
-    // Read Project ID's related to ByD
+    // Read Project ID's related to SAP Business ByDesign
     let projectIDs = [];
     for (const poetrySlam of asArray(poetrySlams)) {
-      // Check if the Project ID exists in the Poetry Slam record AND backend ERP is ByD => then read project information from ByD
-      if (poetrySlam.projectSystem == 'ByD' && poetrySlam.projectID) {
+      // Check if the Project ID exists in the Poetry Slam record AND backend ERP is SAP Business ByDesign => then read project information from SAP Business ByDesign
+      if (
+        poetrySlam.projectSystem == BYD_PROJECT_SYSTEM &&
+        poetrySlam.projectID
+      ) {
         projectIDs.push(poetrySlam.projectID);
         isProjectIDs = true;
       }
     }
 
-    // Read ByD projects data
+    // Read SAP Business ByDesign projects data
     if (isProjectIDs) {
       // Request all associated projects
       const projects = await bydProject.run(
@@ -127,5 +144,8 @@ async function readProject(poetrySlams) {
 module.exports = {
   readProject,
   projectDataRecord,
-  delegateODataRequests
+  delegateODataRequests,
+  BYD_DESTINATION,
+  BYD_DESTINATION_URL,
+  BYD_PROJECT_SYSTEM
 };

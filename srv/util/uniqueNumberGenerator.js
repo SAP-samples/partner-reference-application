@@ -8,8 +8,8 @@ module.exports = class uniqueNumberGenerator {
     let result;
     switch (dbKind) {
       case 'hana':
-        // With cloud hana, the embedded functionality of numbering by sequence is used.
-        // The sequence is a database object that is used to automatically generates the incremented list of numeric values.
+        // With HANA Cloud, the embedded functionality of numbering by sequence is used.
+        // The sequence is a database object that is used to automatically generate the incremented list of numeric values.
         // Sequence specification file used in the generating process: ./db/src/poetrySlamNumber.hdbsequence
 
         // NEXTVAL function is used to retrieve the next value in the sequence
@@ -25,29 +25,29 @@ module.exports = class uniqueNumberGenerator {
         // First, check if sequencename pattern is correct
         if (!sequenceName.match(/^[A-Za-z0-9_-]*$/)) {
           throw new Error(`Invalid Sequencename: ${sequenceName}`);
-        } else {
-          try {
-            await cds.run(
-              INSERT.into(sequenceName).columns('ID').values(poetrySlamID)
-            );
-          } catch (error) {
-            // If the table does not exist, it has to be created under the name: sequencename.
-            await cds.run(
-              `CREATE TABLE "${sequenceName}" (number INTEGER PRIMARY KEY AUTOINCREMENT, ID TEXT NOT NULL)`
-            );
-            await cds.run(
-              INSERT.into(sequenceName).columns('ID').values(poetrySlamID)
-            );
-          }
-          // Read the number of the newly inserted record
-          result = await cds.run(
-            SELECT.from(sequenceName)
-              .columns('number')
-              .where({ ID: poetrySlamID })
-          );
-          // retrun the result as string
-          return result[0].number.toString();
         }
+        try {
+          await cds.run(
+            INSERT.into(sequenceName).columns('ID').values(poetrySlamID)
+          );
+        } catch (error) {
+          // If the table does not exist, it has to be created under the name: sequencename.
+          await cds.run(
+            `CREATE TABLE "${sequenceName}" (number INTEGER PRIMARY KEY AUTOINCREMENT, ID TEXT NOT NULL)`
+          );
+          await cds.run(
+            INSERT.into(sequenceName).columns('ID').values(poetrySlamID)
+          );
+        }
+        // Read the number of the newly inserted record
+        result = await cds.run(
+          SELECT.one
+            .from(sequenceName)
+            .columns('number')
+            .where({ ID: poetrySlamID })
+        );
+        return result.number.toString();
+
       default:
         throw new Error(`Invalid Database type: ${dbKind}`);
     }

@@ -11,10 +11,14 @@
     },
     {
       "name": "$XSAPPNAME.mtcallback",
-      "description": "Subscribe to applications",
+      "description": "Subscription via SaaS Registry",
       "grant-as-authority-to-apps": [
         "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
       ]
+    },
+    {
+      "name": "$XSAPPNAME.mtdeployment",
+      "description": "Scope to trigger a re-deployment of the database artifacts"
     },
     {
       "name": "$XSAPPNAME.Callback",
@@ -22,10 +26,6 @@
       "grant-as-authority-to-apps": [
         "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
       ]
-    },
-    {
-      "name": "$XSAPPNAME.mtdeployment",
-      "description": "Deploy applications"
     }
   ],
   "attributes": [],
@@ -55,5 +55,5 @@
       "role-template-references": ["$XSAPPNAME.PoetrySlamVisitorRole"]
     }
   ],
-  "authorities": ["$XSAPPNAME.mtdeployment", "$XSAPPNAME.mtcallback"]
+  "authorities": ["$XSAPPNAME.mtdeployment"]
 }

@@ -66,15 +66,8 @@ async function getDestinationDescription(req, destinationName) {
       destinationName: destinationName,
       jwt: retrieveJwt(req)
     });
-    if (destination) {
-      for (const originalProperty in destination.originalProperties) {
-        if (originalProperty == 'Description') {
-          destinationDescription =
-            destination.originalProperties[originalProperty];
-          break;
-        }
-      }
-    }
+
+    destinationDescription = destination?.originalProperties['Description'];
   } catch (error) {
     // App reacts error tolerant if the destination is missing
     console.log('GET_DESTINATION_DESCRIPTION' + '; ' + error);

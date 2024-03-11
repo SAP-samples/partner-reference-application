@@ -3,8 +3,8 @@ using {PoetrySlamManager} from './poetrySlamManagerService';
 // ----------------------------------------------------------------------------
 // Required authorization roles
 annotate PoetrySlamManager with @(requires: [
-    'PoetrySlamFull',          // Full authorization for managers
-    'PoetrySlamRestricted'     // Restricted access for visitors
+    'PoetrySlamFull', // Full authorization for managers
+    'PoetrySlamRestricted' // Restricted access for visitors
 ]);
 
 // ----------------------------------------------------------------------------
@@ -94,6 +94,12 @@ annotate PoetrySlamManager.S4HCProjectsProjectProfileCode with @(restrict: [{
 }]);
 
 annotate PoetrySlamManager.S4HCProjectsProcessingStatus with @(restrict: [{
+    grant: ['*'],
+    to   : 'PoetrySlamFull'
+}]);
+
+// SAP Business One purchase orders: Managers can read and create remote purchase orders
+annotate PoetrySlamManager.B1PurchaseOrder with @(restrict: [{
     grant: ['*'],
     to   : 'PoetrySlamFull'
 }]);
