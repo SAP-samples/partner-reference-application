@@ -58,7 +58,10 @@
     "requires": {
       "[development]": {
         "db": {
-          "kind": "sql"
+          "kind": "sqlite",
+          "credentials": {
+            "url": ":memory:"
+          }
         },
         "uaa": {
           "kind": "xsuaa"
@@ -145,11 +148,30 @@
             "path": "/sap/opu/odata4/sap/api_entprojectprofilecode/srvd_a2x/sap/entprojectprofilecode/0001"
           }
         }
+      },
+      "b1_sbs_v2": {
+        "kind": "odata",
+        "model": "srv/external/b1_sbs_v2",
+        "[development]": {
+          "credentials": {
+            "url": "https://{{b1-hostname}}/b1s/v2",
+            "authentication": "BasicAuthentication",
+            "username": "{{test-user}}",
+            "password": "{{test-password}}"
+          }
+        },
+        "[production]": {
+          "credentials": {
+            "destination": "b1",
+            "path": "/b1s/v2"
+          }
+        }
       }
     },
     "hana": {
       "deploy-format": "hdbtable"
-    }
+    },
+    "profile": "with-mtx-sidecar"
   },
   "sapux": [
     "app/poetryslammanager"

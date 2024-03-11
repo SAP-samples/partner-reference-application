@@ -1,60 +1,35 @@
 // ----------------------------------------------------------------------------
 // Initialization of test
+// CAP Unit Testing: https://cap.cloud.sap/docs/node.js/cds-test?q=cds.test#run
 // ----------------------------------------------------------------------------
 'strict';
 
-// The project's root folder
-const project = __dirname + '/../../..';
 // Adds cds module
 const cds = require('@sap/cds');
 // Defines Sequence Helper for Poetry Slum Number
 const uniqueNumberGenerator = require('./../../../srv/util/uniqueNumberGenerator');
 // Defines required CDS functions for testing
-const { expect } = cds.test(project);
+const { expect } = cds.test(__dirname + '/../../..');
 
 describe('Util Unique Number Generator', () => {
   // ----------------------------------------------------------------------------
-  // Number range UniqueNumberGenerator Tests
+  // Number Range UniqueNumberGenerator Tests
   // ----------------------------------------------------------------------------
   it('should throw error message because of unknown database ', async () => {
-    let number;
-    try {
-      number = await uniqueNumberGenerator.getNextNumber(
-        'poetrySlamNumber',
-        'unknownDB',
-        ''
-      );
-    } catch (error) {
-      return expect(number).to.be.eq(undefined);
-    }
-    return expect.fail('Should have thrown');
+    return expect(
+      uniqueNumberGenerator.getNextNumber('poetrySlamNumber', 'unknownDB', '')
+    ).to.rejected;
   });
 
   it('should throw error message because of unknown sequence (only hana) ', async () => {
-    let number;
-    try {
-      number = await uniqueNumberGenerator.getNextNumber(
-        'unkownSequenceName',
-        'hana',
-        ''
-      );
-    } catch (error) {
-      return expect(number).to.be.eq(undefined);
-    }
-    return expect.fail('Should have thrown');
+    return expect(
+      uniqueNumberGenerator.getNextNumber('unkownSequenceName', 'hana', '')
+    ).to.rejected;
   });
 
-  it('should reject invalid sequence names', async () => {
-    let number;
-    try {
-      number = await uniqueNumberGenerator.getNextNumber(
-        'invalid/SequenceName',
-        'sqlite',
-        ''
-      );
-    } catch (error) {
-      return expect(number).to.be.eq(undefined);
-    }
-    return expect.fail('Should have thrown');
+  it('should reject sequences with invalid characters in the name to avoid SQL injection', async () => {
+    return expect(
+      uniqueNumberGenerator.getNextNumber('invalid/SequenceName', 'sqlite', '')
+    ).to.rejected;
   });
 });

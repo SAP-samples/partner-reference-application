@@ -7,13 +7,6 @@ version: 2.0.0
 # Parameters
 # -------------------------------------------------------------------------
 parameters:
-  # Defines the name that is shown when a subscription of the application is done in the customer tenant
-  displayname: Poetry Slam Manager
-  xsappname: poetry-slams-${org}-${space}
-  app-url: ${org}-${space}
-  approuter-url: ${app-url}-approuter
-  srv-url: ${app-url}-srv
-  mtx-srv-url: ${app-url}-mtx-srv
   # Defines the deploy mode to HTML5 repository and allows parallel deployments
   deploy_mode: html5-repo
   enable-parallel-deployments: true
@@ -37,26 +30,18 @@ modules:
     path: gen/srv
     requires:
       - name: poetry-slams-auth
-      - name: poetry-slams-destination-service
-      - name: poetry-slams-service-manager
-      - name: poetry-slams-registry
       - name: poetry-slams-auditlog
+      - name: poetry-slams-db
+      - name: poetry-slams-destination-service
+      - name: poetry-slams-html5-runtime
     provides:
       - name: srv-api
         properties:
-          srv-url: ${protocol}://${srv-url}.${domain} # ${default-url}
-          redirect-uris: ${protocol}://*.${app-url}.${domain}/** # Redirect URI to connect modules running on different Cloud Foundry landscapes
-      - name: srv-multi-tenancy
-        properties:
-          tenant-delimiter: '.'
+          srv-url: ${default-url}
     parameters:
       buildpack: nodejs_buildpack
-      disk-quota: 1024M
-      memory: 512M
-      routes:
-        - route: ${srv-url}.${domain}
-    properties:
-      SUBSCRIPTION_URL: ${protocol}://\${tenant_subdomain}.${srv-url}.${domain} # ${default-url}
+    build-parameters:
+      builder: npm-ci
 
   # App UI resources module
   # Creates and packages the static content of the HTML5 application
@@ -75,12 +60,11 @@ modules:
   # Uploads the static content of the HTML5 application and deploys it to the HTML5 repository
   - name: poetry-slams-app-content
     type: com.sap.application.content
-    path: gen
+    path: .
     requires:
       - name: poetry-slams-repo-host
         parameters:
           content-target: true
-      - name: poetry-slams-auth
     build-parameters:
       build-result: resources
       requires:
@@ -89,53 +73,45 @@ modules:
           name: poetryslammanager
           target-path: resources/
 
-  # MTXs (Multitenancy, Toggles, Extensibility) Module (Onboarding, Upgrading)
-  - name: poetry-slams-mtx-srv
+  # MTX module
+  # Handles multitenancy
+  - name: poetry-slams-mtx
     type: nodejs
-    path: gen/srv
+    path: gen/mtx/sidecar
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: mtx-api
+        properties:
+          mtx-url: ${default-url}
     requires:
+      - name: poetry-slams-db
       - name: poetry-slams-auth
+      - name: poetry-slams-registry
       - name: poetry-slams-destination-service
-      - name: poetry-slams-service-manager
-      - name: poetry-slams-auditlog
+      - name: app-api
         properties:
-          SUBSCRIPTION_URL: ${protocol}://\${tenant_subdomain}.${app-url}.${domain}/poetryslammanager # ${default-url}
-    parameters:
-      memory: 1024M
-      disk-quota: 1024M
-      routes:
-        - route: ${mtx-srv-url}.${domain}
-    provides:
-      - name: mtx-binding
-        properties:
-          app-fqdn: ${mtx-srv-url}.${domain}
-          app-url: ${protocol}://${mtx-srv-url}.${domain}
-      - name: poetry-slams-mtx-srv-destination
-        public: true
-        properties:
-          name: mtx-srv-api
-          url: ${protocol}://${mtx-srv-url}.${domain}
-          forwardAuthToken: true
-      - name: mtx-srv-api # required by consumers of CAP services (e.g. approuter)
-        properties:
-          mtx-srv-url: ${protocol}://${mtx-srv-url}.${domain} # ${default-url}
+          SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}.~{app-uri}
 
-  # Application Router
-  # Standalone Custom Application Router
-  - name: poetry-slams-approuter
+  # Approuter
+  # Main entry point, routes subscription(i.e. tenant)-specific URLs and is used to deliver the getDependencies information
+  - name: poetry-slams
     type: approuter.nodejs
-    path: approuter
+    path: app/
     parameters:
-      disk-quota: 512M
-      memory: 512M
+      keep-existing-routes: false
       routes:
-        - route: ${approuter-url}.${domain}
-        - route: '*.${app-url}.${domain}'
-    provides:
-      - name: approuter-binding
-        properties:
-          app-fqdn: ${approuter-url}.${domain}
-          app-url: ${protocol}://${approuter-url}.${domain}
+        - route: approuter-${default-uri} # used for getDependencies
+        - route: '*.${default-uri}' # generic route for all subscriptions
+    properties:
+      TENANT_HOST_PATTERN: '^(.*).${default-uri}'
+      # prettier-ignore
+      httpHeaders: "[{ \"Content-Security-Policy\": \"default-src 'self' https://sapui5.hana.ondemand.com; frame-ancestors 'self' https://*.hana.ondemand.com; object-src 'none';\"}]"
+      CORS:
+        - uriPattern: .*
+          allowedOrigin:
+            - host: '*.${default-uri}'
+              protocol: 'https'
     requires:
       - name: srv-api
         group: destinations
@@ -143,24 +119,26 @@ modules:
           name: srv-api # must be used in xs-app.json as well
           url: ~{srv-url}
           forwardAuthToken: true
+      - name: mtx-api
+        group: destinations
+        properties:
+          name: mtx-api # must be used in xs-app.json as well
+          url: ~{mtx-url}
       - name: poetry-slams-auth
-      - name: poetry-slams-destination-service
+      - name: poetry-slams-auditlog
       - name: poetry-slams-registry
       - name: poetry-slams-html5-runtime
-      - name: poetry-slams-auditlog
-    properties:
-      TENANT_HOST_PATTERN: '^(.*).${app-url}.${domain}'
-      # prettier-ignore
-      httpHeaders: "[{ \"Content-Security-Policy\": \"default-src 'self' https://sapui5.hana.ondemand.com; frame-ancestors 'self' https://*.hana.ondemand.com; object-src 'none';\"}]"
-      CORS:
-        - uriPattern: .*
-          allowedOrigin:
-            - host: '*.${app-url}.${domain}'
-              protocol: 'https'
+      - name: poetry-slams-destination-service
+    provides:
+      - name: app-api
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
+          app-url: ${protocol}://approuter-${default-uri} # used for getDependencies
+          redirect-uris: ${protocol}://*.${default-uri}/** # Redirect URI to connect modules running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
 
   # The service broker for the poetry slam manager
   # Directly exposes the author reading service
-
   - name: poetry-slams-servicebroker
     type: nodejs
     path: broker
@@ -221,15 +199,14 @@ resources:
   - name: poetry-slams-auth
     type: org.cloudfoundry.managed-service
     requires:
-      - name: srv-api
+      - name: app-api
     parameters:
       config:
         tenant-mode: shared
-        xsappname: ${xsappname}
+        xsappname: poetry-slams-${org}-${space}
         oauth2-configuration:
           redirect-uris:
-            - ~{srv-api/redirect-uris} # Redirect to connect modules running on different Cloud Foundry landscapes
-            - http://localhost # Redirect for local testing using Postman
+            - ~{app-api/redirect-uris} # Redirect to connect modules running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
       path: ./xs-security.json
       service: xsuaa
       service-name: poetry-slams-auth
@@ -240,21 +217,32 @@ resources:
   - name: poetry-slams-registry
     type: org.cloudfoundry.managed-service
     requires:
-      - name: mtx-binding
-      - name: approuter-binding
+      - name: mtx-api
+      - name: app-api
     parameters:
       service: saas-registry
       service-plan: application
       config:
-        xsappname: ${xsappname}
-        appName: ${xsappname}
-        displayName: ${displayname}
-        description: ${displayname}
-        category: 'Category'
+        xsappname: poetry-slams-${org}-${space}
+        appName: poetry-slams-${org}-${space}
+        displayName: Poetry Slam Manager
+        description: Manage poetry slam events and register artists and visitors.
+        category: 'Applications / Multi-Customer Partner Solutions'
         appUrls:
-          getDependencies: ~{approuter-binding/app-url}/-/cds/saas-provisioning/dependencies
-          onSubscription: ~{mtx-binding/app-url}/-/cds/saas-provisioning/tenant/{tenantId}
-          callbackTimeoutMillis: 300000
+          getDependencies: ~{app-api/app-url}/-/cds/saas-provisioning/dependencies
+          onSubscription: ~{mtx-api/mtx-url}/-/cds/saas-provisioning/tenant/{tenantId}
+          onSubscriptionAsync: true
+          onUnSubscriptionAsync: true
+          onUpdateDependenciesAsync: true
+          callbackTimeoutMillis: 300000 # Increase if your deployments are taking longer than that
+
+  # Service Manager
+  # Manage HANA HDI Containers
+  - name: poetry-slams-db
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: service-manager
+      service-plan: container
 
   # HTML5 Runtime (HTML5 Application Repository Service)
   - name: poetry-slams-html5-runtime
@@ -262,15 +250,6 @@ resources:
     parameters:
       service: html5-apps-repo
       service-plan: app-runtime
-
-  # Service Manager
-  - name: poetry-slams-service-manager
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: service-manager
-      service-plan: container
-    properties:
-      hdi-service-name: ${service-name}
 
   # Audit Log Service
   # For automatic audit logging
