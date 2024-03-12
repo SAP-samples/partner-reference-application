@@ -33,7 +33,7 @@ To start the provisioning procedure, create an SAP BTP consumer subaccount for a
 
 In this tutorial, the Identity Authentication service (IAS) tenant that is used by the SAP Business One system for authentication is reused.  
 
-Therefore, configure a trust relationship between the SAP BTP consumer subaccount and the Identity Authentication service tenant of SAP Business One as described in [Configure Trust Using SAML 2.0](./23-Multi-Tenancy-Provisioning.md).
+Therefore, configure a trust relationship between the SAP BTP consumer subaccount and the Identity Authentication service tenant of SAP Business One as described in [Configure Trust Using SAML 2.0](./25-Multi-Tenancy-Provisioning.md#configure-trust-using-saml-20).
 
 ### Launch the SAP BTP Multi-Tenant Application
 

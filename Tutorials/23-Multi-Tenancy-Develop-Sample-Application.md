@@ -9,7 +9,7 @@ Alternatively, you can enhance the one-off solution to a multi-tenant solution f
 
 To fast forward:
 
-1. In the provider subaccount SAP BTP cockpit (subaccount level), navigate to *Instances and Subscriptions*, open *SAP Business Application Studio*, and open the dev space *PoetrySlamsProvider* created during the [preparation of the provider subaccount](./22-Multi-Tenancy-Prepare-Deployment.md).
+1. In the provider subaccount SAP BTP cockpit (subaccount level), navigate to *Instances and Subscriptions*, open *SAP Business Application Studio*, and open the dev space *PoetrySlamsProvider* created during the [preparation of the provider subaccount](./22-Multi-Tenancy-Deployment.md).
 
 2. Use the tile *Clone from Git* on the *Welcome* view to clone this GitHub repository (https://github.com/SAP-samples/partner-reference-application) and switch to the branch *main-multi-tenant*.
 
