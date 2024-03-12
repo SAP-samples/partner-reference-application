@@ -35,6 +35,6 @@ As a result, the application has three separate major modules running on separat
 After the successful deployment of the above to the provider subaccount, you configure the SAP Custom Domain service, and 
 SAP Authorization and Trust Management service. Following this, you can subscribe to the application from the subscriber subaccount and access the application via the app router. The data accessed from this subscriber subaccount is isolated from other subscribed subaccounts even though they share the same cluster of microservices.  
 
-In the [next section](./22-Multi-Tenancy-Deployment.md), you prepare your provider subaccount for deployment of the multi-tenant application. Afterwards, you can directly clone this repository into your *Dev Space* to deploy and run the multi-tenant application as provided in this repository. Alternatively, you can create the application manually from scratch, which is also described in this tutorial.
+In the [next section](./22-Multi-Tenancy-Prepare-Deployment.md), you prepare your provider subaccount for deployment of the multi-tenant application. Afterwards, you can directly clone this repository into your *Dev Space* to deploy and run the multi-tenant application as provided in this repository. Alternatively, you can create the application manually from scratch, which is also described in this tutorial.
 
 

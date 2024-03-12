@@ -457,6 +457,6 @@ Ensure that the CDS feature *fetch_csrf* is set in the file *package.json* to en
 
 ### Deploy the Application
 
-Update your application in the provider subaccount. For detailed instructions, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](22-Multi-Tenancy-Deployment.md#build-and-deploy-the-multi-tenant-application).
+Update your application in the provider subaccount. For detailed instructions, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](24-Multi-Tenancy-Deployment.md#build-and-deploy-the-multi-tenant-application).
 
 > Note: Make sure any local changes have been reverted before deployment.

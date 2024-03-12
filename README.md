@@ -111,7 +111,7 @@ Updates to this repository are documented in the [change history](./Tutorials/99
 
 2. Enhance the application to support **multiple customers** using shared SAP BTP resources:
     1. [Learn about multitenancy and prepare your SAP BTP account for development](./Tutorials/21-Multi-Tenancy-Introduction.md)
-    2. [Prepare your SAP BTP subaccount for multi-tenant deployment](./Tutorials/22-Multi-Tenancy-Deployment.md)
+    2. [Prepare your SAP BTP subaccount for multi-tenant deployment](./Tutorials/22-Multi-Tenancy-Prepare-Deployment.md)
     3. [Enhance the core application for multitenancy](./Tutorials/23-Multi-Tenancy-Develop-Sample-Application.md)
     4. [Deploy your SAP BTP multi-tenant application](./Tutorials/24-Multi-Tenancy-Deployment.md)
     5. [Provision your multi-tenant application to subscriber accounts](./Tutorials/25-Multi-Tenancy-Provisioning.md)
