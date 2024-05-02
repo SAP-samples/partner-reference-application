@@ -35,7 +35,7 @@ describe('Poetryslams in PoetrySlamManager Service', () => {
     db = await cds.connect.to('db');
     expect(db).to.exist;
 
-    test.data.reset;
+    await test.data.reset();
 
     // Read all poetry slams for usage in the tests
     poetrySlams = await GET(`/odata/v4/poetryslammanager/PoetrySlams`, {
@@ -377,5 +377,55 @@ describe('Poetryslams in PoetrySlamManager Service', () => {
         `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=true)`
       )
     ).to.rejected;
+  });
+
+  it('should reset project data when project ID is reset', async () => {
+    const id = poetrySlams.data.value.find(
+      (poetrySlam) => poetrySlam.status_code === poetrySlamStatusCode.published
+    ).ID;
+
+    // Move poetry slam into draft mode by calling action 'draftEdit'
+    await ACTION(
+      `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=true)`,
+      `draftEdit`
+    );
+
+    // When project ID is reset all project fields are set to null
+    const result = await PATCH(
+      `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=false)`,
+      {
+        projectID: ''
+      }
+    );
+    expect(result.data.projectID).to.eql(null);
+    expect(result.data.projectObjectID).to.eql(null);
+    expect(result.data.projectURL).to.eql(null);
+    expect(result.data.projectSystem).to.eql(null);
+    expect(result.data.projectSystemName).to.eql('');
+  });
+
+  it('should reset purchase order data when purchase order ID is reset', async () => {
+    const id = poetrySlams.data.value.find(
+      (poetrySlam) => poetrySlam.status_code === poetrySlamStatusCode.published
+    ).ID;
+
+    // Move poetry slam into draft mode by calling action 'draftEdit'
+    await ACTION(
+      `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=true)`,
+      `draftEdit`
+    );
+
+    // When purchase order ID is reset all purchase order fields are set to null
+    const result = await PATCH(
+      `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=false)`,
+      {
+        purchaseOrderID: ''
+      }
+    );
+    expect(result.data.purchaseOrderID).to.eql(null);
+    expect(result.data.purchaseOrderObjectID).to.eql(null);
+    expect(result.data.purchaseOrderURL).to.eql(null);
+    expect(result.data.purchaseOrderSystem).to.eql(null);
+    expect(result.data.purchaseOrderSystemName).to.eql(undefined);
   });
 });
