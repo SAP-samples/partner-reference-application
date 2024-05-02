@@ -6,7 +6,7 @@ Don't worry. With Poetry Slam Manager, a partner application, it's quite simple 
 
 Buckle up and let us take you on a guided tour through the sample solution:
 
-1. Launch your SAP Build Work Zone site by opening the page URL you noted down during the [One-Off Deployment](./15-One-Off-Deployment.md).
+1. Launch your SAP Build Work Zone site by opening the page URL you noted down during the [One-Off Deployment](./15b-One-Off-Deployment.md).
         
     > Note: SAP Build Work Zone delegates the user authentication to the Identity Authentication service, which acts as corporate identity provider in this example.
 
@@ -24,9 +24,17 @@ Buckle up and let us take you on a guided tour through the sample solution:
 
 4. Select one of the poetry slams that has the status *Published* to see its details.
 
-5. Choose *Edit*, change the description of the poetry slam, and save your changes to publish them.
+5. Choose *Edit* and change the description of the poetry slam.
 
-    > Note: Your changes are immediately saved to the database as *Draft*. Additionally, the system locks the poetry slam for other users to avoid concurrent changes. Only by clicking on *Save*, your changes become visible to all users and the edit-lock gets released. This gives you sufficient time to make your changes.
+    > Note: In addition, you can also change the title, the event date, the price, and the maximum number of visitors.
+
+6. In the *Visitors* table, choose *Create*, select *nathalie.perrin@pra.ondemand.com* from the value help and set the *Artist* indicator. 
+
+    > Note: A new instance of the visit entity is created.
+    
+7. Save your changes to publish them.
+
+    > Note: Your changes are immediately saved to the database as *Draft*. Additionally, the system locks the poetry slam for other users to avoid concurrent changes. Only by clicking on *Save*, your changes become visible to all users and the edit lock gets released. This gives you sufficient time to make your changes.
 
     <img src="./images/one_off_guided_tour_detail.png" width="100%">
 

@@ -35,7 +35,7 @@ Therefore, configure a trust relationship between the SAP BTP consumer subaccoun
 
 ### Launch the SAP BTP Multi-Tenant Application
 
-To launch the Poetry Slam Manager application, choose *Go to Application*. 
+To launch the Poetry Slam Manager application, choose *Go to Application*. Copy the link address of the Poetry Slam Manager application and note it down as **SAP BTP Application Tenant URL** for later reference.
 
 > Note: If you're directed to an SAP HANA XS Advanced Login screen after launching the application, check the naming of your SAP BTP Cloud Foundry runtime organization. The organization name must be in lowercase.
 
@@ -96,36 +96,39 @@ OAuth 2.0 SAML Bearer authentication is used to access the SAP S/4HANA Cloud ODa
 ### Configure Authentication by Business Users
 Configure SAP S/4HANA Cloud for OAuth 2.0 SAML Bearer authentications.
 
-1.  In the SAP BTP consumer subaccount, to get the identifying X509 certificate of the SAP BTP consumer subaccount, open the menu item *Connectivity* and go to *Destinations*.
+1. Determine the identifying certificate of the SAP BTP consumer subaccount. 
+    1.  In the SAP BTP consumer subaccount, to get the identifying X509 certificate of the SAP BTP consumer subaccount, open the menu item *Connectivity* and go to *Destinations*.
 
-2. Choose *Download Trust* and save the file with the signing certificate. 
+    2. Choose *Download Trust* and save the file with the signing certificate. 
 
-3. Change the file name using *.cer* as file extension, for example, to `sap-btp-signing-certificate.cer`.
+    3. Change the file name using *.cer* as file extension, for example, to `sap-btp-signing-certificate.cer`.
 
-4. Open the file with the signing certificate and note down the *Issued by* or *Issuer* name.
+    4. Open the file with the signing certificate and note down the *Issued by* or *Issuer* name.
 
-    As a result, you have a file with the **SAP BTP subaccount signing certificate** (with file extension *.cer)* and the **SAP BTP subaccount service provider name**, referred to as *Issued by* in the SAP BTP subaccount signing certificate. Keep them both as you need them later.
+        As a result, you have a file with the **SAP BTP subaccount signing certificate** (with file extension *.cer)* and the **SAP BTP subaccount service provider name**, referred to as *Issued by* in the SAP BTP subaccount signing certificate. Keep them both as you need them later.
 
-5.  In SAP S/4HANA Cloud, to configure an OAuth 2.0 identity provider, open the *Partner Applications - Poetry Slam Manager Tenant 2* *Communication System* created above.
-6.  Activate *OAuth 2.0 Identity Provider*.
-7.  Upload the **SAP BTP Subaccount Signing Certificate** via *Upload Signing Certificate*.
-8.  Copy the *CN* property of the *Signing Certificate Issuer* into *OAuth 2.0 SAML Issuer* field.
-9.  Keep the *User ID Mapping Mode* = *User Name*.
+2. Create the OAuth 2.0 identity provider in SAP S/4HANA Cloud.
 
-10.  In SAP S/4HANA Cloud, to change the authentication method of the communication arrangement for enterprise projects to OAuth 2.0, open the *Poetry Slam Manager - Projects* *Communication Arrangement*  created above. 
-11.  Go to *Inbound Communication* and reselect the user for inbound communication. Choose the same user with authentication method *OAuth 2.0*.
+    1.  In SAP S/4HANA Cloud, to configure an OAuth 2.0 identity provider, open the *Partner Applications - Poetry Slam Manager Tenant 2* *Communication System* you created in the previous step.
+    2.  Activate *OAuth 2.0 Identity Provider*.
+    3.  Upload the **SAP BTP Subaccount Signing Certificate** via *Upload Signing Certificate*.
+    4.  Copy the *CN* property of the *Signing Certificate Issuer* into *OAuth 2.0 SAML Issuer* field.
+    5.  Keep the *User ID Mapping Mode* = *User Name*.
 
+3.  In SAP S/4HANA Cloud, to change the authentication method of the communication arrangement for enterprise projects to OAuth 2.0, open the *Poetry Slam Manager - Projects* *Communication Arrangement*  you created in a previous step. 
+
+4.  Go to *Inbound Communication* and reselect the user for inbound communication. Choose the same user with authentication method *OAuth 2.0*.
      > Note: The OData services for project profiles and project processing status don't support OAuth and, therefore, these services will be used with a basic authentication.
+        
+5. Take note of the **SAP S/4HANA Cloud OData Service URL** (service URL of service Enterprise Project) and the OAuth 2.0 details: 
+    - SAP S/4HANA Cloud OAuth Client ID (this is the same as the SAP S/4HANA Cloud Communication User)
+    - SAP S/4HANA Cloud OAuth Client Secret (this is the SAP S/4HANA Cloud Communication User Password)
+    - SAP S/4HANA Cloud OAuth User Name 
+    - SAP S/4HANA Cloud OAuth Token Service URL 
+    - SAP S/4HANA Cloud OAuth SAML2 Audience 
+    - SAP S/4HANA Cloud OAuth Scope *API_ENTERPRISE_PROJECT_SRV_0002*.
 
-12.  Take note of the **SAP S/4HANA Cloud OData Service URL** (service URL of service Enterprise Project) and the OAuth 2.0 details: 
-        - SAP S/4HANA Cloud OAuth Client ID (this is the same as the SAP S/4HANA Cloud Communication User)
-        - SAP S/4HANA Cloud OAuth Client Secret (this is the SAP S/4HANA Cloud Communication User Password)
-        - SAP S/4HANA Cloud OAuth User Name 
-        - SAP S/4HANA Cloud OAuth Token Service URL 
-        - SAP S/4HANA Cloud OAuth SAML2 Audience 
-        - SAP S/4HANA Cloud OAuth Scope *API_ENTERPRISE_PROJECT_SRV_0002*.
-
-13. Open the SAP S/4HANA Cloud UI (in this example, using Chrome as a browser) and choose the lock icon *View site information*. Export the **SAP S/4HANA Cloud Server Certificate** as base-64 encoded *X.-509* file.
+6. Open the SAP S/4HANA Cloud UI in a Google Chrome browser and click on the lock icon *View site information* on the left side of the URL. To export the **SAP S/4HANA Cloud Server Certificate** as a base-64 encoded *X.-509* file, choose *Connection is secure* and *Certificate is valid*. Choose *Details* and *Export*.
 
 
 ## Set Up Destinations to Connect the SAP BTP App to SAP S/4HANA Cloud
@@ -163,7 +166,7 @@ In this section, three destinations are created to access SAP S/4HANA Cloud ODat
 
     > Note: For testing, you may configure a basic authentication using the **SAP S/4HANA Cloud Communication User** and **SAP S/4HANA Cloud Communication User Password** of the destination *s4hc*.
 
-    > Note: You may need to upload the **SAP S/4HANA Cloud Server Certificate** into the destination service for Secure Sockets Layer (SSL) authentication using the link *Upload and Delete Certificates* on the destinations screen. You can download the SAP S/4HANA Cloud server certificate from the browser: Open the SAP S/4HANA Cloud UI and view the site information. Display and export the certificate details into a *.cer* file.
+    > Note: You may need to upload the **SAP S/4HANA Cloud Server Certificate** into the destination service for Secure Sockets Layer (SSL) authentication using the link *Upload and Delete Certificates* on the destinations screen. You can download the SAP S/4HANA Cloud server certificate. Open the SAP S/4HANA Cloud UI in a Google Chrome browser and click on the lock icon *View site information* on the left side of the URL. To export the **SAP S/4HANA Cloud Server Certificate** as a base-64 encoded *X.-509* file, choose *Connection is secure* and *Certificate is valid*. Choose *Details* and *Export*.
 
 3. Create the destination *s4hc-tech-user* to consume SAP S/4HANA Cloud OData services using a technical communication user.
 
@@ -204,23 +207,21 @@ In this section, three destinations are created to access SAP S/4HANA Cloud ODat
 
 As a last step, Poetry Slam Manager and SAP BTP admin applications are added to the SAP S/4HANA Cloud launchpad to make it possible for both poetry slam managers and system administrators to launch all relevant applications from a single launchpad.
 
-1. In the SAP BTP consumer subaccount, launch the **SAP BTP Application Tenant URL** and copy the link address of the Poetry Slam Manager application. 
-
-2.  In the SAP S/4HANA Cloud tenant, to create a custom tile, open the Custom Tiles application and add a new tile with the field values:
+1.  In the SAP S/4HANA Cloud tenant, to create a custom tile, open the Custom Tiles application and add a new tile with the field values:
 			
-    | Field       | Value                                                                                  |
-    | :----------- | :-------------------------------------------------------------------------------------- |
-    | *Title*:     | `Poetry Slam Manager`                                                             |
-    | *ID*:        | `POETRYSLAMMANAGER`                                                               |
-    | *Subtitle*:  | `Manage poetry slams`                                               |
-    | *URL*:       | Enter the **SAP BTP Application Tenant URL**                    |
-    | *Icon*:      | Choose an icon, for example, *sap-icon://microphone*                  |
+    | Field       | Value                                                                           |
+    | :----------- | :----------------------------------------------------------------------------- |
+    | *Title*:     | `Poetry Slam Manager`                                                          |
+    | *ID*:        | `POETRYSLAMMANAGER`                                                            |
+    | *Subtitle*:  | `Manage poetry slams`                                                          |
+    | *URL*:       | Enter the **SAP BTP Application Tenant URL**, you noted down in a previous step.    |
+    | *Icon*:      | Choose an icon, for example, *sap-icon://microphone*                           |
             
-3. Choose *Assign Catalogs* and add a *Business Catalog*, for example, *Enterprise Projects - Project Control Management*.
+2. Choose *Assign Catalogs* and add a *Business Catalog*, for example, *Enterprise Projects - Project Control Management*.
 	
-4. Choose *Publish*.
+3. Choose *Publish*.
 
-5.  Open the *App Finder* in your user profile and search for the *Enterprise Projects - Project Control Management* catalog. 
+4.  Open the *App Finder* in your user profile and search for the *Enterprise Projects - Project Control Management* catalog. 
 
     > Note: Optionally, you can assign the app to a different or to a new app group. 
 
@@ -258,3 +259,6 @@ As a general approach, users are created in the ERP solution and the IdP, and th
 
 <img src="./images/mt_s4hc_launchpad.png">
 
+## Remarks and Troubleshooting
+
+If you need more information on how to trace and debug your application with ERP integration, go to the section on [testing and troubleshooting](32-Test-Trace-Debug-ERP.md). If you're looking for more information on the ERP integration of Poetry Slam Manager, take the [guided tour of the ERP integration](31-Guided-Tour-ERP-Integration.md).

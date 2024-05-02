@@ -8,13 +8,7 @@ When you want to deploy your SAP BTP application to a subaccount, first, you nee
 
 2. Optional: Assign the subaccount to a directory as a parent.
 
-3. Check if sufficient service assignments are available in your global account:
-	- SAP BTP Cloud Foundry runtime (3 units of application runtime)
-	- SAP HANA Cloud (1 unit)
-	- SAP HANA Schemas & HDI containers
-	- SAP Build Work Zone 
-
-4. Open *Entity Assignments* and assign quotas for the following entities to your subaccount you want to deploy the application to: 
+3. Open *Entity Assignments* and assign quotas for the following entities to your subaccount you want to deploy the application to: 
 	- *SAP BTP Cloud Foundry runtime* (3 units of application runtime)
     	> Note: If the value help doesn't offer an item referring to *Cloud Foundry*, select *Application runtime*. Save your changes and the name of the list item changes to *Cloud Foundry*. In your Test, Develop, Deploy (TDD) environment, this entitlement may already have been added by default.
 		- As *Plan*, select *standard-edition (Application)*.
@@ -22,19 +16,32 @@ When you want to deploy your SAP BTP application to a subaccount, first, you nee
 		- As *Plan*, select *hana*.
 	- *SAP HANA Schemas & HDI Containers*
 		- As *Plan*, select *hdi-shared*.
+	- *SAP Authorization and Trust Management service* (1 unit)
+		- As *Plan*, select *broker*.
 	- *SAP Build Work Zone*
 		- As *Plan*, select *standard (Application)*. 
 
+	The relevant entity assignments are selected by default when the subaccount is created (no action required):
+
+	- *Service Manager*, service plan *container*
+	- *HTML5 Application Repository Service*, service plans *app-runtime* and *app-host*
+
+### Maintain Provider Subaccount Administrators
+
+In the SAP BTP cockpit, maintain the application administrators:
+
+1. Open the menu item *Security - Users* and enter the users. 
+2. Assign the role collection *Subaccount Administrators* to the users that take on the role of subaccount administrators. 
 
 ## Enable SAP BTP Cloud Foundry Runtime
 
-1. To enable SAP BTP Cloud Foundry runtime, in the SAP BTP cockpit (subaccount), go to *Overview* in the subaccount. 
-2. Under *Cloud Foundry Environment*, choose *Enable Cloud Foundry*.
-3. Enter the following information:
+In the SAP BTP cockpit (provider subaccount), create an SAP BTP Cloud Foundry runtime space to host the database and the runtime:
+
+1. Go to *Overview* in the subaccount and choose *Enable Cloud Foundry*. Enter the following information:
 	- As *Plan*, select *standard*.
 	- As *Landscape*, select *cf-eu10*. 
 	- As *Instance Name*, enter `poetryslams`.
-	- As *Org Name*, enter a name, e.g. abbreviation for you as a partner and the solution you want to host.
+	- As *Org Name*, enter a name, for example, an abbreviation for you as a partner and the solution you want to host.
 	  > Note: When choosing the org name, make sure that it meets the following requirements: 
 	  > - It must not exceed 12 characters.
 	  > - Use a unique name.
@@ -45,9 +52,11 @@ When you want to deploy your SAP BTP application to a subaccount, first, you nee
 	  >
 	  > For example: For Poetry Slam Manager delivered by SAP, it could be `sap-psm`.
 
-4. Choose *Create*. 
-5. Choose *Create Space* and enter a name, for example, `app` as *Space Name*.
-6. Keep the standard roles and add [Cloud Foundry org members](https://help.sap.com/docs/btp/sap-business-technology-platform/add-org-members-using-cockpit) and [Cloud Foundry space members](https://help.sap.com/docs/btp/sap-business-technology-platform/add-space-members-using-cockpit).
+2. Choose *Create*. 
+
+3. Choose *Create Space* and enter a name, for example, `app` as *Space Name*.
+
+4. Keep the standard roles and add [Cloud Foundry org members](https://help.sap.com/docs/btp/sap-business-technology-platform/add-org-members-using-cockpit) and [Cloud Foundry space members](https://help.sap.com/docs/btp/sap-business-technology-platform/add-space-members-using-cockpit).
 
 ## Create an SAP HANA Cloud Database
 
@@ -57,7 +66,7 @@ When you want to deploy your SAP BTP application to a subaccount, first, you nee
 	- Choose *CF Organization + Space*.
 	- As *Instance Name*, enter `poetryslams-db`.
 	- Enter a password.
-	- Choose *Create*.
+	- Choose *Create* and save your changes.
 
 ## Subscribe to SAP Build Work Zone Application
 
@@ -75,6 +84,6 @@ When you want to deploy your SAP BTP application to a subaccount, first, you nee
 
 Now, you can deploy your application:
 - You can either [directly deploy Poetry Slam Manager](./13-Deploy-Sample-Application.md) as defined in this repository.
-- Alternatively, follow the step-by-step guidelines about [how to develop the application](./14-Develop-Core-Application.md) from scratch and [how to deploy it](./15-One-Off-Deployment.md).
+- Alternatively, follow the step-by-step guidelines about [how to develop the application](./14-Develop-Core-Application.md) from scratch and [how to deploy it](./15a-Prepare-One-Off-Deployment.md).
 
 Looking for more information? Read up on [testing, tracing, debugging](./16-Test-Trace-Debug.md) and check out the [guided tour that shows you the functionality of Poetry Slam Manager](./17-Guided-Tour.md).

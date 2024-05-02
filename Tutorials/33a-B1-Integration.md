@@ -40,9 +40,9 @@ The SAP Business One OData service is consumed by using a destination. SAP Cloud
 
 ### Enhance the Entity Model to Store Key Purchase Order Information
 
-In SAP Business Application Studio, enhance the SAP Cloud Application Programming Model entity models in the file [*/db/poetrySlamManagerModel.cds*](../../../tree/main-multi-tenant/db/poetrySlamManagerModel.cds) by elements to store purchase order key information, which makes it possible to associate poetry slams to purchase orders in the remote ERP systems.
+In SAP Business Application Studio, enhance the SAP Cloud Application Programming Model entity models in the file [*/db/poetrySlamManagerModel.cds*](../../../tree/main-multi-tenant/db/poetrySlamManagerModel.cds) with elements to store purchase order key information, which makes it possible to associate poetry slams to purchase orders in the remote ERP systems.
 
-1. Enhance the entity *PoetrySlams* by the following elements:
+1. Enhance the entity *PoetrySlams* with the following elements:
     ```javascript
     purchaseOrderID       : String;
     purchaseOrderObjectID : String;
@@ -50,7 +50,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     purchaseOrderSystem   : String;
     ```  
 
-2. Enhance the annotations of entity *PoetrySlams* by the following elements:
+2. Enhance the annotations of entity *PoetrySlams* with the following elements:
     ```javascript
     purchaseOrderID       @title: '{i18n>purchaseOrderID}';
     purchaseOrderObjectID @title: '{i18n>purchaseOrderObjectID}' @readonly;
@@ -58,7 +58,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     purchaseOrderSystem   @title: '{i18n>purchaseOrderSystem}'   @readonly;
     ```
 
-3. Enhance the labels of the entity *PoetrySlams* in the file [*/db/i18n/i18n.properties*](../../../tree/main-multi-tenant/db/i18n/i18n.properties) by the labels:
+3. Enhance the labels of the entity *PoetrySlams* in the file [*/db/i18n/i18n.properties*](../../../tree/main-multi-tenant/db/i18n/i18n.properties) with the labels:
     ```javascript
     purchaseOrderID       = Purchase Order
     purchaseOrderObjectID = Purchase Order Internal ID
@@ -68,7 +68,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
      > In the reference example, the [*/db/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/db/i18n/i18n_de.properties) file with the German texts are available, too. You can take them over accordingly.
   
 
-### Enhance the Service Model by the Remote Service
+### Enhance the Service Model With the Remote Service
 
 1. To extend the SAP Cloud Application Programming Model service model by remote entities, open the file [*/srv/poetrySlamManagerService.cds*](../../../tree/main-multi-tenant/srv/poetrySlamManagerService.cds) with the service models.
 
@@ -96,7 +96,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     }
     ```
     
-2. Enhance the service model of the service *PoetrySlamManager* by an association to the remote purchase order in SAP Business One:
+2. Enhance the service model of the service *PoetrySlamManager* with an association to the remote purchase order in SAP Business One:
     ```javascript
     // Poetry Slams (draft enabled)
     @odata.draft.enabled
@@ -108,7 +108,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
         } 
     ```
 
-3. Enhance the service model of the service *PoetrySlamManager* by virtual elements to pass on the name of the ERP system from the destination to the UI, and the visualization of actions:
+3. Enhance the service model of the service *PoetrySlamManager* with virtual elements to pass on the name of the ERP system from the destination to the UI, and the visualization of actions:
     ```javascript
     // Poetry Slams (draft enabled)
     @odata.draft.enabled
@@ -133,7 +133,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
         }
     ```
     
-4. Enhance the service model of the service *PoetrySlamManager* by an action to create remote purchase orders:
+4. Enhance the service model of the service *PoetrySlamManager* with an action to create remote purchase orders:
     ```javascript
     // SAP Business One purchase order: action to create a purchase order in SAP Business One
     @(
@@ -161,108 +161,134 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     }]);
     ```
 
-### Create a File with Reuse Functions for SAP Business One
+### Create Files with Reuse Functions for the ERP System Integration
 
-Some reuse functions specific to SAP Business One are defined in a separate file. 
-1. Create a file with the path */srv/connector-b1.js*.
-2. Copy the SAP Business One reuse functions in the file [*/srv/connector-byd.js*](../../../tree/main-multi-tenant/srv/connector-b1.js) into your project. The file contains functions to delegate OData requests to SAP Business One, to read SAP Business One purchase order data, and to assemble an OData payload to create SAP Business One purchase orders.
+You can define reuse functions that handle the connection for the different Enterprise Resource Planning (ERP) systems in separate files. 
+
+1. Create a file to check and get the destinations in path */srv/util/destination.js*. 
+2. Add the functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* from the file [*/srv/util/destination.js*](../../../tree/main-multi-tenant/srv/util/destination.js).
+
+    > Note: The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* are designed to work for single-tenant and for multi-tenant deployments. For single-tenant deployments, they read the destination from the SAP BTP subaccount that hosts the app, and for multi-tenant deployments, they read the destination from the subscriber subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information.
+
+    > Note: The reuse function *getDestinationDescription* returns the destination description from the SAP BTP consumer subaccount.
+
+3. Since the npm module *@sap-cloud-sdk/connectivity* is used in the file *destination.js*, add the corresponding npm modules to your project. To do so, open a terminal and run the commands:
+
+    i. `npm add @sap-cloud-sdk/connectivity` 
+
+    ii. `npm add @sap-cloud-sdk/http-client`
+
+    The dependencies are added to the *dependencies* section in the [*package.json*](../../../tree/main-multi-tenant/package.json) file. 
+
+4. Create a file with the path */srv/connector/connector.js*. This file is reused for different ERP integrations.
+5. Copy the ERP connection reuse functions in the file [*/srv/connector/connector.js*](../../../tree/main-multi-tenant/srv/connector/connector.js) into your project. It delegates the OData requests and holds the destinations.
+
+### Create a File with Functions for SAP Business One
+
+Reuse functions specific to SAP Business One are defined in a separate file. 
+
+1. Create a file with the path */srv/connector/connectorB1.js*. 
+2. Copy the SAP Business One related functions in the file [*/srv/connector/connectorB1.js*](../../../tree/main-multi-tenant/srv/connector/connectorB1.js) into your project. The file contains functions to delegate OData requests to SAP Business One, to read SAP Business One purchase order data, and to assemble an OData payload to create SAP Business One purchase orders.
+
+> Note: This file contains sample data, which can vary depending on the system. Check the data set and maintain it accordingly to ensure consistency between the Partner Reference App and SAP Business One.
 
 ### Enhance the Business Logic to Operate on SAP Business One Data
 
-Enhance the implementation of the SAP Cloud Application Programming Model services in the file [*/srv/poetrySlamManagerServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js) to create and read SAP Business One purchase order data using the remote SAP Business One OData service. 
+Enhance the implementation of the SAP Cloud Application Programming Model services to create and read SAP Business One purchase order data using the remote SAP Business One OData service. 
 
-1. Delegate requests to the remote OData service. Therefore, copy the on-READ, on-CREATE, on-UPDATE, and on-DELETE methods of *B1PurchaseOrder* from the [service implementations (refer to the end of the file)](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js).
+1. Delegate requests to the remote OData service. To do so, copy the on-READ, on-CREATE, on-UPDATE, and on-DELETE methods of *B1PurchaseOrder* from the [poetrySlamManagerServiceERPImplementation.js](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceERPImplementation.js) into a file with the same name and path into your project.
 
     > Note: Without delegation, the remote entities return the error code 500 with the message: *SQLITE_ERROR: no such table* (local testing).
 
-2. Determine the connected back-end systems.
-    ```javascript
-    // Check connected back-end systems
-    srv.before('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req) => {
-        // SAP Business One
-        B1IsConnectedIndicator = await destinationUtil.checkDestination(
-            req,
-            connectorB1.B1_DESTINATION
-        );
-        if (B1IsConnectedIndicator) {
-            B1SystemName = await destinationUtil.getDestinationDescription(
-            req,
-            connectorB1.B1_DESTINATION_URL
-            );
-        }
-    });
-    ```
+2. Enhance the [poetrySlamManagerServiceImplementation.js](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js) to call the ERP implementation.
 
-    > Note: The destinations called *b1* and *b1-url* connect to the ERP system. You create the destinations later on in the consumer subaccount in SAP BTP.
-
-3. Set the virtual element `createB1PurchaseOrderEnabled` to control the visualization of the action to create purchase orders dynamically in the for loop of the after-read event of poetry slams and pass on the purchase order system name:
+    i. Import the ERP forward handler.
 
     ```javascript
-    // Update PO system name and visibility of the "Create Purchase Order" button
-    if (poetrySlam.purchaseOrderID) {
-        poetrySlam.createB1PurchaseOrderEnabled = false;
-        poetrySlam.purchaseOrderSystemName = B1SystemName;
-    } else {
-        poetrySlam.createB1PurchaseOrderEnabled = B1IsConnectedIndicator;
-    }
-
-    // Update the back-end system connected indicator used in UI for controlling visibility of UI elements
-    poetrySlam.isB1 = B1IsConnectedIndicator;
+    const erpForwardHandler = require('./poetrySlamManagerServiceERPImplementation');
     ```
 
-4. Add the implementation of the action *createB1PurchaseOrder*:
-
-    1. Copy the method *createB1PurchaseOrder* from the file [*/srv/poetrySlamManagerServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js) into the implementation.
-
-    2. Add two lines to import the destination functions at the beginning of the file:
-    ```javascript
-    const destinationUtil = require('./util/destination');
-    const connectorB1 = require('./connector-b1');
-    ```
-
-    3. Add two local variables to buffer the status and the name of the remote systems at the beginning of the file:
+    ii. Call the ERP forward handler.
 
     ```javascript
-    // Buffer status and name of purchase order systems
-    let B1IsConnectedIndicator, B1SystemName;
+    erpForwardHandler(srv); // Forward handler to the ERP systems
     ```
 
-5. Create a file to check and get the destinations in path */srv/util/destination.js*. Add the functions *getDestinationURL*, *checkDestination*, and *getDestinationDescription* from the file [*/srv/util/destination.js*](../../../tree/main-multi-tenant/srv/util/destination.js). 
+3. In the file [*/srv/poetrySlamManagerServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServicePoetrySlamsImplementation.js), the poetry slams entity is enriched with SAP Business One specific data. 
+    
+    i. Determine the connected back-end systems and read the purchase order data from the remote system. Set the virtual element `createB1PurchaseOrderEnabled` to control the visualization of the action to create purchase orders dynamically and pass on the purchase order system name.
 
-    > Note: The reuse functions *getDestinationURL*, *checkDestination*, and *getDestinationDescription* are designed to work for single-tenant and for multi-tenant deployments. For single-tenant deployments, they read the destination from the SAP BTP subaccount that hosts the app, and for multi-tenant deployments, they read the destination from the subscriber subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information.
-
-6. Since the npm module *@sap-cloud-sdk/connectivity* is used in the file *destination.js*, add the corresponding npm modules to the *dependencies* section in the [*package.json*](../../../tree/main-multi-tenant/package.json) file:
-    ```json
-    "dependencies": {
-        "@sap-cloud-sdk/connectivity": "^3.9.0",
-        "@sap-cloud-sdk/http-client": "^3.9.0"
-    },
-    ```
-
-7. Add the system message to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant/srv/i18n/messages.properties).
-    ```javascript
-    ACTION_CREATE_PURCHASE_ORDER_DRAFT = Purchase orders cannot be created for draft Poetry Slams.
-    ```
-
-8. Expand poetry slams to remote purchase orders in [*/srv/poetrySlamManagerServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js) by filling OData parameter `/PoetrySlams?$expand=toB1PurchaseOrder` in the on-read of the `PoetrySlams` entity:
     ```javascript
     // Expand poetry slams
     srv.on('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
         // Read the PoetrySlams instances
         let poetrySlams = await next();
 
+        // SAP Business One
         // Check and read SAP Business One purchase order data
-        if (B1IsConnectedIndicator) {
+        const connectorB1 = await ConnectorB1.createConnectorInstance(req);
+        if (connectorB1?.isConnected()) {
             poetrySlams = await connectorB1.readPurchaseOrder(poetrySlams);
+        }
+
+        for (const poetrySlam of convertToArray(poetrySlams)) {
+            [
+                'projectSystemName',
+                'processingStatusText',
+                'projectProfileCodeText'
+            ].forEach((item) => {
+                poetrySlam[item] = poetrySlam[item] || '';
+            });
+
+            // Update PO system name and visibility of the "Create Purchase Order"-button
+            if (poetrySlam.purchaseOrderID) {
+                poetrySlam.createB1PurchaseOrderEnabled = false;
+                poetrySlam.purchaseOrderSystemName = connectorB1.getSystemName();
+            } else {
+                poetrySlam.createB1PurchaseOrderEnabled = connectorB1.isConnected();
+            }
+
+            // Update the backend system connected indicator used in UI for controlling visibility of UI elements
+            poetrySlam.isB1 = connectorB1.isConnected();
         }
 
         // Return remote data
         return poetrySlams;
     });
     ```
+
+    > Note: The connector creates destinations called *b1* and *b1-url*, which connect to the ERP system. You create the destinations later on in the consumer subaccount in SAP BTP.
+    
     > Note: OData features such as *$expand*, *$filter*, *$orderby*, and so on need to be implemented in the service implementation.
 
-9. Extend the on-update event of the `PoetrySlams` entity with an implementation to clear all purchase order data if the `purchaseOrderID` is deleted:
+    iii. Add the implementation of the action *createB1PurchaseOrder*:
+
+    1. Copy the method *createB1PurchaseOrder* from the file [*/srv/poetrySlamManagerServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServicePoetrySlamsImplementation.js) into the implementation.
+
+    2. Add the import of the connector at the beginning of the file:
+
+        ```javascript
+        const ConnectorB1 = require('./connector/connectorB1');
+        ```
+
+    3. Import the `createPurchaseOrder` function from the `entityCalculations`.
+
+        ```javascript
+        const {
+            calculatePoetrySlamData,
+            updatePoetrySlam,
+            convertToArray,
+            createPurchaseOrder
+        } = require('./util/entityCalculations');
+        ```
+
+    4. Add the system message to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant/srv/i18n/messages.properties).
+
+        ```javascript
+        ACTION_CREATE_PURCHASE_ORDER_DRAFT = Purchase orders cannot be created for draft Poetry Slams.
+        ```
+
+4. Extend the on-update event of the `PoetrySlams` entity with an implementation to clear all purchase order data if the `purchaseOrderID` is deleted:
     ```javascript
     srv.on('UPDATE', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
         ...
@@ -393,11 +419,14 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
 
 ### Enhance the Configuration of the SAP Cloud Application Programming Model Project
 
-Enhance the file [*package.json*](../../../tree/main-multi-tenant/package.json) by development configurations for local testing and productive configurations:
+Enhance the file [*package.json*](../../../tree/main-multi-tenant/package.json) with development configurations for local testing and productive configurations. Ensure that the flag *csrf* and *csrfInBatch* is set in the file *package.json* to enable the management of cross-site request forgery tokens (required for POST requests at runtime) using destinations of the type:
+
 ```json
 "b1_sbs_v2": {
     "kind": "odata",
     "model": "srv/external/b1_sbs_v2",
+    "csrf": true,
+    "csrfInBatch": true,
     "[development]": {
         "credentials": {
             "url": "https://{{b1-hostname}}/b1s/v2",
@@ -416,15 +445,7 @@ Enhance the file [*package.json*](../../../tree/main-multi-tenant/package.json) 
 ```
 > Note: The *package.json* refers to the destinations *b1* that need to be created in the consumer SAP BTP subaccount. The destination *b1* refers to business users with principal propagation.
 
-Ensure that the CDS feature *fetch_csrf* is set in the file *package.json* to enable the management of cross-site request forgery tokens (required for POST requests at runtime using destinations of the type *BasicAuthentication*):
-```json
-"cds": {
-    "features": {
-        "fetch_csrf": true
-    },
-}      
-```
-> Note: By default, SAP Cloud Application Programming Model does not handle CSRF tokens for POST requests. Remote services may fail if CSRF tokens are required.
+> Note: By default, SAP Cloud Application Programming Model does not handle CSRF tokens for POST requests. Remote services may fail if CSRF tokens are required. 
 
 > Note: For local testing, replace `{{b1-hostname}}`, `{{test-user}}`, and `{{test-password}}` with a system, user, and password from SAP Business One. Don't push this information to your GitHub repository.
 
@@ -440,15 +461,13 @@ Ensure that the CDS feature *fetch_csrf* is set in the file *package.json* to en
     1. Test the *Service Endpoint* for *B1PurchaseOrder*: The system returns the respective data of SAP Business One (without filtering).
 
     2. The *Create Purchase Order in SAP Business One* button is dependent on the setup of the destinations. Once the destinations are correctly configured and the application is deployed to SAP BTP Cloud Foundry runtime, the *Create Purchase Order in SAP Business One* button will be active.
-    To test this button locally, in _poetrySlamManagerServiceImplementation.js_, change the value of **B1IsConnectedIndicator** to **true**:
+    To test this button locally, in _connectorB1.js_, method _createConnectorInstance_, change the value of **connector.isConnectedIndicator** to **true** after the connector instance is created:
 
         ```javascript
-        B1IsConnectedIndicator = await destinationUtil.checkDestination(
-            req,
-            'b1'
-        );
+        const connector = new ConnectorB1(data);
+        connector.isConnectedIndicator = true;
         ```
-        > Note: This change is required as the *B1IsConnectedIndicator* value is dependent on the setup of destinations. Destinations only work on a deployed application and cannot be tested locally.
+        > Note: This change is required as the *isConnectedIndicator* value is dependent on the setup of destinations. Destinations only work on a deployed application and cannot be tested locally.
 
 4. Open the */poetryslammanager/webapp/index.html* web application and open one of the poetry slams. 
 
@@ -460,3 +479,5 @@ Ensure that the CDS feature *fetch_csrf* is set in the file *package.json* to en
 Update your application in the provider subaccount. For detailed instructions, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](24-Multi-Tenancy-Deployment.md#build-and-deploy-the-multi-tenant-application).
 
 > Note: Make sure any local changes have been reverted before deployment.
+
+You have now successfully deployed the application to the provider subaccount and you're ready to [provision tenants of the multi-tenant application to customers and connect with SAP Business One](./33b-Multi-Tenancy-Provisioning-Connect-B1.md).

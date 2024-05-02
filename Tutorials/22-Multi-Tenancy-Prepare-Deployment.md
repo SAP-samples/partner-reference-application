@@ -1,4 +1,4 @@
-# Preparation of Provider Subaccount 
+# Prepare the Provider Subaccount 
 ## Prepare SAP BTP
 
 Both the single-tenant and the multi-tenant applications use the same names and IDs and, therefore, cannot be deployed into the same SAP BTP subaccount. Hence, you create two new SAP BTP subaccounts. The subaccount *PoetrySlamsProvider* will host the application and handle the application, routing, and subscriptions. The consumer subaccount *PoetrySlamsMTSubscriber1* will be used to subscribe to and access the application. 
@@ -9,29 +9,31 @@ You have already created a subaccount for the one-off deployment. Similar steps 
 
 ## Set Up the SAP BTP Provider Subaccount
 
-In the SAP BTP cockpit (global account), navigate to the provider subaccount and assign the required entitlements:
+1. In the SAP BTP cockpit (global account), create a provider subaccount to host the application runtime (in this example, the data center of *Amazon Web Services (AWS)* and *Europe (Frankfurt)* as region are used).
 
 > Note: In the following steps and descriptions, this subaccount is referred to as *provider subaccount*.
 
-Open *Entity Assignments* and assign quotas for the following entities to your provider subaccount: 
+2. Optional: Assign the subaccount to a directory as a parent.
 
-- *SAP BTP Cloud Foundry runtime* (3 units of application runtime)
-	- As *Plan*, select *standard-edition (Application)*.
-- *SAP HANA Cloud* (1 unit)
-	- As *Plan*, select *hana*.
-- *SAP HANA Schemas & HDI Containers* (min. 3 units: for the provider and two tenants)
-- *SAP Authorization and Trust Management service* (1 unit)
-	- As *Plan*, select *broker*.
-- *SAP Custom Domain Service*
-	- As *Plan*, select *standard (Application)*.
+3. Navigate to the newly created provider subaccount and open *Entity Assignments* and assign quotas for the following entities to your provider subaccount: 
 
-> Note: Contact SAP if there aren't enough service entitlements available in your global account.
+	- *SAP BTP Cloud Foundry runtime* (3 units of application runtime)
+    	> Note: If the value help doesn't offer an item referring to *Cloud Foundry*, select *Application runtime*. Save your changes and the name of the list item changes to *Cloud Foundry*. In your Test, Develop, Deploy (TDD) environment, this entitlement may already have been added by default.
+		- As *Plan*, select *standard-edition (Application)*.
+	- *SAP HANA Cloud* (1 unit)
+		- As *Plan*, select *hana*.
+	- *SAP HANA Schemas & HDI Containers* (min. 5 units: for the provider and four tenants)
+		- As *Plan*, select *hdi-shared*.
+	- *SAP Authorization and Trust Management service* (1 unit)
+		- As *Plan*, select *broker*.
+	- *SAP Custom Domain Service*
+		- As *Plan*, select *standard (Application)*.
 
-The relevant entity assignments are selected by default when the subaccount is created (no action required):
+	The relevant entity assignments are selected by default when the subaccount is created (no action required):
 
-- *Service Manager*, service plan *container*
-- *SaaS Provisioning Service*, service plan *application*
-- *HTML5 Application Repository Service*, service plans *app-runtime* and *app-host*
+	- *Service Manager*, service plan *container*
+	- *SaaS Provisioning Service*, service plan *application*
+	- *HTML5 Application Repository Service*, service plans *app-runtime* and *app-host*
 
 ### Maintain Provider Subaccount Administrators
 
@@ -44,7 +46,7 @@ In the SAP BTP cockpit (provider subaccount), maintain the application administr
 
 In the SAP BTP cockpit (provider subaccount), create an SAP BTP Cloud Foundry runtime space to host the database and the runtime:
 
-1. Go to *Overview* in the subaccount and enable Cloud Foundry:
+1. Go to *Overview* in the subaccount and choose *Enable Cloud Foundry*. Enter the following information:
     - As *Plan*, select *standard*.
 	- As *Landscape*, select *cf-eu10*. 
 	- As *Instance Name*, enter `psm-mt`.
@@ -59,18 +61,20 @@ In the SAP BTP cockpit (provider subaccount), create an SAP BTP Cloud Foundry ru
 	  >
 	  > For example: For the multi-tenant Poetry Slam Manager delivered by SAP, it could be `sap-psm-mt`.
 
-2. Create a space and enter a name, for example, `app` as *Space Name*.
+2. Choose *Create*. 
 
-3. Keep the standard roles and add Cloud Foundry org members and Cloud Foundry space members. 
+3. Create a space and enter a name, for example, `app` as *Space Name*.
+
+4. Keep the standard roles and add [Cloud Foundry org members](https://help.sap.com/docs/btp/sap-business-technology-platform/add-org-members-using-cockpit) and [Cloud Foundry space members](https://help.sap.com/docs/btp/sap-business-technology-platform/add-space-members-using-cockpit).
 
 ### Create a SAP HANA Cloud Database
 
 1. In the SAP BTP cockpit (provider subaccount), in the left navigation pane, go to *Cloud Foundry* and *Spaces*. Open the desired space.
 2. Go to SAP HANA Cloud.
 3. To create an SAP HANA Cloud database, 
-	1. Choose *CF Organization + Space*.
-	2. As *Instance Name*, enter `poetryslams-db`.
-	3. Enter a password.
-	4. Choose *Create* and save your changes.
+	- Choose *CF Organization + Space*.
+	- As *Instance Name*, enter `poetryslams-db`.
+	- Enter a password.
+	- Choose *Create* and save your changes.
 
-You have now successfully prepared your provider account for deployment and can now [enhance the one-off application for multi-tenancy](./23-Multi-Tenancy-Develop-Sample-Application.md).
+You have now successfully prepared your provider account for deployment. Afterwards, you can directly clone this repository into your *Dev Space* to deploy and run the multi-tenant application. Alternatively, you can create the application manually from scratch. Both variants are described in the section [Enhance the One-Off Application for Multitenancy](./23-Multi-Tenancy-Develop-Sample-Application.md).

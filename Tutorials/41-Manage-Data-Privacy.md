@@ -101,7 +101,7 @@ The following section describes how you enhance the **main-multi-tenant** branch
     1. Open the *Role Collections* menu item and create a new role collection called `AuditLog`.
     2. Edit the role collection. 
     3. Add the *Auditlog_Auditor* roles for the Audit Log Management and Audit Log Viewer application.
-    4. Add the *Poetry_Slam_Manager* user group of the previously configured [identity provider](./15-One-Off-Deployment.md#configure-authentication-and-authorization).
+    4. Add the *Poetry_Slam_Manager* user group of the previously configured [identity provider](./15b-One-Off-Deployment.md#configure-authentication-and-authorization).
 
 ## A Guided Tour to Explore the Data Privacy Feature
 

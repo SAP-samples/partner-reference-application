@@ -1,13 +1,11 @@
 # Enhance the Core Application for Multitenancy
 
-With this tutorial, you learn how to create a multi-tenant application based on the core application as described in the first tutorials for a one-off solution.
+With this tutorial, you learn how to create a multi-tenant application based on the core application as described in the first tutorials for a one-off solution. You can either enhance the one-off solution to a multi-tenant solution following the step-by-step guide below or you can fast-forward and deploy the *main-multi-tenant* branch.   
 
-## (Optional) Fast Forward 
-If you want to start right away with a working multi-tenant implementation, you can clone the branch [*main-multi-tenant*](../../../tree/main-multi-tenant) and start deploying it. 
+## Option 1: Fast-Forward 
+If you want to start right away with a working multi-tenant implementation, clone the branch [*main-multi-tenant*](../../../tree/main-multi-tenant) and start deploying it. 
 
-Alternatively, you can enhance the one-off solution to a multi-tenant solution following the step-by-step guide below.  
-
-To fast forward:
+To fast-forward:
 
 1. In the provider subaccount SAP BTP cockpit (subaccount level), navigate to *Instances and Subscriptions*, open *SAP Business Application Studio*, and open the dev space *PoetrySlamsProvider* created during the [preparation of the provider subaccount](./22-Multi-Tenancy-Prepare-Deployment.md).
 
@@ -15,7 +13,7 @@ To fast forward:
 
 3. You can now [deploy the multi-tenant application to the provider SAP BTP account](./24-Multi-Tenancy-Deployment.md).
 
-## Develop the Multi-Tenant Application
+## Option 2: Develop the Multi-Tenant Application
 
 The core application behavior is unchanged from the [*main-single-tenant*](../../../tree/main-single-tenant), so this is the starting point on which the step-by-step guide is based. You add the multitenancy and app router features to the project and make some alterations to allow the project to seamlessly deploy to Cloud Foundry runtime.   
 

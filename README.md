@@ -53,7 +53,6 @@ Upcoming versions of the sample application might include further features provi
 - Calculate the number of free seats and block overbookings.
 - Create projects for poetry slam events in one click and preview project information on the Poetry Slam Manager UI (here, ERP authorizations must apply in the partner application as well!).
 - As an ERP user, start Poetry Slam Manager from your ERP launchpad and navigate from Poetry Slam Manager to the associated project in the ERP system.
-- Synchronize the status of the poetry slam with the status of the associated project.
 - Make use of a standardized online development environment using SAP Business Application Studio.
 - Use a state-of-the-art web application architecture based on HTML5, Node.js, and SAP HANA Cloud.
 - Make use of a model-driven development based on the SAP Cloud Application Programming Model, core data services (CDS), and SAP Fiori elements.
@@ -94,44 +93,52 @@ A complete and working implementation of the above steps is available in separat
 
 This allows you to check out those branches and directly work with the respective implementation. You can use GitHub comparisons to understand the changes required along the development journey.
 
-The tutorials are provided in the ([*main*](../../)) branch.
+The tutorials are provided in the ([*main*](../../)) branch. If you prefer a quick start with a deployment of the poetry slam manager application including all features without further explanation, follow the [quick start guide](./Tutorials/02-Quickstart.md).
 
 Updates to this repository are documented in the [change history](./Tutorials/99-Change-History.md).
 
 ## Tutorials
 
 1. Build a full-stack SAP BTP application with a **one-off deployment** in a customer SAP BTP account:
+    1. [Get an overview of the bill of materials](Tutorials/10-One-Off-BillOfMaterials.md) 
     1. [Prepare your SAP BTP account for development](Tutorials/11-Prepare-BTP-Account.md) 
     2. [Prepare your SAP BTP subaccount for deployment](Tutorials/12-Prepare-Deployment.md)
     3. [Deploy the sample application to a customer SAP BTP account](Tutorials/13-Deploy-Sample-Application.md)
     4. [Develop the core of the SAP BTP application](Tutorials/14-Develop-Core-Application.md)
-    5. [Deploy your SAP BTP application](Tutorials/15-One-Off-Deployment.md)
-    6. [Test, trace, and debug](Tutorials/16-Test-Trace-Debug.md)
-    7. [Go on a guided tour to explore the capabilities of the sample application](Tutorials/17-Guided-Tour.md)
+    5. [Enhance your SAP BTP application for deployment](Tutorials/15a-Prepare-One-Off-Deployment.md)
+    6. [Deploy and set up your SAP BTP application](Tutorials/15b-One-Off-Deployment.md)
+    7. [Test and troubleshoot the application](Tutorials/16-Test-Trace-Debug.md)
+    8. [Go on a guided tour to explore the capabilities of the sample application](Tutorials/17-Guided-Tour.md)
 
 2. Enhance the application to support **multiple customers** using shared SAP BTP resources:
-    1. [Learn about multitenancy and prepare your SAP BTP account for development](./Tutorials/21-Multi-Tenancy-Introduction.md)
-    2. [Prepare your SAP BTP subaccount for multi-tenant deployment](./Tutorials/22-Multi-Tenancy-Prepare-Deployment.md)
-    3. [Enhance the core application for multitenancy](./Tutorials/23-Multi-Tenancy-Develop-Sample-Application.md)
-    4. [Deploy your SAP BTP multi-tenant application](./Tutorials/24-Multi-Tenancy-Deployment.md)
-    5. [Provision your multi-tenant application to subscriber accounts](./Tutorials/25-Multi-Tenancy-Provisioning.md)
+    1. [Get an overview of the bill of materials](Tutorials/20-Multi-Tenancy-BillOfMaterials.md)
+    2. [Learn about multitenancy and prepare your SAP BTP account for development](./Tutorials/21-Multi-Tenancy-Introduction.md)
+    3. [Prepare your SAP BTP subaccount for multi-tenant deployment](./Tutorials/22-Multi-Tenancy-Prepare-Deployment.md)
+    4. [Enhance the core application for multitenancy](./Tutorials/23-Multi-Tenancy-Develop-Sample-Application.md)
+    5. [Deploy your SAP BTP multi-tenant application](./Tutorials/24-Multi-Tenancy-Deployment.md)
+    6. [Provision your multi-tenant application to subscriber accounts](./Tutorials/25-Multi-Tenancy-Provisioning.md)
+    7. [Test and troubleshoot multitenancy](Tutorials/26-Test-Trace-Debug-Multi-Tenancy.md)
     
-3. Integrate the application with the **ERP back end** of your customer:
-    1. [Go on a guided tour to explore the ERP integration](Tutorials/31-Guided-Tour-ERP-Integration.md)
-    2. [Test, trace, and debug the ERP integration](Tutorials/32-Test-Trace-Debug-ERP.md)
-    3. SAP Business One as ERP back end:
-        1. [Integrate the SAP BTP application with SAP Business One](Tutorials/33a-B1-Integration.md)
-        2. [Configure the integration with SAP Business One](Tutorials/33b-Multi-Tenancy-Provisioning-Connect-B1.md)
-    4. SAP S/4HANA Cloud Public Edition as ERP back end: 
-        1. [Integrate the SAP BTP application with SAP S/4HANA Cloud Public Edition](Tutorials/34a-S4HC-Integration.md)
-        2. [Configure the integration with SAP S/4HANA Cloud Public Edition](Tutorials/34b-Multi-Tenancy-Provisioning-Connect-S4HC.md)
-    5. SAP Business ByDesign as ERP back end:
-        1. [Integrate the SAP BTP application with SAP Business ByDesign](Tutorials/35a-ByD-Integration.md)
-        2. [Configure the integration with SAP Business ByDesign](Tutorials/35b-Multi-Tenancy-Provisioning-Connect-ByD.md)
+3. Integrate the application with the **ERP back end** of your customer:   
+    1. SAP Business One as ERP back end:
+        1. [Learn more about the prerequisites and the purpose of SAP Business One integration](Tutorials/33-B1-Prerequisites.md)
+        2. [Integrate the SAP BTP application with SAP Business One](Tutorials/33a-B1-Integration.md)
+        3. [Configure the integration with SAP Business One](Tutorials/33b-Multi-Tenancy-Provisioning-Connect-B1.md)
+    2. SAP S/4HANA Cloud Public Edition as ERP back end: 
+        1. [Learn more about the prerequisites and the purpose of SAP S/4HANA Cloud Public Edition integration](Tutorials/34-S4HC-Prerequisites.md)
+        2. [Integrate the SAP BTP application with SAP S/4HANA Cloud Public Edition](Tutorials/34a-S4HC-Integration.md)
+        3. [Configure the integration with SAP S/4HANA Cloud Public Edition](Tutorials/34b-Multi-Tenancy-Provisioning-Connect-S4HC.md)
+    3. SAP Business ByDesign as ERP back end:
+        1. [Learn more about the prerequisites and the purpose of SAP Business ByDesign integration](Tutorials/35-ByD-Prerequisites.md)
+        2. [Integrate the SAP BTP application with SAP Business ByDesign](Tutorials/35a-ByD-Integration.md)
+        3. [Configure the integration with SAP Business ByDesign](Tutorials/35b-Multi-Tenancy-Provisioning-Connect-ByD.md)
+    4. [Test and troubleshoot an ERP integration](Tutorials/32-Test-Trace-Debug-ERP.md)
+    5. [Go on a guided tour to explore the ERP integration](Tutorials/31-Guided-Tour-ERP-Integration.md)
 
 4. To extend your market reach, add **additional features** and integrate your SAP BTP application with more SAP BTP features and services:
-    1. [Manage data privacy](Tutorials/41-Manage-Data-Privacy.md)
-    2. Open the APIs of the SAP BTP application for third-party integrations:
+    1. [Get an overview of the bill of materials](Tutorials/40-Multi-Tenancy-Features-BillOfMaterials.md)
+    2. [Manage data privacy](Tutorials/41-Manage-Data-Privacy.md)
+    3. Open the APIs of the SAP BTP application for third-party integrations:
         1. [Enable API access to SAP BTP applications using service broker](Tutorials/42a-Multi-Tenancy-Service-Broker.md)
         2. [Configure and consume the APIs of the SAP BTP application](Tutorials/42b-Multi-Tenancy-Provisioning-Service-Broker.md)
 

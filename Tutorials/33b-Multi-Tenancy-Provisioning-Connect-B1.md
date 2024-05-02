@@ -7,7 +7,7 @@ In this section, you integrate Poetry Slam Manager, your SAP Business Technology
     2. Navigate from Poetry Slam Manager to the related SAP Business One purchase order (*Purchase Order* instance).
     3. Use the same Identity Authentication service tenant as a corporate identity provider (IdP) and configure single sign-on for: 
         - Poetry Slam Manager, 
-        - SAP Business One, Web Client, 
+        - SAP Business One, Web client, 
         - SAP Business One Control Center, 
         - and SAP Business One Extension Manager.
 2. Back-channel integration: Create SAP Business One purchase orders in Poetry Slam Manager using OData APIs with basic authentication.
@@ -37,7 +37,7 @@ Therefore, configure a trust relationship between the SAP BTP consumer subaccoun
 
 ### Launch the SAP BTP Multi-Tenant Application
 
-To launch the Poetry Slam Manager application, choose *Go to Application*. 
+To launch the Poetry Slam Manager application, choose *Go to Application*. Copy the link address of the Poetry Slam Manager application and note it down as **SAP BTP Application Tenant URL** for later reference.
 
 > Note: If you're directed to an SAP HANA XS Advanced Login screen after launching the application, check the naming of your SAP BTP Cloud Foundry runtime organization. The organization name must be in lowercase.
 
@@ -119,13 +119,13 @@ Therefore, you need to ensure that the same e-mail addresses are entered for use
     3. In the confirmation window, choose *Yes*.
         > Note: The status of the identity provider is changed to *Active*.
 
-8. To test the SAP Business One user authentication with single sign-on, open the SAP Business One, Web Client URL in an incognito browser window and check if SAP Business One redirects to the Identity Authentication service log-on screen for user authentication. 
+8. To test the SAP Business One user authentication with single sign-on, open the SAP Business One, Web client URL in an incognito browser window and check if SAP Business One redirects to the Identity Authentication service log-on screen for user authentication. 
 9. Use your e-mail and the Identity Authentication service password. If the login to SAP Business One is processed successfully, you will be logged in with the SAP Business One user that has the same e-mail address configured as you entered.
     > Note: Test the control center with single sign-on by opening the SAP Business One *System Landscape Directory* using the URL _https://\<sap-business-one-server:port\>/ControlCenter_.
 
 > Note: For more details, refer to [Identity and Authentication Management in SAP Business One](https://help.sap.com/docs/SAP_BUSINESS_ONE_IAM/548d6202b2b6491b824a488cfc447343/7f94c5836fad44e6a02322d39e229cc3.html?locale=en-US). 
 
-## Get SAP Business One OData Services metadata
+## Get SAP Business One OData Services Metadata
 In general, SAP Business One exposes OData services through the SAP Business One service layer. The Poetry Slam Manager side-by-side SAP BTP application uses SAP Business One
 *Purchse Order* data. It reads and writes purchase orders using OData services exposed via the SAP Business One service layer.
 > Note: To get the OData metadata, exposed by the SAP Business One service layer, run the $metadata URL of the OData service in a browser window: _https://\<service-layer server\>/b1s/v2/$metadata_
@@ -170,9 +170,9 @@ In your SAP BTP consumer subaccount, create the destination *b1* to connect to S
 
 As a last step, you add Poetry Slam Manager to the SAP Business One launchpad to make it possible for poetry slam managers to launch it from SAP Business One.
 
-1. Create an SAP Business One Web Client extension.
+1. Create an SAP Business One, Web client extension in Visual Studio Code.
 
-    The Visual Studio Code Wizard for SAP Business One Web Client Extensions is based on [yeoman-ui](https://github.com/SAP/yeoman-ui), which is a graphical user interface for running Yeoman generators, and runs as a Visual Studio Code extensionInformation published on non-SAP site, aiming to provide a template wizard for customers and partners to create or package the extensions for SAP Business One Web Client. 
+    The Visual Studio Code Wizard for SAP BusinessOne, Web client extensions is based on [yeoman-ui](https://github.com/SAP/yeoman-ui), which is a graphical user interface for running Yeoman generators, and runs as a Visual Studio Code extension, with the aim of providing a template wizard for customers and partners to create or package the extensions for SAP BusinessOne, Web client. 
     
     > Note: Consider the prerequisites: [Development Environment Setup](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/b121ab221f4044baaf6051bba14cc160.html?locale=en-US).
 
@@ -187,13 +187,13 @@ As a last step, you add Poetry Slam Manager to the SAP Business One launchpad to
     9. As *Module Type*, choose *URL Mashup App* and choose *Next*.
     10. Provide module type information such as *module name* and *tile number*.
     11. Provide tile settings information such as *title*, *subtitle*, *dimension*, *tile link method*, *link for the tile*, *decoration type* as *icon*, and icon for tile as *sap-icon://microphone*.
-        > Note: The link for the tile is the URL of the SAP BTP application to be launched from the SAP Business One launchpad, for example, *https://{{Subscribed SAP BTP application URL}}/poetryslammanager/index.html*.
+        > Note: The link for the tile is the URL of the SAP BTP application to be launched from the SAP Business One launchpad, for example, the **SAP BTP Application Tenant URL**, you noted down in a previous step.
     12. Choose package the application as *Yes* in the *Application Summary* section and choose *Finish*.
     13. An npm application is generated. Copy the generated *SAP Business One Web Client Extension.mtar* file.
     14. Upload the downloaded *SAP Business One Web Client Extension.mtar* file into *SAP Business One Extension Manager*.
     > Note: For more details, refer to [Packaging Your Apps Using VS Code Wizard for SAP Business One Web Client Extensions](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/581b9433bb92442eb24b86b34041766e.html?locale=en-US&q=Business%20One%20extension).
 
-2. Create an SAP Business One Web Client extension.
+2. Set up the SAP Business One, Web client in the SAP Business One Extension Manager.
 	1. Open *SAP Business One Extension Manager* using the URL _https://\<sap-business-one-server:port\>/ExtensionManager_.
     2. Open the *Extensions* tab. 
     3. Choose *Import* , choose *Browse*, and select the *SAP Business One Web Client Extension.mtar* created in a previous step.
@@ -206,10 +206,14 @@ As a last step, you add Poetry Slam Manager to the SAP Business One launchpad to
     9. Choose *Finish* and complete the company assignment for the SAP Business One extension.
     > Note: For more details, refer to [Creating a URL Mashup App](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/28461b436583429b9d17c2db43567323.html?locale=en-US&q=Business%20One%20extension).
 
-3. Make the SAP Business One Web Client extension visible on the SAP Business One Web Client UI:
+3. Make the SAP Business One, Web client extension visible on the SAP Business One, Web client UI:
     1. Open *SAP Business One, Web Client* using the URL _https://\<sap-business-one-server:port\>_.
     2. Choose the *Extensions* menu.
     3. Choose the imported *SAP Business One Web Client Extension*.
     4. Click on the *SAP Business One Web Client Extension*. The SAP BTP application is launched in new browser window.
         > Note: The SAP BTP application is launched using single sign-on using Identity Authentication service.
     5. Users can also assign the *SAP Business One Web Client Extension* to the launchpad of the user homepage.
+
+## Remarks and Troubleshooting
+
+If you need more information on how to trace and debug your application with ERP integration, go to the section on [testing and troubleshooting](32-Test-Trace-Debug-ERP.md). If you're looking for more information on the ERP integration of Poetry Slam Manager, take the [guided tour of the ERP integration](31-Guided-Tour-ERP-Integration.md).

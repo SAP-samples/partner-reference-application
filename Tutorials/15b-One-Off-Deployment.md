@@ -1,165 +1,6 @@
-# Deploy your SAP BTP Application
+# Deploy Your SAP BTP Application
 
-## Prepare Your Project Configuration for Cloud Foundry Deployments
-
-Make some adjustments to ensure that the application can be deployed to SAP BTP Cloud Foundry runtime as a central launchpad component.
-
-1. Configure the web app to connect to the app services: To define a route in the web app, open the file [*./app/poetryslammanager/xs-app.json*](../../../tree/main-single-tenant/app/poetryslammanager/xs-app.json) and add the following route at position 1 (Note that the order matters: The most specific one must come first.)
-
-     >  Note: You'll define the destination *launchpad* later as part of project configuration *mta.yml* file. 
-
-      ```json
-        {
-          "authenticationType": "none",
-          "csrfProtection": false,
-          "source": "^/odata/v4/poetryslammanager/",
-          "destination": "launchpad"
-        }
-      ```
-
-2. In the file [*./app/poetryslammanager/xs-app.json*](../../../tree/main-single-tenant/app/poetryslammanager/xs-app.json), you can also define a Content Security Policy (CSP). The CSP allows you to restrict which resources can be loaded.
-   > Note: This is just an example of a CSP, we recommend that you check your use case and your security settings carefully.
-
-      ```json  
-        "responseHeaders": [
-          {
-            "name": "Content-Security-Policy",
-            "value": "default-src 'self' https://sapui5.hana.ondemand.com; frame-ancestors 'self' https://*.hana.ondemand.com;  object-src 'none';"
-          }
-        ]
-      ```
-
-> Note: If you copied the *manifest.json* during the development of the core application, you can skip the next two steps.
-
-3. Add the service name to the web app configuration file [*./app/poetryslammanager/webapp/manifest.json*](../../../tree/main-single-tenant/app/poetryslammanager/webapp/manifest.json). 
-
-    > Note: This service name must be unique within your account and will appear in the runtime URL of the application.
-
-      ```json
-      "sap.cloud": {
-        "service": "poetryslammanager",
-        "public": true
-      }
-      ```
-
-4. In the *dataSources* section, adopt the `uri` by removing the `/` before `odata`. The URI of the data sources is changed now to a relative path.
-
-      ```json
-      "dataSources": {
-        "mainService": {
-          "uri": "odata/v4/poetryslammanager/",
-          "type": "OData",
-          "settings": {
-            "annotations": [],
-            "odataVersion": "4.0"
-          }
-        }
-      }
-      ```
-
-5. In the file [*./app/poetryslammanager/ui5-deploy.yaml*](../../../tree/main-single-tenant/app/poetryslammanager/ui5-deploy.yaml), the packaging of the web UI application is defined. Replace the line `afterTask: replaceVersion` with `beforeTask: generateCachebusterInfo` to ensure that the package is created correctly for the deployment.
-
-## Rename the Application in the Config Files
-
-The wizard for creating a new SAP Cloud Application Programming Model project generated the *mta.yaml* file, which contains all deployment-relevant information. 
-
-The application had been created with the name *partner-reference-application*, but the module and service names in the [*./mta.yaml*](../../../tree/main-single-tenant/mta.yaml) file were renamed from `partner-reference-application-*` to `poetry-slams-*`.
-
-Additionally, rename `partner-reference-application` in the *undeploy* step of the [*./package.json*](../../../tree/main-single-tenant/package.json) to `poetry-slams`.
-
-## Configure the Project Deployment Config Files
-
-Adjust the [*./mta.yaml*](../../../tree/main-single-tenant/mta.yaml) file. 
-
-1. Enhance the build parameters to install the node modules before the build with the CDS development kit.
-    ```yml
-      build-parameters:
-        before-all:
-          #  Defines the build parameter
-          - builder: custom
-            commands:
-              - npm ci --omit=dev
-              - npx -p @sap/cds-dk cds build --production
-    ```
-
-2. Add and configure the destination content module. This is where you define destinations and service keys for the destinations. After the MTA app has been deployed, you'll see two destinations *html_repo_host* and *…_uaa_fiori* in your subaccount.
-
-    > Note that the service name *poetryslammanager* of the web app must match the service name used in the file *manifest.json* of the web app.
-
-    ```yml
-      modules:
-      - name: poetry-slams-destination-content
-        type: com.sap.application.content
-        requires:
-        - name: poetry-slams-repo-host
-          parameters:
-            service-key:
-              name: poetry-slams-repo-host-key
-        - name: poetry-slams-auth
-          parameters:
-            service-key:
-              name: poetry-slams-auth-key
-        - name: poetry-slams-destination-service
-          parameters:
-            content:
-              instance:
-                destinations:
-                - Name: poetryslammanager-repo-host-dest
-                  ServiceInstanceName: poetry-slams-html5-srv
-                  ServiceKeyName: poetry-slams-repo-host-key
-                  sap.cloud.service: poetryslammanager
-                - Authentication: OAuth2UserTokenExchange
-                  Name: poetryslammanager-uaa-fiori-dest
-                  ServiceInstanceName: poetry-slams-auth
-                  ServiceKeyName: poetry-slams-auth-key
-                  sap.cloud.service: poetryslammanager
-                existing_destinations_policy: update
-            content-target: true
-        build-parameters:
-          no-source: true
-    ```
-
-3. Adjust the destination service resource in the file *mta.yaml*. Define the destination resource for the route as defined in the web application configuration file *./app/poetryslammanager/xs-app.json*.
-
-    > Note that the name *launchpad* of the route in *xs-app.json* must match the destination service resource name in the file *mta.yaml*. Enable the HTML5 runtime and add the service API as a required dependency of the destination:
-
-    ```yml
-      resources:
-      - name: poetry-slams-destination-service
-        type: org.cloudfoundry.managed-service
-        parameters:
-          config:
-            HTML5Runtime_enabled: true
-            init_data:
-              instance:
-                destinations:
-                - Authentication: NoAuthentication
-                  Name: ui5
-                  ProxyType: Internet
-                  Type: HTTP
-                  URL: https://ui5.sap.com
-                - Authentication: NoAuthentication
-                  HTML5.DynamicDestination: true
-                  HTML5.ForwardAuthToken: true
-                  Name: launchpad
-                  ProxyType: Internet
-                  Type: HTTP
-                  URL: ~{srv-api/srv-url}
-                existing_destinations_policy: update
-            version: 1.0.0
-          service: destination
-          service-name: poetry-slams-destination-service
-          service-plan: lite
-        requires:
-        - name: srv-api
-    ```
-  
-4. After you've applied the changes described above in the file *mta.yml*, this is what the file looks like: [the MTA file of the sample application](../../../tree/main-single-tenant/mta.yaml).
-
-    > Note that a correct indentation is required.
-
-## Adopt NPM Modules
-The CDS libraries are offered as npm modules in the *package.json*. After the creation of the SAP Cloud Application Programming Model (CAP) project via the wizard, the npm @sap/cds-dk module is added to the [*./package.json*](../../../tree/main-single-tenant/package.json) as a development dependency. This module needs to be moved to the *dependencies* section. You can check the [*package.json*](../../../tree/main-single-tenant/package.json) of the sample implementation to view the result.
+After you developed your application, this tutorial shows you how to deploy your application in a dedicated SAP BTP subaccount, representing an end-to-end provisioning process of a single-tenant partner application in a customer SAP BTP account.
 
 ## Deploy to Cloud Foundry
 
@@ -176,7 +17,7 @@ The CDS libraries are offered as npm modules in the *package.json*. After the cr
 
 4. To deploy the application, run the command `npm run deploy`.
 
-Looking for more details? Go to the [SAP Cloud Application Programming Model documentation on how to deploy to SAP BTP Cloud Foundry runtime](https://cap.cloud.sap/docs/guides/deployment/to-cf).
+Looking for more details? Go to the [SAP Cloud Application Programming Model documentation on how to deploy to SAP BTP Cloud Foundry runtime](https://cap.cloud.sap/docs/guides/deployment/to-cf)
 
 ## Test the HTML5 Application
 
@@ -245,7 +86,7 @@ As a preferred approach, you configure trust between the SAP BTP subaccount and 
 
 #### OpenID Connect Configuration
 
-Set up the trust relationship between the SAP BTP subaccount to the Identity Authentication service using OpenID Connect (OIDC).
+Set up the trust relationship between the SAP BTP subaccount to the Identity Authentication service using OpenID Connect (OIDC). For more information, refer to the [SAP help about OpenID Connect](https://help.sap.com/docs/identity-authentication/identity-authentication/openid-connect). 
 
 > Note: As a prerequisite for this setup, the SAP BTP subaccount and the Identity Authentication service tenant must be assigned to the same customer ID.
 
@@ -260,7 +101,7 @@ Set up the trust relationship between the SAP BTP subaccount to the Identity Aut
 	
 #### SAML 2.0 Configuration (Fallback)
 
-Set up the trust relationship between the SAP BTP subaccount to the Identity Authentication service using SAML 2.0. This approach is the fallback trust configuration if the OIDC configuration is not possible. 
+Set up the trust relationship between the SAP BTP subaccount to the Identity Authentication service using SAML 2.0. For more information, refer to the [SAP help about SAP Cloud Identity Services](https://help.sap.com/docs/identity-authentication/identity-authentication/saml-2-0). This approach is the fallback trust configuration if the OpenID Connect configuration is not possible. 
 	
 > Note: This fallback applies only if the SAP BTP subscriber subaccount and the Identity Authentication service tenant are not assigned to the same customer ID. This setup comes with limitations regarding remote access to the OData services of the SAP BTP app with principal propagation.
 
@@ -277,6 +118,8 @@ Set up the trust relationship between the SAP BTP subaccount to the Identity Aut
 5. Within your SAP BTP subaccount, open the menu item *Security* and go to *Trust Configuration*.
 6. Choose *New SAML Trust Configuration*. 
 7. Upload the *IDP SAML metadata* file and enter a meaningful name and description for the Identity Authentication service (for example, `Corporate IDP` or `Custom IAS (SAML2.0)`).
+
+Looking for more information on the SAP Authorization and Trust Management service? Go to the [Building Side-By-Side Extensions Using SAP BTP tutorial](https://learning.sap.com/learning-journeys/build-side-by-side-extensions-on-sap-btp/describing-authorization-and-trust-management-xsuaa-_cbf0d0c5-29ec-4685-9cf4-487156b41284).
 	
 ### Set Up Users and User Groups
 

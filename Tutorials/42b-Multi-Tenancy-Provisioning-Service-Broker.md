@@ -19,10 +19,10 @@ This section describes how to use the SAP BTP command line interface. For more d
      1. Download the CLI automatically accepting the licence agreement.
 
         ```
-        curl -LJO https://tools.hana.ondemand.com/additional/btp-cli-linux-amd64-2.54.0.tar.gz --cookie eula_3_1_agreed=tools.hana.ondemand.com/developer-license-3_1.txt
+        curl -LJO https://tools.hana.ondemand.com/additional/btp-cli-linux-amd64-2.54.0.tar.gz --cookie eula_3_2_agreed=tools.hana.ondemand.com/developer-license-3_2.txt
         ```
 
-     2. Decompress the downloaded file.
+     2. Decompress the downloaded file. 
 
         ```
         tar -xvzf btp-cli-linux-amd64-2.54.0.tar.gz
@@ -89,8 +89,8 @@ This section describes how to use the SAP BTP command line interface. For more d
       i. Go to *User-Provide Variables* in the *Application Cockpit* of the service broker.
 
       ii. Copy the values of *SBF_BROKER_CREDENTIALS*: The first value is the user (marked in green in the image below), the second is the password (marked in red).
-
-       <img src="./images/42_ServiceBroker_Credentials.png" width="50%">
+      
+         <img src="./images/42_ServiceBroker_Credentials.png" width="50%">
 
    3. Use the information from above (**provider service broker url**, **user**, **password**) to register the consumer subaccount with the service broker. Run this command in the CLI:
 
@@ -102,9 +102,9 @@ This section describes how to use the SAP BTP command line interface. For more d
 
 5. Create an instance of the service broker in the consumer subaccount.
    1. Run the following command.
-     ```
-     btp create services/instance --subaccount <consumer subaccount id> --plan-name fullaccess --offering-name psm-servicebroker-dev --parameters '{ "xs-security": { "xsappname": "psm-sb-sub1-full", "oauth2-configuration": { "credential-types": ["binding-secret"] } } }' --name psm-sb-sub1-full
-     ```
+      ```
+      btp create services/instance --subaccount <consumer subaccount id> --plan-name fullaccess --offering-name psm-servicebroker-dev --parameters '{ "xs-security": { "xsappname": "psm-sb-sub1-full", "oauth2-configuration": { "credential-types": ["binding-secret"] } } }' --name psm-sb-sub1-full
+      ```
    2. Afterward, you will find the instance in the SAP BTP consumer subaccount cockpit under *Services* - *Instances and Subscriptions* - *Instances*.
 
 6. To create credentials for the consumer service broker, run the command:
@@ -114,10 +114,10 @@ This section describes how to use the SAP BTP command line interface. For more d
 
 7. Read the credentials.
    1. Run the following command.
-     ```
-     btp list services/binding
-     btp get services/binding --name binding_full
-     ``` 
+      ```
+      btp list services/binding
+      btp get services/binding --name binding_full
+      ``` 
    2. The relevant information of the output is in the section *credentials*. In that section, note down these values:
       - `uaa.url` as **Service Key UAA-URL**: the URL to retrieve an access token.
          > Note: Make sure that you use the correct value, for example, NOT `uaa.apiurl`!
@@ -156,8 +156,6 @@ Alternatively, you can perform the steps 5, 6, and 7 of the description above in
    
       - `uaa.url` as **Service Key UAA-URL**: the URL to retrieve an access token.
          > Note: Make sure that you use the correct value, for example, NOT `uaa.apiurl`!
-      - `uaa.url` as **Service Key UAA-URL**: the URL to retrieve an access token.
-         > Note: Make sure that you use the correct value, for example, NOT `uaa.apiurl`!
       - `uaa.clientid` as **Service Key UAA Client-ID**: the credential (client ID) required to retrieve an access token from `uaa.url`.
       - `uaa.clientsecret` as **Service Key UAA Client-Secret**: the credential (client secret) required to retrieve an access token from `uaa.url`.
       - `endpoints.psm-servicebroker` as **Service Key API-Endpoint**
@@ -189,11 +187,11 @@ To do so, execute the following HTTP requests using the `curl` command:
    curl <Service Key API-Endpoint>/odata/v4/poetryslammanager/PoetrySlams -H "Authorization: Bearer <access token>"
    ```
 
-More samples are provided within [ServiceBroker_TechnicalAccess.http](./api-samples/ServiceBroker_TechnicalAccess.http). They can be tested with the pre-installed SAP Business Application Studio plug-in REST Client.
+More samples are provided within [ServiceBroker_TechnicalAccess.http](./api-samples/ServiceBroker_TechnicalAccess.http). They can be tested with the preinstalled SAP Business Application Studio plug-in REST Client.
 
 ### Consume the Application APIs as a Named User (Principal Propagation)
 
 In other use cases, you want to consume the services with principal propagation:
-You use a regular user that logs on to the IdP. An example could be an SAP Build application that has its own UI, but needs to consume the APIs of the Poetry Slam Manager application. In this case, you don't want to use a technical user, but use the logon of a regular user with user-specific authorizations.
+You use a regular user that logs on to the IdP, for example, an SAP Build application that has its own UI, but needs to consume the APIs of the Poetry Slam Manager application. In this case, you don't want to use a technical user, but use the logon of a regular user with user-specific authorizations.
 
 You can test this scenario using Postman. In the folder [*api-samples*](./api-samples/), you find a Postman collection and a Postman environment with some examples. Check the documentation of the Postman collection for further details about how to run the examples.

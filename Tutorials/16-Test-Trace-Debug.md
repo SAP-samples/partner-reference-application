@@ -1,4 +1,4 @@
-# Test, Trace, and Debug
+# Test and Troubleshoot
 
 When developing a productive application, quality assurance and the detection of issues are essential.
 
@@ -16,7 +16,7 @@ For quality assurance, it's important to use automated tests that are executed w
 
 ### SAP Cloud Application Programming Model Unit Tests
 
-The data model and services can be tested with the SAP Cloud Application Programming Model unit test framework. The framework uses standard JavaScript libraries such as Chai and Mocha. A reference test implementation can be found in the folder */test/*. There are tests available for the entitiy model (folder */db/*) and for the service (folder */srv/*).
+The data model and services can be tested with the SAP Cloud Application Programming Model unit test framework. The framework uses standard JavaScript libraries such as Chai and Mocha. A reference test implementation can be found in the folder */test/*. There are tests available for the entity model (folder */db/*) and for the service (folder */srv/*).
 
 There are two ways to test the services in SAP Cloud Application Programming Model, either via service APIs or via HTTP APIs. For more details, go to the [SAP Cloud Application Programming Model documentation on testing with cds.test](https://cap.cloud.sap/docs/node.js/cds-test). 
 
@@ -189,3 +189,71 @@ Now, you need to provide the credentials to connect to the SAP HANA Cloud databa
 
 4. To run your application using the SAP HANA Cloud database, execute: `cds serve --profile hybrid`.
 5. To run your unit tests, execute: `cds bind --exec --profile hybrid npm test`.
+
+## Troubleshoot Your Application
+
+There are a number of out-of-the-box tools that can be used to troubleshoot your application.
+
+### Use Browser Development Tools
+
+If you open the UI of your application and it doesn't look as expected, the browser development tools can help you identify the root cause of the issue in the application.
+
+1. Open the browser development tools.
+
+2. Check the requests and responses sent by the application (you may need to reload the page to see the errors). 
+
+      Typical errors could be of type *403 Forbidden*. This would indicate that the user doesn't have the relevant authorizations.
+
+      <img src="./images/Forbidden-BrowserTools.png" width="75%">
+
+3. In this case, check if the application role collections are either assigned to a user or to user groups as configured in the IdP that is connected to this subaccount. 
+
+4. Once you've assigned the authorizations, reload the browser (use an incognito tab if the information is cached) and the app opens.
+
+#### Check User Groups
+
+The Identity Authentication service user groups are used to assign authorizaton roles to users. The user groups will be passed as *assertion attribute* to the SAP BTP subaccount and will be mapped to the respective role collections in the SAP BTP subaccount. Ensure that the user is configured from the Identity Authentication service admin UI and that the user groups have been configured for the typical user roles. Additionally, make sure that the attributes with the name *Groups* have also been assigned from the *Attributes* menu item.
+
+For a detailed description of this process, go to [Configure Authentication and Authorization](15b-One-Off-Deployment.md#configure-authentication-and-authorization).
+
+### Check Event Logs
+
+If experiencing an error with a particular service, event logs can be used to narrow down and identify what actions to take and which service is causing the issue.
+
+1. Navigate to your Cloud Foundry space in the SAP BTP provider account.
+2. On the application menu, go to the *Events* section. 
+3. Identify which events have been triggered since the last action. 
+4. The *Time*, *Event* which occurred, the *Actor* (user who requested the event), the *Actee* (the service that was engaged), and a *Description* of the log are provided.
+
+> Note that this doesn't just provide error information, but also general information too, which can be helpful with narrowing down which service might be causing the problem.
+
+The logs which are generated here only have a limited lifetime and disappear after some time. Should an error be encountered, it is best to check for logs directly.
+
+### Check Application Logs
+
+There are application logs for all modules that are maintained in the *mta.yaml* file. To find them, go to your Cloud Foundry space. 
+
+From here, you can navigate to the specific application and analyze the logs that are maintained for that application. 
+
+1. Navigate to your Cloud Foundry space in the SAP BTP provider account.
+
+   <img src="./images/ApplicationSpecificLogs.png" width="50%">
+
+2. Go to the application you want to analyze.
+3. Navigate to the *Logs* section.
+4. A list of logs is shown for that specific application.
+
+> Note: Just like the event logs, there is a limited lifetime where the application logs can be accessed.
+
+## Give Feedback
+
+In the SAP BTP subaccount cockpit, on the header of the page, there's a feedback icon you can use to report a bug:
+
+<center> <img src="./images/BTP_Feedback.png"> </center>
+
+
+The SAP Cloud Application Programming Model documentation also contains a [Resources](https://cap.cloud.sap/docs/resources/) page, which you can use to report any issues. 
+
+## Test Multi-Tenant Applications
+
+The information above refers to a one-off application, please refer also to [Test and Troubleshoot Multitenancy](26-Test-Trace-Debug-Multi-Tenancy.md) and [Test and Troubleshoot the ERP Integration](32-Test-Trace-Debug-ERP.md).

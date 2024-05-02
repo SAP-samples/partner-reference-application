@@ -6,7 +6,7 @@ You create the poetry slams in the Poetry Slam Manager application as described 
 
 But imagine you want to do additional planning in a project in your core ERP system. 
 
-In the next sections, you learn how to connect different ERP systems, such as SAP S/4HANA Cloud Public Edition or SAP Business ByDesign, and what the integration between the ERP system and the Poetry Slam Manager application looks like from a UI perspective. 
+In the last sections, you learned how to connect different ERP systems, such as SAP Business One, SAP S/4HANA Cloud Public Edition or SAP Business ByDesign, and what the integration between the ERP system and the Poetry Slam Manager application looks like from a UI perspective. 
 
 > Note: This section is based on SAP Business ByDesign, but regardless of the actual ERP system, the integration process includes the same steps.
 
@@ -41,4 +41,4 @@ Let us take you on a guided tour through the integrated sample solution after th
     The link to launch the SAP Business ByDesign project overview is assembled dynamically and uses the SAP Business ByDesign hostname of your SAP BTP subaccount configuration as well as the project ID.
     When you go back to SAP Business ByDesign, no additional login is required because of single sign-on.
 
-This concludes the guided tour... We hope you enjoyed the ride.
+This concludes the guided tour... We hope you enjoyed the ride. 

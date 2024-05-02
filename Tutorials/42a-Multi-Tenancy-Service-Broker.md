@@ -14,7 +14,7 @@ The following section describes how you enhance the *main-multi-tenant* branch (
 
 ## Optional: Add API-Specific Authorizations
 
-When you want to have different access authorizations for APIs, for example, full access with all authorizations auch as *PoetrySlamManagerRoleCollection* and read-only access for other integrations, introduce a new scope: 
+When you want to have different access authorizations for APIs, for example, full access with all authorizations such as *PoetrySlamManagerRoleCollection* and read-only access for other integrations, introduce a new scope: 
 
 1. Add a read-only scope to [*xs-security.json*](../../../blob/main-multi-tenant-features/xs-security.json) and add an entry to the *scopes* list:
      ```json
@@ -26,21 +26,21 @@ When you want to have different access authorizations for APIs, for example, ful
 
 2. Add the scope to the authorization annotations in [*poetrySlamManagerServiceAuthorizations.cds*](../../../blob/main-multi-tenant-features/srv/poetrySlamManagerServiceAuthorizations.cds):
    1. Add the scope to the *requires* list of the service.
-     ```
-     annotate PoetrySlamManager with @(requires: [
-       'PoetrySlamFull',          // Full authorization for managers
-       'PoetrySlamRestricted',    // Restricted access for visitors
-       'PoetrySlamReadonly'       // Read-only access for APIs
-     ]);
-     ```
+      ```
+      annotate PoetrySlamManager with @(requires: [
+        'PoetrySlamFull',          // Full authorization for managers
+        'PoetrySlamRestricted',    // Restricted access for visitors
+        'PoetrySlamReadonly'       // Read-only access for APIs
+      ]);
+      ```
    2. Add the scope with the correct restriction to the different entities.
-     ```
-     {
-       // Read-only access
-       grant: ['READ'],
-       to   : 'PoetrySlamReadonly'
-     }
-     ```
+      ```
+      {
+        // Read-only access
+        grant: ['READ'],
+        to   : 'PoetrySlamReadonly'
+      }
+      ```
 
 ## Add a Service Broker to Your SAP BTP Applications
 
@@ -53,7 +53,7 @@ When you want to have different access authorizations for APIs, for example, ful
 2. Create a service broker Node.js application:
    1. Create a new directory called `broker` in the project root folder.
    2. Run the command `npm init` in the new folder to initialize the Node.js project.
-     > Note: You're prompted to answer several questions. You can use the values `psmbroker` as a package name and `Servicebroker for the Poetry Slam Manager sample application` as a description. Use the default values for all other fields. Once completed, this command creates a [*package.json*](../../../blob/main-multi-tenant-features/broker/package.json) file in the broker directory. Now, due to this file, SAP BTP Cloud Foundry runtime identifies it as a Node.js application.
+      > Note: You're prompted to answer several questions. You can use the values `psmbroker` as a package name and `Servicebroker for the Poetry Slam Manager sample application` as a description. Use the default values for all other fields. Once completed, this command creates a [*package.json*](../../../blob/main-multi-tenant-features/broker/package.json) file in the broker directory. Now, due to this file, SAP BTP Cloud Foundry runtime identifies it as a Node.js application.
 
 3. Adopt the newly created *package.json*:
     Remove the line specifying the value for `main` in the newly created *package.json*. You can use [*package.json*](../../../blob/main-multi-tenant-features/broker/package.json) as a reference.
@@ -84,7 +84,7 @@ When you want to have different access authorizations for APIs, for example, ful
    1. Create a file called [*catalog.json*](../../../blob/main-multi-tenant-features/broker/catalog.json) in the current *broker* directory and describe the service catalog.
       > Note: The service catalog describes the services offered by this service broker. It's defined in a JSON format as described in the [SAP BTP Cloud Foundry runtime documentation](https://docs.cloudfoundry.org/services/api.html#catalog-management).
 
-      > Note: The Partner Reference Application defines two different plans. The plans are used to define different authorization scopes.
+      > Note: The Partner Reference Application defines 3 different plans. The plans are used to define different authorization scopes, which is done in the `mta.yaml` further below.
     Here's an example of `catalog.json`:
       ```json
       {
@@ -95,7 +95,8 @@ When you want to have different access authorizations for APIs, for example, ful
             "bindable": true,
             "plans": [
               { "name": "fullaccess", "description": "Full Access plan" },
-              { "name": "readonlyaccess", "description": "Read-only Access plan" }
+              { "name": "readonlyaccess", "description": "Read-only Access plan" },
+              { "name": "namedaccess", "description": "Access plan for named users" }
             ]
           }
         ]
@@ -150,6 +151,8 @@ When you want to have different access authorizations for APIs, for example, ful
                   readonlyaccess:
                     authorities:
                       - "$XSMASTERAPPNAME.PoetrySlamReadonly"
+                  namedaccess:
+                    authorities:
               extend_credentials:
                 shared:
                   endpoints:
@@ -160,9 +163,25 @@ When you want to have different access authorizations for APIs, for example, ful
     - See [the documentation of the `@sap/sbf` module](https://www.npmjs.com/package/@sap/sbf#additional-service-configuration) for more details.
     - Each key in this object matches a service name in the [*catalog.json*](../../../blob/main-multi-tenant-features/broker/catalog.json). In the Partner Reference Application, this is *psm-servicebroker*.
       Its value is an object with the following properties:
-        - `extend_xssecurity`: an object that contains the property `per_plan`. It consists of objects for each plan as defined in the [*catalog.json*](../../../blob/main-multi-tenant-features/broker/catalog.json). The Partner Reference Application has the plans `fullaccess` and `readonlyaccess`. The object for each plan contains the property `authorities`, which includes values that match a scope as defined in the [*xs-security.json*](../../../blob/main-multi-tenant-features/xs-security.json).
+        - `extend_xssecurity`: an object that contains the property `per_plan`. It consists of objects for each plan as defined in the [*catalog.json*](../../../blob/main-multi-tenant-features/broker/catalog.json). The Partner Reference Application has the plans `fullaccess` and `readonlyaccess` for **technical-user access**. The object for each plan contains the property `authorities`, which includes values that match the scope as defined in the [*xs-security.json*](../../../blob/main-multi-tenant-features/xs-security.json). In addition, the plan `namedaccess` has no authorities. It's used for **named-user access** to make sure that the authorization scopes will be the ones of the user that is logged on. You can find more information on how to use technical and named users in the next section.
         - `extend_credentials`: An object that contains the property `shared`. It consists of an object where service end points are defined. The service name `psm-servicebroker` matches the name of the service in [*catalog.json*](../../../blob/main-multi-tenant-features/broker/catalog.json).
 
-12. Build and deploy the multi-tenant application to the provider SAP BTP subaccount.
+12. To test with named users, you need an authorization code. For this code, you will need a `callback url`. 
 
-In the next step, you create an instance of the service broker in a consumer subaccount. Go to [Configure and Consume the APIs of the SAP BTP Application](./42b-Multi-Tenancy-Provisioning-Service-Broker.md).
+In the tests provided in the next chapter, `http://localhost` will be used as `callback url`. You must declare this to the authorization service to ensure that this service accepts corresponding authorization request. For this purpose, add it to the configuration in the [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml) file.
+
+    Here is the corresponding addition:
+  
+      ```yml
+      resources:
+        - name: poetry-slams-auth
+          parameters:
+            config:
+              oauth2-configuration:
+                redirect-uris:
+                  - http://localhost # Redirect for local testing with the service broker
+      ```
+
+13. Build and deploy the multi-tenant application to the provider SAP BTP subaccount.
+
+In the next step, you create an instance of the service broker in a consumer subaccount and use it to access the OData service of the application. Go to [Configure and Consume the APIs of the SAP BTP Application](./42b-Multi-Tenancy-Provisioning-Service-Broker.md).
