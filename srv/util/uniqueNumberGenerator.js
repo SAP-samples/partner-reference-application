@@ -8,7 +8,7 @@ module.exports = class uniqueNumberGenerator {
     let result;
     switch (dbKind) {
       case 'hana':
-        // With cloud hana, the embedded functionality of numbering by sequence is used.
+        // With HANA Cloud, the embedded functionality of numbering by sequence is used.
         // The sequence is a database object that is used to automatically generate the incremented list of numeric values.
         // Sequence specification file used in the generating process: ./db/src/poetrySlamNumber.hdbsequence
 

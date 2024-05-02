@@ -35,7 +35,7 @@ describe('Poetryslams in PoetrySlamManager Service', () => {
     db = await cds.connect.to('db');
     expect(db).to.exist;
 
-    test.data.reset;
+    await test.data.reset();
 
     // Read all poetry slams for usage in the tests
     poetrySlams = await GET(`/odata/v4/poetryslammanager/PoetrySlams`, {

@@ -1,6 +1,6 @@
 {
   "name": "poetryslammanager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An application to create and manage poetry slams.",
   "keywords": [
     "ui5",
@@ -14,9 +14,9 @@
   },
   "devDependencies": {
     "@sap/ui5-builder-webide-extension": "^1.1.9",
-    "@ui5/cli": "^3.7.3",
+    "@ui5/cli": "^3.9.2",
     "mbt": "^1.2.27",
-    "ui5-task-zipper": "^3.1.1"
+    "ui5-task-zipper": "^3.1.3"
   },
   "ui5": {
     "dependencies": [

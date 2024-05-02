@@ -220,7 +220,6 @@ annotate service.PoetrySlams with @(
                 Action       : 'PoetrySlamManager.publish',
                 Label        : '{i18n>publish}',
                 ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
-
             },
             {
                 $Type        : 'UI.DataFieldForAction',
