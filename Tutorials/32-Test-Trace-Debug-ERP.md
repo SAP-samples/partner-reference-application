@@ -1,59 +1,55 @@
-# Test, Trace, and Debug the ERP Integration
-
-When developing a productive application, quality assurance and the detection of issues are essential.
-
-To keep things simple, here's a high-level summary of what it's all about: 
+# Test and Troubleshoot an ERP Integration
 
 ## Manual Test
 
-You can manually test the application on your local machine. 
+You can manually test the application from SAP Business Application Studio. 
 
-1. Edit the development credentials in the file *package.json*:
-
+1. To edit the development credentials in the [*package.json*](../../../tree/main-multi-tenant/package.json) file, replace the placeholders such as `{{b1-hostname}}`, `{{test-user}}`, `{{test-password}}`, and so on with the information of your ERP test systems:
     ```json
-    "byd_khproject": {
-        "kind": "odata-v2",
-        "model": "srv/external/byd_khproject",
-        "[development]": {
-            "credentials": {
-                "url": "https://{{byd-hostname}}/sap/byd/odata/cust/v1/khproject/",
-                "authentication": "BasicAuthentication",
-                "username": "{{user}}",
-                "password": "{{password}}"
+    "cds": {
+        "requires": {
+            "b1_sbs_v2": {
+                "kind": "odata",
+                "model": "srv/external/b1_sbs_v2",
+                "csrf": true,
+                "csrfInBatch": true,
+                "[development]": {
+                    "credentials": {
+                        "url": "https://{{b1-hostname}}/b1s/v2",
+                        "authentication": "BasicAuthentication",
+                        "username": "{{test-user}}",
+                        "password": "{{test-password}}"
+                    }
+                },
+                "[production]": {
+                    "credentials": {
+                        "destination": "b1",
+                        "path": "/b1s/v2"
+                    }
+                }
             }
         }
-    },
-    "byd_khproject_tech_user": {
-        "kind": "odata-v2",
-        "model": "srv/external/byd_khproject_tech_user",
-        "[development]": {
-            "credentials": {
-                "url": "https://{{byd-hostname}}/sap/byd/odata/cust/v1/khproject/",
-                "authentication": "BasicAuthentication",
-                "username": "{{user}}",
-                "password": "{{password}}"
-            }
-        }
-    },
+    }
     ```
 
-2. Run the command `cds watch` or `cds watch profile --development` on the command line interface. This will start a Node.js server including the web application.
+2. Run the command `cds watch --profile development` on the command line interface. This will start the web application with the above development configuration.
 
 ## Create Action
-The *Create Project* button is dependent on the setup of the destinations. Once the destinations are correctly configured and the app is deployed to SAP BTP Cloud Foundry runtime, the button will be active. 
+The *Create Project* button is dependent on the setup of the destinations. Once the destinations are correctly configured and the application is deployed to SAP BTP Cloud Foundry runtime, the button to create projects will be active. 
 
-To test the button locally, make sure that the visibility of the button is independent from the destination in [*poetrySlamManagerServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js).
+To test this button locally, edit a specific connector, for example, for SAP Business ByDesign [*connectorByD.js*](../../../tree/main-multi-tenant/srv/connector/connectorByD.js). In method _createConnectorInstance_, change the value of **connector.isConnectedIndicator** to **true** after the connector instance is created:
 
-Change the *IsConnectedIndicator* value of the ERP system you want to test to *true*, for example, by adding the following line before the return statement in the *on-READ* event of the *PoetrySlams* entity: **ByDIsConnectedIndicator = true;**
+```javascript
+const connector = new ConnectorS4HC(data);
+connector.isConnectedIndicator = true;
+```
 
 > Note: Change this value because the *Indicator* value is dependent on the setup of destinations. Destinations only work on a deployed app and cannot be tested locally.
 
-1. Open the [*/poetryslammanager/webapp/index.html*](../../../tree/main-multi-tenant/app/poetryslammanager/webapp/index.html) web application. 
-2. Open one of the poetry slams. 
-3. Choose *Create Project*. 
-4. The system creates a project in the desired ERP and displays the details in the *Project Details* section. 
-5. Click on the project link and the system opens a browser window with the project overview.
+1. Open the web application and open one of the poetry slams. 
+2. Choose *Create Project*. The system creates a project in the desired ERP and displays the details in the *Project Details* section. 
+3. Click on the project link and the system opens a browser window with the project overview.
 
-## Trace and Debug
+# Additional Information
 
-See the section [Test, Trace, Debug the Core Application](./16-Test-Trace-Debug.md).
+The information above is specific to the ERP integration. Find additional hints in the tutorials [Test and Troubleshoot](16-Test-Trace-Debug.md) and [Test and Troubleshoot Multitenancy](26-Test-Trace-Debug-Multi-Tenancy.md).

@@ -1,5 +1,7 @@
 # Develop the Core of the SAP BTP Application
 
+This tutorial shows you how to develop and test your application locally. First, you learn how the domain model and the business logic are defined with SAP Cloud Application Programming Model. Then, you add the user interface with SAP Fiori elements.
+
 ## Create a New Project Based on SAP Cloud Application Programming Model
 1. To start a new development project, go to the settings in SAP Business Application Studio and open the *Command Palette...*.
 
@@ -56,18 +58,20 @@ After you've defined the domain model with its entities, define a set of [SAP Cl
 
 Copy the service definition from [*/srv/poetrySlamManagerService.cds*](../../../tree/main-single-tenant/srv/poetrySlamManagerService.cds) into your project.
 
+To practice creating service entities, go to the [Defining Services tutorial](https://learning.sap.com/learning-journeys/develop-full-stack-applications-using-productivity-tools-in-sap-business-application-studio/defining-services_b82e0775-6d98-4b2f-b12c-2364af1f54b9).
+
 ## Create Business Logic
 
-To add behavior to the domain model, you can implement a set of exits in form of event handlers. Create a file */srv/poetrySlamManagerServiceImplementation.js* as referenced from the */srv/poetrySlamManagerService.cds* definition. Within this file, you can implement all required event handlers. Every entity defined in the domain model definition comes with a set of generic event handlers for CRUD (create, read, update, delete) operations. Additionally, you can register one event handler per action (for example, *cancel* or *publish*). Note that for draft-enabled entities, you need to decide if the logic is required for the draft, the activated entity, or for both. 
+To add behavior to the domain model, you can implement a set of exits in form of event handlers. Create a file */srv/poetrySlamManagerServiceImplementation.js* as referenced from the */srv/poetrySlamManagerService.cds* definition as main file of your service implementation. Within this file, you can implement all required event handlers. For better readability, in the Partner Reference Application, the service implementation is split into several files: the main file and one file for each entitiy with business logic. Every entity defined in the domain model definition comes with a set of generic event handlers for CRUD (create, read, update, delete) operations. Additionally, you can register one event handler per action (for example, *cancel* or *publish*). Note that for draft-enabled entities, you need to decide if the logic is required for the draft, the activated entity, or for both. 
 
-Note that some code functions have been defined in a separate file. These are constants for code list values.
+Note that some code functions have been defined in separate utility files such as specific calculations for the entities and the constants for code list values.
 
-Copy the [Poetry Slam Manager service implementation](../../../tree/main-single-tenant/srv/poetrySlamManagerServiceImplementation.js) into the *srv* folder and the [code functions](../../../tree/main-single-tenant/srv/util/codes.js) into the *srv/util* folder of your project.
+Copy the main file of the [Poetry Slam Manager service implementation](../../../tree/main-single-tenant/srv/poetrySlamManagerServiceImplementation.js), the service implementation of the [poetry slams entity](../../../tree/main-single-tenant/srv/poetrySlamManagerServicePoetrySlamsImplementation.js), and the service implementation of the [visits entity](../../../tree/main-single-tenant/srv/poetrySlamManagerServiceVisitsImplementation.js) into the *srv* folder and the [code definitions](../../../tree/main-single-tenant/srv/util/codes.js) and [entity calculation functions](../../../tree/main-single-tenant/srv/util/entityCalculations.js) into the *srv/util* folder of your project.
 
 ### Readable IDs
 In addition to technical UUIDs, this solution generates readable IDs that end users can use to uniquely identify poetry slam documents. Compared to randomly generated UUIDs, these readable IDs are user-friendlier as they are easier to remember. One common approach for generating readable IDs is to use a combination of meaningful words and numbers. In this example, the poetry slam number is a combination of a prefix and a generated number, for example, *PS-10*.
 
-The number generation depends on the database that you use. For local testing, we use an SQLite database and, for deployed solutions, SAP HANA Cloud. In SQLite, we use the AUTOINCREMENT feature. In SAP HANA Cloud, we use a HANA sequence. This distinction is implemented in the function [getNextNumber of class uniqueNumberGenerator](../../../tree/main-single-tenant/srv/util/uniqueNumberGenerator.js), which is called in the [Poetry Slam Manager service implementation](../../../tree/main-single-tenant/srv/poetrySlamManagerServiceImplementation.js) when the poetry slam is created (which is the first time a draft is saved).
+The number generation depends on the database that you use. For local testing, you use an SQLite database, and, for deployed solutions, SAP HANA Cloud. In SQLite, you use the AUTOINCREMENT feature. In SAP HANA Cloud, you use a HANA sequence. This distinction is implemented in the function [getNextNumber of class uniqueNumberGenerator](../../../tree/main-single-tenant/srv/util/uniqueNumberGenerator.js), which is called in the [Poetry Slam Manager service implementation](../../../tree/main-single-tenant/srv/poetrySlamManagerServicePoetrySlamsImplementation.js) when the poetry slam is created (which is the first time a draft is saved).
 
 The sequence used by SAP HANA Cloud is defined in the [poetrySlamNumber.hdbsequence](../../../tree/main-single-tenant/db/src/poetrySlamNumber.hdbsequence). Note that, for SAP HANA Cloud sequences, the generated numbers can't be rolled back. So, if a transaction is not committed, a number is lost from the sequence.
 
@@ -116,7 +120,7 @@ entity PoetrySlamStatusCodes : sap.common.CodeList {
         ...
 }
 ```
-You handle the status transitions of an instance in the event handlers of the [service implementation](../../../tree/main-single-tenant/srv/poetrySlamManagerServiceImplementation.js). 
+You handle the status transitions of an instance in the event handlers of the [service implementation of an entity](../../../tree/main-single-tenant/srv/poetrySlamManagerServicePoetrySlamsImplementation.js). 
 - In Poetry Slam Manager, the PoetrySlam entity uses *PoetrySlamStatusCodes*. After an instance has been created, the status is set to the default *In Preparation*.
 - With the *Publish* action of the PoetrySlam entity, a PoetrySlam instance is published as soon as the user calls the action. 
 - The status *Cancel* is set as soon as the *Cancel* action is called.
@@ -156,6 +160,8 @@ Next, you add an SAP Fiori element-based user interface.
    - *Title*: `Poetry Slams`
    - *Subtitle* (optional): `Manage Poetry Slams`
 10. Choose *Finish*. The wizard creates the */app* folder, which contains all files related to the user interface.
+
+Looking for more information on using SAP Fiori tools? See the tutorial [Serving SAP Fiori UIs](https://cap.cloud.sap/docs/advanced/fiori#using-sap-fiori-tools).
 
 ### Fine-Tune the User Interface
 To adapt the generated user interface to your needs, you can either use the [SAP Fiori tools, application modeler](https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/a9c004397af5461fbf765419fc1d606a.html?locale=en-US) or you can change the generated files manually.
@@ -235,7 +241,7 @@ By default, lists aren't automatically prefilled when the *List Report* is displ
 To implement a color-coding system for specific columns on the user interface, add a hidden column *statusCriticality* that contains color-coding information. Note that the column is not part of the database model, but only added in the service definition and filled dynamically at READ of the entity.
 
 - Field definition in [*poetrySlamManagerService.cds*](../../../tree/main-single-tenant/srv/poetrySlamManagerService.cds)
-- Logic to fill it in [*poetrySlamManagerServiceImplementation.js*](../../../tree/main-single-tenant/srv/poetrySlamManagerServiceImplementation.js)
+- Logic to fill in [*poetrySlamManagerServicePoetrySlamsImplementation.js*](../../../tree/main-single-tenant/srv/poetrySlamManagerServicePoetrySlamsImplementation.js)
     ```javascript
     for (const poetrySlam of convertToArray(data)) {
         const status = poetrySlam.status?.code || poetrySlam.status_code;
@@ -378,7 +384,6 @@ For details, refer to the [SAP Cloud Application Programming Model documentation
 ```json
 "cds": {
     "features": {
-        "fetch_csrf": true,
         "assert_integrity": "db"
     },
     "requires": {
@@ -469,4 +474,6 @@ Now, you can start the web application and test it locally in SAP Business Appli
 
 If you want to get more details about the application implementation, go to [Test, Trace, Debug](./16-Test-Trace-Debug.md).
 
-In the next step, you'll enhance the application in such a way that you can [deploy it to your SAP Business Technology Platform Account](./15-One-Off-Deployment.md). 
+For more in-depth information on building SAP Cloud Application Programming Model applications, see the [SAP Cloud Application Programming Model documentation](https://cap.cloud.sap/docs/).
+
+In the next step, you'll enhance the application in such a way that you can [deploy it to your SAP Business Technology Platform account](./15a-Prepare-One-Off-Deployment.md). 

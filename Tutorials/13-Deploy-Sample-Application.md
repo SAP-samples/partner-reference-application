@@ -6,7 +6,11 @@ This tutorial guides you through the steps to deploy and configure the sample ap
 
 1. In the SAP BTP cockpit (subaccount level), navigate to *Instances and Subscriptions*, open *SAP Business Application Studio*, and create a new *Dev Space* with *Full-Stack Cloud Application*.
 
-2. Start and open the SAP Business Application Studio dev space and use the tile *Clone from Git* on the *Welcome* view to clone this GitHub repository (https://github.com/SAP-samples/partner-reference-application).
+2. Start and open the SAP Business Application Studio dev space.
+
+3. To clone this GitHub repository, on the *Welcome* view, choose *Clone from Git* (https://github.com/SAP-samples/partner-reference-application). 
+
+> To learn more about how to clone a repository, go to the [GitHub documentation](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository).
 
 ### Build and Deploy Your Application
 
@@ -25,13 +29,13 @@ This tutorial guides you through the steps to deploy and configure the sample ap
 
 ## Configure the Launchpad in SAP Build Work Zone
 
-Create and configure a launchpad site as described in [Configure the Launchpad](15-One-Off-Deployment.md#configure-sap-build-work-zone).
+Create and configure a launchpad site as described in [Configure the Launchpad](15b-One-Off-Deployment.md#configure-sap-build-work-zone).
 
 > Note: SAP Build Work Zone has already been subscribed in the section *Set Up the SAP BTP Subaccount*.
 
 ## Configure Authentication and Authorization
 
-Set up trust between the SAP BTP subaccount and the Identity Authentication service, and set up end user authorizations following the steps in [Configure Authentication and Authorization](15-One-Off-Deployment.md#configure-authentication-and-authorization). This section also describes how to start the deployed sample application with single sign-on.
+Set up trust between the SAP BTP subaccount and the Identity Authentication service, and set up end user authorizations following the steps in [Configure Authentication and Authorization](15b-One-Off-Deployment.md#configure-authentication-and-authorization). This section also describes how to start the deployed sample application with single sign-on.
 
 In the SAP BTP subaccount, open the menu item *Role Collections* and add the user group *Poetry_Slam_Manager* to the *Launchpad_Admin* role collection.
 

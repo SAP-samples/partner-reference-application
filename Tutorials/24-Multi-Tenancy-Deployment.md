@@ -1,4 +1,4 @@
-# Deploy the Multi-tenant Application to the Provider SAP BTP Account
+# Deploy the Multi-Tenant Application to the Provider SAP BTP Account
 
 This tutorial guides you through the steps to deploy and configure the multi-tenant sample application (Poetry Slam Manager) in a dedicated SAP BTP provider subaccount.
 
@@ -43,9 +43,11 @@ In this example, you use the default domain provided by SAP and use the SAP Cust
         3. Select the default landscape in the *Landscape Info* step and go to the next step.
         4. Select the default reserved domain proposed by the system and go to the next step.
         5. Enter the subdomain name as `{cloud-foundry-org-name}-{cloud-foundry-space-name}-{approuter-module-name}` and choose *Finish*.
-            > Note: The system creates a custom domain with the name *{cloud-foundry-org-name}-{cloud-foundry-space-name}-{approuter-module-name}.{reserved domain name}*.
+            > Note: The system creates a custom domain with the name *{cloud-foundry-org-name}-{cloud-foundry-space-name}-{approuter-module-name}.{reserved domain name}*. 
 
             > Note: By default, the *_approuter-module-name_* is `poetry-slams`.
+
+            > Note: According to the proposals in this tutorial, the name is *sap-psm-mt-app-poetry-slams.cfapps.eu12.hana.ondemand.com*.
 
         > Note: TLS Configuration is optional: If you don't create a TLS configuration, *Default_without_Client_Authentication* will be used in the next steps.
     4. To launch the *Server Certificates* application and create a server certificate for multi-tenant application:
@@ -61,9 +63,7 @@ In this example, you use the default domain provided by SAP and use the SAP Cust
         7. In the *Enable Automation* message, choose *Enable*. 
            > Note: The automation process starts and the system tells you that the automation process in progress, which may take a few hours. However, ideally, automation takes only few minutes.
         
-        8. Go to the *Domains* tab and navigate to *CUSTOM DOMAINS*. A custom domain with the name *.{cloud-foundry-org-name}-{cloud-foundry-space-name}-{approuter-module-name}.{cloud foundry endpoint}* and with the status *active* is listed.
-
-        9. If automation is enabled and the status is inactive, **you must activate the certificate**:
+        8. If automation is enabled and the status is inactive, **you must activate the certificate**:
 
             1. To activate the server certificate, choose *Activate*.
 
@@ -74,6 +74,8 @@ In this example, you use the default domain provided by SAP and use the SAP Cust
             4. In the *Summary and confirmation* step, review the configuration and choose *Finish*. The status of the server certificate will be set to *In Progress* and the **process can take a few seconds up to a minutes**.
 
             5. Once the process is completed, the status of the server certificate changes to *Active*. As a result, an active custom domain is created. 
+            
+    5. Go to the *Domains* tab and navigate to *CUSTOM DOMAINS*. A custom domain with the name *.{cloud-foundry-org-name}-{cloud-foundry-space-name}-{approuter-module-name}.{cloud foundry endpoint}* and with the status *active* is listed.
 
 
 ## Set Up the Subscription Management Dashboard

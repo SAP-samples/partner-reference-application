@@ -40,17 +40,19 @@ You use the SAP S/4HANA Cloud Public Edition OData services for enterprise proje
     - `cds import ./external_resources/S4HC_ENTPROJECTPROCESSINGSTATUS_0001.edmx --as cds` 
     - `cds import ./external_resources/S4HC_ENTPROJECTPROFILECODE_0001.edmx --as cds` 
 
-    As a result, the system creates CDS files in the folder *./srv/external* for all remote services and enhanced the file *package.json* by CDS configurations referring to the remote services.
+    As a result, the system creates CDS files in the folder *./srv/external* for all remote services and enhanced the file *package.json* with CDS configurations referring to the remote services.
 
     > Note: Don't use the CDS import command parameter `--keep-namespace` because it would lead to service name clashes if you import multiple SAP S/4HANA Cloud Public Edition OData services.
 
-6. Enhance the file [*package.json*](../../../tree/main-multi-tenant/package.json) by development configurations for local testing and to refer to the destinations used for productive setups:  
+6. Enhance the file [*package.json*](../../../tree/main-multi-tenant/package.json) with development configurations for local testing and productive configurations. Ensure that the flag *csrf* and *csrfInBatch* is set in the file *package.json* to enable the management of cross-site request forgery tokens (required for POST requests at runtime) using destinations of the type:
 
     ```json
     "cds": {
         "S4HC_API_ENTERPRISE_PROJECT_SRV_0002": {
             "kind": "odata-v2",
             "model": "srv/external/S4HC_API_ENTERPRISE_PROJECT_SRV_0002",
+            "csrf": true,
+            "csrfInBatch": true,
             "[development]": {
                 "credentials": {
                     "url": "https://{{S4HC-hostname}}/sap/opu/odata/sap/API_ENTERPRISE_PROJECT_SRV;v=0002",
@@ -69,6 +71,8 @@ You use the SAP S/4HANA Cloud Public Edition OData services for enterprise proje
         "S4HC_ENTPROJECTPROCESSINGSTATUS_0001": {
             "kind": "odata",
             "model": "srv/external/S4HC_ENTPROJECTPROCESSINGSTATUS_0001",
+            "csrf": true,
+            "csrfInBatch": true,
             "[development]": {
                 "credentials": {
                     "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojprocessingstat/srvd_a2x/sap/entprojectprocessingstatus/0001",
@@ -87,6 +91,8 @@ You use the SAP S/4HANA Cloud Public Edition OData services for enterprise proje
         "S4HC_ENTPROJECTPROFILECODE_0001": {
             "kind": "odata",
             "model": "srv/external/S4HC_ENTPROJECTPROFILECODE_0001",
+            "csrf": true,
+            "csrfInBatch": true,
             "[development]": {
                 "credentials": {
                     "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojectprofilecode/srvd_a2x/sap/entprojectprofilecode/0001",
@@ -107,13 +113,15 @@ You use the SAP S/4HANA Cloud Public Edition OData services for enterprise proje
 
     > Note: The *package.json* refers to the destinations *s4hc* and *s4hc-tech-user* that must be created in the consumer SAP BTP subaccount. The destination *s4hc* is used for remote service calls with principal propagation. See the next section for more details.
 
+    > Note: By default, SAP Cloud Application Programming Model does not handle CSRF tokens for POST requests. Remote services may fail if CSRF tokens are required.
+
     > Note: For local testing, replace `{{S4HC-hostname}}`, `{{test-user}}`, and `{{test-password}}` with a system, user, and password from SAP S/4HANA Cloud Public Edition. However, don't push this information to your GitHub repository.
 
 ### Enhance the Entity Model to Store Key Project Information
 
-In SAP Business Application Studio, enhance the SAP Cloud Application Programming Model entity models in the file [*/db/poetrySlamManagerModel.cds*](../../../tree/main-multi-tenant/db/poetrySlamManagerModel.cds) by elements to store project key information, which makes it possible to associate poetry slams with projects in the remote ERP systems.
+In SAP Business Application Studio, enhance the SAP Cloud Application Programming Model entity models in the file [*/db/poetrySlamManagerModel.cds*](../../../tree/main-multi-tenant/db/poetrySlamManagerModel.cds) with elements to store project key information, which makes it possible to associate poetry slams with projects in the remote ERP systems.
 
-1. Enhance the entity *PoetrySlams* by the following elements:
+1. Enhance the entity *PoetrySlams* with the following elements:
     ```javascript
     projectID       : String;
     projectObjectID : String;
@@ -121,7 +129,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     projectSystem   : String;  
     ```  
 
-2. Enhance the annotations of entity *PoetrySlams* by the following elements:
+2. Enhance the annotations of entity *PoetrySlams* with the following elements:
     ```javascript
     projectID           @title: '{i18n>projectID}';
     projectObjectID     @title: '{i18n>projectObjectID}'    @readonly;
@@ -129,7 +137,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     projectSystem       @title: '{i18n>projectSystem}'      @readonly;
     ```  
 
-3. Enhance the labels of the entity *PoetrySlams* in the file [*/db/i18n/i18n.properties*](../../../tree/main-multi-tenant/db/i18n/i18n.properties) by the labels: 
+3. Enhance the labels of the entity *PoetrySlams* in the file [*/db/i18n/i18n.properties*](../../../tree/main-multi-tenant/db/i18n/i18n.properties) with the labels: 
     ```javascript
     projectID               = Project
     projectObjectID         = Project UUID
@@ -138,7 +146,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     ```
      > In the reference example, the [*/db/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/db/i18n/i18n_de.properties) file with the German texts are available, too. You can take them over accordingly.
 
-### Enhance the Service Model by the Remote Service
+### Enhance the Service Model With the Remote Service
 
 1. In SAP Business Application Studio, to extend the SAP Cloud Application Programming Model service model by remote entities, open the service models file [*poetrySlamManagerService.cds*](../../../tree/main-multi-tenant/srv/poetrySlamManagerService.cds).
 
@@ -220,7 +228,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     };
     ```
 
-2. Enhance the service model of service *PoetrySlamManager* by an association to the remote project in SAP S/4HANA Cloud:
+2. Enhance the service model of service *PoetrySlamManager* with an association to the remote project in SAP S/4HANA Cloud:
 
     ```javascript
     // Poetry Slams (draft enabled)
@@ -233,7 +241,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
         } 
     ```
 
-3. Enhance the service model of service *PoetrySlamManager* by virtual elements to control the visualization of actions and the coloring of status information:
+3. Enhance the service model of service *PoetrySlamManager* with virtual elements to control the visualization of actions and the coloring of status information:
     ```javascript
     // Poetry slams (draft enabled)
     @odata.draft.enabled
@@ -260,7 +268,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
         }
     ```
     
-4. Enhance the service model of service *PoetrySlamManager* by an action to create remote projects:
+4. Enhance the service model of service *PoetrySlamManager* with an action to create remote projects:
     ```javascript
     // SAP S/4HANA Cloud projects: action to create a project in SAP S/4HANA Cloud
     @(
@@ -312,120 +320,139 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
         to   : 'PoetrySlamFull'
     }]);
     ```
+
+### Create Files with Reuse Functions for the ERP System Integration
+
+You can define reuse functions that handle the connection for the different Enterprise Resource Planning (ERP) systems in separate files. 
+
+1. Create a file to check and get the destinations in path */srv/util/destination.js*. 
+2. Add the functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* from the file [*/srv/util/destination.js*](../../../tree/main-multi-tenant/srv/util/destination.js).
+
+    > Note: The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* are designed to work for single-tenant and for multi-tenant deployments. For single-tenant deployments, they read the destination from the SAP BTP subaccount that hosts the app, and for multi-tenant deployments, they read the destination from the subscriber subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information.
+
+    > Note: The reuse function *getDestinationDescription* returns the destination description from the SAP BTP consumer subaccount.
+
+3. Since the npm module *@sap-cloud-sdk/connectivity* is used in the file *destination.js*, add the corresponding npm modules to your project. To do so, open a terminal and run the commands:
+
+    i. `npm add @sap-cloud-sdk/connectivity` 
+
+    ii. `npm add @sap-cloud-sdk/http-client`
+
+    The dependencies are added to the *dependencies* section in the [*package.json*](../../../tree/main-multi-tenant/package.json) file. 
+
+4. Create a file with the path */srv/connector/connector.js*. This file is reused for different ERP integrations.
+5. Copy the ERP connection reuse functions in the file [*/srv/connector/connector.js*](../../../tree/main-multi-tenant/srv/connector/connector.js) into your project. It delegates the OData requests and holds the destinations.
     
 ### Create a File with Reuse Functions for SAP S/4HANA Cloud Public Edition
 
 Reuse functions specific to SAP S/4HANA Cloud Public Edition are defined in a separate file. 
 
-Copy the SAP S/4HANA Cloud Public Edition reuse functions in the file [*connector-s4hc.js*](../../../tree/main-multi-tenant/srv/connector-s4hc.js) into your project.
+1. Create a file with the path */srv/connector/connectorS4HC.js*. 
+2. Copy the SAP S/4HANA Cloud Public Edition related functions in the file [*connectorS4HC.js*](../../../tree/main-multi-tenant/srv/connector/connectorS4HC.js) into your project. The file contains functions to delegate OData requests to SAP S/4HANA Cloud Public Edition, to read SAP S/4HANA Cloud Public Edition project data, and to assemble an OData payload to create SAP S/4HANA Cloud Public Edition projects.
 
-For this tutorial, the *Responsible Cost Center* used in *connector-s4hc.js* is *10101101* and the *Company Code* is *1010*. 
+For this tutorial, the *Responsible Cost Center* used in *connectorS4HC.js* is *10101101* and the *Company Code* is *1010*. 
 
-> Note: Sample data can vary depending on the system. Check the data set and maintain it accordingly to ensure consistency between the Partner Reference App and SAP S/4HANA Cloud Public Edition.
+> Note: This file contains sample data, which can vary depending on the system. Check the data set and maintain it accordingly to ensure consistency between the Partner Reference App and SAP S/4HANA Cloud Public Edition.
 
 ### Enhance the Business Logic to Operate on SAP S/4HANA Cloud Public Edition Data
 
-In SAP Business Application Studio, enhance the implementation of the SAP Cloud Application Programming Model services in the file [*poetrySlamManagerServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js) to create and read SAP S/4HANA Cloud Public Edition enterprise project data using the remote SAP S/4HANA Cloud Public Edition OData service.
+In SAP Business Application Studio, enhance the implementation of the SAP Cloud Application Programming Model services to create and read SAP S/4HANA Cloud Public Edition enterprise project data using the remote SAP S/4HANA Cloud Public Edition OData service.
 
-1. Delegate requests to the remote OData service. Therefore, copy the on-READ, on-CREATE, on-UPDATE, and on-DELETE methods of *S4HCProjects*, *S4HCEnterpriseProjectElement*, *S4HCEntProjEntitlement*, *S4HCEntProjTeamMember*, *S4HCProjectsProcessingStatus*, and *S4HCProjectsProjectProfileCode* from the [service implementations (refer to the end of the file)](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js).
+1. Delegate requests to the remote OData service. To do so, copy the on-READ, on-CREATE, on-UPDATE, and on-DELETE methods of *S4HCProjects*, *S4HCEnterpriseProjectElement*, *S4HCEntProjEntitlement*, *S4HCEntProjTeamMember*, *S4HCProjectsProcessingStatus*, and *S4HCProjectsProjectProfileCode* from the [poetrySlamManagerServiceERPImplementation.js](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceERPImplementation.js) into a file with the same name and path into your project.
 
     > Note: Without delegation, the remote entities return the error code 500 with message: *SQLITE_ERROR: no such table* (local testing).
 
-2.  Determine the connected back-end systems.
+2. Enhance the [poetrySlamManagerServiceImplementation.js](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js) to call the ERP implementation.
+
+    i. Import the ERP forward handler.
 
     ```javascript
-    // Check connected back-end systems
-    srv.before("READ", "PoetrySlams", async (req) => {
-        // SAP S/4HANA Cloud
-        S4HCIsConnectedIndicator = await destinationUtil.checkDestination(
-            req,
-            connectorS4HC.S4HC_DESTINATION
-        );
-        if (S4HCIsConnectedIndicator) {
-            S4HCSystemName = await destinationUtil.getDestinationDescription(
-                req,
-                connectorS4HC.S4HC_DESTINATION_URL
-            );
-        }
-    });
-    ```
-    > Note: The reuse function *getDestinationDescription* in the file [*destination.js*](../../../tree/main-multi-tenant/srv/util/destination.js) returns the destination description from the SAP BTP consumer subaccount.
-
-    > Note: The destinations called *s4hc* and *s4hc-url* connect to the ERP system. You create the destinations later on in the consumer subaccount in SAP BTP.
-
-3.  Set the virtual element *createS4HCProjectEnabled* to control the visualization of the action to create projects dynamically in the for loop of the after-read event of poetry slams and pass on the project system name:
-    ```javascript
-    [
-        'projectSystemName',
-        'processingStatusText',
-        'projectProfileCodeText'
-    ].forEach((item) => {
-        poetrySlam[item] = poetrySlam[item] || '';
-    });
-
-    // Update project system name and visibility of the "Create Project"-buttons
-    if (poetrySlam.projectID) {
-        const systemNames = { S4HC: S4HCSystemName };
-        poetrySlam.createS4HCProjectEnabled = false;
-        poetrySlam.projectSystemName = systemNames[poetrySlam.projectSystem];
-    } else {
-        poetrySlam.createS4HCProjectEnabled = S4HCIsConnectedIndicator;
-    }
-
-    // Update the backend system connected indicator used in UI for controlling visibility of UI elements
-    poetrySlam.isS4HC = S4HCIsConnectedIndicator;
+    const erpForwardHandler = require('./poetrySlamManagerServiceERPImplementation');
     ```
 
-4. Add the implementation of the action *createS4HCProject* as outlined in the code block: 
-    1. Copy the method *createS4HCProject* from file [*/srv/poetrySlamManagerServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js) into the implementation.
-
-    2. Add two lines to import the reuse functions at the beginning of the file:
-    ```javascript
-    const destinationUtil = require("./util/destination");
-    const connectorS4HC = require("./connector-s4hc");
-    ```
-    3. Add two global variables to buffer the status and the name of remote project management systems at the beginning of the file:
-    ```javascript
-    // Buffer status and name of project management systems
-    let S4HCIsConnectedIndicator, S4HCSystemName;
-    ```
-
-5. Create a file to check and get the destinations in path */srv/util/destination.js* and add the functions *getDestinationURL*, *checkDestination*, and *getDestinationDescription* from the file [*/srv/util/destination.js*](../../../tree/main-multi-tenant/srv/util/destination.js). 
-
-    > Note: The reuse functions *getDestinationURL*, *checkDestination*, and *getDestinationDescription* are designed to work for single-tenant and for multi-tenant deployments. For single-tenant deployments, they read the destination from the SAP BTP subaccount that hosts the app, and for multi-tenant deployments, they read the destination from the subscriber subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information.
-
-6. Since the npm module *@sap-cloud-sdk/connectivity* is used in the file *destination.js*, add the corresponding npm modules to the *dependencies* section in the [*package.json*](../../../tree/main-multi-tenant/package.json) file:
-    ```json
-    "dependencies": {
-        "@sap-cloud-sdk/connectivity": "^3.9.0",
-        "@sap-cloud-sdk/http-client": "^3.9.0"
-    },
-    ```
-
-7. Add system message to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant/srv/i18n/messages.properties).
-    ```javascript
-    ACTION_CREATE_PROJECT_DRAFT = Projects cannot be created for draft Poetry Slams.
-    ```
-8. Expand poetry slams to remote projects in [*/srv/poetrySlamManagerServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServiceImplementation.js) by filling OData parameter `/PoetrySlams?$expand=toS4HCProject` in the on-read of the *PoetrySlams* entity:
+    ii. Call the ERP forward handler.
 
     ```javascript
-    // Expand poetry slams to remote projects
+    erpForwardHandler(srv); // Forward handler to the ERP systems
+    ```
+
+3.  In the file [*/srv/poetrySlamManagerServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServicePoetrySlamsImplementation.js), the poetry slams entity is enriched with SAP S/4HANA Cloud Public Edition specific data. 
+
+    i. Determine the connected back-end systems and read the project data from the remote system. Set the virtual element `createS4HCProjectEnabled` to control the visualization of the action to create project dynamically and pass on the project system name.
+
+    ```javascript
+    // Expand poetry slams
     srv.on('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
         // Read the PoetrySlams instances
         let poetrySlams = await next();
-    
-        // Check and read SAP S/4HANA Cloud project related data 
-        if ( S4HCIsConnectedIndicator ){
-            poetrySlams = await connectorS4HC.readProject(poetrySlams);  
-        };
 
-        // Return remote project data
+        // SAP S/4HANA Cloud
+        // Check and read SAP S/4HANA Cloud project related data
+        const connectorS4HC = await ConnectorS4HC.createConnectorInstance(req);
+        if (connectorS4HC?.isConnected()) {
+            poetrySlams = await connectorS4HC.readProject(poetrySlams);
+        }
+
+        for (const poetrySlam of convertToArray(poetrySlams)) {
+            [
+                'projectSystemName',
+                'processingStatusText',
+                'projectProfileCodeText'
+            ].forEach((item) => {
+                poetrySlam[item] = poetrySlam[item] || '';
+            });
+
+            // Update project system name and visibility of the "Create Project"-buttons
+            if (poetrySlam.projectID) {
+                const systemNames = {
+                    S4HC: connectorS4HC.getSystemName()
+                };
+                poetrySlam.createS4HCProjectEnabled = false;
+                poetrySlam.projectSystemName = systemNames[poetrySlam.projectSystem];
+            } else {
+                poetrySlam.createS4HCProjectEnabled = connectorS4HC.isConnected();
+            }
+
+            // Update the backend system connected indicator used in UI for controlling visibility of UI elements
+            poetrySlam.isS4HC = connectorS4HC.isConnected();
+        }
+
+        // Return remote data
         return poetrySlams;
     });
     ```
+
+    > Note: The destinations called *s4hc* and *s4hc-url* connect to the ERP system. You create the destinations later on in the consumer subaccount in SAP BTP.
+
     > Note: OData features such as *$expand*, *$filter*, *$orderby*, and so on need to be implemented in the service implementation.
 
-9. Extend the on-update event of the `PoetrySlams` entity with an implementation to clear all project data if the `projectID` is deleted:
+    iii. Add the implementation of the action *createS4HCProjectEnabled*:
+
+    1. Copy the method *createS4HCProject* from the file [*/srv/poetrySlamManagerServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant/srv/poetrySlamManagerServicePoetrySlamsImplementation.js) into the implementation.
+
+    2. Add the import of the connector at the beginning of the file:
+
+        ```javascript
+        const ConnectorS4HC = require('./connector/connectorS4HC');
+        ```
+
+    3. Import the `createProject`-function from the `entityCalculations`.
+
+        ```javascript
+        const {
+            calculatePoetrySlamData,
+            updatePoetrySlam,
+            convertToArray,
+            createProject
+        } = require('./util/entityCalculations');
+        ```
+    4. Add the system message to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant/srv/i18n/messages.properties).
+
+    ```javascript
+    ACTION_CREATE_PROJECT_DRAFT = Projects cannot be created for draft Poetry Slams.
+    ```
+
+4. Extend the on-update event of the `PoetrySlams` entity with an implementation to clear all project data if the `projectID` is deleted:
     ```javascript
     srv.on('UPDATE', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
         ...
@@ -585,14 +612,6 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
     projectData             = Project Data
     ``` 
 
-### Add Required Node Module for Date Calculation
-Poetry Slam Manager uses the node module [*moment*](https://www.npmjs.com/package/moment) for date calculations during the project creation. In this step, you add the node module to the project.
-
-1. Open a terminal.
-2. Ensure that the project root is open.
-3. Run the command `_npm add moment_`. By this statement, the package.json is enhanced with the dependency *moment*.
-4. Run the command `_npm install_`. All node modules are installed in the *node_modules* folder including *moment*.
-
 ### Test Locally
 
 1. Open a terminal and start the app with the development profile using the run command `cds watch --profile development`. 
@@ -602,15 +621,14 @@ Poetry Slam Manager uses the node module [*moment*](https://www.npmjs.com/packag
     1. Test the *Service Endpoints* for *S4HCProjects*, *S4HCEnterpriseProjectElement*, *S4HCEntProjTeamMember*, *S4HCEntProjEntitlement*, *S4HCProjectsProcessingStatus*, and *S4HCProjectsProjectProfileCode*: The system returns the respective data from SAP S/4HANA Cloud Public Edition (without filtering).
 
     2. The *Create Project in SAP S/4HANA Cloud* button is dependent on the setup of the destinations. Once the destinations are correctly configured and the application is deployed to SAP BTP Cloud Foundry runtime, the *Create Project in SAP S/4HANA Cloud* button will be active.
-    To test this button locally, in _poetrySlamManagerServiceImplementation.js_, change the value of **S4HCIsConnectedIndicator** to **true**:
+    To test this button locally, in _connectorS4HC.js_, method _createConnectorInstance_, change the value of **connector.isConnectedIndicator** to **true** after the connector instance is created:
 
         ```javascript
-        S4HCIsConnectedIndicator = await destinationUtil.checkDestination(
-            req,
-            's4hc'
-        );
+        const connector = new ConnectorS4HC(data);
+        connector.isConnectedIndicator = true;
         ```
-        > Note: This change is required as the *S4HCIsConnectedIndicator* value is dependent on the setup of destinations. Destinations only work on a deployed application and cannot be tested locally.
+
+        > Note: This change is required as the *isConnectedIndicator* value is dependent on the setup of destinations. Destinations only work on a deployed application and cannot be tested locally.
 
 4. Open the */poetryslammanager/webapp/index.html* web application and open one of the poetry slams. 
 5. Choose *Create Project in SAP S/4HANA Cloud*. The system creates a project in SAP S/4HANA Cloud Public Edition and displays the details in the *Project Details* section.
@@ -628,3 +646,5 @@ Poetry Slam Manager uses the node module [*moment*](https://www.npmjs.com/packag
 Update your application in the provider subaccount. For detailed instructions, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
 
 > Note: Make sure any local changes have been reverted before deployment.
+
+You have now successfully deployed the application to the provider subaccount and you're ready to [provision tenants of the multi-tenant application to customers and connect with SAP S/4HANA Cloud](./34b-Multi-Tenancy-Provisioning-Connect-S4HC.md).

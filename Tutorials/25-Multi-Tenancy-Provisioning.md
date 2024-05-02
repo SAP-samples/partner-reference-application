@@ -41,7 +41,7 @@ Identity Authentication service is used as corporate identity provider (IdP). Th
 
 Set up the trust relationship between the SAP BTP subaccount to Identity Authentication service using SAML 2.0: 
 
-> Note: Typically, the SAP BTP consumer subaccount is assigned to the partner and the Identity Authentication service tenant is assigned to the customer in such a way that a trust configuration using OpenID Connect (OIDC) is not possible, and, therefore, we use the SAML protocol for the trust relationship. If the provider subaccount, the consumer subaccount, and the Identity Authentication service tenant are assigned to the customer, OIDC is the preferred approach to configure trust. In this case, follow the instructions in [One-Off Deployment](./15-One-Off-Deployment.md).
+> Note: Typically, the SAP BTP consumer subaccount is assigned to the partner and the Identity Authentication service tenant is assigned to the customer in such a way that a trust configuration using OpenID Connect (OIDC) is not possible, and, therefore, we use the SAML protocol for the trust relationship. If the provider subaccount, the consumer subaccount, and the Identity Authentication service tenant are assigned to the customer, OIDC is the preferred approach to configure trust. In this case, follow the instructions in [One-Off Deployment](./15b-One-Off-Deployment.md).
 
 1. In the SAP BTP consumer subaccount, download the **SAML metadata file of the subaccount**.
 2. Open *Security* in the menu and go to *Trust Configuration*.
@@ -94,5 +94,6 @@ You can deactivate the user login with the *Default Identity Provider* (which re
 Subscriptions can be deleted in the consumer subaccount, but be aware of the fact that all data will be lost.
 If you delete and recreate a subscription of the SAP BTP application, all consumer subaccount configurations (trust/SSO, destinations, and so on) remain valid, except for the user groups in the role collections. You may observe a *404 - Unauthorized* error message when accessing the SAP BTP application if you haven't added the user groups to the role collections of the SAP BTP application after resubscribing to it.
 
-Never remove the multi-tenant application in the provider subaccount without deleting all subscriptions first.
-If you accidentally deleted an application with existing subscriptions, these subscriptions cannot be deleted because off-boarding procedures cannot be processed. Send a support request to SAP to remove such dead-end subscriptions.
+If you manually delete an application or undeploy it from the provider subaccount while the application still has active subscriptions, note that there are a few service instances that can't be deleted. In addition to that, it's no longer possible to delete subscriptions to the removed application via the UI of the subscriber subbaccounts. Instead, to delete the subscriptions, you need to access the service instance of the service _SaaS Provisioning Service_. Once you've removed all subscriptions, you can remove the remaining service instances from the provider subaccount.
+
+If you need more information on how to trace and debug your application, go to the section on [testing, tracing, and debugging](26-Test-Trace-Debug-Multi-Tenancy.md).
