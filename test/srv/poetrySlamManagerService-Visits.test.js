@@ -35,7 +35,8 @@ describe('Visits in PoetrySlamManager Service', () => {
   let visits;
 
   before(async () => {
-    test.data.reset;
+    await test.data.reset();
+
     // Read all poetry slams for usage in the tests
     visits = await GET(`/odata/v4/poetryslammanager/Visits`);
     expect(visits.data.value.length).to.greaterThan(0);

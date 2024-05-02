@@ -251,7 +251,7 @@ annotate service.PoetrySlams with @(
             {
                 $Type                  : 'UI.DataField',
                 Label                  : '{i18n>projectDescription}',
-                Value                  : toS4HCProject.ProjectDescription,
+                Value                  : toS4HCProject.projectDescription,
                 ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isS4HC'}}},
                 ![@Common.FieldControl]: #ReadOnly
             },
@@ -265,7 +265,7 @@ annotate service.PoetrySlams with @(
             {
                 $Type                  : 'UI.DataField',
                 Label                  : '{i18n>responsibleCostCenter}',
-                Value                  : toS4HCProject.ResponsibleCostCenter,
+                Value                  : toS4HCProject.responsibleCostCenter,
                 ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isS4HC'}}},
                 ![@Common.FieldControl]: #ReadOnly
             },
@@ -279,14 +279,14 @@ annotate service.PoetrySlams with @(
             {
                 $Type                  : 'UI.DataField',
                 Label                  : '{i18n>projectStartDateTime}',
-                Value                  : toS4HCProject.ProjectStartDate,
+                Value                  : toS4HCProject.projectStartDate,
                 ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isS4HC'}}},
                 ![@Common.FieldControl]: #ReadOnly
             },
             {
                 $Type                  : 'UI.DataField',
                 Label                  : '{i18n>projectEndDateTime}',
-                Value                  : toS4HCProject.ProjectEndDate,
+                Value                  : toS4HCProject.projectEndDate,
                 ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isS4HC'}}},
                 ![@Common.FieldControl]: #ReadOnly
             },
@@ -307,25 +307,25 @@ annotate service.PoetrySlams with @(
             {
                 $Type                  : 'UI.DataField',
                 Label                  : '{i18n>deliveryDate}',
-                Value                  : toB1PurchaseOrder.DocDueDate,
+                Value                  : toB1PurchaseOrder.docDueDate,
                 ![@Common.FieldControl]: #ReadOnly
             },
             {
                 $Type                  : 'UI.DataField',
                 Label                  : '{i18n>creationDate}',
-                Value                  : toB1PurchaseOrder.CreationDate,
+                Value                  : toB1PurchaseOrder.creationDate,
                 ![@Common.FieldControl]: #ReadOnly
             },
             {
                 $Type                  : 'UI.DataField',
                 Label                  : '{i18n>purchaseOrderValue}',
-                Value                  : toB1PurchaseOrder.DocTotal,
+                Value                  : toB1PurchaseOrder.docTotal,
                 ![@Common.FieldControl]: #ReadOnly
             },
             {
                 $Type                  : 'UI.DataField',
                 Label                  : '{i18n>purchaseOrderCurrency}',
-                Value                  : toB1PurchaseOrder.DocCurrency,
+                Value                  : toB1PurchaseOrder.docCurrency,
                 ![@Common.FieldControl]: #ReadOnly
             },
         ]},
