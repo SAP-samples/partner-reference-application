@@ -15,6 +15,11 @@
           "name": "readonlyaccess",
           "description": "Read-only Access plan",
           "id": "855e0eb8-fc08-469c-802c-9954e6b586de"
+        },
+        {
+          "name": "namedaccess",
+          "description": "Access plan for named users",
+          "id": "9c0e1aec-10e9-41ae-a4c0-dfb232932962"
         }
       ]
     }
