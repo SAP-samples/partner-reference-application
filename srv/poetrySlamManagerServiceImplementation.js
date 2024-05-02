@@ -23,7 +23,14 @@ function convertToArray(x) {
   return Array.isArray(x) ? x : [x];
 }
 
+const poetrySlamsHandler = require('./poetrySlamManagerServicePoetrySlamsImplementation');
+const visitsHandler = require('./poetrySlamManagerServiceVisitsImplementation');
+
 module.exports = cds.service.impl(async (srv) => {
+  // For better readability, outsource implementation files
+  poetrySlamsHandler(srv); // Forward handler to the Poetry Slam entity
+  visitsHandler(srv); // Forward handler to the Visits entity
+
   const db = await cds.connect.to('db');
   // ----------------------------------------------------------------------------
   // Implementation of entity events (entity PoetrySlams)

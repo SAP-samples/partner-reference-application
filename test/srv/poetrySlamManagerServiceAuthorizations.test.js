@@ -102,7 +102,9 @@ describe('Authorizations of PoetrySlamManager Service with User Julie (role Poet
     axios.defaults.auth = { username: 'julie', password: 'welcome' };
   });
 
-  beforeEach(test.data.reset);
+  beforeEach(async () => {
+    await test.data.reset();
+  });
 
   it('should return data of poetry slams in status booked and published', async () => {
     const poetrySlams = await GET(`/odata/v4/poetryslammanager/PoetrySlams`, {
