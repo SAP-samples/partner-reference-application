@@ -11,17 +11,16 @@
     "BusinessTechnologyPlatform"
   ],
   "dependencies": {
-    "@sap-cloud-sdk/connectivity": "^3.9.0",
-    "@sap-cloud-sdk/http-client": "^3.9.0",
-    "@sap/cds-mtxs": "^1.13.4",
-    "hdb": "^0.19.7",
-    "moment": "^2.29.4",
+    "@sap-cloud-sdk/connectivity": "^3.14.0",
+    "@sap-cloud-sdk/http-client": "^3.14.0",
     "@sap/cds": "^7.8.1",
     "@sap/cds-common-content": "^1.4.0",
     "@sap/cds-dk": "^7.8.2",
     "@sap/cds-hana": "^2.0.0",
+    "@sap/cds-mtxs": "^1.17.0",
     "@sap/xssec": "^3.6.1",
     "express": "^4.19.2",
+    "hdb": "^0.19.8",
     "passport": "^0.7.0"
   },
   "devDependencies": {
@@ -35,7 +34,8 @@
     "jest": "^29.7.0",
     "mocha": "^10.4.0",
     "prettier": "^3.2.5",
-    "rimraf": "^5.0.5"
+    "rimraf": "^5.0.5",
+    "sinon": "^17.0.1"
   },
   "scripts": {
     "start": "cds-serve",
@@ -68,15 +68,14 @@
         "db": {
           "kind": "hana-mt"
         },
-        "auth": {
-          "kind": "xsuaa",
-          "strategy": "JWT"
-        },
+        "auth": "xsuaa",
         "multitenancy": true
       },
       "byd_khproject": {
         "kind": "odata-v2",
         "model": "srv/external/byd_khproject",
+        "csrf": true,
+        "csrfInBatch": true,
         "[development]": {
           "credentials": {
             "url": "https://{{ByD-hostname}}/sap/byd/odata/cust/v1/khproject/",
@@ -95,6 +94,8 @@
       "S4HC_API_ENTERPRISE_PROJECT_SRV_0002": {
         "kind": "odata-v2",
         "model": "srv/external/S4HC_API_ENTERPRISE_PROJECT_SRV_0002",
+        "csrf": true,
+        "csrfInBatch": true,
         "[development]": {
           "credentials": {
             "url": "https://{{S4HC-hostname}}/sap/opu/odata/sap/API_ENTERPRISE_PROJECT_SRV;v=0002",
@@ -113,6 +114,8 @@
       "S4HC_ENTPROJECTPROCESSINGSTATUS_0001": {
         "kind": "odata",
         "model": "srv/external/S4HC_ENTPROJECTPROCESSINGSTATUS_0001",
+        "csrf": true,
+        "csrfInBatch": true,
         "[development]": {
           "credentials": {
             "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojprocessingstat/srvd_a2x/sap/entprojectprocessingstatus/0001",
@@ -131,6 +134,8 @@
       "S4HC_ENTPROJECTPROFILECODE_0001": {
         "kind": "odata",
         "model": "srv/external/S4HC_ENTPROJECTPROFILECODE_0001",
+        "csrf": true,
+        "csrfInBatch": true,
         "[development]": {
           "credentials": {
             "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojectprofilecode/srvd_a2x/sap/entprojectprofilecode/0001",
@@ -149,6 +154,8 @@
       "b1_sbs_v2": {
         "kind": "odata",
         "model": "srv/external/b1_sbs_v2",
+        "csrf": true,
+        "csrfInBatch": true,
         "[development]": {
           "credentials": {
             "url": "https://{{b1-hostname}}/b1s/v2",

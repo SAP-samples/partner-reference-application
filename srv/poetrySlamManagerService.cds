@@ -218,47 +218,47 @@ using {S4HC_API_ENTERPRISE_PROJECT_SRV_0002 as RemoteS4HCProject} from './extern
 extend service PoetrySlamManager with {
     entity S4HCProjects                   as
         projection on RemoteS4HCProject.A_EnterpriseProject {
-            key ProjectUUID                 as ProjectUUID,
-                ProjectInternalID           as ProjectInternalID,
-                Project                     as Project,
-                ProjectDescription          as ProjectDescription,
-                EnterpriseProjectType       as EnterpriseProjectType,
-                ProjectStartDate            as ProjectStartDate,
-                ProjectEndDate              as ProjectEndDate,
-                ProcessingStatus            as ProcessingStatus,
-                ResponsibleCostCenter       as ResponsibleCostCenter,
-                ProfitCenter                as ProfitCenter,
-                ProjectProfileCode          as ProjectProfileCode,
-                CompanyCode                 as CompanyCode,
-                ProjectCurrency             as ProjectCurrency,
-                EntProjectIsConfidential    as EntProjectIsConfidential,
+            key ProjectUUID                 as projectUUID,
+                ProjectInternalID           as projectInternalID,
+                Project                     as project,
+                ProjectDescription          as projectDescription,
+                EnterpriseProjectType       as enterpriseProjectType,
+                ProjectStartDate            as projectStartDate,
+                ProjectEndDate              as projectEndDate,
+                ProcessingStatus            as processingStatus,
+                ResponsibleCostCenter       as responsibleCostCenter,
+                ProfitCenter                as profitCenter,
+                ProjectProfileCode          as projectProfileCode,
+                CompanyCode                 as companyCode,
+                ProjectCurrency             as projectCurrency,
+                EntProjectIsConfidential    as entProjectIsConfidential,
                 to_EnterpriseProjectElement as to_EnterpriseProjectElement : redirected to S4HCEnterpriseProjectElement,
                 to_EntProjTeamMember        as to_EntProjTeamMember        : redirected to S4HCEntProjTeamMember
         }
 
     entity S4HCEnterpriseProjectElement   as
         projection on RemoteS4HCProject.A_EnterpriseProjectElement {
-            key ProjectElementUUID        as ProjectElementUUID,
-                ProjectUUID               as ProjectUUID,
-                ProjectElement            as ProjectElement,
-                ProjectElementDescription as ProjectElementDescription,
-                PlannedStartDate          as PlannedStartDate,
-                PlannedEndDate            as PlannedEndDate
+            key ProjectElementUUID        as projectElementUUID,
+                ProjectUUID               as projectUUID,
+                ProjectElement            as projectElement,
+                ProjectElementDescription as projectElementDescription,
+                PlannedStartDate          as plannedStartDate,
+                PlannedEndDate            as plannedEndDate
         }
 
     entity S4HCEntProjTeamMember          as
         projection on RemoteS4HCProject.A_EnterpriseProjectTeamMember {
-            key TeamMemberUUID        as TeamMemberUUID,
-                ProjectUUID           as ProjectUUID,
-                BusinessPartnerUUID   as BusinessPartnerUUID,
+            key TeamMemberUUID        as teamMemberUUID,
+                ProjectUUID           as projectUUID,
+                BusinessPartnerUUID   as businessPartnerUUID,
                 to_EntProjEntitlement as to_EntProjEntitlement : redirected to S4HCEntProjEntitlement
         }
 
     entity S4HCEntProjEntitlement         as
         projection on RemoteS4HCProject.A_EntTeamMemberEntitlement {
-            key ProjectEntitlementUUID as ProjectEntitlementUUID,
-                TeamMemberUUID         as TeamMemberUUID,
-                ProjectRoleType        as ProjectRoleType
+            key ProjectEntitlementUUID as projectEntitlementUUID,
+                TeamMemberUUID         as teamMemberUUID,
+                ProjectRoleType        as projectRoleType
         }
 
 };
@@ -269,8 +269,8 @@ using {S4HC_ENTPROJECTPROCESSINGSTATUS_0001 as RemoteS4HCProjectProcessingStatus
 extend service PoetrySlamManager with {
     entity S4HCProjectsProcessingStatus   as
         projection on RemoteS4HCProjectProcessingStatus.ProcessingStatus {
-            key ProcessingStatus     as ProcessingStatus,
-                ProcessingStatusText as ProcessingStatusText
+            key ProcessingStatus     as processingStatus,
+                ProcessingStatusText as processingStatusText
         }
 };
 
@@ -280,8 +280,8 @@ using {S4HC_ENTPROJECTPROFILECODE_0001 as RemoteS4HCProjectProjectProfileCode} f
 extend service PoetrySlamManager with {
     entity S4HCProjectsProjectProfileCode as
         projection on RemoteS4HCProjectProjectProfileCode.ProjectProfileCode {
-            key ProjectProfileCode     as ProjectProfileCode,
-                ProjectProfileCodeText as ProjectProfileCodeText
+            key ProjectProfileCode     as projectProfileCode,
+                ProjectProfileCodeText as projectProfileCodeText
         }
 };
 
@@ -293,15 +293,15 @@ using {b1_sbs_v2 as RemoteB1} from './external/b1_sbs_v2';
 extend service PoetrySlamManager with {
     entity B1PurchaseOrder                as
         projection on RemoteB1.PurchaseOrders {
-            key DocEntry     as DocEntry,
-                DocNum       as DocNum,
-                DocType      as DocType,
-                DocDate      as DocDate,
-                DocDueDate   as DocDueDate,
-                CreationDate as CreationDate,
-                CardCode     as CardCode,
-                CardName     as CardName,
-                DocTotal     as DocTotal,
-                DocCurrency  as DocCurrency
+            key DocEntry     as docEntry,
+                DocNum       as docNum,
+                DocType      as docType,
+                DocDate      as docDate,
+                DocDueDate   as docDueDate,
+                CreationDate as creationDate,
+                CardCode     as cardCode,
+                CardName     as cardName,
+                DocTotal     as docTotal,
+                DocCurrency  as docCurrency
         }
 }

@@ -5,10 +5,17 @@ const codes = require('./util/codes');
 const {
   calculatePoetrySlamData,
   updatePoetrySlam,
-  convertToArray
+  convertToArray,
+  createProject,
+  createPurchaseOrder
 } = require('./util/entityCalculations');
 
 const uniqueNumberGenerator = require('./util/uniqueNumberGenerator');
+
+// Add connector for project management systems
+const ConnectorByD = require('./connector/connectorByD');
+const ConnectorS4HC = require('./connector/connectorS4HC');
+const ConnectorB1 = require('./connector/connectorB1');
 
 module.exports = async (srv) => {
   const db = await cds.connect.to('db');
@@ -52,6 +59,25 @@ module.exports = async (srv) => {
       req.data.freeVisitorSeats = result.freeVisitorSeats;
       req.data.status_code = result.status_code;
     }
+
+    // Remove all project data if the project id is cleared
+    if (req.data.projectID === '') {
+      req.data.projectID = null;
+      req.data.projectObjectID = null;
+      req.data.projectURL = null;
+      req.data.projectSystem = null;
+      req.data.projectSystemName = null;
+    }
+
+    // Remove all purchase order data if the purchase order id is cleared
+    if (req.data.purchaseOrderID === '') {
+      req.data.purchaseOrderID = null;
+      req.data.purchaseOrderObjectID = null;
+      req.data.purchaseOrderURL = null;
+      req.data.purchaseOrderSystem = null;
+      req.data.purchaseOrderSystemName = null;
+    }
+
     return next();
   });
 
@@ -67,6 +93,73 @@ module.exports = async (srv) => {
     ) {
       req.error(400, 'POETRYSLAM_COULD_NOT_BE_DELETED', [poetrySlam.number]);
     }
+  });
+
+  // Expand poetry slams
+  srv.on('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
+    // Read the PoetrySlams instances
+    let poetrySlams = await next();
+
+    // SAP Business ByDesign
+    // Check and read SAP Business ByDesign project related data
+    const connectorByD = await ConnectorByD.createConnectorInstance(req);
+    if (connectorByD?.isConnected()) {
+      poetrySlams = await connectorByD.readProject(poetrySlams);
+    }
+
+    // SAP S/4HANA Cloud
+    // Check and read SAP S/4HANA Cloud project related data
+    const connectorS4HC = await ConnectorS4HC.createConnectorInstance(req);
+    if (connectorS4HC?.isConnected()) {
+      poetrySlams = await connectorS4HC.readProject(poetrySlams);
+    }
+
+    // SAP Business One
+    // Check and read SAP Business One purchase order data
+    const connectorB1 = await ConnectorB1.createConnectorInstance(req);
+    if (connectorB1?.isConnected()) {
+      poetrySlams = await connectorB1.readPurchaseOrder(poetrySlams);
+    }
+
+    for (const poetrySlam of convertToArray(poetrySlams)) {
+      [
+        'projectSystemName',
+        'processingStatusText',
+        'projectProfileCodeText'
+      ].forEach((item) => {
+        poetrySlam[item] = poetrySlam[item] || '';
+      });
+
+      // Update project system name and visibility of the "Create Project"-buttons
+      if (poetrySlam.projectID) {
+        const systemNames = {
+          ByD: connectorByD.getSystemName(),
+          S4HC: connectorS4HC.getSystemName()
+        };
+        poetrySlam.createByDProjectEnabled = false;
+        poetrySlam.createS4HCProjectEnabled = false;
+        poetrySlam.projectSystemName = systemNames[poetrySlam.projectSystem];
+      } else {
+        poetrySlam.createByDProjectEnabled = connectorByD.isConnected();
+        poetrySlam.createS4HCProjectEnabled = connectorS4HC.isConnected();
+      }
+
+      // Update PO system name and visibility of the "Create Purchase Order"-button
+      if (poetrySlam.purchaseOrderID) {
+        poetrySlam.createB1PurchaseOrderEnabled = false;
+        poetrySlam.purchaseOrderSystemName = connectorB1.getSystemName();
+      } else {
+        poetrySlam.createB1PurchaseOrderEnabled = connectorB1.isConnected();
+      }
+
+      // Update the backend system connected indicator used in UI for controlling visibility of UI elements
+      poetrySlam.isByD = connectorByD.isConnected();
+      poetrySlam.isS4HC = connectorS4HC.isConnected();
+      poetrySlam.isB1 = connectorB1.isConnected();
+    }
+
+    // Return remote data
+    return poetrySlams;
   });
 
   // Apply a colour code based on the poetry slam status
@@ -175,6 +268,51 @@ module.exports = async (srv) => {
     );
 
     return success ? poetrySlam : {}; // Return the changed poetry slam
+  });
+
+  // ----------------------------------------------------------------------------
+  // Implementation of entity events (entity PoetrySlams)
+  // with impact on remote services of SAP Business ByDesign
+  // ----------------------------------------------------------------------------
+
+  // Entity action: Create SAP Business ByDesign Project
+  srv.on('createByDProject', async (req) => {
+    await createProject(
+      req,
+      srv,
+      ConnectorByD,
+      'ACTION_CREATE_PROJECT_NO_SAP_BUSINESS_BY_DESIGN_SYSTEM'
+    );
+  });
+
+  // ----------------------------------------------------------------------------
+  // Implementation of entity events (entity PoetrySlams)
+  // with impact on remote services of SAP S/4HANA Cloud
+  // ----------------------------------------------------------------------------
+
+  // Entity action: Create SAP S/4HANA Cloud Enterprise Project
+  srv.on('createS4HCProject', async (req) => {
+    await createProject(
+      req,
+      srv,
+      ConnectorS4HC,
+      'ACTION_CREATE_PROJECT_NO_S4_HANA_CLOUD_SYSTEM'
+    );
+  });
+
+  // ----------------------------------------------------------------------------
+  // Implementation of entity events (entity PoetrySlams)
+  // with impact on remote services of SAP Business One
+  // ----------------------------------------------------------------------------
+
+  // Entity action: Create SAP Business One Purchase Order
+  srv.on('createB1PurchaseOrder', async (req) => {
+    await createPurchaseOrder(
+      req,
+      srv,
+      ConnectorB1,
+      'ACTION_CREATE_PURCHASE_ORDER_NO_B1_SYSTEM'
+    );
   });
 
   // ----------------------------------------------------------------------------
