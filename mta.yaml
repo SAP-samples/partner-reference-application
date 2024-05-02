@@ -166,6 +166,8 @@ modules:
               readonlyaccess:
                 authorities:
                   - '$XSMASTERAPPNAME.PoetrySlamReadonly'
+              namedaccess:
+                authorities:
           extend_credentials:
             shared:
               endpoints:
@@ -207,6 +209,7 @@ resources:
         oauth2-configuration:
           redirect-uris:
             - ~{app-api/redirect-uris} # Redirect to connect modules running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
+            - http://localhost # Redirect for local testing with the service broker
       path: ./xs-security.json
       service: xsuaa
       service-name: poetry-slams-auth
