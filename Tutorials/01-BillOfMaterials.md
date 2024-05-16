@@ -1,5 +1,5 @@
 # Bill of Materials
-In the full version of Poetry Slam Manager with multitenancy, SAP ERP integration, and additional features, the Partner Reference Application uses a number of subaccounts and entitlements. These subaccounts include a provider subaccount (to which the application is deployed) and consumer subaccounts (which hold customer-specific information and configuration). Find an overview in the section below.
+In the full version of Poetry Slam Manager with multitenancy, SAP ERP integration, and additional features, the Partner Reference Application uses a number of subaccounts and entitlements. These subaccounts include a provider subaccount (to which the application is deployed) and consumer subaccounts (which include customer-specific information and configuration). Find an overview in the section below.
 
 ## Subaccounts
 The example setup serves four sample customers: 
@@ -73,16 +73,16 @@ The application consists of the following modules, which are deployed into the S
 - Partner Application Module (your main development task)                                                   
 
 # Scaling
-To get an overview of how the services scale and how many entitlements you require for an application, here is an example based on the projected use of the Partner Reference Application. Let's assume that each subscription has a data volume of three years of a typical poetry slam event agency: ​
+To get an overview of how the services scale and how many entitlements you require for an application, here's an example based on the projected use of the Partner Reference Application:
+
+Let's assume a typical data volume of two poetry slams per week (or 125 slams per year), each poetry slam records 200 visits. After three years, if you assume that a visitor books on average two different poetry slams, for 20 subscriptions (customers), this results in a volume of:
  - 7,500 poetry slam events
  - 750,000 visitors and artists
  - 1,500,000 bookings
 
 | Service Name                  | Service Plan (TDD)        | Quantity Required (5 Customers) | Quantity Required (20 Customers) | Quantity Required (100 Customers) | 
 | -------------------           | ---------                 | ---------                       | ---------                        | ---------                         |
-| SAP BTP Cloud Foundry runtime         | standard                  | 3 GB                            | 6 GB                             | 20 GB                             |
+| SAP BTP Cloud Foundry runtime | standard                  | 3 GB                            | 6 GB                             | 20 GB                             |
 | SAP HANA Cloud                | standard                  | 900 CU                          | 900 CU                           | 1000 CU                           |
 | SAP Custom Domain service     | premium                   | 1 Domain                        | 1 Domain                         | 1 Domain                          |
 | SAP Audit Log service         | hana-td                   | 1 GB Storage, 1 GB Writing​      | 1 GB Storage, 1 GB Writing​       | 1 GB Storage, 1 GB Writing        ​|
-
-
