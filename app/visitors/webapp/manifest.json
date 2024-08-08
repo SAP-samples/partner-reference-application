@@ -1,0 +1,174 @@
+{
+  "_version": "1.59.0",
+  "sap.cloud": {
+    "service": "poetryslammanager",
+    "public": true
+  },
+  "sap.app": {
+    "id": "visitors",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.13.2",
+      "toolsId": "e71ffa87-a130-4d7b-aaab-fef369de8b3b"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "odata/v4/visitorservice/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "visitors-display": {
+          "semanticObject": "visitors",
+          "action": "display",
+          "title": "{{flpTitle}}",
+          "subTitle": "{{flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.120.15",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "visitors.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "VisitorsList",
+          "target": "VisitorsList"
+        },
+        {
+          "pattern": "Visitors({key}):?query:",
+          "name": "VisitorsObjectPage",
+          "target": "VisitorsObjectPage"
+        }
+      ],
+      "targets": {
+        "VisitorsList": {
+          "type": "Component",
+          "id": "VisitorsList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/Visitors",
+              "variantManagement": "Page",
+              "initialLoad": true,
+              "navigation": {
+                "Visitors": {
+                  "detail": {
+                    "route": "VisitorsObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "VisitorsObjectPage": {
+          "type": "Component",
+          "id": "VisitorsObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/Visitors",
+              "content": {
+                "header": {
+                  "actions": {
+                    "MaintainPoetrySlam": {
+                      "press": "visitors.ext.customActions.navigatePoetrySlamList",
+                      "visible": true,
+                      "enabled": true,
+                      "text": "{i18n>maintainPoetrySlams}"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
+}
