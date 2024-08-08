@@ -1,4 +1,4 @@
-_schema-version: '3.1'
+_schema-version: 3.3.0
 ID: poetry-slams
 description: SAP Partner Reference Application v2.0
 version: 2.0.0
@@ -31,23 +31,37 @@ modules:
     requires:
       - name: poetry-slams-auth
       - name: poetry-slams-auditlog
+      - name: poetry-slams-cloud-logging
       - name: poetry-slams-db
       - name: poetry-slams-destination-service
       - name: poetry-slams-html5-runtime
     provides:
-      - name: srv-api
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
           srv-url: ${default-url}
     parameters:
       buildpack: nodejs_buildpack
+      readiness-health-check-http-endpoint: /health
+      readiness-health-check-type: http
     build-parameters:
       builder: npm-ci
 
-  # App UI resources module
-  # Creates and packages the static content of the HTML5 application
-  - name: poetryslammanager
+  # App UI resources modules
+  # Creates and packages the static content of the HTML5 applications
+  - name: poetryslams
     type: html5
-    path: app/poetryslammanager
+    path: app/poetryslams
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+
+  - name: visitors
+    type: html5
+    path: app/visitors
     build-parameters:
       build-result: dist
       builder: custom
@@ -69,8 +83,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - poetryslammanager.zip
-          name: poetryslammanager
+            - poetryslams.zip
+          name: poetryslams
+          target-path: resources/
+        - artifacts:
+            - visitors.zip
+          name: visitors
           target-path: resources/
 
   # MTX module
@@ -80,6 +98,9 @@ modules:
     path: gen/mtx/sidecar
     build-parameters:
       builder: npm-ci
+    parameters:
+      memory: 256M
+      disk-quota: 512M
     provides:
       - name: mtx-api
         properties:
@@ -87,6 +108,7 @@ modules:
     requires:
       - name: poetry-slams-db
       - name: poetry-slams-auth
+      - name: poetry-slams-cloud-logging
       - name: poetry-slams-registry
       - name: poetry-slams-destination-service
       - name: app-api
@@ -97,12 +119,14 @@ modules:
   # Main entry point, routes subscription(i.e. tenant)-specific URLs and is used to deliver the getDependencies information
   - name: poetry-slams
     type: approuter.nodejs
-    path: app/
+    path: app/router
     parameters:
-      keep-existing-routes: false
+      keep-existing-routes: true
       routes:
         - route: approuter-${default-uri} # used for getDependencies
         - route: '*.${default-uri}' # generic route for all subscriptions
+      disk-quota: 256M
+      memory: 256M
     properties:
       TENANT_HOST_PATTERN: '^(.*).${default-uri}'
       # prettier-ignore
@@ -126,6 +150,7 @@ modules:
           url: ~{mtx-url}
       - name: poetry-slams-auth
       - name: poetry-slams-auditlog
+      - name: poetry-slams-cloud-logging
       - name: poetry-slams-registry
       - name: poetry-slams-html5-runtime
       - name: poetry-slams-destination-service
@@ -151,7 +176,7 @@ modules:
       - name: poetry-slams-auditlog
       - name: srv-api
     build-parameters:
-      builder: npm
+      builder: npm-ci
     properties:
       SBF_CATALOG_SUFFIX: ${space} # Make the service broker unique in the deployed space
       SBF_ENABLE_AUDITLOG: true
@@ -193,8 +218,6 @@ resources:
     parameters:
       service: destination
       service-plan: lite
-      config:
-        HTML5Runtime_enabled: true
 
   # Authorization XSUAA service
   # Manages authentication, single sign-on (SSO), user management, and provides a way to manage authorizations based on scopes and role collections
@@ -212,7 +235,6 @@ resources:
             - http://localhost # Redirect for local testing with the service broker
       path: ./xs-security.json
       service: xsuaa
-      service-name: poetry-slams-auth
       service-plan: broker
 
   # Application Registry
@@ -229,7 +251,7 @@ resources:
         xsappname: poetry-slams-${org}-${space}
         appName: poetry-slams-${org}-${space}
         displayName: Poetry Slam Manager
-        description: Manage poetry slam events and register artists and visitors.
+        description: Manage poetry slam events and bookings of artists and visitors.
         category: 'Applications / Multi-Customer Partner Solutions'
         appUrls:
           getDependencies: ~{app-api/app-url}/-/cds/saas-provisioning/dependencies
@@ -260,4 +282,16 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: auditlog
-      service-plan: premium
+      service-plan: premium 
+
+  # Cloud Logging Service
+  - name: poetry-slams-cloud-logging
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: cloud-logging
+      service-plan: standard
+      config:
+        ingest_otlp:
+          enabled: true
+        backend:
+          api_enabled: true

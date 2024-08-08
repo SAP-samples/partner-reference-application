@@ -1,11 +1,15 @@
 /* checksum : 00f09dd0af35f1e77dae2ab5acdb9e1f */
-@cds.external : true
-@Aggregation.ApplySupported : {
-  Transformations: [ 'aggregate', 'groupby', 'filter' ],
-  Rollup: #None
+@cds.external                                       : true
+@Aggregation.ApplySupported                         : {
+  Transformations: [
+    'aggregate',
+    'groupby',
+    'filter'
+  ],
+  Rollup         : #None
 }
-@Common.ApplyMultiUnitBehaviorForSortingAndFiltering : true
-@Capabilities.FilterFunctions : [
+@Common.ApplyMultiUnitBehaviorForSortingAndFiltering: true
+@Capabilities.FilterFunctions                       : [
   'eq',
   'ne',
   'gt',
@@ -20,78 +24,86 @@
   'any',
   'all'
 ]
-@Capabilities.SupportedFormats : [ 'application/json', 'application/pdf' ]
-@PDF.Features : {
-  DocumentDescriptionReference: '../../../../default/iwbep/common/0001/$metadata',
+@Capabilities.SupportedFormats                      : [
+  'application/json',
+  'application/pdf'
+]
+@PDF.Features                                       : {
+  DocumentDescriptionReference : '../../../../default/iwbep/common/0001/$metadata',
   DocumentDescriptionCollection: 'MyDocumentDescriptions',
-  ArchiveFormat: true,
-  Border: true,
-  CoverPage: true,
-  FitToPage: true,
-  FontName: true,
-  FontSize: true,
-  Margin: true,
-  Padding: true,
-  Signature: true,
-  HeaderFooter: true,
-  ResultSizeDefault: 20000,
-  ResultSizeMaximum: 20000,
-  IANATimezoneFormat: true,
-  Treeview: true
+  ArchiveFormat                : true,
+  Border                       : true,
+  CoverPage                    : true,
+  FitToPage                    : true,
+  FontName                     : true,
+  FontSize                     : true,
+  Margin                       : true,
+  Padding                      : true,
+  Signature                    : true,
+  HeaderFooter                 : true,
+  ResultSizeDefault            : 20000,
+  ResultSizeMaximum            : 20000,
+  IANATimezoneFormat           : true,
+  Treeview                     : true
 }
-@Capabilities.KeyAsSegmentSupported : true
-@Capabilities.AsynchronousRequestsSupported : true
+@Capabilities.KeyAsSegmentSupported                 : true
+@Capabilities.AsynchronousRequestsSupported         : true
 service S4HC_ENTPROJECTPROCESSINGSTATUS_0001 {};
 
-@cds.external : true
-@cds.persistence.skip : true
-@Common.Label : 'Project Processing Status'
-@Capabilities.SearchRestrictions.Searchable : true
-@Capabilities.SearchRestrictions.UnsupportedExpressions : #phrase
-@Capabilities.InsertRestrictions.Insertable : false
-@Capabilities.DeleteRestrictions.Deletable : false
-@Capabilities.UpdateRestrictions.Updatable : false
-@Capabilities.UpdateRestrictions.NonUpdatableNavigationProperties : [ '_ProcessingStatusText' ]
-@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported : true
+@cds.external                                                    : true
+@cds.persistence.skip                                            : true
+@Common.Label                                                    : 'Project Processing Status'
+@Capabilities.SearchRestrictions.Searchable                      : true
+@Capabilities.SearchRestrictions.UnsupportedExpressions          : #phrase
+@Capabilities.InsertRestrictions.Insertable                      : false
+@Capabilities.DeleteRestrictions.Deletable                       : false
+@Capabilities.UpdateRestrictions.Updatable                       : false
+@Capabilities.UpdateRestrictions.NonUpdatableNavigationProperties: ['_ProcessingStatusText']
+@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported    : true
 entity S4HC_ENTPROJECTPROCESSINGSTATUS_0001.ProcessingStatus {
-  @Common.Text : ProcessingStatusText
-  @Common.IsUpperCase : true
-  @Common.Label : 'Processing Status'
-  key ProcessingStatus : String(2) not null;
-  @Common.IsUpperCase : true
-  @Common.Label : 'Status'
-  @Common.Heading : 'Processing Status Text'
-  @Common.QuickInfo : 'Processing Status Text'
-  ProcessingStatusText : String(60) not null;
-  @cds.ambiguous : 'missing on condition?'
-  @Common.Composition : true
-  _ProcessingStatusText : Composition of many S4HC_ENTPROJECTPROCESSINGSTATUS_0001.ProcessingStatusText;
+      @Common.Text       : ProcessingStatusText
+      @Common.IsUpperCase: true
+      @Common.Label      : 'Processing Status'
+  key ProcessingStatus      : String(2) not null;
+
+      @Common.IsUpperCase: true
+      @Common.Label      : 'Status'
+      @Common.Heading    : 'Processing Status Text'
+      @Common.QuickInfo  : 'Processing Status Text'
+      ProcessingStatusText  : String(60) not null;
+
+      @cds.ambiguous     : 'missing on condition?'
+      @Common.Composition: true
+      _ProcessingStatusText : Composition of many S4HC_ENTPROJECTPROCESSINGSTATUS_0001.ProcessingStatusText;
 };
 
-@cds.external : true
-@cds.persistence.skip : true
-@Common.Label : 'Project Processing Status Description'
-@Capabilities.SearchRestrictions.Searchable : true
-@Capabilities.SearchRestrictions.UnsupportedExpressions : #phrase
-@Capabilities.InsertRestrictions.Insertable : false
-@Capabilities.DeleteRestrictions.Deletable : false
-@Capabilities.UpdateRestrictions.Updatable : false
-@Capabilities.UpdateRestrictions.NonUpdatableNavigationProperties : [ '_ProcessingStatus' ]
-@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported : true
+@cds.external                                                    : true
+@cds.persistence.skip                                            : true
+@Common.Label                                                    : 'Project Processing Status Description'
+@Capabilities.SearchRestrictions.Searchable                      : true
+@Capabilities.SearchRestrictions.UnsupportedExpressions          : #phrase
+@Capabilities.InsertRestrictions.Insertable                      : false
+@Capabilities.DeleteRestrictions.Deletable                       : false
+@Capabilities.UpdateRestrictions.Updatable                       : false
+@Capabilities.UpdateRestrictions.NonUpdatableNavigationProperties: ['_ProcessingStatus']
+@Capabilities.UpdateRestrictions.QueryOptions.SelectSupported    : true
 entity S4HC_ENTPROJECTPROCESSINGSTATUS_0001.ProcessingStatusText {
-  @Common.Label : 'Language Key'
-  @Common.Heading : 'Language'
-  key Language : String(2) not null;
-  @Common.Text : ProcessingStatusText
-  @Common.IsUpperCase : true
-  @Common.Label : 'Processing Status'
-  key ProcessingStatus : String(2) not null;
-  @Common.IsUpperCase : true
-  @Common.Label : 'Status'
-  @Common.Heading : 'Processing Status Text'
-  @Common.QuickInfo : 'Processing Status Text'
-  ProcessingStatusText : String(60) not null;
-  @cds.ambiguous : 'missing on condition?'
-  _ProcessingStatus : Association to one S4HC_ENTPROJECTPROCESSINGSTATUS_0001.ProcessingStatus on _ProcessingStatus.ProcessingStatus = ProcessingStatus;
-};
+      @Common.Label      : 'Language Key'
+      @Common.Heading    : 'Language'
+  key Language             : String(2) not null;
 
+      @Common.Text       : ProcessingStatusText
+      @Common.IsUpperCase: true
+      @Common.Label      : 'Processing Status'
+  key ProcessingStatus     : String(2) not null;
+
+      @Common.IsUpperCase: true
+      @Common.Label      : 'Status'
+      @Common.Heading    : 'Processing Status Text'
+      @Common.QuickInfo  : 'Processing Status Text'
+      ProcessingStatusText : String(60) not null;
+
+      @cds.ambiguous     : 'missing on condition?'
+      _ProcessingStatus    : Association to one S4HC_ENTPROJECTPROCESSINGSTATUS_0001.ProcessingStatus
+                               on _ProcessingStatus.ProcessingStatus = ProcessingStatus;
+};
