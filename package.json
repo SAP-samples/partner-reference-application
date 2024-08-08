@@ -11,17 +11,20 @@
     "BusinessTechnologyPlatform"
   ],
   "dependencies": {
-    "@cap-js/audit-logging": "^0.6.0",
-    "@sap-cloud-sdk/connectivity": "^3.14.0",
-    "@sap-cloud-sdk/http-client": "^3.14.0",
-    "@sap/cds": "^7.8.1",
-    "@sap/cds-common-content": "^1.4.0",
-    "@sap/cds-dk": "^7.8.2",
+    "@cap-js/audit-logging": "^0.8.0",
+    "@sap-cloud-sdk/connectivity": "^3.16.0",
+    "@sap-cloud-sdk/http-client": "^3.16.0",
+    "@sap/cds": "^7.9.3",
+    "@sap/cds-common-content": "^2.0.0",
+    "@sap/cds-dk": "^7.9.5",
     "@sap/cds-hana": "^2.0.0",
     "@sap/cds-mtxs": "^1.18.2",
     "@sap/xssec": "^3.6.1",
     "express": "^4.19.2",
     "passport": "^0.7.0",
+    "@cap-js/telemetry": "^0.2.3",
+    "@opentelemetry/exporter-metrics-otlp-grpc": "^0.52.1",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.52.1",
     "rimraf": "^6.0.1"
   },
   "devDependencies": {

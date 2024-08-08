@@ -31,6 +31,7 @@ modules:
     requires:
       - name: poetry-slams-auth
       - name: poetry-slams-auditlog
+      - name: poetry-slams-cloud-logging
       - name: poetry-slams-db
       - name: poetry-slams-destination-service
       - name: poetry-slams-html5-runtime
@@ -107,6 +108,7 @@ modules:
     requires:
       - name: poetry-slams-db
       - name: poetry-slams-auth
+      - name: poetry-slams-cloud-logging
       - name: poetry-slams-registry
       - name: poetry-slams-destination-service
       - name: app-api
@@ -148,6 +150,7 @@ modules:
           url: ~{mtx-url}
       - name: poetry-slams-auth
       - name: poetry-slams-auditlog
+      - name: poetry-slams-cloud-logging
       - name: poetry-slams-registry
       - name: poetry-slams-html5-runtime
       - name: poetry-slams-destination-service
@@ -173,7 +176,7 @@ modules:
       - name: poetry-slams-auditlog
       - name: srv-api
     build-parameters:
-      builder: npm
+      builder: npm-ci
     properties:
       SBF_CATALOG_SUFFIX: ${space} # Make the service broker unique in the deployed space
       SBF_ENABLE_AUDITLOG: true
@@ -279,4 +282,16 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: auditlog
-      service-plan: premium
+      service-plan: premium 
+
+  # Cloud Logging Service
+  - name: poetry-slams-cloud-logging
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: cloud-logging
+      service-plan: standard
+      config:
+        ingest_otlp:
+          enabled: true
+        backend:
+          api_enabled: true
