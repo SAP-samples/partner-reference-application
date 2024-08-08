@@ -1,1 +1,2 @@
-using from './poetryslammanager/annotations';
+using from './poetryslams/annotations';
+using from './visitors/annotations';

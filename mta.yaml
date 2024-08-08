@@ -1,4 +1,4 @@
-_schema-version: '3.1'
+_schema-version: 3.3.0
 ID: poetry-slams
 description: SAP Partner Reference Application v2.0
 version: 2.0.0
@@ -39,6 +39,8 @@ modules:
           srv-url: ${default-url}
     parameters:
       buildpack: nodejs_buildpack
+      readiness-health-check-http-endpoint: /health
+      readiness-health-check-type: http
     build-parameters:
       builder: npm-ci
 
@@ -46,7 +48,18 @@ modules:
   # Creates and packages the static content of the HTML5 application
   - name: poetryslammanager
     type: html5
-    path: app/poetryslammanager
+    path: app/poetryslams
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+
+  - name: visitors
+    type: html5
+    path: app/visitors
     build-parameters:
       build-result: dist
       builder: custom
@@ -68,8 +81,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - poetryslammanager.zip
-          name: poetryslammanager
+            - poetryslams.zip
+          name: poetryslams
+          target-path: resources/
+        - artifacts:
+            - visitors.zip
+          name: visitors
           target-path: resources/
 
   # MTX module

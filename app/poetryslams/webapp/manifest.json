@@ -1,0 +1,225 @@
+{
+  "_version": "1.49.0",
+  "sap.cloud": {
+    "service": "poetryslammanager",
+    "public": true
+  },
+  "sap.app": {
+    "id": "poetryslams",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.10.5",
+      "toolsId": "5cac50f8-a487-4c8c-834a-fba7ba0ddbe8"
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "poetryslams-display": {
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          },
+          "semanticObject": "poetryslams",
+          "action": "display",
+          "title": "{{flpTitle}}",
+          "subTitle": "{{flpSubtitle}}",
+          "icon": ""
+        }
+      }
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "odata/v4/poetryslamservice/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.120.15",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "poetryslams.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "PoetrySlamsList",
+          "target": "PoetrySlamsList"
+        },
+        {
+          "pattern": "PoetrySlams({key}):?query:",
+          "name": "PoetrySlamsObjectPage",
+          "target": "PoetrySlamsObjectPage"
+        },
+        {
+          "pattern": "PoetrySlams({key})/visits({key2}):?query:",
+          "name": "PoetrySlams_visitsObjectPage",
+          "target": "PoetrySlams_visitsObjectPage"
+        }
+      ],
+      "targets": {
+        "PoetrySlamsList": {
+          "type": "Component",
+          "id": "PoetrySlamsList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "entitySet": "PoetrySlams",
+              "variantManagement": "Page",
+              "initialLoad": true,
+              "navigation": {
+                "PoetrySlams": {
+                  "detail": {
+                    "route": "PoetrySlamsObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "selectAll": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PoetrySlamsObjectPage": {
+          "type": "Component",
+          "id": "PoetrySlamsObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "entitySet": "PoetrySlams",
+              "content": {
+                "header": {
+                  "actions": {
+                    "MaintainVisitors": {
+                      "press": "poetryslams.ext.customActions.navigateVisitorList",
+                      "visible": true,
+                      "enabled": true,
+                      "text": "{i18n>maintainVisitors}"
+                    }
+                  }
+                }
+              },
+              "navigation": {
+                "visits": {
+                  "detail": {
+                    "route": "PoetrySlams_visitsObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "visits/@com.sap.vocabularies.UI.v1.LineItem#VisitorData": {
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true,
+                      "name": "Inline"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PoetrySlams_visitsObjectPage": {
+          "type": "Component",
+          "id": "PoetrySlams_visitsObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/PoetrySlams/visits",
+              "navigation": {},
+              "content": {
+                "header": {
+                  "actions": {
+                    "MaintainVisitor": {
+                      "press": "poetryslams.ext.customActions.navigateVisitorObject",
+                      "visible": true,
+                      "enabled": true,
+                      "text": "{i18n>navigateVisitor}"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {}
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
+}

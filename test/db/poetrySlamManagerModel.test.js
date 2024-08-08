@@ -90,13 +90,13 @@ describe('PoetrySlamManager Domain Model', () => {
     return expect(db.create(Visits).entries(result)).to.rejected;
   });
 
-  it('should ensure the uniquness of combination of visitor ID and poetry slam ID', async () => {
+  it('should ensure the uniqueness of combination of visitor ID and poetry slam ID', async () => {
     const { Visits } = db.model.entities;
     const result = await SELECT.one
       .from(Visits)
       .columns('parent_ID', 'visitor_ID');
 
-    // Asynchronous calls require a return to be checked correclty
+    // Asynchronous calls require a return to be checked correctly
     return expect(db.create(Visits).entries(result)).to.rejected;
   });
 
@@ -108,7 +108,7 @@ describe('PoetrySlamManager Domain Model', () => {
     // Set non existing poetry slam ID
     result.parent_ID = '79ceab87-0000-4b66-0000-000000000000';
 
-    // Asynchronous calls require a return to be checked correclty
+    // Asynchronous calls require a return to be checked correctly
     return expect(db.create(Visits).entries(result)).to.rejected;
   });
 
@@ -120,7 +120,7 @@ describe('PoetrySlamManager Domain Model', () => {
     // Set non existing visitor ID
     result.visitor_ID = '79ceab87-300d-4b66-0000-000000000000';
 
-    // Asynchronous calls require a return to be checked correclty
+    // Asynchronous calls require a return to be checked correctly
     return expect(db.create(Visits).entries(result)).to.rejected;
   });
 });
