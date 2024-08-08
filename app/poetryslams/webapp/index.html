@@ -1,0 +1,35 @@
+<!--This file is not required productively as the application is loaded via SAP build workzone;
+    It is required for local testing
+-->
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Poetry Slam Manager</title>
+    <script type="text/javascript" src="util/setShellConfig.js"></script>
+
+    <script src="https://sapui5.hana.ondemand.com/1.120.15/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
+    <script
+      src="https://sapui5.hana.ondemand.com/1.120.15/resources/sap-ui-core.js"
+      data-sap-ui-libs="sap.m, sap.ushell, sap.fe.templates, sap.uxap"
+      data-sap-ui-compatVersion="edge"
+      data-sap-ui-theme="sap_horizon"
+      data-sap-ui-frameOptions="allow"
+      data-sap-ui-bindingSyntax="complex"
+      data-sap-ui-async="true"
+    ></script>
+    <script type="text/javascript" src="util/setContent.js"></script>
+  </head>
+  <body class="sapUiBody sapUiSizeCompact" id="content">
+    <div
+      data-sap-ui-component
+      data-name="poetryslams"
+      data-id="container"
+      data-settings='{"id" : "poetryslams"}'
+      data-handle-validation="true"
+    ></div>
+  </body>
+</html>

@@ -1,9 +1,9 @@
 ID;number;dateTime;maxVisitorsNumber;freeVisitorSeats;visitorsFeeAmount;visitorsFeeCurrency_code;status_code;createdBy;title;description
-79ceab87-300d-4b66-8cc3-f82c679b77a1;1;2024-06-02T10:29:46.178Z;2;0;100.00;EUR;3;Peter;Echoes of Thought: Poetry Slam Spectacle;A spectaculous festival of thought-provoking verses that reverberate with the power of human experience
-79ceab87-300d-4b66-8cc3-f82c679b77a2;2;2024-07-07T11:02:46.178Z;50;48;105.00;CNY;2;anonymous;Being Human Poetry Slam;Poetry Slams about human existence, revealing the beauty and complexity within
-79ceab87-300d-4b66-8cc3-f82c679b77a3;3;2024-07-14T15:15:46.178Z;75;75;95.00;USD;1;Peter;Stage of Words New York;Welcome to a stage in New York where words reign supreme
-79ceab87-300d-4b66-8cc3-f82c679b77a4;4;2024-08-07T09:49:46.178Z;75;74;1000;INR;2;anonymous;Sonnet Symphony Hamburg;Witness the harmonious fusion of structured verse and unrestrained emotion in this poetic symphony in Hamburg
-79ceab87-300d-4b66-8cc3-f82c679b77a5;5;2024-08-27T12:37:46.178Z;50;50;100;EUR;1;anonymous;Whispers of the Night;Late Night Poetry Slam: Verses that echo the secrets and desires that come alive under the moon's embrace
-79ceab87-300d-4b66-8cc3-f82c679b77a6;6;2024-09-23T03:36:46.178Z;75;75;79;EUR;2;anonymous;Poetry for Poets;Slamming poets festival 2022
-79ceab87-300d-4b66-8cc3-f82c679b77a7;7;2024-12-16T06:25:46.178Z;30;30;25;EUR;3;Peter;Poetry Slam Berlin;Live! Poetry slam 2022 in Berlin
-79ceab87-300d-4b66-8cc3-f82c679b77a8;8;2024-08-23T01:32:46.178Z;20;20;25;EUR;4;Peter;London Poetry Open Air;Open air poetry festival in London
+79ceab87-300d-4b66-8cc3-f82c679b77a1;1;2024-06-02T16:00:00.178Z;2;0;100.00;EUR;3;Peter;Echoes of Thought: Poetry Slam Spectacle;A spectaculous festival of thought-provoking verses that reverberate with the power of human experience
+79ceab87-300d-4b66-8cc3-f82c679b77a2;2;2024-07-07T11:00:00.178Z;50;48;105.00;CNY;2;anonymous;Being Human Poetry Slam;Poetry Slams about human existence, revealing the beauty and complexity within
+79ceab87-300d-4b66-8cc3-f82c679b77a3;3;2024-07-14T15:00:00.178Z;75;75;95.00;USD;1;Peter;Stage of Words New York;Welcome to a stage in New York where words reign supreme
+79ceab87-300d-4b66-8cc3-f82c679b77a4;4;2024-08-07T09:00:00.178Z;75;74;1000;INR;2;anonymous;Sonnet Symphony Hamburg;Witness the harmonious fusion of structured verse and unrestrained emotion in this poetic symphony in Hamburg
+79ceab87-300d-4b66-8cc3-f82c679b77a5;5;2024-08-27T12:00:00.178Z;50;50;100;EUR;1;anonymous;Whispers of the Night;Late Night Poetry Slam: Verses that echo the secrets and desires that come alive under the moon's embrace
+79ceab87-300d-4b66-8cc3-f82c679b77a6;6;2024-09-23T18:00:00.178Z;75;75;79;EUR;2;anonymous;Poetry for Poets;Slamming poets festival 2022
+79ceab87-300d-4b66-8cc3-f82c679b77a7;7;2024-12-16T14:00:00.178Z;30;30;25;EUR;3;Peter;Poetry Slam Berlin;Live! Poetry slam 2022 in Berlin
+79ceab87-300d-4b66-8cc3-f82c679b77a8;8;2024-08-23T01:00:00.178Z;20;20;25;EUR;4;Peter;London Poetry Open Air;Open air poetry festival in London

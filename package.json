@@ -1,8 +1,8 @@
 {
   "name": "partner-reference-application",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "SAP Partner Reference Application Version 2.0",
-  "repository": "github.tools.sap/erp4sme/partner-reference-application.git",
+  "repository": "github.com/sap-samples/partner-reference-application.git",
   "author": "SAP",
   "license": "SAP SAMPLE CODE LICENSE",
   "keywords": [
@@ -11,37 +11,32 @@
     "BusinessTechnologyPlatform"
   ],
   "dependencies": {
-    "@sap/cds": "^7.8.1",
-    "@sap/cds-common-content": "^1.4.0",
-    "@sap/cds-dk": "^7.8.2",
+    "@sap/cds": "^7.9.3",
+    "@sap/cds-common-content": "^2.0.0",
+    "@sap/cds-dk": "^7.9.5",
     "@sap/cds-hana": "^2.0.0",
     "@sap/xssec": "^3.6.1",
     "express": "^4.19.2",
-    "passport": "^0.7.0"
+    "passport": "^0.7.0",
+    "rimraf": "^6.0.1"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^1.6.0",
-    "@sap/ux-specification": "^1.120.8",
-    "axios": "^1.6.8",
+    "@cap-js/sqlite": "^1.7.3",
+    "@sap/ux-specification": "^1.120.15",
+    "axios": "^1.7.2",
     "chai": "^4.4.1",
-    "chai-as-promised": "^7.1.1",
+    "chai-as-promised": "^7.1.2",
     "chai-subset": "^1.6.0",
-    "eslint": "^8.57.0",
-    "jest": "^29.7.0",
-    "mocha": "^10.4.0",
-    "prettier": "^3.2.5",
-    "rimraf": "^5.0.5"
+    "mocha": "^10.6.0"
   },
   "scripts": {
     "start": "cds-serve",
-    "watch-poetryslammanager": "cds watch --open poetryslammanager/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-poetryslams": "cds watch --open poetryslams/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-visitors": "cds watch --open visitors/webapp/index.html?sap-ui-xx-viewCache=false",
     "undeploy": "cf undeploy poetry-slams --delete-services --delete-service-keys --delete-service-brokers",
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
     "deploy": "cf deploy mta_archives/archive.mtar -f --retries 1",
-    "test": "mocha",
-    "eslint": "eslint . --ext .js",
-    "prettier": "prettier . --write",
-    "prettier-check": "prettier . --check"
+    "test": "mocha"
   },
   "cds": {
     "features": {
@@ -65,6 +60,7 @@
     }
   },
   "sapux": [
-    "app/poetryslammanager"
+    "app/poetryslams",
+    "app/visitors"
   ]
 }
