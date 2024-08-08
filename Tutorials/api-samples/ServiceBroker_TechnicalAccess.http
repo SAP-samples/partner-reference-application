@@ -25,17 +25,17 @@ Authorization: Basic {{client_id}}:{{client_secret}}
 @token = {{tokenrequest.response.body.access_token}}
 
 ### Get all PoetrySlams
-GET {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams
+GET {{endpoint}}/odata/v4/poetryslamservice/PoetrySlams
 Authorization: Bearer {{token}}
 
 ### Get a single PoetrySlam
-GET {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams?$filter=number%20eq%20'3'
+GET {{endpoint}}/odata/v4/poetryslamservice/PoetrySlams?$filter=number%20eq%20'3'
 Authorization: Bearer {{token}}
 
 ### Create a new slam (draft)
 ### This (and all subsequent examples) will fail in case you use a service binding for a service plan with ReadOnly scope (response will be 403 - forbidden)
 # @name createdraft
-POST {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams
+POST {{endpoint}}/odata/v4/poetryslamservice/PoetrySlams
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -45,11 +45,11 @@ Content-Type: application/json
 @newid = {{createdraft.response.body.ID}}
 
 ### Read draft PoetrySlam
-GET {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams(ID={{newid}},IsActiveEntity=false)
+GET {{endpoint}}/odata/v4/poetryslamservice/PoetrySlams(ID={{newid}},IsActiveEntity=false)
 Authorization: Bearer {{token}}
 
 ### Update draft PoetrySlam
-PATCH {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams(ID={{newid}},IsActiveEntity=false)
+PATCH {{endpoint}}/odata/v4/poetryslamservice/PoetrySlams(ID={{newid}},IsActiveEntity=false)
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -63,16 +63,16 @@ Content-Type: application/json
 }
 
 ### Activate (Save) draft PoetrySlam
-POST {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams(ID={{newid}},IsActiveEntity=false)/PoetrySlamManager.draftActivate
+POST {{endpoint}}/odata/v4/poetryslamservice/PoetrySlams(ID={{newid}},IsActiveEntity=false)/PoetrySlamService.draftActivate
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {}
 
 ### Read active PoetrySlam
-GET {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams(ID={{newid}},IsActiveEntity=true)
+GET {{endpoint}}/odata/v4/poetryslamservice/PoetrySlams(ID={{newid}},IsActiveEntity=true)
 Authorization: Bearer {{token}}
 
 ### Delete active PoetrySlam
-DELETE {{endpoint}}/odata/v4/poetryslammanager/PoetrySlams(ID={{newid}},IsActiveEntity=true)
+DELETE {{endpoint}}/odata/v4/poetryslamservice/PoetrySlams(ID={{newid}},IsActiveEntity=true)
 Authorization: Bearer {{token}}

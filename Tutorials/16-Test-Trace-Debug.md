@@ -12,7 +12,7 @@ Run the command `cds watch` on the command line interface. This will start a Nod
 
 ## Automated Tests
 
-For quality assurance, it's important to use automated tests that are executed when changes to the data model, services, or the user interface have been made, to check if the application still works as expected.
+For quality assurance to check if the application still works as expected, it's important to use automated tests that are executed when changes to the data model, services, or the user interface have been made.
 
 ### SAP Cloud Application Programming Model Unit Tests
 
@@ -27,13 +27,13 @@ The service API is used to test the Poetry Slam Manager entity model in [poetryS
 In the following example, a visit is selected from the database and is to be recreated. However, the creation must be rejected due to uniqueness of the pair *poetrySlam_ID* and *visitor_ID*. 
 
 ```javascript
-it('should ensure the uniquness of combination of visitor ID and poetry slam ID', async () => {
+it('should ensure the uniqueness of combination of visitor ID and poetry slam ID', async () => {
   const { Visits } = db.model.entities;
   const result = await SELECT.one
     .from(Visits)
     .columns('parent_ID', 'visitor_ID');
 
-  // Asynchronous calls require a return to be checked correclty
+  // Asynchronous calls require a return to be checked correctly
   return expect(db.create(Visits).entries(result)).to.rejected;
 });
 ```
@@ -42,15 +42,15 @@ it('should ensure the uniquness of combination of visitor ID and poetry slam ID'
 
 The HTTP API is used to test the Poetry Slam Manager service. There is one test file for each entity and a file to test the OData function of the service. Axios is used as HTTP client in the tests. The authorization is set to the user Peter.
 
-In the following example, all poetry slams are read via OData GET call in the *before* function. In the test, a published poetry slam is selected and the *Cancel* action is executed via OData. It checks if the status is correctly set to *Canceled*. Afterwards, the entry is read and the status code and statusCriticality are checked. You can find the tests in [poetrySlamManagerService-PoetrySlams.test.js](../../../tree/main-single-tenant/test/srv/poetrySlamManagerService-PoetrySlams.test.js).
+In the following example, all poetry slams are read via OData GET call in the *before* function. In the test, a published poetry slam is selected and the *Cancel* action is executed via OData. It checks if the status is correctly set to *Canceled*. Afterwards, the entry is read and the status code and statusCriticality are checked. You can find the tests in [poetrySlamServicePoetrySlams.test.js](../../../tree/main-single-tenant/test/srv/poetryslam/poetrySlamServicePoetrySlams.test.js).
 
 ```javascript
 
-const ACTION = (url, name, parameters = {}) => POST (url+ `/PoetrySlamManager.${name}`,parameters); 
+const ACTION = (url, name, parameters = {}) => POST (url+ `/PoetrySlamService.${name}`,parameters); 
 
 axios.defaults.auth = { username: 'peter', password: 'welcome' };
 
-describe('Poetryslams in PoetrySlamManager Service', () => {
+describe('Poetryslams in PoetrySlamService', () => {
     let poetrySlams;
 
     before(async () => {
@@ -61,7 +61,7 @@ describe('Poetryslams in PoetrySlamManager Service', () => {
       test.data.reset;
 
       // Read all poetry slams for usage in the tests
-      poetrySlams = await GET(`/odata/v4/poetryslammanager/PoetrySlams`, {
+      poetrySlams = await GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
         params: { $select: `ID,status_code,statusCriticality` }
       });
       expect(poetrySlams.data.value.length).to.greaterThan(0);
@@ -77,14 +77,14 @@ describe('Poetryslams in PoetrySlamManager Service', () => {
       ).ID;
 
       const actionResult = await ACTION(
-        `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=true)`,
+        `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
         'cancel'
       );
       expect(actionResult.data.status_code).to.eql(poetrySlamStatusCode.canceled);
 
       // Read the status of the poetry slam and check that it was canceled
       const result = await GET(
-        `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=true)`,
+        `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
         {
           params: { $select: `ID,status_code` }
         }
@@ -113,16 +113,12 @@ You can execute user interface and integration testing with the help of One Page
 
 OPA5 tests are built on the QUnit testing framework. They simulate and check user interaction with the UI.
 
-The tests are located in the directory [*app/poetryslammanager/webapp/test*](../../../tree/main-single-tenant/app/poetryslammanager/webapp/test).
+The tests are located in the directories [*app/poetryslams/webapp/test*](../../../tree/main-single-tenant/app/poetryslams/webapp/test) and [*app/visitors/webapp/test*](../../../tree/main-single-tenant/app/visitors/webapp/test).
 
-> Note: The directory **app/poetryslammanager/webapp/localService/** was created by the wizard, but it was deleted from this project as there was no usage in this application and, to keep it up-to-date with the service definition, manual adjustments would have been necessary.
-
-> Note: Before you can execute the file **opaTests.qunit.html**, adjust it manually. To run the tests, add `https://sapui5.hana.ondemand.com/<version>` in front of the referenced resources in the file. You can have a look at the [*app/poetryslammanager/webapp/test/integration/opaTests.qunit.html*](../../../tree/main-single-tenant/app/poetryslammanager/webapp/test/integration/opaTests.qunit.html) of the reference application.
-
-> Note: Before you can execute the file **FirstJourney.js**, adjust it manually. Add  `When.onTheShell.iPressTile('fe-lrop-v4');` in the `opaTest` method after the app is started. You can have a look at the [*app/poetryslammanager/webapp/test/integration/FirstJourney.js*](../../../tree/main-single-tenant/app/poetryslammanager/webapp/test/integration/FirstJourney.js) of the reference application.
+> Note: Before you can execute the file **opaTests.qunit.html**, adjust it manually. To run the tests, add `https://sapui5.hana.ondemand.com/<version>` in front of the referenced resources in the file. You can have a look at the [*app/poetryslams/webapp/test/integration/opaTests.qunit.html*](../../../tree/main-single-tenant/app/poetryslams/webapp/test/integration/opaTests.qunit.html) of the reference application. You also have to adjust the file **FirstJourney.js**. Add  `When.onTheShell.iPressTile('fe-lrop-v4');` in the `opaTest` method after the app is started. You can have a look at the [*app/poetryslams/webapp/test/integration/FirstJourney.js*](../../../tree/main-single-tenant/app/poetryslams/webapp/test/integration/FirstJourney.js) of the reference application.
 
 1. Start the local server: `npm run start`
-2. To execute OPA5 tests, open: `<host>/poetryslammanager/webapp/test/integration/opaTests.qunit.html`
+2. To execute OPA5 tests for the *Poetry Slams* application, open: `<host>/poetryslams/webapp/test/integration/opaTests.qunit.html` and open `<host>/visitors/webapp/test/integration/opaTests.qunit.html` for the *Visitors* application.
 
 #### More Information
 
@@ -162,7 +158,7 @@ Now, you need to provide the credentials to connect to the SAP HANA Cloud databa
 
 2. You need to create a service key for your SAP HANA HDI Container service instance and add the key information to your local development environment. This can be achieved by executing the CDS command in your terminal: `cds deploy --to hana:<HDI Container service instance name> --profile hybrid --store-credentials`.
 
-    For the Poetry Slam Manager application, this would be `cds deploy --to hana:poetry-slams-db --profile hybrid --store-credentials`.
+    For the Poetry Slam Manager solution, this would be `cds deploy --to hana:poetry-slams-db --profile hybrid --store-credentials`.
 
     Now, the files *default-env.json* and *cdsrc-private.json* are created at the root level of your project:
     - The *default-env.json* has the service key information with the credentials to connect to the SAP HANA Cloud database. 
@@ -204,7 +200,7 @@ If you open the UI of your application and it doesn't look as expected, the brow
 
       Typical errors could be of type *403 Forbidden*. This would indicate that the user doesn't have the relevant authorizations.
 
-      <img src="./images/Forbidden-BrowserTools.png" width="75%">
+      <img src="./images/16_Forbidden-BrowserTools.png" width="75%">
 
 3. In this case, check if the application role collections are either assigned to a user or to user groups as configured in the IdP that is connected to this subaccount. 
 
@@ -237,7 +233,7 @@ From here, you can navigate to the specific application and analyze the logs tha
 
 1. Navigate to your Cloud Foundry space in the SAP BTP provider account.
 
-   <img src="./images/ApplicationSpecificLogs.png" width="50%">
+   <img src="./images/16_ApplicationSpecificLogs.png" width="50%">
 
 2. Go to the application you want to analyze.
 3. Navigate to the *Logs* section.
@@ -245,11 +241,15 @@ From here, you can navigate to the specific application and analyze the logs tha
 
 > Note: Just like the event logs, there is a limited lifetime where the application logs can be accessed.
 
+## Code Quality
+
+Besides automated testing, code quality includes readability, maintainability, compliance. There are a number of automated tools that help you to format your files in a consistent way, check for possible implementation, license or security issues and update the included external packages. To keep your application up-to-date you should configure such tools. See also [Update Project Dependencies](./14-Develop-Core-Application.md#update-project-dependencies).
+
 ## Give Feedback
 
 In the SAP BTP subaccount cockpit, on the header of the page, there's a feedback icon you can use to report a bug:
 
-<center> <img src="./images/BTP_Feedback.png"> </center>
+<center> <img src="./images/16_BTP_Feedback.png"> </center>
 
 
 The SAP Cloud Application Programming Model documentation also contains a [Resources](https://cap.cloud.sap/docs/resources/) page, which you can use to report any issues. 

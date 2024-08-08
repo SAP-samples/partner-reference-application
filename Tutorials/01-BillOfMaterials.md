@@ -8,51 +8,53 @@ The example setup serves four sample customers:
 -	*Almika Events Cleveland*: An event agency that plans events using SAP Business ByDesign as their ERP solution.
 -	*Invictus Live Events*: A small poet startup without any ERP solution yet (but a promising ERP prospect if they stay on their exciting growth journey). 
 
+<p align="center">
+    <img src="./images/01_sample_landscape.png" width="100%">
+</p>
+
 To develop and run the application for these consumers, the following directory and subaccount structure is proposed.
 
 | Directory Name                   | Subaccount Name                      | Usage                                                                                             |
 | --------------------             | --------------------                 | ----------------------------                                                                      |
 | Development                      |                                      |                                                                                                   |
-|                                  | Development                          | SAP Business Application Studio                                                                       |
+|                                  | Development                          | SAP Business Application Studio                                                                   |
 | Partner Reference Application    |                                      |                                                                                                   |
 |                                  | Provider: Poetry Slam Manager        | Application runtime, the database, other SAP BTP services used to run the application             |
 |                                  | Consumer 1: Andina Publications      | Subscription to customer Andina Publications connected to their SAP S/4HANA Cloud tenant          |
 |                                  | Consumer 2: OEC Computers            | Subscription to customer OEC Computers connected to their SAP Business One system                 |
 |                                  | Consumer 3: Almika Events Cleveland  | Subscription to customer Almika Events Cleveland connected to their SAP Business ByDesign tenant  |
-|                                  | Consumer 4: Invictus Live Events     | Subscription to customer Invictus Live Events who uses the application as a stand-alone solution |
+|                                  | Consumer 4: Invictus Live Events     | Subscription to customer Invictus Live Events who uses the application as a stand-alone solution  |
 
 
 ## Entitlements
-The list shows the entitlements that are required in the different subaccounts to develop and run the Poetry Slam Manager application with a multi-tenant deployment and additional features. The listed service plans refer to SAP BTP accounts for Test, Demo, and Development (TDD). 
+The list shows the entitlements that are required in the different subaccounts to develop and run the Poetry Slam Manager application with a multi-tenant deployment and additional features. You can get more information about the used services in the [SAP Discovery Center](https://discovery-center.cloud.sap/protected/index.html#/viewServices). 
 
-| Subaccount    |  Entitlement Name                                    | Service Plan (TDD)        | Type          | Quantity                          | 
+| Subaccount    |  Entitlement Name                                    | Service Plan              | Type          | Quantity                          | 
 | -----------   |  -------------------                                 | ---------                 | ---------     | ---------                         |
 | Development   |                                                      |                           |               |                                   |
 |               | SAP Business Application Studio                      | standard-edition          | Application   | 1 (per developer)                 |
 | Provider      |                                                      |                           |               |                                   |
-|               | SAP BTP Cloud Foundry runtime                                | standard                  | Environment   | 4 units                           |
+|               | SAP BTP Cloud Foundry runtime                        | standard                  | Environment   | 4 units                           |
 |               | SAP Custom Domain service                            | standard                  | Application   | 1                                 |
 |               | SAP Audit Log service                                | premium                   | Service       | 1                                 |
 |               | SAP Authorization and Trust Management service       | broker                    | Service       | 1                                 | 
 |               | SAP Destination service                              | lite                      | Service       | 1                                 | 
-|               | SAP HTML5 Application Repository service for SAP BTP | repo-host                 | Service       | 1                                 | 
+|               | SAP HTML5 Application Repository service for SAP BTP | app-host                  | Service       | 1                                 | 
 |               | SAP HTML5 Application Repository service for SAP BTP | app-runtime               | Service       | 1                                 | 
 |               | SAP Software-as-a-Service Provisioning service       | application               | Service       | 1                                 | 
 |               | SAP HANA Cloud                                       | hana-td                   | Service       | 1                                 | 
 |               | SAP HANA Schemas & HDI Containers                    | hdi-shared                | Service       | 1                                 | 
 |               | SAP Service Manager service                          | container                 | Service       | 1                                 | 
+|               | SAP Cloud Logging service                            | standard                  | Service       | 1                                 | 
 | Consumer      |                                                      |                           |               |                                   |
-|               | Poetry Slam Manager                                  | default                   | Application   | 1 (partner application)           |
-|               | Poetry Slam Service Broker                           | fullaccess                | Instance      | 1 (partner application)           |
-|               | Poetry Slam Service Broker                           | readonlyaccess            | Instance      | 1 (partner application)           |
 |               | SAP Audit Log Viewer service for SAP BTP             | default                   | Application   | 1                                 |
-|               | SAP Build Work Zone, standard edition                | standard                  | Application   | 1                                 |
+|               | (optional) SAP Build Work Zone, standard edition     | standard                  | Application   | 1                                 |
 
 
 ## Services Without Entitlements
 The list shows services that don't require entitlements.
 
-| Subaccount    |  Entitlement Name                                    | Service Plan (TDD)        | Type          | Quantity                          | 
+| Subaccount    |  Entitlement Name                                    | Service Plan              | Type          | Quantity                          | 
 | -----------   |  -------------------                                 | ---------                 | ---------     | ---------                         |
 | Consumer      |                                                      |                           |               |                                   |
 |               | Poetry Slam Manager                                  | default                   | Application   | 1 (partner application)           |
@@ -62,15 +64,26 @@ The list shows services that don't require entitlements.
 On top of the mentioned entitlements, the connectivity and security services are part of the consumer accounts of the solution.
 
 ## Modules
+
+### Running in Cloud Foundry
 The application consists of the following modules, which are deployed into the SAP BTP Cloud Foundry runtime of the provider subaccount. 
 
-- SAP Cloud Application Programming Model on Node.js (provided by SAP)
-- SAPUI5 with SAP Fiori elements (provided by SAP)
-- SAP Cloud SDK (provided by SAP)
-- Application Router (provided by SAP)                                                          
-- Multitenancy Extension Module (provided by SAP)                                                 
-- Service Broker (provided by SAP)                                                   
-- Partner Application Module (your main development task)                                                   
+Provided by SAP:
+- Application Router                                                           
+- Multitenancy Extension Module                                                  
+- Service Broker     
+
+Your main development task:                                            
+- Partner Application Module  
+
+### Node Modules
+Some open source node modules offered by SAP are used to build the solution. 
+
+Provided by SAP:
+- SAP Cloud Application Programming Model on Node.js 
+- SAPUI5 with SAP Fiori elements 
+- SAP Cloud SDK 
+                                                  
 
 # Scaling
 To get an overview of how the services scale and how many entitlements you require for an application, here's an example based on the projected use of the Partner Reference Application:
@@ -80,9 +93,19 @@ Let's assume a typical data volume of two poetry slams per week (or 125 slams pe
  - 750,000 visitors and artists
  - 1,500,000 bookings
 
-| Service Name                  | Service Plan (TDD)        | Quantity Required (5 Customers) | Quantity Required (20 Customers) | Quantity Required (100 Customers) | 
-| -------------------           | ---------                 | ---------                       | ---------                        | ---------                         |
-| SAP BTP Cloud Foundry runtime | standard                  | 3 GB                            | 6 GB                             | 20 GB                             |
-| SAP HANA Cloud                | standard                  | 900 CU                          | 900 CU                           | 1000 CU                           |
-| SAP Custom Domain service     | premium                   | 1 Domain                        | 1 Domain                         | 1 Domain                          |
-| SAP Audit Log service         | hana-td                   | 1 GB Storage, 1 GB Writing​      | 1 GB Storage, 1 GB Writing​       | 1 GB Storage, 1 GB Writing        ​|
+> Note: The required quantities of most services are calculated on basis of memory, storage or usage counts. The SAP HANA Cloud database bases on capacity units (CU), which considers several factors like memory, CPUs and storage. You can use the [SAP HANA Cloud Capacity Unit Estimator](https://hcsizingestimator.cfapps.eu10.hana.ondemand.com/) to calculate the required capacity units.
+
+The table below shows how the required quantities scale with typical numbers of customers. The scaling is less than linear. This means the costs per customer decrease significantly the more customers you serve with the multi-tenant application.
+
+| Service Name                    | Service Plan              | 5 Customers                     | 20 Customers                     | 100 Customers                     | 
+| -------------------             | ---------                 | ---------                       | ---------                        | ---------                         |
+| SAP BTP Cloud Foundry runtime   | standard                  | 3 GB                            | 6 GB                             | 20 GB                             |
+| SAP HANA Cloud                  | hana-td                   | 900 CU                          | 900 CU                           | 1000 CU                           |
+| SAP Custom Domain service       | standard                  | 1 Domain                        | 1 Domain                         | 1 Domain                          |
+| SAP Audit Log service           | premium                   | 1 GB Storage, 1 GB Writing​      | 1 GB Storage, 1 GB Writing​       | 1 GB Storage, 1 GB Writing        ​|
+| SAP Cloud Logging service       | standard                  | 538 CU                          | 538 CU                           | 538 CU                            |
+| SAP Business Application Studio | standard-edition          | 2 User                          | 2 User                           | 2 User                            |
+
+# Information on Versions and What's New
+
+The SAP Help page ["What's New for SAP Business Technology Platform"](https://help.sap.com/whats-new/cf0cb2cb149647329b5d02aa96303f56?clear=all&locale=en-US) allows to subscribe for updates. 

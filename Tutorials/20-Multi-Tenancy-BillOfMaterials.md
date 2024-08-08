@@ -1,5 +1,7 @@
-# Bill of Materials
- In the version of Poetry Slam Manager with multitenancy and SAP ERP integration, the Partner Reference Application uses a number of subaccounts and entitlements. These subaccounts include a provider subaccount (to which the application is deployed) and consumer subaccounts (which hold customer-specific information and configuration). Find an overview in the section below.
+# Learn about Multitenancy and Get an Overview of the Bill of Materials
+Multitenancy is the ability to serve multiple tenants from a single deployment and strictly isolating the tenants' data. This significantly reduces costs and efforts.
+
+In the version of Poetry Slam Manager with multitenancy and SAP ERP integration, the Partner Reference Application uses a single deployment to a provider subaccount and subscription to this deployment in subscriber or consumer subaccounts. While the actual runtime of the application resides in the provider account, the subscriber accounts are used for the tenant-specific configuration such as desinations or authorization and authentication. Find an overview of the accounts in the section below.
 
 ## Subaccounts
 The example setup serves four sample customers: 
@@ -23,18 +25,18 @@ To develop and run the application for these consumers, the following directory 
 
 
 ## Entitlements
-The list shows the entitlements that are required in the different subaccounts to develop and run the Poetry Slam Manager application with a multi-tenant deployment and additional features. The listed service plans refer to SAP BTP accounts for Test, Demo, and Development (TDD). 
+The list shows the entitlements that are required in the different subaccounts to develop and run the Poetry Slam Manager application with a multi-tenant deployment and additional features. 
 
-| Subaccount    |  Entitlement Name                                    | Service Plan (TDD)        | Type          | Quantity                          | 
+| Subaccount    |  Entitlement Name                                    | Service Plan              | Type          | Quantity                          | 
 | -----------   |  -------------------                                 | ---------                 | ---------     | ---------                         |
 | Development   |                                                      |                           |               |                                   |
 |               | SAP Business Application Studio                      | standard-edition          | Application   | 1 (per developer)                 |
 | Provider      |                                                      |                           |               |                                   |
-|               | SAP BTP Cloud Foundry runtime                                | standard                  | Environment   | 3 units                           |
+|               | SAP BTP Cloud Foundry runtime                        | standard                  | Environment   | 3 units                           |
 |               | SAP Custom Domain service                            | standard                  | Application   | 1                                 |
 |               | SAP Authorization and Trust Management service       | broker                    | Service       | 1                                 | 
 |               | SAP Destination service                              | lite                      | Service       | 1                                 | 
-|               | SAP HTML5 Application Repository service for SAP BTP | repo-host                 | Service       | 1                                 | 
+|               | SAP HTML5 Application Repository service for SAP BTP | app-host                  | Service       | 1                                 | 
 |               | SAP HTML5 Application Repository service for SAP BTP | app-runtime               | Service       | 1                                 | 
 |               | SAP Software-as-a-Service Provisioning service       | application               | Service       | 1                                 | 
 |               | SAP HANA Cloud                                       | hana-td                   | Service       | 1                                 | 
@@ -47,7 +49,7 @@ The list shows the entitlements that are required in the different subaccounts t
 ## Services Without Entitlements
 The list shows services that don't require entitlements.
 
-| Subaccount    |  Entitlement Name                                    | Service Plan (TDD)        | Type          | Quantity                          | 
+| Subaccount    |  Entitlement Name                                    | Service Plan              | Type          | Quantity                          | 
 | -----------   |  -------------------                                 | ---------                 | ---------     | ---------                         |
 | Consumer      |                                                      |                           |               |                                   |
 |               | Poetry Slam Manager                                  | default                   | Application   | 1 (partner application)           |
@@ -55,15 +57,18 @@ The list shows services that don't require entitlements.
 ## Modules
 The application consists of the following modules, which are deployed into the SAP BTP Cloud Foundry runtime of the provider subaccount. 
 
-- SAP Cloud Application Programming Model on Node.js (provided by SAP)
-- SAPUI5 with SAP Fiori elements (provided by SAP)
-- SAP Cloud SDK (provided by SAP)  
-- Application Router (provided by SAP)                                                          
-- Multitenancy Extension Module (provided by SAP)                                                                                           
-- Partner Application Module (your main development task)                                                   
+Provided by SAP:
+- SAP Cloud Application Programming Model on Node.js 
+- SAPUI5 with SAP Fiori elements 
+- SAP Cloud SDK   
+- Application Router                                                           
+- Multitenancy Extension Module   
+
+Your main development task:  
+- Partner Application Module                                                   
 
 Before you move on with the next section, ensure that the required service assignments are available in your global account.
 
 > Note: Contact SAP if there aren't enough service entitlements available in your global account.
 
-Now that you're familiar with the bill of materials, in the [next section](21-Multi-Tenancy-Introduction.md), you'll learn more about multitenancy.
+Now that you're familiar with multitenancy and the bill of materials, in the [next section](22-Multi-Tenancy-Prepare-Deployment.md), you'll start preparing the multitenancy version of the Poetry Slam Manager.

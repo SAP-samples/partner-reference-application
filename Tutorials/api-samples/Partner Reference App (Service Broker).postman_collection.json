@@ -27,14 +27,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{api_url}}/odata/v4/poetryslammanager/PoetrySlams?$filter=number eq '{{PoetrySlam_Number}}'",
+					"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams?$filter=number eq '{{PoetrySlam_Number}}'",
 					"host": [
 						"{{api_url}}"
 					],
 					"path": [
 						"odata",
 						"v4",
-						"poetryslammanager",
+						"poetryslamservice",
 						"PoetrySlams"
 					],
 					"query": [
@@ -77,16 +77,16 @@
 					}
 				},
 				"url": {
-					"raw": "{{api_url}}/odata/v4/poetryslammanager/PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=true)/PoetrySlamManager.draftEdit",
+					"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=true)/PoetrySlamService.draftEdit",
 					"host": [
 						"{{api_url}}"
 					],
 					"path": [
 						"odata",
 						"v4",
-						"poetryslammanager",
+						"poetryslamservice",
 						"PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=true)",
-						"PoetrySlamManager.draftEdit"
+						"PoetrySlamService.draftEdit"
 					]
 				}
 			},
@@ -119,14 +119,14 @@
 					}
 				],
 				"url": {
-					"raw": "{{api_url}}/odata/v4/poetryslammanager/PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=false)",
+					"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=false)",
 					"host": [
 						"{{api_url}}"
 					],
 					"path": [
 						"odata",
 						"v4",
-						"poetryslammanager",
+						"poetryslamservice",
 						"PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=false)"
 					],
 					"query": [
@@ -175,14 +175,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{api_url}}/odata/v4/poetryslammanager/PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=false)",
+					"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=false)",
 					"host": [
 						"{{api_url}}"
 					],
 					"path": [
 						"odata",
 						"v4",
-						"poetryslammanager",
+						"poetryslamservice",
 						"PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=false)"
 					]
 				}
@@ -219,16 +219,16 @@
 					}
 				},
 				"url": {
-					"raw": "{{api_url}}/odata/v4/poetryslammanager/PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=false)/PoetrySlamManager.draftActivate",
+					"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=false)/PoetrySlamService.draftActivate",
 					"host": [
 						"{{api_url}}"
 					],
 					"path": [
 						"odata",
 						"v4",
-						"poetryslammanager",
+						"poetryslamservice",
 						"PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=false)",
-						"PoetrySlamManager.draftActivate"
+						"PoetrySlamService.draftActivate"
 					]
 				}
 			},
@@ -264,14 +264,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{api_url}}/odata/v4/poetryslammanager/PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=true)",
+					"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=true)",
 					"host": [
 						"{{api_url}}"
 					],
 					"path": [
 						"odata",
 						"v4",
-						"poetryslammanager",
+						"poetryslamservice",
 						"PoetrySlams(ID={{PoetrySlam_ID}},IsActiveEntity=true)"
 					]
 				}

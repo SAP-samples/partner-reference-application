@@ -2,16 +2,17 @@
 
 ## Purpose
 
-In the last sections, you learned how to create the Poetry Slam Manager application and how to enable it for multitenancy. In this section, Poetry Slam Manager is connected with the customer's SAP Business ByDesign system to allow additional planning steps in a project.
+In the last sections, you learned how to create the Poetry Slam Manager solution and how to enable it for multitenancy. In this section, Poetry Slam Manager is connected with the customer's SAP Business ByDesign system to allow additional planning steps in a project.
 
 The following features are handled:
-- Create projects for poetry slam events with one click and preview project information on the Poetry Slam Manager UI.
+- Create projects for poetry slam events with one click and preview project information on the Poetry Slams UI.
 
-- As an SAP Business ByDesign user, start Poetry Slam Manager from your SAP Business ByDesign launchpad and navigate from Poetry Slam Manager to the associated project in the system.
+- As an SAP Business ByDesign user, start Poetry Slams and Visitors applications from your SAP Business ByDesign launchpad and navigate from Poetry Slams to the associated project in the system.
 
 ## Prerequisites
 Make sure that you fulfill the following prerequisites to implement this section
-- You need an SAP Business ByDesign subscription with the Project Management work center.
+- You need an SAP Business ByDesign subscription.
+- You need a user with the Project Management work center.
 - You need a user with access to the Application and User Management work center:
     - to set up single sign-on,
     - to create users and to assign authorizations, 
@@ -35,7 +36,7 @@ If you need more information about the topics, you can have a look at the follow
 
 3. [Work Quick Guide (in User and Access Management)](https://help.sap.com/docs/SAP_BUSINESS_BYDESIGN/2754875d2d2a403f95e58a41a9c7d6de/2dd4a17b722d10148deffc01caa1c49b.html)
 
-4. [Maintenance of Suppliers and Service Agents](https://help.sap.com/docs/SAP_BUSINESS_BYDESIGN/2754875d2d2a403f95e58a41a9c7d6de/2cd0baff722d1014b4d38467ae316b6a.html)
+4. [Service Agents Quick Guide](https://help.sap.com/docs/SAP_BUSINESS_BYDESIGN/2754875d2d2a403f95e58a41a9c7d6de/fa1b263da6274a2d864fb75c4f7fc182.html)
 
 5. [Quick Guide for Employees in Business Partner Data](https://help.sap.com/docs/SAP_BUSINESS_BYDESIGN/2754875d2d2a403f95e58a41a9c7d6de/2dd59e78722d1014b6eee1e49ba6383c.html)
 

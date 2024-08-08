@@ -3,15 +3,15 @@
 In this section, you connect an SAP S/4HANA Cloud tenant, the Identity Authentication service tenant of the SAP S/4HANA Cloud system (acting as a corporate identity provider), and the SAP BTP consumer subaccount with the customer subscription of Poetry Slam Manager.
 
 1. Front-end integration:
-    1. Launch Poetry Slam Manager from the SAP S/4HANA Cloud launchpad.
+    1. Launch Poetry Slams and Visitors applications from the SAP S/4HANA Cloud launchpad.
     2. Launch applications to administrate SAP BTP such as the Identity Authentication service admin application from the SAP S/4HANA Cloud launchpad.
     3. Navigate from Poetry Slam Manager to the related SAP S/4HANA Cloud enterprise projects.
-    4. Configure single sign-on for SAP S/4HANA Cloud, Poetry Slam Manager, and all SAP BTP admin apps using the same Identity Authentication service tenant as corporate identity provider (IdP).
+    4. Configure single sign-on for SAP S/4HANA Cloud, Poetry Slams and Visitors applications, and all SAP BTP admin apps using the same Identity Authentication service tenant as corporate identity provider (IdP).
 
 2. Back-channel integration: Create and read SAP S/4HANA Cloud enterprise projects from Poetry Slam Manager using OData APIs with principal propagation.
 
 <p align="center">
-  <img src="./images/mt_s4hc_integration.png" width="60%">
+  <img src="./images/34_mt_s4hc_integration.png" width="60%">
 </p>
 
 ## Set Up SAP BTP Consumer Subaccount
@@ -24,18 +24,20 @@ To start the provisioning procedure, create an SAP BTP consumer subaccount for a
 
 ### Subscribe To the SAP SAP BTP Multi-Tenant Application
 
-1. In the SAP BTP cockpit (consumer subaccount), navigate to *Instances and Subscriptions*. 
+1. In the SAP BTP cockpit of the newly created consumer subaccount, navigate to *Instances and Subscriptions*. 
 2. Create a subscription to *Poetry Slam Manager* with the *default* service plan (this is the multi-tenant SAP BTP application you just created).
 
-## Configure Single Sign-on for the SAP BTP Application
-
+## Set Up Single Sign-On for the SAP BTP Application Subscription
 In this tutorial, the Identity Authentication service tenant that is used by the SAP S/4HANA Cloud tenant for authentication is reused.  
 
-Therefore, configure a trust relationship between the SAP BTP consumer subaccount and the Identity Authentication service tenant of SAP S/4HANA Cloud as described in the section [Configure Trust Using SAML 2.0](./25-Multi-Tenancy-Provisioning.md).
+### Configure Single Sign-On for the SAP BTP Application
+Configure a trust relationship between the SAP BTP consumer subaccount and the Identity Authentication service tenant of SAP S/4HANA Cloud as described in the section [Configure Trust Using SAML 2.0](./25-Multi-Tenancy-Provisioning.md).
 
 ### Launch the SAP BTP Multi-Tenant Application
 
-To launch the Poetry Slam Manager application, choose *Go to Application*. Copy the link address of the Poetry Slam Manager application and note it down as **SAP BTP Application Tenant URL** for later reference.
+1. To launch the Poetry Slams application, choose *Go to Application*. Copy the link address of the Poetry Slams application and note it down as **SAP BTP Application Poetry Slams Tenant URL** for later reference.
+
+2. From there, open a fully booked poetry slam and click in the header of the Object Page to *Maintain Visitors*. Copy the link address of the Visitors application and note it down as **SAP BTP Application Visitors Tenant URL** for later reference.
 
 > Note: If you're directed to an SAP HANA XS Advanced Login screen after launching the application, check the naming of your SAP BTP Cloud Foundry runtime organization. The organization name must be in lowercase.
 
@@ -52,7 +54,7 @@ Therefore, the trust relationship between the SAP S/4HANA Cloud tenant and the I
     - [*Enterprise Project - Read Project Processing Status*](https://api.sap.com/api/ENTPROJECTPROCESSINGSTATUS_0001/overview) (OData v4): Communication scenario: *Enterprise Project - Project Processing Status Integration* (SAP_COM_0725)
     - [*Enterprise Project - Read Project Profile*](https://api.sap.com/api/ENTPROJECTPROFILECODE_0001/overview) (OData v4): Communication scenario: *Enterprise Project - Project Profile Integration* (SAP_COM_0724)
 
-2. Create a new *Communication System* that represents the SAP BTP consumer subaccount:
+2. In the SAP S/4HANA Cloud system, create a new *Communication System* that represents the SAP BTP consumer subaccount:
 
     | Parameter Name | Value                                                                                 |
     | :-------------- | :------------------------------------------------------------------------------------- |
@@ -115,7 +117,7 @@ Configure SAP S/4HANA Cloud for OAuth 2.0 SAML Bearer authentications.
     4.  Copy the *CN* property of the *Signing Certificate Issuer* into *OAuth 2.0 SAML Issuer* field.
     5.  Keep the *User ID Mapping Mode* = *User Name*.
 
-3.  In SAP S/4HANA Cloud, to change the authentication method of the communication arrangement for enterprise projects to OAuth 2.0, open the *Poetry Slam Manager - Projects* *Communication Arrangement*  you created in a previous step. 
+3.  In SAP S/4HANA Cloud, to change the authentication method of the communication arrangement for enterprise projects to OAuth 2.0, open the *Poetry Slam Manager - Projects* communication arrangement you created in a previous step. 
 
 4.  Go to *Inbound Communication* and reselect the user for inbound communication. Choose the same user with authentication method *OAuth 2.0*.
      > Note: The OData services for project profiles and project processing status don't support OAuth and, therefore, these services will be used with a basic authentication.
@@ -211,10 +213,10 @@ As a last step, Poetry Slam Manager and SAP BTP admin applications are added to 
 			
     | Field       | Value                                                                           |
     | :----------- | :----------------------------------------------------------------------------- |
-    | *Title*:     | `Poetry Slam Manager`                                                          |
-    | *ID*:        | `POETRYSLAMMANAGER`                                                            |
+    | *Title*:     | `Poetry Slams`                                                          |
+    | *ID*:        | `POETRYSLAMS`                                                            |
     | *Subtitle*:  | `Manage poetry slams`                                                          |
-    | *URL*:       | Enter the **SAP BTP Application Tenant URL**, you noted down in a previous step.    |
+    | *URL*:       | Enter the **SAP BTP Application Poetry Slams Tenant URL**, you noted down in a previous step.    |
     | *Icon*:      | Choose an icon, for example, *sap-icon://microphone*                           |
             
 2. Choose *Assign Catalogs* and add a *Business Catalog*, for example, *Enterprise Projects - Project Control Management*.
@@ -227,7 +229,9 @@ As a last step, Poetry Slam Manager and SAP BTP admin applications are added to 
 
     > Note: Refresh your browser window if the app is not listed.
 
-Now you find the Poetry Slam Manager application on the SAP S/4HANA Cloud launchpad in the *Project Control Management* group.
+5. Repeat the previous steps for the Visitors application. Use the **SAP BTP Application Visitors Tenant URL** as URL.
+
+Now you find the Poetry Slams and Visitors applications on the SAP S/4HANA Cloud launchpad in the *Project Control Management* group.
 
 Repeat the same steps with suitable business catalogs to create custom tiles for the Identity Authentication service admin application.
 
@@ -238,26 +242,21 @@ Repeat the same steps with suitable business catalogs to create custom tiles for
 The SAP BTP application design relies on business users and authorizations being created and managed in the Cloud ERP solution (in this case, SAP S/4HANA Cloud) and the customer identity provider (in this case, Identity Authentication service connected to SAP S/4HANA Cloud).
 As a general approach, users are created in the ERP solution and the IdP, and then assigned to the user group that includes the authorization of the partner application users.
 
-1.  In the SAP S/4HANA Cloud system, hire an *Employee* via SAP SuccessFactors Employee Central or create an *Employee* via employee import. Make sure that you enter the employee's e-mail address (the e-mail address is used as the user identifying attribute for single sign-on).
-
-2.  In the SAP S/4HANA Cloud system, open the Maintain Business Users application and assign the following business roles:  
-    - *Project Manager* (SAP_BR_PROJECTMANAGER)  
-    - *Project Financial Controller* (BR_PROJ_FIN_CONTROLLER): required to create enterprise projects via OData  
-    - *Administrator* (SAP_BR_ADMINISTRATOR): required to configure APIs and to create custom tiles  
-
-3.  In the Identity Authentication service system, create the same user and enter the same e-mail address you used in the SAP S/4HANA Cloud system.
-
-4.  In the Identity Authentication service system, assign the user group with the authorization for Poetry Slam Manager (for example, the *Admin* or *PoetrySlamManager* user group) to the user.
+To create a user in  SAP S/4HANA Cloud, follow the documentation [Identity and Access Management](https://help.sap.com/docs/SAP_S4HANA_CLOUD/a630d57fc5004c6383e7a81efee7a8bb/f25f9108740442c3804370f2d88a9bdd.html?q=Maintain%20Business%20Users).
 
 > Note: Make sure that you maintain the same e-mail address for users in the Cloud ERP and the Identity Authentication service tenant. Otherwise, single sign-on and the API-led integration using OAuth SAML bearer won't work.
 
 ## Test
 
 1. To test the integration and single sign-on authentication, open the SAP S/4HANA Cloud launchpad and log on using your SAP S/4HANA Cloud user. 
-2. Launch Poetry Slam Manager via the custom tile on the SAP S/4HANA Cloud launchpad. 
-3. Poetry Slam Manager opens in a new browser tab without any additional authentication prompt.
+2. Launch Poetry Slams application via the custom tile on the SAP S/4HANA Cloud launchpad. 
+3. The Poetry Slams application opens in a new browser tab without any additional authentication prompt.
+    1. Open a poetry slam that is *published* or *fully booked* and create a project in SAP S/4HANA Cloud.        
+    2. Check that the navigation to the project in SAP S/4HANA Cloud works.
+4. Launch Visitors application via the custom tile on the SAP S/4HANA Cloud launchpad. 
+5. The Visitors application opens in a new browser tab without any additional authentication prompt.
 
-<img src="./images/mt_s4hc_launchpad.png">
+<img src="./images/34_mt_s4hc_launchpad.png">
 
 ## Remarks and Troubleshooting
 
