@@ -1,4 +1,4 @@
-_schema-version: '3.1'
+_schema-version: 3.3.0
 ID: poetry-slams
 description: SAP Partner Reference Application v2.0
 version: 2.0.0
@@ -29,15 +29,16 @@ modules:
     type: nodejs
     path: gen/srv
     requires:
-      - name: poetry-slams-db
       - name: poetry-slams-auth
-      - name: poetry-slams-destination-service
+      - name: poetry-slams-db
     provides:
       - name: srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
           srv-url: ${default-url}
     parameters:
       buildpack: nodejs_buildpack
+      readiness-health-check-http-endpoint: /health
+      readiness-health-check-type: http
     build-parameters:
       builder: npm-ci
 
@@ -48,15 +49,25 @@ modules:
     path: gen/db
     requires:
       - name: poetry-slams-db
-      - name: poetry-slams-auth
     parameters:
       buildpack: nodejs_buildpack
 
-  # App UI resources module
-  # Creates and packages the static content of the HTML5 application
-  - name: poetryslammanager
+  # App UI resources modules
+  # Creates and packages the static content of the HTML5 applications
+  - name: poetryslams
     type: html5
-    path: app/poetryslammanager
+    path: app/poetryslams
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+
+  - name: visitors
+    type: html5
+    path: app/visitors
     build-parameters:
       build-result: dist
       builder: custom
@@ -78,8 +89,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - poetryslammanager.zip
-          name: poetryslammanager
+            - poetryslams.zip
+          name: poetryslams
+          target-path: resources/
+        - artifacts:
+            - visitors.zip
+          name: visitors
           target-path: resources/
 
   # Destination content module
@@ -103,6 +118,7 @@ modules:
     parameters:
       content:
         instance:
+          existing_destinations_policy: update
           destinations:
             - Name: poetryslammanager-repo-host-dest
               ServiceInstanceName: poetry-slams-html5-srv
@@ -113,7 +129,6 @@ modules:
               ServiceInstanceName: poetry-slams-auth
               ServiceKeyName: poetry-slams-auth-key
               sap.cloud.service: poetryslammanager
-          existing_destinations_policy: update
 
 # -------------------------------------------------------------------------
 # Resources/Services that are required to run the deployed application
@@ -126,8 +141,6 @@ resources:
     parameters:
       service: hana
       service-plan: hdi-shared
-    properties:
-      hdi-service-name: ${service-name}
 
   # HTML5 app repository
   # Hosts and serves the HTML5 application so that it is accessible via internet browsers
@@ -173,10 +186,9 @@ resources:
   - name: poetry-slams-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      config:
-        tenant-mode: dedicated
-        xsappname: poetry-slams-${space}
-      path: ./xs-security.json
       service: xsuaa
-      service-name: poetry-slams-auth
-      service-plan: application
+      service-plan: broker
+      path: ./xs-security.json
+      config:
+        xsappname: poetry-slams-${org}-${space}
+        tenant-mode: dedicated
