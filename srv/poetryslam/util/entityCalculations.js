@@ -145,7 +145,7 @@ async function createProject(req, srv, ConnectorClass, errorText) {
 
   const poetrySlamID = req.params[req.params.length - 1].ID;
   const poetrySlam = await SELECT.one
-    .from('PoetrySlamManager.PoetrySlams')
+    .from('PoetrySlamService.PoetrySlams')
     .where({ ID: poetrySlamID });
   // Allow action for active entity instances only
   if (!poetrySlam) {
@@ -191,7 +191,7 @@ async function createProject(req, srv, ConnectorClass, errorText) {
 
     // Generate remote Project URL and update the URL
     // Update project elements in entity poetrySlams
-    await UPDATE.entity('PoetrySlamManager.PoetrySlams')
+    await UPDATE.entity('PoetrySlamService.PoetrySlams')
       .set({
         projectID: remoteProject.projectID,
         projectObjectID: remoteProject.projectObjectID,
@@ -217,7 +217,7 @@ async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
 
   const poetrySlamID = req.params[req.params.length - 1].ID;
   const poetrySlam = await SELECT.one
-    .from('PoetrySlamManager.PoetrySlams')
+    .from('PoetrySlamService.PoetrySlams')
     .where({ ID: poetrySlamID });
   // Allow action for active entity instances only
   if (!poetrySlam) {
@@ -271,7 +271,7 @@ async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
     }
 
     // Update purchase order elements in entity poetrySlams
-    await UPDATE.entity('PoetrySlamManager.PoetrySlams')
+    await UPDATE.entity('PoetrySlamService.PoetrySlams')
       .set({
         purchaseOrderID: remotePurchaseOrder.purchaseOrderID,
         purchaseOrderObjectID: remotePurchaseOrder.purchaseOrderObjectID,

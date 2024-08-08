@@ -1,5 +1,5 @@
 {
-  "welcomeFile": "poetryslammanager/",
+  "welcomeFile": "poetryslams/",
   "routes": [
     {
       "source": "^(.*)$",

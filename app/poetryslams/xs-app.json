@@ -3,8 +3,8 @@
   "authenticationMethod": "route",
   "routes": [
     {
-      "source": "^/odata/v4/poetryslammanager/(.*)$",
-      "target": "/odata/v4/poetryslammanager/$1",
+      "source": "^/odata/v4/poetryslamservice/(.*)$",
+      "target": "/odata/v4/poetryslamservice/$1",
       "destination": "srv-api",
       "authenticationType": "xsuaa",
       "csrfProtection": true

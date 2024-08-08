@@ -5,9 +5,9 @@
 'strict';
 const cds = require('@sap/cds');
 
-const destination = require('../../../srv/util/destination');
+const destination = require('../../../../srv/poetryslam/util/destination');
 const sinon = require('sinon');
-const { expect } = cds.test(__dirname + '/../../..');
+const { expect } = cds.test(__dirname + '/../../../..');
 
 describe('Destination', () => {
   let stubLog;

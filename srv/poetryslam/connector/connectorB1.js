@@ -17,7 +17,10 @@ class ConnectorB1 extends Connector {
   static PURCHASE_ORDER_SYSTEM = 'B1';
   static PURCHASE_ORDER_SERVICE = 'b1_sbs_v2';
 
-  // Purchase order data for SAP Business One; needs to be adopted according to SAP Business One configuration
+  // ----------------------------------------------------------------------------------------------------------------------------------
+  // Purchase order data for SAP Business One; needs to be adopted according to SAP Business One configuration of the customer system
+  // ----------------------------------------------------------------------------------------------------------------------------------
+
   static DOC_TYPE = 'dDocument_Service';
   static CARD_CODE = 'V10000';
   static ACCOUNT_CODE = '_SYS00000000001';
@@ -126,7 +129,7 @@ class ConnectorB1 extends Connector {
 
       // Request all associated purchase orders
       const purchaseOrders = await b1PurchaseOrder.run(
-        SELECT.from('PoetrySlamManager.B1PurchaseOrder').where({
+        SELECT.from('PoetrySlamService.B1PurchaseOrder').where({
           DocNum: purchaseOrderIDs
         })
       );

@@ -1,6 +1,3 @@
-<!--This file is not required productively as the application is loaded via SAP build workzone;
-    It is required for local testing
--->
 <!doctype html>
 <html>
   <head>
@@ -9,19 +6,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <title>Poetry Slam Manager</title>
-    <script type="text/javascript" src="util/setShellConfig.js"></script>
+    <link type="text/css" rel="stylesheet" href="util/initAppStyle.css" />
 
-    <script src="https://sapui5.hana.ondemand.com/1.120.15/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
+    <!-- Replacement for Launchpad sandbox; load UI5 library -->
     <script
+      id="sap-ui-bootstrap"
       src="https://sapui5.hana.ondemand.com/1.120.15/resources/sap-ui-core.js"
-      data-sap-ui-libs="sap.m, sap.ushell, sap.fe.templates, sap.uxap"
-      data-sap-ui-compatVersion="edge"
+      data-sap-ui-libs="sap.uxap"
       data-sap-ui-theme="sap_horizon"
-      data-sap-ui-frameOptions="allow"
-      data-sap-ui-bindingSyntax="complex"
+      data-sap-ui-resourceroots='{
+                "poetryslams": "./"
+            }'
+      data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+      data-sap-ui-compatVersion="edge"
       data-sap-ui-async="true"
     ></script>
-    <script type="text/javascript" src="util/setContent.js"></script>
   </head>
   <body class="sapUiBody sapUiSizeCompact" id="content">
     <div

@@ -389,13 +389,13 @@ describe('Poetryslams in PoetrySlamService', () => {
 
     // Move poetry slam into draft mode by calling action 'draftEdit'
     await ACTION(
-      `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=true)`,
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
       `draftEdit`
     );
 
     // When project ID is reset all project fields are set to null
     const result = await PATCH(
-      `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=false)`,
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=false)`,
       {
         projectID: ''
       }
@@ -414,13 +414,13 @@ describe('Poetryslams in PoetrySlamService', () => {
 
     // Move poetry slam into draft mode by calling action 'draftEdit'
     await ACTION(
-      `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=true)`,
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
       `draftEdit`
     );
 
     // When purchase order ID is reset all purchase order fields are set to null
     const result = await PATCH(
-      `/odata/v4/poetryslammanager/PoetrySlams(ID=${id},IsActiveEntity=false)`,
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=false)`,
       {
         purchaseOrderID: ''
       }
@@ -429,6 +429,6 @@ describe('Poetryslams in PoetrySlamService', () => {
     expect(result.data.purchaseOrderObjectID).to.eql(null);
     expect(result.data.purchaseOrderURL).to.eql(null);
     expect(result.data.purchaseOrderSystem).to.eql(null);
-    expect(result.data.purchaseOrderSystemName).to.eql(undefined);
+    expect(result.data.purchaseOrderSystemName).to.eql('');
   });
 });

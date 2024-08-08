@@ -24,7 +24,10 @@ class ConnectorByD extends Connector {
   static GENERATED_ID_SUFFIX_PREP = '-PREP';
   static GENERATED_ID_SUFFIX_EXE = '-EXE';
 
+  // -------------------------------------------------------------------------------------------------------------
   // Project data for SAP Business ByDesign; needs to be adopted according to SAP Business ByDesign configuration
+  // -------------------------------------------------------------------------------------------------------------
+
   static RESPONSIBLE_COST_CENTER = 'S1111';
   static PROJECT_TYPE_CODE = '10';
   static PROJECT_LANGUAGE_CODE = 'EN';
@@ -123,7 +126,7 @@ class ConnectorByD extends Connector {
       if (isProjectIDs) {
         // Request all associated projects
         const projects = await bydProject.run(
-          SELECT.from('PoetrySlamManager.ByDProjects').where({
+          SELECT.from('PoetrySlamService.ByDProjects').where({
             ProjectID: projectIDs
           })
         );

@@ -1,14 +1,22 @@
 using PoetrySlamService as service from '../../srv/poetryslam/poetrySlamService';
 
 annotate service.PoetrySlams with {
-  status              @Common.Text: {
+  status                       @Common.Text: {
     $value                : status.name,
     ![@UI.TextArrangement]: #TextOnly
   };
-  description         @UI.MultiLineText;
-  ID                  @UI.Hidden;
-  statusCriticality   @UI.Hidden;
-  visitorsFeeCurrency @UI.Hidden;
+  description                  @UI.MultiLineText;
+  ID                           @UI.Hidden;
+  statusCriticality            @UI.Hidden;
+  visitorsFeeCurrency          @UI.Hidden;
+  projectObjectID              @UI.Hidden;
+  createByDProjectEnabled      @UI.Hidden;
+  isByD                        @UI.Hidden;
+  createS4HCProjectEnabled     @UI.Hidden;
+  isS4HC                       @UI.Hidden;
+  purchaseOrderObjectID        @UI.Hidden;
+  createB1PurchaseOrderEnabled @UI.Hidden;
+  isB1                         @UI.Hidden;
 };
 
 annotate service.PoetrySlams with @(
@@ -87,6 +95,23 @@ annotate service.PoetrySlams with @(
           {$Path: 'status/code'},
           1
         ]}}
+      },
+      {
+        $Type        : 'UI.ReferenceFacet',
+        Label        : '{i18n>projectData}',
+        ID           : 'ProjectData',
+        Target       : @UI.FieldGroup #ProjectData,
+        ![@UI.Hidden]: {$edmJson: {$Not: {$Or: [
+          {$Path: 'isByD'},
+          {$Path: 'isS4HC'}
+        ]}}} // Display ProjectData only in case a SAP Business ByDesign or SAP S/4HANA Cloud system is connected
+      },
+      {
+        $Type        : 'UI.ReferenceFacet',
+        Label        : '{i18n>purchaseOrderData}',
+        ID           : 'PurchaseOrderData',
+        Target       : '@UI.FieldGroup#PurchaseOrderData',
+        ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'isB1'}}} // Display PurchaseOrderData only in case a SAP Business One system is connected
       },
       {
         $Type : 'UI.ReferenceFacet',
@@ -171,6 +196,139 @@ annotate service.PoetrySlams with @(
         }
       ]
     },
+    FieldGroup #ProjectData       : {Data: [
+      // Project system independend fields:
+      {
+        $Type: 'UI.DataFieldWithUrl',
+        Value: projectID,
+        Url  : projectURL
+      },
+      {
+        $Type: 'UI.DataField',
+        Value: projectSystemName
+      },
+      {
+        $Type: 'UI.DataField',
+        Value: projectSystem
+      },
+      // SAP Business ByDesign specific fields
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>projectTypeCodeText}',
+        Value                  : toByDProject.typeCodeText,
+        ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isByD'}}},
+        ![@Common.FieldControl]: #ReadOnly
+      },
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>projectStatusCodeText}',
+        Value                  : toByDProject.statusCodeText,
+        @UI.Hidden             : {$edmJson: {$Not: {$Path: 'isByD'}}},
+        ![@Common.FieldControl]: #ReadOnly
+      },
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>projectCostCenter}',
+        Value                  : toByDProject.costCenter,
+        ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isByD'}}},
+        ![@Common.FieldControl]: #ReadOnly
+      },
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>projectStartDateTime}',
+        Value                  : toByDProject.startDateTime,
+        ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isByD'}}},
+        ![@Common.FieldControl]: #ReadOnly
+      },
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>projectEndDateTime}',
+        Value                  : toByDProject.endDateTime,
+        ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isByD'}}},
+        ![@Common.FieldControl]: #ReadOnly
+      },
+      // SAP S/4HANA Cloud specific fields
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>projectDescription}',
+        Value                  : toS4HCProject.projectDescription,
+        ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isS4HC'}}},
+        ![@Common.FieldControl]: #ReadOnly
+      },
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>projectProfile}',
+        Value                  : projectProfileCodeText,
+        ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isS4HC'}}},
+        ![@Common.FieldControl]: #ReadOnly
+      },
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>responsibleCostCenter}',
+        Value                  : toS4HCProject.responsibleCostCenter,
+        ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isS4HC'}}},
+        ![@Common.FieldControl]: #ReadOnly
+      },
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>processingStatus}',
+        Value                  : processingStatusText,
+        ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isS4HC'}}},
+        ![@Common.FieldControl]: #ReadOnly
+      },
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>projectStartDateTime}',
+        Value                  : toS4HCProject.projectStartDate,
+        ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isS4HC'}}},
+        ![@Common.FieldControl]: #ReadOnly
+      },
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>projectEndDateTime}',
+        Value                  : toS4HCProject.projectEndDate,
+        ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isS4HC'}}},
+        ![@Common.FieldControl]: #ReadOnly
+      },
+    ]},
+    FieldGroup #PurchaseOrderData : {Data: [
+      // SAP Business One specific fields
+      {
+        $Type: 'UI.DataFieldWithUrl',
+        Label: '{i18n>purchaseOrderID}',
+        Value: purchaseOrderID,
+        Url  : purchaseOrderURL
+      },
+      {
+        $Type: 'UI.DataField',
+        Label: '{i18n>purchaseOrderSystemName}',
+        Value: purchaseOrderSystem
+      },
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>deliveryDate}',
+        Value                  : toB1PurchaseOrder.docDueDate,
+        ![@Common.FieldControl]: #ReadOnly
+      },
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>creationDate}',
+        Value                  : toB1PurchaseOrder.creationDate,
+        ![@Common.FieldControl]: #ReadOnly
+      },
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>purchaseOrderValue}',
+        Value                  : toB1PurchaseOrder.docTotal,
+        ![@Common.FieldControl]: #ReadOnly
+      },
+      {
+        $Type                  : 'UI.DataField',
+        Label                  : '{i18n>purchaseOrderCurrency}',
+        Value                  : toB1PurchaseOrder.docCurrency,
+        ![@Common.FieldControl]: #ReadOnly
+      },
+    ]},
     // Facets shown in the header of an object page
     HeaderFacets                  : [
       {
@@ -226,6 +384,36 @@ annotate service.PoetrySlams with @(
         Action       : 'PoetrySlamService.cancel',
         Label        : '{i18n>cancel}',
         ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
+      },
+      // Create a project in the connected SAP Business ByDesign system
+      {
+        $Type     : 'UI.DataFieldForAction',
+        Label     : '{i18n>createByDProject}',
+        Action    : 'PoetrySlamService.createByDProject',
+        @UI.Hidden: {$edmJson: {$Not: {$And: [
+          {$Path: 'createByDProjectEnabled'},
+          {$Path: 'IsActiveEntity'}
+        ]}}}
+      },
+      // Create a project in the connected SAP S/4HANA Cloud system
+      {
+        $Type        : 'UI.DataFieldForAction',
+        Label        : '{i18n>createS4HCProject}',
+        Action       : 'PoetrySlamService.createS4HCProject',
+        ![@UI.Hidden]: {$edmJson: {$Not: {$And: [
+          {$Path: 'createS4HCProjectEnabled'},
+          {$Path: 'IsActiveEntity'}
+        ]}}}
+      },
+      // Create a purchase order in the connected SAP Business One system
+      {
+        $Type        : 'UI.DataFieldForAction',
+        Label        : '{i18n>createB1PurchaseOrder}',
+        Action       : 'PoetrySlamService.createB1PurchaseOrder',
+        ![@UI.Hidden]: {$edmJson: {$Not: {$And: [
+          {$Path: 'createB1PurchaseOrderEnabled'},
+          {$Path: 'IsActiveEntity'}
+        ]}}}
       }
     ],
     // Definition of fields shown on the list page / table
@@ -262,6 +450,16 @@ annotate service.PoetrySlams with @(
       {
         $Type : 'UI.DataFieldForAnnotation',
         Target: '@UI.DataPoint#bookedSeats'
+      },
+      {
+        $Type: 'UI.DataFieldWithUrl',
+        Value: projectID,
+        Url  : projectURL
+      },
+      {
+        $Type: 'UI.DataFieldWithUrl',
+        Value: purchaseOrderID,
+        Url  : purchaseOrderURL
       }
     ],
     // Default filters on the list page

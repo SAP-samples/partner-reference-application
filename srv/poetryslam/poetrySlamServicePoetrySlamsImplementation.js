@@ -100,6 +100,37 @@ module.exports = async (srv) => {
     // Read the PoetrySlams instances
     let poetrySlams = await next();
 
+    // In this method we enrich the data from the database by external data and calculated fields
+    // In case none of these enriched fields are requested, we do not need to read from the external services
+    // So we first check if the requested columns contain any of the enriched columns and return if not
+    const requestedColumns = req.query.SELECT.columns?.map((item) =>
+      Array.isArray(item.ref) ? item.ref[0] : item.as
+    );
+    const enrichedFields = [
+      'projectSystemName',
+      'purchaseOrderSystemName',
+      'processingStatusText',
+      'projectProfileCodeText',
+      'createByDProjectEnabled',
+      'createS4HCProjectEnabled',
+      'createB1PurchaseOrderEnabled',
+      'isByD',
+      'isS4HC',
+      'isB1',
+      'toByDProject',
+      'toS4HCProject',
+      'toB1PurchaseOrder'
+    ];
+
+    if (
+      requestedColumns &&
+      !enrichedFields.some((item) => requestedColumns?.includes(item))
+    ) {
+      return poetrySlams;
+    }
+
+    // The requested columns include some of the enriched fields so we do add the corresponding data
+
     // SAP Business ByDesign
     // Check and read SAP Business ByDesign project related data
     const connectorByD = await ConnectorByD.createConnectorInstance(req);
@@ -125,7 +156,8 @@ module.exports = async (srv) => {
       [
         'projectSystemName',
         'processingStatusText',
-        'projectProfileCodeText'
+        'projectProfileCodeText',
+        'purchaseOrderSystemName'
       ].forEach((item) => {
         poetrySlam[item] = poetrySlam[item] || '';
       });

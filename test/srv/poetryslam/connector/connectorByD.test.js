@@ -5,12 +5,12 @@
 'strict';
 const cds = require('@sap/cds');
 
-const Connector = require('../../../srv/connector/connector');
-const ConnectorS4HC = require('../../../srv/connector/connectorS4HC');
+const Connector = require('../../../../srv/poetryslam/connector/connector');
+const ConnectorByD = require('../../../../srv/poetryslam/connector/connectorByD');
 const sinon = require('sinon');
-const { expect } = cds.test(__dirname + '/../../..');
+const { expect } = cds.test(__dirname + '/../../../..');
 
-describe('ConnectorS4HC', () => {
+describe('ConnectorByD', () => {
   let stubLog,
     stubCreateConnectorData,
     connector,
@@ -28,9 +28,10 @@ describe('ConnectorS4HC', () => {
   };
 
   beforeEach(() => {
-    connector = new ConnectorS4HC(connectorData);
+    connector = new ConnectorByD(connectorData);
 
     stubLog = sinon.stub(console, 'log');
+
     stubCreateConnectorData = sinon
       .stub(Connector, 'createConnectorData')
       .resolves(connectorData);
@@ -38,8 +39,8 @@ describe('ConnectorS4HC', () => {
     stubINSERT = sinon.stub(INSERT, 'into').returns({
       entries: (projectRecord) => {
         return {
-          project: projectRecord.project,
-          projectUUID: projectRecord.projectUUID
+          projectID: projectRecord.ProjectID,
+          ID: 'UUID'
         };
       }
     });
@@ -47,8 +48,8 @@ describe('ConnectorS4HC', () => {
     stubSELECTOne = sinon.stub(SELECT.one, 'from').returns({
       where: (projectRecord) => {
         return {
-          project: projectRecord.project,
-          projectUUID: 3
+          projectID: projectRecord.projectID,
+          ID: 3
         };
       }
     });
@@ -57,11 +58,8 @@ describe('ConnectorS4HC', () => {
       where: (whereClause) => {
         return [
           {
-            project: whereClause.project,
-            projectProfileCode: 'profileCodeTest',
-            projectProfileCodeText: 'profileCodeTextTest',
-            processingStatus: 'processingStatusTest',
-            processingStatusText: 'processingStatusTextTest'
+            projectID: whereClause.ProjectID,
+            costCenter: 'costCenterTest'
           }
         ];
       }
@@ -93,29 +91,38 @@ describe('ConnectorS4HC', () => {
     expect(connector.isConnected()).to.eql(true);
   });
 
-  it('should create a project record with SAP S/4HANA Cloud specific data', async () => {
+  it('should create a project record with SAP Business ByDesign specific data', async () => {
     const testProjectRecord = {
-      EntProjectIsConfidential: false,
-      ProfitCenter: ConnectorS4HC.PROFIT_CENTER,
-      Project: 'POETRYSLAM_1',
-      ProjectCurrency: ConnectorS4HC.PROJECT_CURRENCY,
-      ProjectDescription: 'testTitle',
-      ProjectEndDate: '2024-03-03T00:00:00.0000000Z',
-      ProjectProfileCode: ConnectorS4HC.PROJECT_PROFILE_CODE,
-      ProjectStartDate: '2024-02-02T00:00:00.0000000Z',
-      ResponsibleCostCenter: '10101101',
-      to_EnterpriseProjectElement: [
+      ProjectID: 'POETRYSLAM_1',
+      EstimatedCompletionPercent: 10,
+      PlannedEndDateTime: new Date('03/03/2024'),
+      PlannedStartDateTime: '2024-01-23T00:00:00.0000000Z',
+      ProjectLanguageCode: ConnectorByD.PROJECT_LANGUAGE_CODE,
+      ProjectTypeCode: ConnectorByD.PROJECT_TYPE_CODE,
+      ResponsibleCostCentreID: ConnectorByD.RESPONSIBLE_COST_CENTER,
+      ProjectSummaryTask: {
+        ProjectName: 'testTitle',
+        ResponsibleEmployeeID: ConnectorByD.RESPONSIBLE_EMPLOYEE_ID
+      },
+      Task: [
         {
-          PlannedEndDate: '2024-02-28T00:00:00.0000000Z',
-          PlannedStartDate: '2024-02-02T00:00:00.0000000Z',
-          ProjectElement: 'POETRYSLAM_1-PLAN',
-          ProjectElementDescription: 'Event planning and preparations'
+          PlannedDuration: 'P30D',
+          TaskID: 'POETRYSLAM_1-PREP',
+          TaskName: 'Event planning and preparations',
+          TaskRelationship: [
+            {
+              DependencyTypeCode: '2',
+              LagDuration: 'P2D',
+              SuccessorTaskID: 'POETRYSLAM_1-EXE'
+            }
+          ]
         },
         {
-          PlannedEndDate: '2024-03-03T00:00:00.0000000Z',
-          PlannedStartDate: '2024-03-02T00:00:00.0000000Z',
-          ProjectElement: 'POETRYSLAM_1-EXE',
-          ProjectElementDescription: 'Event administration and execution'
+          ConstraintEndDateTime: '2024-02-28T00:00:00.0000000Z',
+          PlannedDuration: 'P5D',
+          ScheduleActivityEndDateTimeConstraintTypeCode: '2',
+          TaskID: 'POETRYSLAM_1-EXE',
+          TaskName: 'Event administration and execution'
         }
       ]
     };
@@ -125,33 +132,28 @@ describe('ConnectorS4HC', () => {
     expect(connector.projectRecord).to.eql(testProjectRecord);
   });
 
-  it('should determine the destination URL to navigate to the project in SAP S/4HANA Cloud', async () => {
-    connector.projectRecord = { Project: 'testProject' };
+  it('should determine the destination URL to navigate to the project in SAP Business ByDesign', async () => {
+    connector.projectRecord = { ProjectID: 'testProject' };
     connector.systemURL = 'testSystemURL';
 
     const url = connector.determineDestinationURL();
     expect(url).to.eql(
-      'testSystemURL/ui#EnterpriseProject-planProject?EnterpriseProject=testProject'
+      'testSystemURL/sap/ap/ui/runtime?bo_ns=http://sap.com/xi/AP/ProjectManagement/Global&bo=Project&node=Root&operation=OpenByProjectID&object_key=testProject&key_type=APC_S_PROJECT_ID'
     );
   });
 
   it('should read remote project data of the poetry slam entitiy', async () => {
     const poetrySlams = {
-      projectSystem: ConnectorS4HC.PROJECT_SYSTEM,
+      projectSystem: ConnectorByD.PROJECT_SYSTEM,
       projectID: 1
     };
 
     const expectedResult = {
-      processingStatusText: 'processingStatusTextTest',
       projectID: 1,
-      projectProfileCodeText: 'profileCodeTextTest',
-      projectSystem: ConnectorS4HC.PROJECT_SYSTEM,
-      toS4HCProject: {
-        processingStatus: 'processingStatusTest',
-        processingStatusText: 'processingStatusTextTest',
-        projectProfileCode: 'profileCodeTest',
-        projectProfileCodeText: 'profileCodeTextTest',
-        project: [1]
+      projectSystem: ConnectorByD.PROJECT_SYSTEM,
+      toByDProject: {
+        costCenter: 'costCenterTest',
+        projectID: [1]
       }
     };
 
@@ -162,7 +164,7 @@ describe('ConnectorS4HC', () => {
   it('should return poetry slam data when reading remote project data of a poetry slam entitiy without project ID', async () => {
     const poetrySlams = {
       ID: 'testID',
-      projectSystem: ConnectorS4HC.PROJECT_SYSTEM
+      projectSystem: ConnectorByD.PROJECT_SYSTEM
     };
 
     const objectData = await connector.readProject(poetrySlams);
@@ -175,11 +177,11 @@ describe('ConnectorS4HC', () => {
         return data;
       },
       entities: {
-        S4HCProjects: 'test'
+        ByDProjects: 'test'
       }
     };
 
-    connector.projectRecord = { Project: 1 };
+    connector.projectRecord = { ProjectID: 1 };
 
     const objectData = await connector.getRemoteProjectData(srv);
     expect(objectData.projectID).to.eql(1);
@@ -192,25 +194,25 @@ describe('ConnectorS4HC', () => {
         return data;
       },
       entities: {
-        S4HCProjects: 'test'
+        ByDProjects: 'test'
       }
     };
 
-    connector.projectRecord = { project: 1, projectUUID: 2 };
+    connector.projectRecord = { ProjectID: 1 };
 
     const objectData = await connector.insertRemoteProjectData(srv);
     expect(objectData.projectID).to.eql(1);
-    expect(objectData.projectObjectID).to.eql(2);
+    expect(objectData.projectObjectID).to.eql('UUID');
   });
 
   it('should create an instance of connector', async () => {
-    const connectorLocal = await ConnectorS4HC.createConnectorInstance();
+    const connectorLocal = await ConnectorByD.createConnectorInstance();
 
     sinon.assert.calledOnce(stubCreateConnectorData);
 
     sinon.assert.calledWith(
       stubLog,
-      `SAP S/4HANA Cloud connector created - connected: true`
+      `SAP Business ByDesign connector created - connected: true`
     );
 
     expect(connectorLocal.destination).to.eql('testDestination');

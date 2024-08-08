@@ -5,10 +5,10 @@
 'strict';
 const cds = require('@sap/cds');
 
-const Connector = require('../../../srv/connector/connector');
+const Connector = require('../../../../srv/poetryslam/connector/connector');
+const destination = require('../../../../srv/poetryslam/util/destination');
+const { expect } = cds.test(__dirname + '/../../../..');
 const sinon = require('sinon');
-const destination = require('../../../srv/util/destination');
-const { expect } = cds.test(__dirname + '/../../..');
 
 describe('Connector', () => {
   let stubLog,

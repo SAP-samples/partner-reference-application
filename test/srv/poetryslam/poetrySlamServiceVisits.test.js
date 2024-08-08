@@ -36,7 +36,7 @@ describe('Visits in PoetrySlamService', () => {
 
   before(async () => {
     await test.data.reset();
-
+    
     // Read all poetry slams for usage in the tests
     visits = await GET(`/odata/v4/poetryslamservice/Visits`);
     expect(visits.data.value.length).to.greaterThan(0);

@@ -34,7 +34,7 @@ modules:
       - name: poetry-slams-destination-service
       - name: poetry-slams-html5-runtime
     provides:
-      - name: srv-api
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
           srv-url: ${default-url}
     parameters:
@@ -44,9 +44,9 @@ modules:
     build-parameters:
       builder: npm-ci
 
-  # App UI resources module
-  # Creates and packages the static content of the HTML5 application
-  - name: poetryslammanager
+  # App UI resources modules
+  # Creates and packages the static content of the HTML5 applications
+  - name: poetryslams
     type: html5
     path: app/poetryslams
     build-parameters:
@@ -96,6 +96,9 @@ modules:
     path: gen/mtx/sidecar
     build-parameters:
       builder: npm-ci
+    parameters:
+      memory: 256M
+      disk-quota: 512M
     provides:
       - name: mtx-api
         properties:
@@ -113,12 +116,14 @@ modules:
   # Main entry point, routes subscription(i.e. tenant)-specific URLs and is used to deliver the getDependencies information
   - name: poetry-slams
     type: approuter.nodejs
-    path: app/
+    path: app/router
     parameters:
-      keep-existing-routes: false
+      keep-existing-routes: true
       routes:
         - route: approuter-${default-uri} # used for getDependencies
         - route: '*.${default-uri}' # generic route for all subscriptions
+      disk-quota: 256M
+      memory: 256M
     properties:
       TENANT_HOST_PATTERN: '^(.*).${default-uri}'
       # prettier-ignore
@@ -172,8 +177,6 @@ resources:
     parameters:
       service: destination
       service-plan: lite
-      config:
-        HTML5Runtime_enabled: true
 
   # Authorization XSUAA service
   # Manages authentication, single sign-on (SSO), user management, and provides a way to manage authorizations based on scopes and role collections
@@ -190,7 +193,6 @@ resources:
             - ~{app-api/redirect-uris} # Redirect to connect modules running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
       path: ./xs-security.json
       service: xsuaa
-      service-name: poetry-slams-auth
       service-plan: broker
 
   # Application Registry
@@ -207,7 +209,7 @@ resources:
         xsappname: poetry-slams-${org}-${space}
         appName: poetry-slams-${org}-${space}
         displayName: Poetry Slam Manager
-        description: Manage poetry slam events and register artists and visitors.
+        description: Manage poetry slam events and bookings of artists and visitors.
         category: 'Applications / Multi-Customer Partner Solutions'
         appUrls:
           getDependencies: ~{app-api/app-url}/-/cds/saas-provisioning/dependencies

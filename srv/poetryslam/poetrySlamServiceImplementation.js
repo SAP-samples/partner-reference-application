@@ -3,9 +3,9 @@
 // Include cds libraries and utility files
 const cds = require('@sap/cds');
 
-const erpForwardHandler = require('./poetrySlamManagerServiceERPImplementation');
-const poetrySlamsHandler = require('./poetrySlamManagerServicePoetrySlamsImplementation');
-const visitsHandler = require('./poetrySlamManagerServiceVisitsImplementation');
+const erpForwardHandler = require('./poetrySlamServiceERPImplementation');
+const poetrySlamsHandler = require('./poetrySlamServicePoetrySlamsImplementation');
+const visitsHandler = require('./poetrySlamServiceVisitsImplementation');
 
 module.exports = cds.service.impl(async (srv) => {
   // For better readability, outsource implementation files

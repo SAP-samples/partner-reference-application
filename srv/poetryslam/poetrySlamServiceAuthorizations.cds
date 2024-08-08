@@ -50,3 +50,56 @@ annotate PoetrySlamService.Visits with @(restrict: [
     where: 'createdBy = $user or artistIndicator=true'
   }
 ]);
+
+// SAP Business ByDesign projects: Managers can read and create remote projects
+annotate PoetrySlamService.ByDProjects with @(restrict: [{
+  grant: ['*'],
+  to   : 'PoetrySlamFull'
+}]);
+
+annotate PoetrySlamService.ByDProjectSummaryTasks with @(restrict: [{
+  grant: ['*'],
+  to   : 'PoetrySlamFull'
+}]);
+
+annotate PoetrySlamService.ByDProjectTasks with @(restrict: [{
+  grant: ['*'],
+  to   : 'PoetrySlamFull'
+}]);
+
+// S/4 projects: Managers can read and create remote projects
+annotate PoetrySlamService.S4HCProjects with @(restrict: [{
+  grant: ['*'],
+  to   : 'PoetrySlamFull'
+}]);
+
+annotate PoetrySlamService.S4HCEnterpriseProjectElement with @(restrict: [{
+  grant: ['*'],
+  to   : 'PoetrySlamFull'
+}]);
+
+annotate PoetrySlamService.S4HCEntProjTeamMember with @(restrict: [{
+  grant: ['*'],
+  to   : 'PoetrySlamFull'
+}]);
+
+annotate PoetrySlamService.S4HCEntProjEntitlement with @(restrict: [{
+  grant: ['*'],
+  to   : 'PoetrySlamFull'
+}]);
+
+annotate PoetrySlamService.S4HCProjectsProjectProfileCode with @(restrict: [{
+  grant: ['*'],
+  to   : 'PoetrySlamFull'
+}]);
+
+annotate PoetrySlamService.S4HCProjectsProcessingStatus with @(restrict: [{
+  grant: ['*'],
+  to   : 'PoetrySlamFull'
+}]);
+
+// SAP Business One purchase orders: Managers can read and create remote purchase orders
+annotate PoetrySlamService.B1PurchaseOrder with @(restrict: [{
+  grant: ['*'],
+  to   : 'PoetrySlamFull'
+}]);

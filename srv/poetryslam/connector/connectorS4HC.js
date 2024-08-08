@@ -26,7 +26,10 @@ class ConnectorS4HC extends Connector {
   static GENERATED_ID_SUFFIX_PLAN = '-PLAN';
   static GENERATED_ID_SUFFIX_EXE = '-EXE';
 
+  // -----------------------------------------------------------------------------------------------------
   // Project data for SAP S/4HANA Cloud; needs to be adopted according to SAP S/4HANA Cloud configuration
+  // -----------------------------------------------------------------------------------------------------
+
   static RESPONSIBLE_COST_CENTER = '10101101';
   static PROFIT_CENTER = '9900000000';
   static PROJECT_PROFILE_CODE = 'YP03';
@@ -132,7 +135,7 @@ class ConnectorS4HC extends Connector {
 
       // Request all associated projects
       const projects = await s4hcProject.run(
-        SELECT.from('PoetrySlamManager.S4HCProjects').where({
+        SELECT.from('PoetrySlamService.S4HCProjects').where({
           project: projectIDs
         })
       );
@@ -150,7 +153,7 @@ class ConnectorS4HC extends Connector {
         const S4HCProjectsProjectProfileCodeRecords =
           await s4hcProjectsProjectProfileCode.run(
             SELECT.from(
-              'PoetrySlamManager.S4HCProjectsProjectProfileCode'
+              'PoetrySlamService.S4HCProjectsProjectProfileCode'
             ).where({ ProjectProfileCode: projectProfileCode })
           );
         for (const S4HCProjectsProjectProfileCodeRecord of S4HCProjectsProjectProfileCodeRecords) {
@@ -162,7 +165,7 @@ class ConnectorS4HC extends Connector {
         const processingStatus = poetrySlam.toS4HCProject.processingStatus;
         const S4HCProjectsProcessingStatusRecords =
           await s4hcProjectsProcessingStatus.run(
-            SELECT.from('PoetrySlamManager.S4HCProjectsProcessingStatus').where(
+            SELECT.from('PoetrySlamService.S4HCProjectsProcessingStatus').where(
               {
                 ProcessingStatus: processingStatus
               }

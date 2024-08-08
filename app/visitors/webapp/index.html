@@ -10,11 +10,11 @@
     <!-- Replacement for Launchpad sandbox; load UI5 library -->
     <script
       id="sap-ui-bootstrap"
-      src="https://sapui5.hana.ondemand.com/1.120.7/resources/sap-ui-core.js"
+      src="https://sapui5.hana.ondemand.com/1.120.15/resources/sap-ui-core.js"
       data-sap-ui-libs="sap.uxap"
       data-sap-ui-theme="sap_horizon"
       data-sap-ui-resourceroots='{
-                "poetryslammanager": "./"
+                "visitors": "./"
             }'
       data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
       data-sap-ui-compatVersion="edge"
@@ -22,12 +22,11 @@
     ></script>
   </head>
   <body class="sapUiBody sapUiSizeCompact" id="content">
-    <!-- Render the app UI -->
     <div
       data-sap-ui-component
-      data-name="poetryslammanager"
+      data-name="visitors"
       data-id="container"
-      data-settings='{"id" : "poetryslammanager"}'
+      data-settings='{"id" : "visitors"}'
       data-handle-validation="true"
     ></div>
   </body>

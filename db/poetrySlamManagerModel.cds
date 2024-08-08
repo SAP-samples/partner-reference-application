@@ -13,25 +13,25 @@ using from '@sap/cds-common-content';
 //Enforces uniqueness checks on all CREATE and UPDATE operations for the specified fields
 @assert.unique: {identifier: [number]}
 entity PoetrySlams : cuid, managed {
-    number                : String(255);
-    title                 : localized String(255);
-    description           : localized String(1000);
-    dateTime              : DateTime;
-    maxVisitorsNumber     : Integer;
-    freeVisitorSeats      : Integer;
-    visitorsFeeAmount     : Decimal(6, 2);
-    visitorsFeeCurrency   : Association to one sap.common.Currencies;
-    status                : Association to one PoetrySlamStatusCodes @assert.integrity;
-    visits                : Composition of many Visits
-                                on visits.parent = $self;
-    projectID             : String;
-    projectObjectID       : String;
-    projectURL            : String;
-    projectSystem         : String;
-    purchaseOrderID       : String;
-    purchaseOrderObjectID : String;
-    purchaseOrderURL      : String;
-    purchaseOrderSystem   : String;
+  number                : String(255);
+  title                 : String(255);
+  description           : String(1000);
+  dateTime              : DateTime;
+  maxVisitorsNumber     : Integer;
+  freeVisitorSeats      : Integer;
+  visitorsFeeAmount     : Decimal(6, 2);
+  visitorsFeeCurrency   : Association to one sap.common.Currencies;
+  status                : Association to one PoetrySlamStatusCodes @assert.integrity;
+  visits                : Composition of many Visits
+                            on visits.parent = $self;
+  projectID             : String;
+  projectObjectID       : String;
+  projectURL            : String;
+  projectSystem         : String;
+  purchaseOrderID       : String;
+  purchaseOrderObjectID : String;
+  purchaseOrderURL      : String;
+  purchaseOrderSystem   : String;
 }
 
 //Enforces uniqueness checks on all CREATE and UPDATE operations for the specified fields
@@ -74,25 +74,25 @@ entity VisitStatusCodes : sap.common.CodeList {
 
 //i18n annotations for entities
 annotate PoetrySlams with @fiori.draft.enabled {
-    ID                     @title: '{i18n>uuid}'                   @Core.Computed;
-    number                 @title: '{i18n>number}'                 @readonly;
-    title                  @title: '{i18n>title}'                  @mandatory;
-    description            @title: '{i18n>description}';
-    dateTime               @title: '{i18n>dateTime}'               @mandatory;
-    maxVisitorsNumber      @title: '{i18n>maxVisitorsNumber}'      @mandatory;
-    freeVisitorSeats       @title: '{i18n>freeVisitorSeats}'       @readonly;
-    visitorsFeeAmount      @title: '{i18n>visitorsFeeAmount}'      @Measures.ISOCurrency: visitorsFeeCurrency_code;
-    visitorsFeeCurrency    @title: '{i18n>visitorsFeeCurrency}';
-    status                 @title: '{i18n>status}'                 @readonly;
-    visits                 @title: '{i18n>visits}';
-    projectID              @title: '{i18n>projectID}';
-    projectObjectID        @title: '{i18n>projectObjectID}'        @readonly;
-    projectURL             @title: '{i18n>projectURL}'             @readonly;
-    projectSystem          @title: '{i18n>projectSystem}'          @readonly;
-    purchaseOrderID        @title: '{i18n>purchaseOrderID}';
-    purchaseOrderObjectID  @title: '{i18n>purchaseOrderObjectID}'  @readonly;
-    purchaseOrderURL       @title: '{i18n>purchaseOrderURL}'       @readonly;
-    purchaseOrderSystem    @title: '{i18n>purchaseOrderSystem}'    @readonly;
+  ID                     @title: '{i18n>uuid}'                   @Core.Computed;
+  number                 @title: '{i18n>number}'                 @readonly;
+  title                  @title: '{i18n>title}'                  @mandatory;
+  description            @title: '{i18n>description}';
+  dateTime               @title: '{i18n>dateTime}'               @mandatory;
+  maxVisitorsNumber      @title: '{i18n>maxVisitorsNumber}'      @mandatory;
+  freeVisitorSeats       @title: '{i18n>freeVisitorSeats}'       @readonly;
+  visitorsFeeAmount      @title: '{i18n>visitorsFeeAmount}'      @Measures.ISOCurrency: visitorsFeeCurrency_code;
+  visitorsFeeCurrency    @title: '{i18n>visitorsFeeCurrency}';
+  status                 @title: '{i18n>status}'                 @readonly;
+  visits                 @title: '{i18n>visits}';
+  projectID              @title: '{i18n>projectID}';
+  projectObjectID        @title: '{i18n>projectObjectID}'        @readonly;
+  projectURL             @title: '{i18n>projectURL}'             @readonly;
+  projectSystem          @title: '{i18n>projectSystem}'          @readonly;
+  purchaseOrderID        @title: '{i18n>purchaseOrderID}';
+  purchaseOrderObjectID  @title: '{i18n>purchaseOrderObjectID}'  @readonly;
+  purchaseOrderURL       @title: '{i18n>purchaseOrderURL}'       @readonly;
+  purchaseOrderSystem    @title: '{i18n>purchaseOrderSystem}'    @readonly;
 }
 
 annotate Visits with {
