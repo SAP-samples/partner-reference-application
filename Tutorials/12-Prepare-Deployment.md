@@ -8,12 +8,14 @@ When you want to deploy your SAP BTP application to a subaccount, first, you nee
 
 2. Optional: Assign the subaccount to a directory as a parent.
 
-3. Open *Entity Assignments* and assign quotas for the following entities to your subaccount you want to deploy the application to: 
+3. Go to *Entitlements* in the subaccount, choose *Edit* and *Add Service Plans*. Assign quotas for the following entities to your subaccount you want to deploy the application to:
 	- *SAP BTP Cloud Foundry runtime* (3 units of application runtime)
-    	> Note: If the value help doesn't offer an item referring to *Cloud Foundry*, select *Application runtime*. Save your changes and the name of the list item changes to *Cloud Foundry*. In your Test, Develop, Deploy (TDD) environment, this entitlement may already have been added by default.
 		- As *Plan*, select *standard-edition (Application)*.
+		> Note: If the value help doesn't offer an item referring to *Cloud Foundry*, select *Application runtime*.	
+
+		> Note: In your SAP BTP environment, this entitlement may already have been added by default.  	
 	- *SAP HANA Cloud* (1 unit)
-		- As *Plan*, select *hana*.
+		- As *Plan*, select *hana-td*.
 	- *SAP HANA Schemas & HDI Containers*
 		- As *Plan*, select *hdi-shared*.
 	- *SAP Authorization and Trust Management service* (1 unit)
@@ -21,7 +23,7 @@ When you want to deploy your SAP BTP application to a subaccount, first, you nee
 	- *SAP Build Work Zone*
 		- As *Plan*, select *standard (Application)*. 
 
-	The relevant entity assignments are selected by default when the subaccount is created (no action required):
+	The relevant entitlements are selected by default when the subaccount is created (no action required):
 
 	- *Service Manager*, service plan *container*
 	- *HTML5 Application Repository Service*, service plans *app-runtime* and *app-host*

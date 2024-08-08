@@ -2,19 +2,19 @@
 
 In the previous steps ([Enhance the SAP BTP Application by a Service Broker](./42a-Multi-Tenancy-Service-Broker.md)), you added the service broker to the core of the application and deployed it to the provider SAP BTP subaccount.
 
-The service broker is used to enable access to application OData services using tenant-specific credentials and authorizations taking into account the tenant isolation of an multi-tenant application. 
+The service broker is used to enable the access to application OData services using tenant-specific credentials and authorizations taking into account the tenant isolation of a multi-tenant application. 
 
 In this section, you learn how to configure and consume the APIs of the SAP BTP application in the consumer SAP BTP subaccount.
 
 ## Configure the Service Broker in a Consumer SAP BTP Subaccount
 
-In general, there are two approaches to create a service broker instance in the consumer subaccount: You can either use the Cloud Foundry command line interface (CLI) or the SAP BTP command line interface (CLI): 
-- The Cloud Foundry command line interface requires you to activate SAP BTP Cloud Foundry runtime (without quota) in your subaccount. 
-- When using the SAP BTP command line interface, there's no need to activate SAP BTP Cloud Foundry runtime. 
+In general, there are two approaches to create a service broker instance in the consumer subaccount: You can either use the Cloud Foundry command line interface (CLI) or the SAP BTP CLI: 
+- The Cloud Foundry CLI requires you to activate the SAP BTP Cloud Foundry runtime (without quota) in your subaccount. 
+- When using the SAP BTP CLI, there's no need to activate the SAP BTP Cloud Foundry runtime. 
 
-This section describes how to use the SAP BTP command line interface. For more details, go to the [SAP BTP command line interface documentation](https://help.sap.com/docs/btp/sap-btp-neo-environment/download-and-start-using-btp-cli-client).
+This section describes how to use the SAP BTP CLI. For more details, go to the [SAP BTP CLI documentation](https://help.sap.com/docs/btp/sap-btp-neo-environment/download-and-start-using-btp-cli-client).
 
-1. As the SAP BTP command line interface is not installed in SAP Business Application Studio by default, first, you need to install it. Use the statements below in a terminal in your SAP Business Application Studio from the root folder of your project:
+1. As the SAP BTP CLI is not installed in the SAP Business Application Studio by default, you need to install it first. Use the statements below in a terminal from the root folder of your project in your SAP Business Application Studio:
 
      1. Download the CLI automatically accepting the licence agreement.
 
@@ -86,9 +86,9 @@ This section describes how to use the SAP BTP command line interface. For more d
 
    2. Get the credentials of the provider service broker.
 
-      i. Go to *User-Provide Variables* in the *Application Cockpit* of the service broker.
+      i. Go to *User-Provided Variables* in the *Application Cockpit* of the service broker.
 
-      ii. Copy the values of *SBF_BROKER_CREDENTIALS*: The first value is the user (marked in green in the image below), the second is the password (marked in red).
+      ii. Copy the value of *SBF_BROKER_CREDENTIALS*: The first value is the user (marked in green in the image below), the second is the password (marked in red).
       
          <img src="./images/42_ServiceBroker_Credentials.png" width="50%">
 
@@ -105,7 +105,7 @@ This section describes how to use the SAP BTP command line interface. For more d
       ```
       btp create services/instance --subaccount <consumer subaccount id> --plan-name fullaccess --offering-name psm-servicebroker-dev --parameters '{ "xs-security": { "xsappname": "psm-sb-sub1-full", "oauth2-configuration": { "credential-types": ["binding-secret"] } } }' --name psm-sb-sub1-full
       ```
-   2. Afterward, you will find the instance in the SAP BTP consumer subaccount cockpit under *Services* - *Instances and Subscriptions* - *Instances*.
+   2. Afterwards, you will find the instance in the SAP BTP consumer subaccount cockpit under *Services* - *Instances and Subscriptions* - *Instances*.
 
 6. To create credentials for the consumer service broker, run the command:
      ```
@@ -143,7 +143,7 @@ Alternatively, you can perform the steps 5, 6, and 7 of the description above in
       { "xs-security": { "xsappname": "psm-sb-sub1-full", "oauth2-configuration": { "credential-types": ["binding-secret"] } } }
       ```
    8. Choose *Create*.
-   9. Afterward, you will find the instance in the SAP BTP consumer subaccount cockpit under *Services* - *Instances and Subscriptions* - *Instances*.
+   9. Afterwards, you will find the instance in the SAP BTP consumer subaccount cockpit under *Services* - *Instances and Subscriptions* - *Instances*.
 
 6. Create credentials for the consumer service broker:
    1. In the SAP BTP consumer subaccount cockpit, go to *Services*, *Instances and Subscriptions*, and *Instances*. 
@@ -172,7 +172,7 @@ However, the technical user is preferred when using the OData services within an
 
 ### Consume the Application APIs as a Technical User
 
-Technical users to consume APIs are required when the APIs of the Poetry Slam Manager application are consumed from a background process. In this case, you can get an access token with the values from the service binding noted down previously.
+Technical users to consume APIs are required when the APIs of the Poetry Slams application are consumed from a background process. In this case, you can get an access token with the values from the service binding noted down previously.
 
 To do so, execute the following HTTP requests using the `curl` command:
 
@@ -184,7 +184,7 @@ To do so, execute the following HTTP requests using the `curl` command:
 
 3. Get the poetry slams (using the access token).
    ```
-   curl <Service Key API-Endpoint>/odata/v4/poetryslammanager/PoetrySlams -H "Authorization: Bearer <access token>"
+   curl <Service Key API-Endpoint>/odata/v4/poetryslamservice/PoetrySlams -H "Authorization: Bearer <access token>"
    ```
 
 More samples are provided within [ServiceBroker_TechnicalAccess.http](./api-samples/ServiceBroker_TechnicalAccess.http). They can be tested with the preinstalled SAP Business Application Studio plug-in REST Client.
@@ -192,6 +192,6 @@ More samples are provided within [ServiceBroker_TechnicalAccess.http](./api-samp
 ### Consume the Application APIs as a Named User (Principal Propagation)
 
 In other use cases, you want to consume the services with principal propagation:
-You use a regular user that logs on to the IdP, for example, an SAP Build application that has its own UI, but needs to consume the APIs of the Poetry Slam Manager application. In this case, you don't want to use a technical user, but use the logon of a regular user with user-specific authorizations.
+You use a regular user that logs on to the IdP, for example, an SAP Build application that has its own UI, but needs to consume the APIs of the Poetry Slams application. In this case, you don't want to use a technical user, but use the logon of a regular user with user-specific authorizations.
 
 You can test this scenario using Postman. In the folder [*api-samples*](./api-samples/), you find a Postman collection and a Postman environment with some examples. Check the documentation of the Postman collection for further details about how to run the examples.

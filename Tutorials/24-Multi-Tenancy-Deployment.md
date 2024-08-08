@@ -10,11 +10,15 @@ This tutorial guides you through the steps to deploy and configure the multi-ten
 
 2. Navigate to the root folder of the project.
 
-3. Run the command `npm install` on the root folder to install the npm packages. Also run this command for the app and mtx/sidecar subfolders.
+3. Run the command `npm install` on the root folder to install the npm packages. 
 
-4. Run the command `npm run build` to build the project.
+4. Run the command `npm install` for the app/router subfolder.
 
-5. To deploy the application, run the command `npm run deploy`. 
+5. Run the command `npm install` for the mtx/sidecar subfolder.
+
+5. Run the command `npm run build` to build the project.
+
+6. To deploy the application, run the command `npm run deploy`. 
 
 > Note: The first deployment of the application creates instances of SAP BTP services in the provider subaccount. Navigate to the SAP BTP provider subaccount and view the created services.
 
@@ -26,18 +30,18 @@ In this example, you use the default domain provided by SAP and use the SAP Cust
 #### Procedure 
 1. Create entitlement to the SAP Custom Domain service:
     1. If you haven't created an entitlement yet, create one for Custom Domain Manager in the SAP BTP Control Center (Custom Domain Service | custom-domain-manager).
-    2. Select *SAP Custom Domain service* as application, select *Standard* as a plan.
+    2. Select *Custom Domain service* as application, select *Standard* as a plan.
     
 2. Create an instance of SAP Custom Domain service in the provider SAP BTP subaccount:
-    1. If not yet done, in the provider SAP BTP subaccount, navigate to  *Entitlements*. Go to *Entity Assignments* and select *Standard (Application)*. Save your changes.
-    2. Go to *Service* and *Service Market Place*. Select *SAP Custom Domain service* and choose *Create*. Select *SAP Custom Domain service* and *Standard* as a plan.
+    1. If not yet done, in the provider SAP BTP subaccount, navigate to *Entitlements*. Press *Edit*, press *Add Service Plans* and select *Custom Domain Service* with plan *Standard (Application)*. Add the service plan and save your changes.
+    2. Go to *Services* and *Service Marketplace*. Select *Custom Domain Service* and choose *Create*. Select *Custom Domain Service* and *Standard* as a plan.
     3. Go to *Security* and *Role Collections*. Select the *Custom Domain Administrator* role collection for required users. 
 
 3. Create a Custom Domain:
     1. Go to *Services* and *Instances and Subscriptions*. 
-    2. Choose *Subscriptions* and select the *SAP Custom Domain service* to launch the domain service to create a new custom domain along with a server certificate. 
+    2. Choose *Subscriptions* and select the *Custom Domain Service* to launch the domain service to create a new custom domain along with a server certificate. 
         > Note: If you get an error message saying that some roles are missing, open the SAP Custom Domain service in an incognito window of your browser.
-    3. Launch the Domains application. 
+    3. Launch the *Domains* application. 
         1. To create a custom domain, navigate to *Custom Domains*. 
         2. Select the option *Create Custom Domain* and *for your subaccount’s Cloud Foundry organization*.
         3. Select the default landscape in the *Landscape Info* step and go to the next step.
@@ -50,7 +54,7 @@ In this example, you use the default domain provided by SAP and use the SAP Cust
             > Note: According to the proposals in this tutorial, the name is *sap-psm-mt-app-poetry-slams.cfapps.eu12.hana.ondemand.com*.
 
         > Note: TLS Configuration is optional: If you don't create a TLS configuration, *Default_without_Client_Authentication* will be used in the next steps.
-    4. To launch the *Server Certificates* application and create a server certificate for multi-tenant application:
+    4. Launch the *Server Certificates* application and create a server certificate for multi-tenant application:
         1. Choose *Create Server Certificate...* and *for your (wildcard) Custom Domains*.
         2. In the *General Information* section, enter an *Alias* and select the *Key Size*. Go to the next step.
         3. In the *Select Landscape* section, select the desired landscape to continue and go to the next step. 
@@ -75,24 +79,6 @@ In this example, you use the default domain provided by SAP and use the SAP Cust
 
             5. Once the process is completed, the status of the server certificate changes to *Active*. As a result, an active custom domain is created. 
             
-    5. Go to the *Domains* tab and navigate to *CUSTOM DOMAINS*. A custom domain with the name *.{cloud-foundry-org-name}-{cloud-foundry-space-name}-{approuter-module-name}.{cloud foundry endpoint}* and with the status *active* is listed.
-
-
-## Set Up the Subscription Management Dashboard
-
-The *Subscription Management Dashboard* supports the lifecycle management of multi-tenant applications. 
-
-To open the *Subscription Management Dashboard*, choose the *SaaS Provisioning Service* instance, for example, *poetry-slams-registry* in your provider subaccount (*SAP BTP cockpit - Instances and Subscriptions*) after the multi-tenant application has been deployed. Assign the role collection *Subscription Management Dashboard Administrator* to the required users to get access to the dashboard.
-
-> Note: In case of authorization issues, open it in an incognito window of your browser.
-
-Capabilities of the *Subscription Management Dashboard*: 
-- The dashboard enables application providers to review the deployment of multi-tenant applications including the application and subscription status and the change history/subscription history.
-- Application providers can perform subscription actions such as *Unsubscribe* and *Update*, and track the status of subscriptions in progress.
-- In the *Overview* section of the subscribed application, application owners can review information such as *Subscription Status*, *Global Accounts*, *Consumer Subaccounts*, *Application Name*, *Application URL*, *License Type* (productive, test tenant), *Changed On*, and *Created On*.
-- In the *Dependencies* section, application providers can review the service dependencies of the application. There is a tree view and a table view of dependencies. The information helps users view the full list of dependencies among various services used in the application. It outlines, for example, the dependencies between the application service module and modules for destinations, 
-SAP HTML5 Application Repository service for SAP BTP, and connectivity services. 
-
-> Note: At this stage of the tutorial, no subscription has been created yet and, therefore, no subscription is shown.
+    5. Go to the *Domains* tab and navigate to *CUSTOM DOMAINS*. A custom domain with the name *{cloud-foundry-org-name}-{cloud-foundry-space-name}-{approuter-module-name}.{cloud foundry endpoint}* and with the status *active* is listed.
 
 You have now successfully deployed the application to the provider subaccount and you are ready to [provision tenants of the multi-tenant application to customers](./25-Multi-Tenancy-Provisioning.md).

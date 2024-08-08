@@ -23,7 +23,6 @@ This tutorial guides you through the steps to deploy and configure the sample ap
 3. Run the command `npm install` to install the npm packages from the *package.json*.
 
 4. Run the command `npm run build` to build the project with the information from the *mta.yaml*. 
-    > Note: The rimraf command in the npm script removes the node modules to clean up the project.
 
 5. To deploy the application, run the command `npm run deploy`. The file *./mta_archives/archive.mtar* is copied and deployed into your SAP BTP Cloud Foundry runtime space.
 

@@ -21,21 +21,22 @@ Looking for more details? Go to the [SAP Cloud Application Programming Model doc
 
 ## Test the HTML5 Application
 
-1. To test your application, navigate to *HTML5 Applications* in the SAP BTP cockpit and choose *poetryslammanager*. 
+1. To test your application, navigate to *HTML5 Applications* in the SAP BTP cockpit and choose *poetryslams*. 
 2. The application opens and the launchpad is displayed with one tile. 
 3. As you have not yet set up any authorizations, the application will tell you that you're not authorized to use it when you click on the tile.
+4. Do the same for the *visitors* application. 
 
 ## Configure SAP Build Work Zone
 
 Since the web application is now available as an HTML5 application, it's ready to be added to SAP Build Work Zone.
 
-To open the *Site Manager*, launch the application *SAP Build Work Zone, standard edition* *Instance and Subscriptions* in your SAP BTP subaccount.
+This is done in the *Site Manager*, which is launched when you go to the application *SAP Build Work Zone, standard edition* under *Instances and Subscriptions* in your SAP BTP subaccount.
 
 ### Fetch the Latest Version of Your Web Application
 
-1. Open the *Channel Manager*. The *HTML5 Apps* content channel is created automatically and all web applications that you deployed to the SAP BTP subaccount are automatically added as content to this content provider.
+1. In the *Site Manager*, open the *Channel Manager*. The *HTML5 Apps* content channel is created automatically and all web applications that you deployed to the SAP BTP subaccount are automatically added as content to this content provider.
 
-2. In the *HTML5 Apps* content channel, choose *Update content* to fetch any updates of your web application. The *HTML5 Apps* content channel now exposes the latest version of the web application. 
+2. In the *HTML5 Apps* content channel, choose *Update content* to fetch any updates of your web application. The *HTML5 Apps* content channel now exposes the latest version of the web applications. 
 
    > Note: You must update the content channel every time you made changes to the web application.
 
@@ -44,35 +45,34 @@ To open the *Site Manager*, launch the application *SAP Build Work Zone, standar
 1. Open the *Content Manager*.
 2. Go to the *Content Explorer* sheet.
 3. Select the content provider *HTML5 Apps*.
-4. To add your web application to your content, choose *Add*. 
+4. To add your web applications to your content, choose *Add*. 
 
 ### Create a Group and Add Your App 
 
 1. Open the *Content Manager*.
 2. Create a new group and enter a title and description.
-3. On the *Apps* tab, you see a list of available apps. Move the red slider in the *Assignment Status* column of your app to assign your app to the group. The color of the slider changes to green.
+3. On the *Apps* tab, you see a list of available apps. Move the red slider in the *Assignment Status* column of your apps to assign your apps to the group. The color of the slider changes to green.
 4. Save your changes.
 
-### Assign the Web Application to the Default Role
+### Assign the Web Applications to the Default Role
 
-In this step, you assign your app to the *Everyone* role, which is a default role. The content assigned to this role is visible to all users.
+In this step, you assign your apps to the *Everyone* role, which is a default role. The content assigned to this role is visible to all users.
 
 1. Open the *Content Manager*.
 2. To open the *Role Editor*, choose *Everyone*.
 3. Choose *Edit*.  
-4. On the *Apps* tab, you can see a list of available apps. Move the red slider in the *Assignment Status* column of your app to assign your app to the group. The color of the slider changes to green.
+4. On the *Apps* tab, you can see a list of available apps. Move the red slider in the *Assignment Status* column of your apps to assign your apps to the group. The color of the slider changes to green.
 5. Save your changes.
 
-### Create and/or Update a Site
+### Create a Launchpad Site
 
-In this step, you create and review a launchpad site. If you already have a site, just add your web application.
+In this step, you create and review a launchpad site. If you already have a site, just add your web applications.
 
 1. Open the *Site Directory*. 
 2. Create a site and enter a site name.
-3. To launch the site, open the *URL* provided in the *Properties* of the *Site Settings*.
-4. Test your web application. 
+3. To launch the site, open the *URL* provided in the *Properties* of the *Site Settings*. On the site, you can see the *Poetry Slams* and *Visitors* tiles. Before being able to launch both applications, you need to set up authorizations.
 
-> Note: Note down the site URL as **SAP BTP Application Launchpad URL**. On the launchpad, open the context menu of the *Poetry Slam Manager* tile and note down the URL as **SAP BTP Application URL**.
+> Note: For quick access in subsequent chapters of this tutorial, note down the *URL*. 
 
 ## Configure Authentication and Authorization 
 
@@ -88,11 +88,11 @@ As a preferred approach, you configure trust between the SAP BTP subaccount and 
 
 Set up the trust relationship between the SAP BTP subaccount to the Identity Authentication service using OpenID Connect (OIDC). For more information, refer to the [SAP help about OpenID Connect](https://help.sap.com/docs/identity-authentication/identity-authentication/openid-connect). 
 
-> Note: As a prerequisite for this setup, the SAP BTP subaccount and the Identity Authentication service tenant must be assigned to the same customer ID.
+> Note: As a prerequisite for this setup, the SAP BTP subaccount and the Identity Authentication service tenant must be assigned to the same customer ID. If they are assigned to different customer IDs, configure SAML 2.0 as described in the fallback below.
 
 1. Within your SAP BTP subaccount, open the menu item *Security* and go to *Trust Configuration*. 
 2. Choose *Establish Trust* and select the Identity Authentication service tenant to set up the OIDC trust configuration.
-3. On the Identity Authentication service admin UI, log on to the Identity Authentication service admin UI (URL: [IAS]/admin/). 
+3. Log on to your Identity Authentication service Admin UI (URL: [IAS]/admin/). 
 4. Open the menu item *Applications* and search for the application that refers to your SAP BTP subaccount
    > Note that the name typically follows the pattern: *XSUAA_[subaccount-name]*.
 5. Edit the application and change the following fields:
@@ -105,19 +105,19 @@ Set up the trust relationship between the SAP BTP subaccount to the Identity Aut
 	
 > Note: This fallback applies only if the SAP BTP subscriber subaccount and the Identity Authentication service tenant are not assigned to the same customer ID. This setup comes with limitations regarding remote access to the OData services of the SAP BTP app with principal propagation.
 
-1. Within your SAP BTP subaccount, to download the *Service provider SAML metadata* file, open the menu item *Security* and go to *Trust Configuration*. 
-2. Choose *Download SAML Metadata*.
-3. On the Identity Authentication service Admin UI, open the menu item *Applications* and create a new application of the type *SAP BTP solution*:
+1. Within your SAP BTP subaccount, open the menu item *Security* and go to *Trust Configuration*. 
+2. To download the *Service provider SAML metadata* file, choose *Download SAML Metadata*.
+3. Log on to your Identity Authentication service Admin UI (URL: [IAS]/admin/).
+4. Open the menu item *Applications* and create a new application of the type *SAP BTP solution*:
 	1. Enter the required information such as application display name, application URL, and so on. The display name appears on the user log-on screen and the login applies to all applications linked to the Identity Authentication service tenant (following the single-sign-on principle). Choose something meaningful from an end-user perspective representing the scope of the Identity Authentication service.
-	2. Open the *SAML 2.0 Configuration* section and upload the *Service provider SAML metadata* file from the SAP BTP subaccount.
-	3. Open the *Subject Name identifier* section and select *E-Mail* as basic attribute.
+	2. Open the *SAML 2.0 Configuration* section and upload the *Service provider SAML metadata* file which you downloaded previously from the SAP BTP subaccount.
+	3. Open the *Subject Name Identifier* section and select *E-Mail* as primary attribute.
 	4. Open the *Default Name ID Format* section and select *E-Mail*.
-4. To download the *IDP SAML metadata file*: 
-	1. Open the menu item *Tenant Settings* and go to *SAML 2.0 Configuration*.
-	2. Choose *Download Metadata File*.
-5. Within your SAP BTP subaccount, open the menu item *Security* and go to *Trust Configuration*.
-6. Choose *New SAML Trust Configuration*. 
-7. Upload the *IDP SAML metadata* file and enter a meaningful name and description for the Identity Authentication service (for example, `Corporate IDP` or `Custom IAS (SAML2.0)`).
+5. Open the menu item *Tenant Settings* and go to *SAML 2.0 Configuration*.
+6. To download the *IDP SAML metadata* file, choose *Download Metadata File*.
+7. Within your SAP BTP subaccount, open the menu item *Security* and go to *Trust Configuration*.
+8. Choose *New SAML Trust Configuration*. 
+9. Upload the *IDP SAML metadata* file and enter a meaningful name and description for the Identity Authentication service (for example, `Corporate IDP` or `Custom IAS (SAML2.0)`).
 
 Looking for more information on the SAP Authorization and Trust Management service? Go to the [Building Side-By-Side Extensions Using SAP BTP tutorial](https://learning.sap.com/learning-journeys/build-side-by-side-extensions-on-sap-btp/describing-authorization-and-trust-management-xsuaa-_cbf0d0c5-29ec-4685-9cf4-487156b41284).
 	
@@ -130,18 +130,18 @@ In this example, you use Identity Authentication service user groups to assign a
 
     | Name                      | Display Name              |
     | :------------------------ | :------------------------ |
-    | `Poetry_Slam_Manager`     | `Poetry Slam Manager`     |
-    | `Poetry_Slam_Visitor`     | `Poetry Slam Visitor`     |
+    | `PoetrySlamManager`       | `Poetry Slam Manager`     |
+    | `PoetrySlamVisitor`       | `Poetry Slam Visitor`     |
 
 3. Open the menu item *Applications*, open the application referring to the SAP BTP subaccount with your application, and navigate to *Attributes*.
-4. Check if there is an attribute with the name *Groups* and value *Groups*. If not, add the attribute mapping accordingly.
+4. Check if there is an attribute with the name *Groups* and value *Groups*. If not, add the attribute mapping accordingly (Name: *Groups*, Source: *Identity Directory*, Value: *Groups*).
 	> Note: Capital letters are required to ensure a correct mapping.
-5. Within your SAP BTP subaccount, open the menu item *Role Collections* and add the user groups (using the unique technical name of the user group) to the role collections that you want to assign to the respective users with the user group:
+5. Within your SAP BTP subaccount, open the menu item *Role Collections*. Add the user groups (using their unique technical name) to the role collections which you want to assign to the users of the respective user group:
 
     | Role Collection                    | User Groups            |
-	  | :--------------------------------- | :--------------------- |
-	  | `PoetrySlamManagerRoleCollection`  | `Poetry_Slam_Manager`  |
-	  | `PoetrySlamVisitorRoleCollection`  | `Poetry_Slam_Visitor`  |
+    | :--------------------------------- | :--------------------- |
+    | `PoetrySlamManagerRoleCollection`  | `PoetrySlamManager`    |
+    | `PoetrySlamVisitorRoleCollection`  | `PoetrySlamVisitor`    |
 
 ### Log On to the SAP BTP Application and Test Single Sign-On
 

@@ -7,7 +7,7 @@
 Our Partner Reference Application provides you with a golden path to build, run, and integrate full-stack cloud applications on SAP Business Technology Platform.
 
 <p align="center">
-    <img src="./Tutorials/images/Partner-Persona.png" width="40%">  
+    <img src="./Tutorials/images/00_Partner-Persona.png" width="40%">  
 </p>
 
 With this repository, we give SAP partners guidance on how to extend SAP ERP solutions with side-by-side cloud applications running on SAP Business Technology Platform (SAP BTP). It includes:
@@ -17,39 +17,39 @@ With this repository, we give SAP partners guidance on how to extend SAP ERP sol
 
 The repository includes a sample application that is ready to be deployed and run, and tutorials to rebuild it from scratch following an incremental development approach from one-off to multi-consumer solutions.
 
-<img src="./Tutorials/images/readme_incremental-approach.png" width="100%">  
-
 ### About the Sample Application *Poetry Slam Manager*
 
 Imagine you're an event manager, for example, Peter, and your job is to organize and host poetry slams. 
 
 As your company runs its business on a cloud ERP system provided by SAP, you use its project management component to plan and staff events, to collect costs, and to purchase equipment.
-Additionally, an SAP partner provided you with a side-by-side application called Poetry Slam Manager (PSM) to publish poetry slam events and to register visitors and artists such as Julie.
+Additionally, a SAP partner provided you with a side-by-side application called Poetry Slam Manager (PSM) to publish poetry slam events and to manage bookings of visitors and artists such as Julie.
 
 <p align="center">
-    <img src="./Tutorials/images/End-User_Flow-Persona.png" width="80%">  
+    <img src="./Tutorials/images/00_End-User_Flow-Persona.png" width="80%">  
 </p>
 
 For security and compliance reasons, it's crucial to you that event publishing and visitor registration are clearly separated from your ERP system. Nevertheless, as a power user working in both systems, you asked the partner to ensure a seamless user experience and navigation between the SAP system and Poetry Slam Manager.
 
-<img src="./Tutorials/images/readme_sample-use-case.png" width="100%">
+<p align="center">
+    <img src="./Tutorials/images/00_readme_sample-use-case.png" width="100%">
+</p>
 
 The sample showcases how a side-by-side application benefits from using SAP BTP. The qualities relevant for enterprise-grade partner applications, supported by SAP BTP services and programming models, include:
 
 <p align="center">
-    <img src="./Tutorials/images/End-User_Flow-Peter-Part1.png" width="80%">  
+    <img src="./Tutorials/images/00_End-User_Flow-Peter-Part1.png" width="80%">  
 </p>
 
 Upcoming versions of the sample application might include further features provided by the SAP BTP:
 
 <p align="center">
-    <img src="./Tutorials/images/End-User_Flow-Peter-Part2-and-Julie.png" width="80%">  
+    <img src="./Tutorials/images/00_End-User_Flow-Peter-Part2-and-Julie.png" width="80%">  
 </p>
 
 ### Features
 
 - Create and change poetry slam events, publish and cancel poetry slams.
-- Add and remove visitors, cancel registrations.
+- Maintain, add and remove visitors, cancel bookings.
 - Calculate the number of free seats and block overbookings.
 - Create projects for poetry slam events in one click and preview project information on the Poetry Slam Manager UI (here, ERP authorizations must apply in the partner application as well!).
 - As an ERP user, start Poetry Slam Manager from your ERP launchpad and navigate from Poetry Slam Manager to the associated project in the ERP system.
@@ -72,11 +72,11 @@ Would you like to share your own ideas and best practices? Join our discussions 
 
 The application is based on SAP Business Technology Platform (SAP BTP) and SAP ERP solutions. Therefore, here's what you need:
 
-- An SAP BTP Test, Demo, Development (TDD) account, which includes SAP Business Application Studio as a standardized development environment,  
+- An SAP BTP account, which includes SAP Business Application Studio as a standardized development environment,  
 - GitHub as your code repository, and 
 - an SAP ERP system.
 
-To get a more detailed list of the required entitlements and the proposed structure of subaccounts for the deployed Partner Reference Application, go to the [Bill of Materials](./Tutorials/01-BillOfMaterials.md).
+To get a more detailed list of the required entitlements, the proposed structure of subaccounts for the deployed Partner Reference Application, and the scaling effects of the multi-tenant solution, go to the [Bill of Materials](./Tutorials/01-BillOfMaterials.md).
 
 ## Overview
 
@@ -85,6 +85,10 @@ This repository explains the development journey along the path from
 2. enhancement to a multi-customer ("multi-tenant") solution,
 3. integration with different ERP back ends,
 4. extension with additional features.
+
+<p align="center">
+    <img src="./Tutorials/images/00_Dev_Journey.png" width="80%">  
+</p>
 
 A complete and working implementation of the above steps is available in separate branches:
 1. One-off deployment: branch [*main-single-tenant*](../../tree/main-single-tenant)
@@ -111,13 +115,12 @@ Updates to this repository are documented in the [change history](./Tutorials/99
     8. [Go on a guided tour to explore the capabilities of the sample application](Tutorials/17-Guided-Tour.md)
 
 2. Enhance the application to support **multiple customers** using shared SAP BTP resources:
-    1. [Get an overview of the bill of materials](Tutorials/20-Multi-Tenancy-BillOfMaterials.md)
-    2. [Learn about multitenancy and prepare your SAP BTP account for development](./Tutorials/21-Multi-Tenancy-Introduction.md)
-    3. [Prepare your SAP BTP subaccount for multi-tenant deployment](./Tutorials/22-Multi-Tenancy-Prepare-Deployment.md)
-    4. [Enhance the core application for multitenancy](./Tutorials/23-Multi-Tenancy-Develop-Sample-Application.md)
-    5. [Deploy your SAP BTP multi-tenant application](./Tutorials/24-Multi-Tenancy-Deployment.md)
-    6. [Provision your multi-tenant application to subscriber accounts](./Tutorials/25-Multi-Tenancy-Provisioning.md)
-    7. [Test and troubleshoot multitenancy](Tutorials/26-Test-Trace-Debug-Multi-Tenancy.md)
+    1. [Learn about multitenancy and get an overview of the bill of materials](Tutorials/20-Multi-Tenancy-BillOfMaterials.md)
+    2. [Prepare your SAP BTP subaccount for multi-tenant deployment](./Tutorials/22-Multi-Tenancy-Prepare-Deployment.md)
+    3. [Enhance the core application for multitenancy](./Tutorials/23-Multi-Tenancy-Develop-Sample-Application.md)
+    4. [Deploy your SAP BTP multi-tenant application](./Tutorials/24-Multi-Tenancy-Deployment.md)
+    5. [Provision your multi-tenant application to subscriber accounts](./Tutorials/25-Multi-Tenancy-Provisioning.md)
+    6. [Test and troubleshoot multitenancy](Tutorials/26-Test-Trace-Debug-Multi-Tenancy.md)
     
 3. Integrate the application with the **ERP back end** of your customer:   
     1. SAP Business One as ERP back end:
@@ -141,12 +144,14 @@ Updates to this repository are documented in the [change history](./Tutorials/99
     3. Open the APIs of the SAP BTP application for third-party integrations:
         1. [Enable API access to SAP BTP applications using service broker](Tutorials/42a-Multi-Tenancy-Service-Broker.md)
         2. [Configure and consume the APIs of the SAP BTP application](Tutorials/42b-Multi-Tenancy-Provisioning-Service-Broker.md)
+    4. [Observability: Logging, Metrics, and Tracing](Tutorials/43-Multi-Tenancy-Features-Observability.md)
 
 ## More Information
 - [SAP BTP Developer’s Guide](https://help.sap.com/docs/btp/btp-developers-guide/what-is-btp-developers-guide)
 - [SAP Cloud Application Programming Model](https://cap.cloud.sap/docs/)
 - [SAP Cloud SDK](https://sap.github.io/cloud-sdk/)
 - [SAP Discovery Center](https://discovery-center.cloud.sap/missionssearch)
+- [What's New for SAP Business Technology Platform](https://help.sap.com/whats-new/cf0cb2cb149647329b5d02aa96303f56?clear=all&locale=en-US)
 
 ## Known Issues
 
