@@ -7,7 +7,7 @@ You have already created a subaccount for the one-off deployment. Similar steps 
 
 ## Set Up the SAP BTP Provider Subaccount
 
-1. In the SAP BTP cockpit (global account), create a provider subaccount to host the application runtime (in this example, the name PoetrySlamsProvider, the data center of *Amazon Web Services (AWS)* and *Europe (Frankfurt)* as region are used).
+1. In the SAP BTP cockpit (global account), create a provider subaccount to host the application runtime (in this example, the name PoetrySlamsProvider, the data center of *Amazon Web Services (AWS)* and *Europe (Frankfurt)* as the region are used).
 
 > Note: In the following steps and descriptions, this subaccount is referred to as *provider subaccount*.
 
@@ -27,7 +27,7 @@ You have already created a subaccount for the one-off deployment. Similar steps 
 	- *SAP Custom Domain Service*
 		- As *Plan*, select *standard (Application)*.
 
-	The relevant entitlements are selected by default when the subaccount is created (no action required):
+	The relevant entitlements are selected by default when the subaccount is created (no action is required):
 
 	- *Service Manager*, service plan *container*
 	- *SaaS Provisioning Service*, service plan *application*

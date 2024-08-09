@@ -16,7 +16,7 @@ Buckle up and let us take you on a guided tour through the sample solution:
 
     <img src="./images/17_one_off_guided_tour_workzone.png" width="30%">
 
-3. In the Poetry Slams app, you find multiple poetry slams: Some are still in preparation, others have already been published. 
+3. In the Poetry Slams app, you find multiple poetry slams: Some are still in preparation while others have already been published. 
 
     > Note: You see a metadata-driven UI in line with SAP style guides. Using the UI theme manager, you can choose your favorite theme. Furthermore, you can customize the table layout and adapt the filter area according to your personal preferences. The *Export to Spreadsheet* function allows you to download the poetry slam data into a spreadsheet application. All of these capabilities are provided out of the box without any development efforts.
 
@@ -28,7 +28,7 @@ Buckle up and let us take you on a guided tour through the sample solution:
 
     > Note: In addition, you can also change the title, the event date, the price, and the maximum number of visitors.
 
-6. In the *Bookings* table, choose *Create*, select *nathalie.perrin@pra.ondemand.com* from the value help and set the *Artist* indicator. 
+6. In the *Bookings* table, choose *Create*. Select *nathalie.perrin@pra.ondemand.com* from the value help and set the *Artist* indicator. 
 
     > Note: A new instance of the visit entity is created.
     
@@ -38,13 +38,13 @@ Buckle up and let us take you on a guided tour through the sample solution:
 
     <img src="./images/17_one_off_guided_tour_poetryslamobjectpage.png" width="100%">
 
-8. Click on *Nathalie Perrin* in the *Bookings* table to get an overview about the booking of *Nathalie Perrin*. 
+8. Click on *Nathalie Perrin* in the *Bookings* table to get an overview of the booking for *Nathalie Perrin*. 
     
     > Note: You navigated to the *Visits* Object Page of the Poetry Slams application.
 
     <img src="./images/17_one_off_guided_tour_visitsobjectpage.png" width="100%">
 
-9. Click on the *Maintain Visitor* button to get an overview about all bookings of *Nathalie Perrin*. 
+9. Click on the *Maintain Visitor* button to get an overview of all the bookings for *Nathalie Perrin*. 
 
     > Note: You navigated to the *Visitors* application of the Poetry Slam Manager solution.
 

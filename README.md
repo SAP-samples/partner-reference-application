@@ -22,7 +22,7 @@ The repository includes a sample application that is ready to be deployed and ru
 Imagine you're an event manager, for example, Peter, and your job is to organize and host poetry slams. 
 
 As your company runs its business on a cloud ERP system provided by SAP, you use its project management component to plan and staff events, to collect costs, and to purchase equipment.
-Additionally, a SAP partner provided you with a side-by-side application called Poetry Slam Manager (PSM) to publish poetry slam events and to manage bookings of visitors and artists such as Julie.
+Additionally, an SAP partner provided you with a side-by-side application called Poetry Slam Manager (PSM) to publish poetry slam events and to manage bookings of visitors and artists such as Julie.
 
 <p align="center">
     <img src="./Tutorials/images/00_End-User_Flow-Persona.png" width="80%">  

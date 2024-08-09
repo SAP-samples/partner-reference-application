@@ -34,9 +34,9 @@ This is done in the *Site Manager*, which is launched when you go to the applica
 
 ### Fetch the Latest Version of Your Web Application
 
-1. In the *Site Manager*, open the *Channel Manager*. The *HTML5 Apps* content channel is created automatically and all web applications that you deployed to the SAP BTP subaccount are automatically added as content to this content provider.
+1. In the *Site Manager*, open the *Channel Manager*. The *HTML5 Apps* content channel is created automatically, and all web applications that you deployed to the SAP BTP subaccount are automatically added as content to this content provider.
 
-2. In the *HTML5 Apps* content channel, choose *Update content* to fetch any updates of your web application. The *HTML5 Apps* content channel now exposes the latest version of the web applications. 
+2. In the *HTML5 Apps* content channel, choose *Update content* to fetch any updates for your web application. The *HTML5 Apps* content channel now exposes the latest version of the web applications. 
 
    > Note: You must update the content channel every time you made changes to the web application.
 
@@ -70,9 +70,9 @@ In this step, you create and review a launchpad site. If you already have a site
 
 1. Open the *Site Directory*. 
 2. Create a site and enter a site name.
-3. To launch the site, open the *URL* provided in the *Properties* of the *Site Settings*. On the site, you can see the *Poetry Slams* and *Visitors* tiles. Before being able to launch both applications, you need to set up authorizations.
+3. To launch the site, open the *URL* provided in the *Properties* of the *Site Settings*. On the site, you can see the *Poetry Slams* and *Visitors* tiles. Before being able to launch both applications, you need to set up the authorizations.
 
-> Note: For quick access in subsequent chapters of this tutorial, note down the *URL*. 
+> Note: For quick access in the subsequent chapters of this tutorial, note down the *URL*. 
 
 ## Configure Authentication and Authorization 
 
@@ -111,7 +111,7 @@ Set up the trust relationship between the SAP BTP subaccount to the Identity Aut
 4. Open the menu item *Applications* and create a new application of the type *SAP BTP solution*:
 	1. Enter the required information such as application display name, application URL, and so on. The display name appears on the user log-on screen and the login applies to all applications linked to the Identity Authentication service tenant (following the single-sign-on principle). Choose something meaningful from an end-user perspective representing the scope of the Identity Authentication service.
 	2. Open the *SAML 2.0 Configuration* section and upload the *Service provider SAML metadata* file which you downloaded previously from the SAP BTP subaccount.
-	3. Open the *Subject Name Identifier* section and select *E-Mail* as primary attribute.
+	3. Open the *Subject Name Identifier* section and select *E-Mail* as the primary attribute.
 	4. Open the *Default Name ID Format* section and select *E-Mail*.
 5. Open the menu item *Tenant Settings* and go to *SAML 2.0 Configuration*.
 6. To download the *IDP SAML metadata* file, choose *Download Metadata File*.
@@ -136,7 +136,7 @@ In this example, you use Identity Authentication service user groups to assign a
 3. Open the menu item *Applications*, open the application referring to the SAP BTP subaccount with your application, and navigate to *Attributes*.
 4. Check if there is an attribute with the name *Groups* and value *Groups*. If not, add the attribute mapping accordingly (Name: *Groups*, Source: *Identity Directory*, Value: *Groups*).
 	> Note: Capital letters are required to ensure a correct mapping.
-5. Within your SAP BTP subaccount, open the menu item *Role Collections*. Add the user groups (using their unique technical name) to the role collections which you want to assign to the users of the respective user group:
+5. Within your SAP BTP subaccount, open the menu item *Role Collections*. Add the user groups (using their unique technical name) to the role collections that you want to assign to the users of the respective user group:
 
     | Role Collection                    | User Groups            |
     | :--------------------------------- | :--------------------- |

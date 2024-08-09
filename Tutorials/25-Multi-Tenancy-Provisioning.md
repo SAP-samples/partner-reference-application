@@ -21,7 +21,7 @@ To start the provisioning procedure, create an SAP BTP consumer subaccount for a
 
 1. In the SAP BTP cockpit (consumer subaccount), navigate to *Instances and Subscriptions*.
 2. Create subscriptions to *Poetry Slam Manager* with service plan *default* (this is your own multi-tenant SAP BTP application that you just created).
-3. To launch the *Poetry Slam Manager* application, choose *Go to Application* as soon as the application is in status *Subscribed*. 
+3. To launch the *Poetry Slam Manager* application, choose *Go to Application* as soon as the application has the status *Subscribed*. 
 
 ### Set Up Single Sign-On for the SAP BTP Application Subscription
 
@@ -43,11 +43,11 @@ Set up the trust relationship between the SAP BTP subaccount to Identity Authent
 	1. Open *Security* in the menu and go to *Trust Configuration*.
 	2. Choose *Download SAML Metadata*.
 
-2. On the Identity Authentication admin UI, open *Applications* in the menu under *Applications & Resources* and create a new application of type *SAP BTP Solution*:
+2. On the Identity Authentication admin UI, open *Applications* in the menu under *Applications & Resources* and create a new application of the type *SAP BTP Solution*:
 	1. Enter the required information, such as application display name, home URL, and so on. 
     The display name appears on the user log-in screen and the login applies to all applications linked to the Identity Authentication service tenant (following the single sign-on principle). Choose a meaningful text from an end-user perspective representing the scope of the Identity Authentication service, for example, `Almika Inc. - Poetry Slams`, or something more general if you subscribed to multiple apps in your consumer subaccount.
 	2. Open the section *SAML 2.0 Configuration* and upload the **subaccount SAML metadata file** from the SAP BTP subaccount, which you downloaded in the previous step.
-	3. Open the section *Subject Name Identifier* and select *E-Mail* as primary attribute.
+	3. Open the section *Subject Name Identifier* and select *E-Mail* as the primary attribute.
 	4. Open the section *Default Name ID Format* and select *E-Mail*.
   	5. Open the section *Attributes* and add the user attribute *Groups* with the value *Groups* from the source *Identity Directory*.
         > Note: The assertion attribute *Groups* is used to process authorization checks in the consumer subaccount based on user groups. The value *Groups* of the assertion attribute must be written with a capital G for SAP BTP subaccounts!
@@ -71,14 +71,14 @@ In this example, Identity Authentication service user groups are used to assign 
 	| `PoetrySlamManager`  		| Poetry Slam Manager			|
 	| `PoetrySlamVisitor`           | Poetry Slam Visitor       	  	|
    > Note: To add users to the user group, choose *Add* and select the user from the list of users and save your changes.
-3. In the SAP BTP consumer subaccount, open the menu item *Role Collections* and create the required roles or use the ones created by your application during subscription, e.g. PoetrySlamManangerRoleCollection (defined in the [*xs-security.json*](../../../tree/main-multi-tenant/xs-security.json)). For each role collection, add a user group by selecting the previously configured identity provider and set the name of the *User Group* (using the unique technical name of the user group of the Identity Authentication service).
+3. In the SAP BTP consumer subaccount, open the menu item *Role Collections* and create the required roles, or use the ones created by your application during subscription, for example, PoetrySlamManangerRoleCollection (defined in the [*xs-security.json*](../../../tree/main-multi-tenant/xs-security.json)). For each role collection, add a user group by selecting the previously configured identity provider and set the name of the *User Group* (using the unique technical name of the user group of the Identity Authentication service).
 
 	| Role Collection                   				| User Groups         		|
 	| :---                               				| :---			       	|
 	| `PoetrySlamManagerRoleCollection` 				| `PoetrySlamManager` 		|		
 	| `PoetrySlamVisitorRoleCollection`   				| `PoetrySlamVisitor`   	|	
 
-4. To test the login using single sign-on, navigate to *Instances and Subscriptions* and launch the SAP BTP application. Select the Identity Authentication service tenant as IdP. 
+4. To test the login using single sign-on, navigate to *Instances and Subscriptions* and launch the SAP BTP application. Set the Identity Authentication service tenant as IdP. 
 
 You can deactivate the user login with the *Default Identity Provider* (which refers to the *SAP ID Service*) in the *Trust Configuration* of your SAP BTP consumer subaccount. As a result, end users cannot select the _Default Identity Provider_, and the customer's Identity Authentication service tenant is used for authentication automatically.
 
@@ -87,6 +87,6 @@ You can deactivate the user login with the *Default Identity Provider* (which re
 Subscriptions can be deleted in the consumer subaccount, but be aware of the fact that all data will be lost.
 If you delete and recreate a subscription of the SAP BTP application, all consumer subaccount configurations (trust/SSO, destinations, and so on) remain valid, except for the user groups in the role collections. You may observe a *404 - Unauthorized* error message when accessing the SAP BTP application if you haven't added the user groups to the role collections of the SAP BTP application after resubscribing to it.
 
-If you manually delete an application or undeploy it from the provider subaccount while the application still has active subscriptions, note that there are a few service instances that can't be deleted. In addition to that, it's no longer possible to delete subscriptions to the removed application via the UI of the subscriber subaccounts. Instead, to delete the subscriptions, you need to access the service instance of the service _SaaS Provisioning Service_. Once you've removed all subscriptions, you can remove the remaining service instances from the provider subaccount.
+If you manually delete an application or undeploy it from the provider subaccount while the application still has active subscriptions, note that there are a few service instances that can't be deleted. In addition, it's no longer possible to delete subscriptions to the removed application via the UI of the subscriber subaccounts. Instead, to delete the subscriptions, you need to access the service instance of the service _SaaS Provisioning Service_. Once you've removed all subscriptions, you can remove the remaining service instances from the provider subaccount.
 
 If you need more information on how to trace and debug your application, go to the section on [test and troubleshoot multitenancy](26-Test-Trace-Debug-Multi-Tenancy.md).

@@ -253,7 +253,7 @@ To create a user in  SAP S/4HANA Cloud, follow the documentation [Identity and A
 3. The Poetry Slams application opens in a new browser tab without any additional authentication prompt.
     1. Open a poetry slam that is *published* or *fully booked* and create a project in SAP S/4HANA Cloud.        
     2. Check that the navigation to the project in SAP S/4HANA Cloud works.
-4. Launch Visitors application via the custom tile on the SAP S/4HANA Cloud launchpad. 
+4. Launch the Visitors application via the custom tile on the SAP S/4HANA Cloud launchpad. 
 5. The Visitors application opens in a new browser tab without any additional authentication prompt.
 
 <img src="./images/34_mt_s4hc_launchpad.png">

@@ -40,7 +40,7 @@ Therefore, configure a trust relationship between the SAP BTP consumer subaccoun
 
 ### Launch the SAP BTP Multi-Tenant Application
 
-1. In *Instances and Subscriptions* of the consumer account, select the *Poetry Slam Manager* application.
+1. In the *Instances and Subscriptions* of the consumer account, select the *Poetry Slam Manager* application.
 2. To launch the *Poetry Slams Manager* application, choose *Go to Application*. Copy the link address of the Poetry Slams application and note it down as **SAP BTP Application Poetry Slams Tenant URL** for later reference.
 3. From there, open a fully booked poetry slam and click in the header of the Object Page to *Maintain Visitors*. Copy the link address of the Visitors application and note it down as **SAP BTP Application Visitors Tenant URL** for later reference.
 
@@ -61,7 +61,7 @@ Therefore, you need to ensure that the same e-mail addresses are entered for use
         - *IDP Display Name* = `Poetry Slam Manager IAS`
         - The field value of *OIDC Discovery URL* is constructed using the pattern _https://\<sap-business-one-server\>/.well-known/openid-configuration_ 
         - *Claim Name* = `mail`
-        - As *Email Domain*, enter `<domain-name-of-the-email-ids>` (for example, *sap.com*). Make sure that you enter the domain name of the user e-mail ID specific to your use case.
+        - As the *Email Domain*, enter `<domain-name-of-the-email-ids>` (for example, *sap.com*). Make sure that you enter the domain name of the user e-mail ID specific to your use case.
         > Note: *Client ID and Client Secret* are obtained from the application created in the *Identity Authentication service* (see _4. Create a new application in the *Identity Authentication service* admin UI_).
 
         > Note: Copy the **Redirect URI** field value, which will be used in the creation of a new Identity Authentication service application in the next steps.
@@ -81,7 +81,7 @@ Therefore, you need to ensure that the same e-mail addresses are entered for use
     9. Choose *Save*. 
     10. In the *Application APIs* properties of the newly created application, select *Client Authentication*.
     11. In the *Secrets*section, choose *Add*.
-    12. In the *Add Secret* window, enter a `Description` and go with the default values for rest of the fields.
+    12. In the *Add Secret* window, enter a `Description` and use the default values for the rest of the fields.
     13. Choose *Save*, which will prompt the *Client ID* and *Client Secret* of the application.
         > Note: Make sure that you save *Client ID* and *Client Secret* for later usage since they cannot be retrieved from the system anymore.
     14. Copy the *Client ID* and the *Client Secret*.
@@ -101,12 +101,12 @@ Therefore, you need to ensure that the same e-mail addresses are entered for use
         3. Enter a business user e-mail in the *User Name* field, which is already available in the SAP Business One system.
         4. Choose *OK*.
         > Note: SAP Business One business user must be created in the *User Management* of *Identity Authentication service*.
-6. Bind users of the identity procider to the users of SAP Business One in the SAP Business One *System Landscape Directory*: 
+6. Bind the users of the identity provider to the users of SAP Business One in the SAP Business One *System Landscape Directory*: 
     1. Navigate to the *Users* section.
     2. Select the business user added in the previous step and choose *Bind*.
     3. Select a *Company* from the drop-down list.
     4. For the *User Code*, you have two options:
-	   - Option 1: Select an already existing user code in the SAP Business One system.
+	   - Option 1: Select a preexisting user code in the SAP Business One system.
 	   - Option 2: Create a new user code in the SAP Business One system and select the newly created user code from the drop-down list. 
     5. Skip all fields that are not mandatory, and choose *OK*.
 
@@ -130,7 +130,7 @@ In general, SAP Business One exposes OData services through the SAP Business One
 
 ## Set Up Destinations to Connect the SAP BTP App to SAP Business One 
 
-1. In your SAP BTP consumer subaccount, create the destinations *b1* to connect to SAP Business One with basic authentication. Open the *Connectivity* menu item on the SAP BTP consumer subaccount, choose *Destinations*, and create a new destination with the following field values. For more details, refer to [Setting Up SAP BTP Destination for Service Layer](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/bfeaccb8b53348318970f8bbbc3d5f0a.html?locale=en-US&q=Business%20One%20extension).
+1. In your SAP BTP consumer subaccount, create the destination *b1* to connect to SAP Business One with basic authentication. Open the *Connectivity* menu item on the SAP BTP consumer subaccount, choose *Destinations*, and create a new destination with the following field values. For more details, refer to [Setting Up SAP BTP Destination for Service Layer](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/bfeaccb8b53348318970f8bbbc3d5f0a.html?locale=en-US&q=Business%20One%20extension).
 
     | Parameter Name           | Value                                                                                                  |
     | :------------------------ | :-------------------------------------------------------------------------------------                |
@@ -145,7 +145,7 @@ In general, SAP Business One exposes OData services through the SAP Business One
     
     > Note: To check if everything's correctly configured, choose *Check Connection*. If the configuration is correct, the response is *200: OK*.
     
-    > Note: As a **prerequisite** for the configuration of the destinations, an SAP Business One system must be availabe that is hosted by a provider or a partner. It must be reachable with a public URL such as *https://{{B1-hostname}}:{{Port}}*.
+    > Note: As a **prerequisite** for the configuration of the destinations, an SAP Business One system must be availabe that is hosted by a provider or a partner. It must be reachable with a public URL, such as *https://{{B1-hostname}}:{{Port}}*.
 
 2. Create another destination with the following field values:
 
@@ -168,7 +168,7 @@ As a last step, you add Poetry Slam Manager to the SAP Business One launchpad to
     
     > Note: Consider the prerequisites: [Development Environment Setup](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/b121ab221f4044baaf6051bba14cc160.html?locale=en-US) with the setup steps of your operating system.
 
-    > Note: Ensure that the *SAP Business One Web Client Extensions* for Visual Code is installed. A installation guide can be found in [Installing VS Code Wizard for SAP Business One Web Client Extensions](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/a59a55746044497fbe975a0ace903dac.html?q=Business%20One%20extension). 
+    > Note: Ensure that the *SAP Business One Web Client Extensions* for Visual Code is installed. An installation guide can be found under [Installing VS Code Wizard for SAP Business One Web Client Extensions](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/a59a55746044497fbe975a0ace903dac.html?q=Business%20One%20extension). 
 
     1. Open Visual Studio Code.
     2. Search for the `Application Wizard` *Extension* from SAP OS, published and verified by sap.com.
@@ -179,25 +179,25 @@ As a last step, you add Poetry Slam Manager to the SAP Business One launchpad to
     8. Provide application Information such as *ID*, *version*, *provider details* and choose *Next*.
     9. As *Module Type*, choose *URL Mashup App* and choose *Next*.
     10. Provide *module name* and *tile number*.
-    11. Provide tile settings information such as *title*, *subtitle*, *dimension*, *tile link method*, *link for the tile*, *decoration type* as *icon*, and icon for tile as *sap-icon://microphone*. 
+    11. Provide tile settings information, such as *title*, *subtitle*, *dimension*, *tile link method*, *link for the tile*, *decoration type* as *icon*, and the icon for tile as *sap-icon://microphone*. 
         > Note: The link for the tile is the URL of the SAP BTP application to be launched from the SAP Business One launchpad, for example, the **SAP BTP Application Poetry Slams Tenant URL**, you noted down in a previous step.
 
         > Note: Refer to SAP Help Documentation [Creating a URL Mashup App](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/28461b436583429b9d17c2db43567323.html?q=Business%20One%20extension) for more information.
     12. Choose package the application as *Yes* in the *Application Summary* section and choose *Finish*.
-    13. An npm application is generated. In the folder *mta_archives* a package with of type *mtar* is generated.
+    13. An npm application is generated. In the folder *mta_archives*, a package of the type *mtar* is generated.
     14. Repeat the steps to add the Visitors application, too. Use the **SAP BTP Application Visitors Tenant URL** as link for the tile.
 
 2. Set up the SAP Business One, Web client in the SAP Business One Extension Manager.
 
 	1. Open *SAP Business One Extension Manager* using the URL _https://\<sap-business-one-server:port\>/ExtensionManager_.
     2. Open the *Extensions* tab. 
-    3. Choose *Import* , choose *Browse*, and select the generated *mtar*-file for the poetry slams application.
+    3. Choose *Import*. Choose *Browse*, and then select the generated *mtar*-file for the poetry slams application.
     4. Choose *Upload*.
     5. Once the upload is completed, choose *Next* and choose *Finish*.
     6. Open the *Company Assignment* tab.
     7. Choose *Assign* in the *Extensions* section.
     8. In the *Specify an extension* table, select the extension imported in a previous step.
-    9. Choose *Next*, choose the default settings for *Startup Mode* and *User Preferences*, and choose *Next*.
+    9. Choose *Next*. Choose the default settings for *Startup Mode* and *User Preferences*, and then choose *Next*.
     10. Choose *Finish* and complete the company assignment for the SAP Business One extension.
     11. Repeat steps one to ten for the *mtar* file of the visitor mashup.
 
@@ -212,7 +212,7 @@ As a last step, you add Poetry Slam Manager to the SAP Business One launchpad to
         
         1. Open a poetry slam that is *published* or *fully booked* and create a purchase order in SAP Business One. 
         
-        2. Check that the navigation to the purchase order in SAP Business One works.
+        2. Check that the navigation to the purchase order in SAP Business One functions correctly.
         
     5. Users can also assign the *SAP Business One Web Client Extension* to the launchpad of the user homepage.
 

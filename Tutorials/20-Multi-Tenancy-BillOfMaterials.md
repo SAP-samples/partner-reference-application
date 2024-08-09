@@ -1,7 +1,7 @@
 # Learn about Multitenancy and Get an Overview of the Bill of Materials
-Multitenancy is the ability to serve multiple tenants from a single deployment and strictly isolating the tenants' data. This significantly reduces costs and efforts.
+Multitenancy is the ability to serve multiple tenants from a single deployment while strictly isolating the tenants' data. This significantly reduces costs and efforts.
 
-In the version of Poetry Slam Manager with multitenancy and SAP ERP integration, the Partner Reference Application uses a single deployment to a provider subaccount and subscription to this deployment in subscriber or consumer subaccounts. While the actual runtime of the application resides in the provider account, the subscriber accounts are used for the tenant-specific configuration such as desinations or authorization and authentication. Find an overview of the accounts in the section below.
+In the version of Poetry Slam Manager with multitenancy and SAP ERP integration, the Partner Reference Application uses a single deployment to a provider subaccount and subscription to this deployment in subscriber or consumer subaccounts. While the actual runtime of the application resides in the provider account, the subscriber accounts are used for the tenant-specific configuration, such as desinations or authorization and authentication. Find an overview of the accounts in the section below.
 
 ## Subaccounts
 The example setup serves four sample customers: 

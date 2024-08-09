@@ -8,7 +8,7 @@ The current version is available in four branches:
 
 The current version includes
 
-- Support of a second application (CDS service and Fiori Elements UIs including UI Custom Actions and UI navigation) to maintain visitors
+- Support for a second application (CDS service and Fiori Elements UIs including UI Custom Actions and UI navigation) to maintain visitors
 - Additional feature: SAP BTP Cloud Logging service for observability
 - Cleanup, corrections, dependency updates
 

@@ -1,6 +1,6 @@
 # Integrate the SAP BTP Application with SAP Business One
 
-In this section, you enhance Poetry Slam Manager, your SAP BTP solution, to make sure that it supports SAP Business One as back end. 
+In this section, you enhance Poetry Slam Manager, your SAP BTP solution, to make sure that it supports SAP Business One as the back end. 
 
 Front-end integration:
 1. Navigate from Poetry Slams to related SAP Business One purchase orders.
@@ -15,7 +15,7 @@ In this section, you learn how to import the SAP Business One OData service as a
 
 You keep the core of your multi-tenant application, which you developed in the previous tutorials, and add changes for the ERP integration. 
 
-> Note: Your solution is now in a good state to save a version of your implementation in your version control system, which enables you to go back to the multi-tenant application without ERP integration anytime.
+> Note: Your solution is now in a good state to save a version of your implementation in your version control system, which enables you to go back to the multi-tenant application without ERP integration at any time.
 
 ### Import SAP Business One OData Service
 
@@ -38,7 +38,7 @@ The SAP Business One OData service is consumed by using a destination. SAP Cloud
 
     > Note: Don't use the CDS import command parameter `--keep-namespace` because it would result in the CDS service name *cust*, which would lead to service name clashes if you import multiple SAP Business One custom OData services.
 
-    After the command was executed, the file *app/poetryslams/package.json* is updated with a CDS configuration referring to the remote OData service, and a folder with path *./srv/external* has been created. The folder contains the configuration files for the remote services.
+    After the command is executed, the file *app/poetryslams/package.json* is updated with a CDS configuration referring to the remote OData service, and a folder with path *./srv/external* is created. The folder contains the configuration files for the remote services.
     
     > Note: Typically, remote services don't require any persistency. Make sure the entities in the corresponding CDS files in the folder *./srv/external* are annotated with `@cds.persistence.skip : true`. You may encounter errors during the deployment with the db-deployer service if the persistency-skip-annotation is missing.
 
@@ -191,7 +191,7 @@ You can define reuse functions that handle the connection for the different Ente
 Reuse functions specific to SAP Business One are defined in a separate file. 
 
 1. Create a file with the path */srv/poetryslam/connector/connectorB1.js*. 
-2. Copy the SAP Business One related functions in the file [*/srv/poetryslam/connector/connectorB1.js*](../../../tree/main-multi-tenant/srv/poetryslam/connector/connectorB1.js) into your project. The file contains functions to delegate OData requests to SAP Business One, to read SAP Business One purchase order data, and to assemble an OData payload to create SAP Business One purchase orders.
+2. Copy the SAP Business One-related functions in the file [*/srv/poetryslam/connector/connectorB1.js*](../../../tree/main-multi-tenant/srv/poetryslam/connector/connectorB1.js) into your project. The file contains functions to delegate OData requests to SAP Business One, to read SAP Business One purchase order data, and to assemble an OData payload to create SAP Business One purchase orders.
 
 > Note: This file contains sample data, which can vary depending on the system. Check the data set and maintain it accordingly to ensure consistency between the Partner Reference App and SAP Business One. The sample data is marked with a block comment *Purchase order data for SAP Business One; needs to be adopted according to SAP Business One configuration of the customer system*.
 
@@ -202,7 +202,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
 1. Delegate requests to the remote OData service. 
     1. Create a new file *srv/poetryslam/poetrySlamServiceERPImplementation.js* in your project.
 
-    2. Copy the following code snippet into the newly created file. As reference you can have a look on the file [poetrySlamServiceERPImplementation.js](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceERPImplementation.js) in the reference application.
+    2. Copy the following code snippet into the newly created file. As a reference you can have a look at the file [poetrySlamServiceERPImplementation.js](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceERPImplementation.js) in the reference application.
         ```javascript
         'strict';
 
@@ -245,7 +245,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
     erpForwardHandler(srv); // Forward handler to the ERP systems
     ```
 
-3. In the file [*/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js), the poetry slams entity is enriched with SAP Business One specific data. 
+3. In the file [*/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js), the poetry slams entity is enriched with SAP Business One-specific data. 
     
     1. Determine the connected back-end systems and read the purchase order data from the remote system. Set the virtual element `createB1PurchaseOrderEnabled` to control the visualization of the action to create purchase orders dynamically and pass on the purchase order system name.
 
@@ -275,7 +275,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
                 return poetrySlams;
             }
 
-            // The requested columns include some of the enriched fields so we do add the corresponding data
+            // The requested columns include some of the enriched fields, so we do add the corresponding data
 
             // SAP Business One
             // Check and read SAP Business One purchase order data
@@ -299,7 +299,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
                     poetrySlam.createB1PurchaseOrderEnabled = connectorB1.isConnected();
                 }
 
-                // Update the backend system connected indicator used in UI for controlling visibility of UI elements
+                // Update the backend system connected indicator used in the UI for controlling the visibility of UI elements
                 poetrySlam.isB1 = connectorB1.isConnected();
             }
 
@@ -370,7 +370,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
 
 5. Add the system messages to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant/srv/i18n/messages.properties).    
 
-    > In the reference example, the [*/srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant/srv/i18n/messages_de.properties) file with the German texts is available, too. You can take them over accordingly.
+    > In the reference example, the [*/srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant/srv/i18n/messages_de.properties) file with the German texts is available too. You can take them over accordingly.
 
     ```javascript
     ACTION_CREATE_PURCHASE_ORDER_DRAFT                      = Purchase orders cannot be created for draft Poetry Slams.
@@ -486,7 +486,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
     createB1PurchaseOrder   = Create Purchase Order in SAP Business One
     ```        
 
-    > In the reference example, the [*/srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/srv/i18n/i18n_de.properties) file with the German texts is available, too. You can take them over accordingly.
+    > In the reference example, the [*/srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/srv/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
 
 3. Edit the language-dependent labels of the poetryslams app in the file [*app/poetryslams/i18n.properties*](../../../tree/main-multi-tenant/app/poetryslams/i18n/i18n.properties). Add a label for the facet and the added fields:
 
@@ -499,7 +499,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
     purchaseOrderCurrency   = Currency
     ```
 
-    > In the reference example, the [*app/poetryslams/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/app/poetryslams/i18n/i18n_de.properties) file with the German texts is available, too. You can take them over accordingly.
+    > In the reference example, the [*app/poetryslams/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/app/poetryslams/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
 
 ### Enhance the Configuration of the SAP Cloud Application Programming Model Project
 

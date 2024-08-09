@@ -59,4 +59,4 @@ After you've created a new SAP BTP subaccount, only the standard services appear
 1. Create a new GitHub repository in a GitHub organization of your choice as a code repository of your own project. 
 2. Link it with your *Dev Space*.
 
-In the [next section](./12-Prepare-Deployment.md), you prepare your subaccount for deployment of the application. Afterwards, you can directly clone this repository into your *Dev Space* to deploy and run the sample application as provided in this repository. Alternatively, you can create the application manually from scratch, which is also described in this tutorial.
+In the [next section](./12-Prepare-Deployment.md), you prepare your subaccount for deployment of the application. Afterward, you can directly clone this repository into your *Dev Space* to deploy and run the sample application as provided in this repository. Alternatively, you can create the application manually from scratch, which is also described in this tutorial.
