@@ -8,7 +8,7 @@ Make some adjustments to ensure that the application can be deployed to SAP BTP 
 
 1. Configure the web app to connect to the app services: 
     1. To define a route in the web app, open the file [*./app/poetryslams/xs-app.json*](../../../tree/main-single-tenant/app/poetryslams/xs-app.json).
-    2. Add the following as first route. The order of routes is crucial as the most specific one must come first. You'll define the destination *launchpad* later as part of project configuration *mta.yml* file. 
+    2. Add the following as the first route. The order of routes is crucial as the most specific one must come first. You'll define the destination *launchpad* later as part of the project configuration *mta.yml* file. 
 
       ```json
         {
@@ -61,7 +61,7 @@ Make some adjustments to ensure that the application can be deployed to SAP BTP 
 
 5. In the file [*./app/poetryslams/ui5-deploy.yaml*](../../../tree/main-single-tenant/app/poetryslams/ui5-deploy.yaml), the packaging of the web UI application is defined. Replace the line `afterTask: replaceVersion` with `beforeTask: generateCachebusterInfo` to ensure that the package is created correctly for the deployment.
 
-6. Do the steps 1-5 for the [*Visitors* application](../../../tree/main-single-tenant/app/visitors) accordingly.
+6. Do steps 1-5 for the [*Visitors* application](../../../tree/main-single-tenant/app/visitors) accordingly.
 
 ## Rename the Application in the Config Files
 
@@ -163,11 +163,11 @@ Adjust the [*./mta.yaml*](../../../tree/main-single-tenant/mta.yaml) file.
           - name: srv-api
     ```
 
-4. In the file *mta.yaml*, change the service plan of the resource with name `poetry-slams-auth` from `application` to `broker`. This will give you more flexibility when extending the application functionality later.
+4. In the file *mta.yaml*, change the service plan of the resource with the name `poetry-slams-auth` from `application` to `broker`. This will give you more flexibility when extending the application functionality later.
 
 5. Replace the `builder` *npm* with *npm-ci*.
 
-6. After you've applied the changes described above in the file *mta.yml*, this is what the file looks like: [the MTA file of the sample application](../../../tree/main-single-tenant/mta.yaml).
+6. After you've applied the changes described above in the file *mta.yml*, this is what the file will look like: [the MTA file of the sample application](../../../tree/main-single-tenant/mta.yaml).
 
     > Note that a correct indentation is required.
 

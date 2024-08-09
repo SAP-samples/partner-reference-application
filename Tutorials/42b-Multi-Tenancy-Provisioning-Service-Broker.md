@@ -2,7 +2,7 @@
 
 In the previous steps ([Enhance the SAP BTP Application by a Service Broker](./42a-Multi-Tenancy-Service-Broker.md)), you added the service broker to the core of the application and deployed it to the provider SAP BTP subaccount.
 
-The service broker is used to enable the access to application OData services using tenant-specific credentials and authorizations taking into account the tenant isolation of a multi-tenant application. 
+The service broker is used to enable access to application OData services using tenant-specific credentials and authorizations, taking into account the tenant isolation of a multi-tenant application. 
 
 In this section, you learn how to configure and consume the APIs of the SAP BTP application in the consumer SAP BTP subaccount.
 
@@ -105,7 +105,7 @@ This section describes how to use the SAP BTP CLI. For more details, go to the [
       ```
       btp create services/instance --subaccount <consumer subaccount id> --plan-name fullaccess --offering-name psm-servicebroker-dev --parameters '{ "xs-security": { "xsappname": "psm-sb-sub1-full", "oauth2-configuration": { "credential-types": ["binding-secret"] } } }' --name psm-sb-sub1-full
       ```
-   2. Afterwards, you will find the instance in the SAP BTP consumer subaccount cockpit under *Services* - *Instances and Subscriptions* - *Instances*.
+   2. Afterward, you will find the instance in the SAP BTP consumer subaccount cockpit under *Services* - *Instances and Subscriptions* - *Instances*.
 
 6. To create credentials for the consumer service broker, run the command:
      ```
@@ -143,7 +143,7 @@ Alternatively, you can perform the steps 5, 6, and 7 of the description above in
       { "xs-security": { "xsappname": "psm-sb-sub1-full", "oauth2-configuration": { "credential-types": ["binding-secret"] } } }
       ```
    8. Choose *Create*.
-   9. Afterwards, you will find the instance in the SAP BTP consumer subaccount cockpit under *Services* - *Instances and Subscriptions* - *Instances*.
+   9. Afterward, you will find the instance in the SAP BTP consumer subaccount cockpit under *Services* - *Instances and Subscriptions* - *Instances*.
 
 6. Create credentials for the consumer service broker:
    1. In the SAP BTP consumer subaccount cockpit, go to *Services*, *Instances and Subscriptions*, and *Instances*. 

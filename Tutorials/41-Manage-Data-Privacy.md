@@ -119,6 +119,6 @@ Now, let us take you on a guided tour through the data privacy feature of Poetry
 6. In the SAP Audit Log Viewer service, change the *from-date* to yesterday and choose *Play* in the upper right corner. 
 7. Enter your name in the filter to search for your own logs. 
     
-    For example, when looking for data-modification events, you can find the log entry of *modifiedBy* as you changed the poetry slam. Additionally, you find an entry of the *email* as you read visitor data in step 4.
+    For example, when looking for data-modification events, you can find the log entry of *modifiedBy* as you changed the poetry slam. Additionally, you find an entry for the *email* as you read visitor data in step 4.
 
     > Note: You can see logs of three categories: Security events refer to log-in and authentication events, data-access events refer to read access to personal data, and data-modification events refer to data changes. 

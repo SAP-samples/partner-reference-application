@@ -23,7 +23,7 @@ When you want to deploy your SAP BTP application to a subaccount, first, you nee
 	- *SAP Build Work Zone*
 		- As *Plan*, select *standard (Application)*. 
 
-	The relevant entitlements are selected by default when the subaccount is created (no action required):
+	The relevant entitlements are selected by default when the subaccount is created (no action is required):
 
 	- *Service Manager*, service plan *container*
 	- *HTML5 Application Repository Service*, service plans *app-runtime* and *app-host*

@@ -1,6 +1,6 @@
 # Integrate the SAP BTP Application with SAP Business ByDesign
 
-In this section, you enhance Poetry Slam Manager, your SAP BTP solution, to make sure that it supports SAP Business ByDesign as back end. 
+In this section, you enhance Poetry Slam Manager, your SAP BTP solution, to make sure that it supports SAP Business ByDesign as the back end. 
 
 Front-end integration:
 1. Navigate from Poetry Slams to related SAP Business ByDesign projects.
@@ -27,7 +27,7 @@ In this section, you learn how to import the SAP Business ByDesign OData service
 
 You keep the core of your multi-tenant application, which you developed in the previous tutorials, and add changes for the ERP integration. 
 
-> Note: Your solution is now in a good state to save a version of your implementation in your version control system, which enables you to go back to the multi-tenant application without ERP integration anytime.
+> Note: Your solution is now in a good state to save a version of your implementation in your version control system, which enables you to go back to the multi-tenant application without ERP integration at any time.
 
 ### Import SAP Business ByDesign OData Service
 The SAP Business ByDesign OData service is consumed by using a destination. SAP Cloud Application Programming Model uses a one-to-one binding of remote services and destinations. To propagate the logged-in business user to SAP Business ByDesign, an OAuth 2.0 SAML Bearer authentication is used. This way, the SAP Business ByDesign OData service for projects considers the user authorizations.
@@ -78,12 +78,12 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     projectURL              = Project URL
     projectSystem           = Project System Type
     ```
-     > In the reference example, the [*/db/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/db/i18n/i18n_de.properties) file with the German texts is available, too. You can take them over accordingly.
+     > In the reference example, the [*/db/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/db/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
   
 
 ### Enhance the Service Model With the Remote Service
 
-1. To extend the SAP Cloud Application Programming Model service model by remote entities, open the file [*/srv/poetryslam/poetrySlamService.cds*](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamService.cds) with the service models.
+1. To extend the SAP Cloud Application Programming Model service model with remote entities, open the file [*/srv/poetryslam/poetrySlamService.cds*](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamService.cds) with the service models.
 
 2. Expose SAP Business ByDesign project data throughout the SAP Cloud Application Programming Model service model for principal propagation:
     ```javascript
@@ -127,7 +127,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     };
     ```
     
-2. Enhance the service model of the service *PoetrySlamService* by an association to the remote project in SAP Business ByDesign:
+2. Enhance the service model of the service *PoetrySlamService* with an association to the remote project in SAP Business ByDesign:
     ```javascript
     // Poetry Slams (draft enabled)
     @odata.draft.enabled
@@ -139,7 +139,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
         } 
     ```
 
-3. Enhance the service model of the service *PoetrySlamService* by virtual elements to pass on the name of the ERP system from the destination to the UI, and the visualization of actions:
+3. Enhance the service model of the service *PoetrySlamService* with virtual elements to pass on the name of the ERP system from the destination to the UI, and the visualization of actions:
     ```javascript
     // Poetry Slams (draft enabled)
     @odata.draft.enabled
@@ -164,7 +164,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
         }
     ```
     
-4. Enhance the service model of the service *PoetrySlamService* by an action to create remote projects:
+4. Enhance the service model of the service *PoetrySlamService* with an action to create remote projects:
     ```javascript
     // SAP Business ByDesign projects: action to create a project in SAP Business ByDesign
     @(
@@ -244,7 +244,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
 1. Delegate requests to the remote OData service. 
     1. Create a new file *srv/poetryslam/poetrySlamServiceERPImplementation.js* in your project.
 
-    2. Copy the following code snippet into the newly created file. As reference you can have a look on the file [poetrySlamServiceERPImplementation.js](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceERPImplementation.js) in the reference application.
+    2. Copy the following code snippet into the newly created file. As a reference you can have a look in the file [poetrySlamServiceERPImplementation.js](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceERPImplementation.js) in the reference application.
         ```javascript
         'strict';
 
@@ -298,7 +298,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
             let poetrySlams = await next();
 
             // In this method we enrich the data from the database by external data and calculated fields
-            // In case none of these enriched fields are requested, we do not need to read from the external services
+            // If none of these enriched fields are requested, we do not need to read from the external services
             // So we first check if the requested columns contain any of the enriched columns and return if not
             const requestedColumns = req.query.SELECT.columns?.map((item) =>
                 Array.isArray(item.ref) ? item.ref[0] : item.as
@@ -411,7 +411,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
 
 5. Add the system message to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant/srv/i18n/messages.properties).
 
-    > In the reference example, the [*/srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant/srv/i18n/messages_de.properties) file with the German texts is available, too. You can take them over accordingly.
+    > In the reference example, the [*/srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant/srv/i18n/messages_de.properties) file with the German texts is available too. You can take them over accordingly.
 
 5. Add the below system messages to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant/srv/i18n/messages.properties).
     ```javascript
@@ -420,7 +420,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
     ACTION_CREATE_PROJECT_FAILED                            = Project creation failed. Poetry Slam {0} was not updated.
     ACTION_READ_PROJECT_CONNECTION                          = Project cannot be retrieved.
     ```
-    > In the reference example, the [*/srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant/srv/i18n/messages_de.properties) file with the German texts is available, too. You can take them over accordingly.
+    > In the reference example, the [*/srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant/srv/i18n/messages_de.properties) file with the German texts is available too. You can take them over accordingly.
 
 ### Enhance the Web App to Display SAP Business ByDesign Data 
 
@@ -556,7 +556,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
     processingStatus        = Processing Status
     ```        
 
-    > In the reference example, the [*/srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/srv/i18n/i18n_de.properties) file with the German texts is available, too. You can take them over accordingly.
+    > In the reference example, the [*/srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/srv/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
 
 5. In the app folder, edit language-dependent labels in the file [*app/poetryslams/i18n/i18n.properties*](../../../tree/main-multi-tenant/app/poetryslams/i18n/i18n.properties). Add a label for facet project data:
 
@@ -564,7 +564,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
     projectData             = Project Data
     ```      
 
-    > In the reference example, the [*app/poetryslams/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/app/poetryslams/i18n/i18n_de.properties) file with the German texts is available, too. You can take them over accordingly.
+    > In the reference example, the [*app/poetryslams/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/app/poetryslams/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
         
 
 ### Enhance the Configuration of the SAP Cloud Application Programming Model Project
@@ -606,7 +606,7 @@ Enhance the file [*package.json*](../../../tree/main-multi-tenant/package.json) 
     connector.isConnectedIndicator = true;
     ```
         
-    > Note: This change is required as the *isConnectedIndicator* value is dependent on the setup of destinations. Destinations only work on a deployed application and cannot be tested locally.
+    > Note: This change is required as the *isConnectedIndicator* value is dependent on the setup of the destinations. Destinations only work on a deployed application and cannot be tested locally.
 
 2. Open a terminal and start the app with the development profile using the run command `cds watch --profile development`. 
 
@@ -616,7 +616,7 @@ Enhance the file [*package.json*](../../../tree/main-multi-tenant/package.json) 
 
 5. Open the */poetryslams/webapp* web application. The poetry slams list will be shown. 
 
-6. Choose *Create Project in SAP Business ByDesign*. The system creates a project in SAP Business ByDesign displays the details in the *Project Details* section.
+6. Choose *Create Project in SAP Business ByDesign*. The system creates a project in SAP Business ByDesign and displays the details in the *Project Details* section.
        > Note: The link to the project won't work in a local application. To test the full integration including navigation to the SAP Business ByDesign system, you will have to test with the deployed application.
 
 7. Test the *Service Endpoints* for *PoetrySlams* of *poetryslamservice* and note down the *ID* of the poetry slam for which you created the SAP Business ByDesign project in step 2 as **poetry-slam-ID**.

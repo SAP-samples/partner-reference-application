@@ -27,7 +27,7 @@ The service API is used to test the Poetry Slam Manager entity model in [poetryS
 In the following example, a visit is selected from the database and is to be recreated. However, the creation must be rejected due to uniqueness of the pair *poetrySlam_ID* and *visitor_ID*. 
 
 ```javascript
-it('should ensure the uniqueness of combination of visitor ID and poetry slam ID', async () => {
+it('should ensure the uniqueness of the combination of visitor ID and poetry slam ID', async () => {
   const { Visits } = db.model.entities;
   const result = await SELECT.one
     .from(Visits)
@@ -243,7 +243,7 @@ From here, you can navigate to the specific application and analyze the logs tha
 
 ## Code Quality
 
-Besides automated testing, code quality includes readability, maintainability, compliance. There are a number of automated tools that help you to format your files in a consistent way, check for possible implementation, license or security issues and update the included external packages. To keep your application up-to-date you should configure such tools. See also [Update Project Dependencies](./14-Develop-Core-Application.md#update-project-dependencies).
+Besides automated testing, code quality includes readability, maintainability, and compliance. There are a number of automated tools that help you to format your files in a consistent way, check for possible implementation, license or security issues, and update the included external packages. To keep your application up-to-date, you should configure such tools. See also [Update Project Dependencies](./14-Develop-Core-Application.md#update-project-dependencies).
 
 ## Give Feedback
 

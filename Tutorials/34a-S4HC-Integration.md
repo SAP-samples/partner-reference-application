@@ -1,6 +1,6 @@
 # Integrate the SAP BTP Application with SAP S/4HANA Cloud Public Edition
 
-In this section, you enhance Poetry Slam Manager, your SAP BTP solution, to make sure that it supports SAP S/4HANA Cloud Public Edition as back end. 
+In this section, you enhance Poetry Slam Manager, your SAP BTP solution, to make sure that it supports SAP S/4HANA Cloud Public Edition as the back end. 
 
 Front-end integration:
 1. Navigate from Poetry Slam Manager to related SAP S/4HANA Cloud Public Edition enterprise projects.
@@ -15,7 +15,7 @@ In this section, you learn how to import the SAP S/4HANA Cloud Public Edition OD
 
 You keep the core of your multi-tenant application, which you developed in the previous tutorials, and add changes for the ERP integration. 
 
-> Note: Your solution is now in a good state to save a version of your implementation in your version control system, which enables you to go back to the multi-tenant application without ERP integration anytime.
+> Note: Your solution is now in a good state to save a version of your implementation in your version control system, which enables you to go back to the multi-tenant application without ERP integration at any time.
 
 ### Import SAP S/4HANA Cloud Public Edition OData Services
 
@@ -145,7 +145,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     projectURL              = Project URL
     projectSystem           = Project System Type
     ```
-     > In the reference example, the [*/db/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/db/i18n/i18n_de.properties) file with the German texts is available, too. You can take them over accordingly.
+     > In the reference example, the [*/db/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/db/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
 
 ### Enhance the Service Model With the Remote Service
 
@@ -363,7 +363,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 1. Delegate requests to the remote OData service. 
     1. Create a new file *srv/poetryslam/poetrySlamServiceERPImplementation.js* in your project. 
 
-    2. Copy the following code snippet into the newly created file. As reference you can have a look on the file [poetrySlamServiceERPImplementation.js](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceERPImplementation.js) in the reference application.
+    2. Copy the following code snippet into the newly created file. As a reference you can have a look in the file [poetrySlamServiceERPImplementation.js](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceERPImplementation.js) in the reference application.
 
         ```javascript
         'strict';
@@ -410,7 +410,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
         }
         ```
 
-    > Note: Without delegation, the remote entities return the error code 500 with message: *SQLITE_ERROR: no such table* (local testing).
+    > Note: Without delegation, the remote entities return the error code 500 with the message: *SQLITE_ERROR: no such table* (local testing).
 
 2. Enhance the [*/srv/poetryslam/poetrySlamServiceImplementation.js*](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceImplementation.js) to call the ERP implementation.
 
@@ -428,7 +428,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 
 3.  In the file [*/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js), the poetry slams entity is enriched with SAP S/4HANA Cloud Public Edition specific data. 
 
-    1. Determine the connected back-end systems and read the project data from the remote system. Set the virtual element `createS4HCProjectEnabled` to control the visualization of the action to create project dynamically and pass on the project system name.
+    1. Determine the connected back-end systems and read the project data from the remote system. Set the virtual element `createS4HCProjectEnabled` to control the visualization of the action to create the project dynamically and pass on the project system name.
 
         ```javascript
         // Expand poetry slams
@@ -437,7 +437,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
             let poetrySlams = await next();
 
             // In this method we enrich the data from the database by external data and calculated fields
-            // In case none of these enriched fields are requested, we do not need to read from the external services
+            // If none of these enriched fields are requested, we do not need to read from the external services
             // So we first check if the requested columns contain any of the enriched columns and return if not
             const requestedColumns = req.query.SELECT.columns?.map((item) =>
                 Array.isArray(item.ref) ? item.ref[0] : item.as
@@ -556,7 +556,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 
 5. Add the system message to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant/srv/i18n/messages.properties).
 
-    > In the reference example, the [*/srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant/srv/i18n/messages_de.properties) file with the German texts is available, too. You can take them over accordingly.
+    > In the reference example, the [*/srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant/srv/i18n/messages_de.properties) file with the German texts is available too. You can take them over accordingly.
 
     ```javascript
     ACTION_CREATE_PROJECT_DRAFT                             = Projects cannot be created for draft Poetry Slams.
@@ -703,7 +703,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
     processingStatus        = Processing Status
     ```        
 
-    > In the reference example, the [*/srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/srv/i18n/i18n_de.properties) file with the German texts is available, too. You can take them over accordingly.
+    > In the reference example, the [*/srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/srv/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
 
 5. In the web app folder, edit language-dependent labels in the file [*app/poetryslams/i18n/i18n.properties*](../../../tree/main-multi-tenant/app/poetryslams/i18n/i18n.properties). Add a label for facet project data:
 
@@ -711,7 +711,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
     projectData             = Project Data
     ``` 
 
-    > In the reference example, the [*app/poetryslams/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/app/poetryslams/i18n/i18n_de.properties) file with the German texts is available, too. You can take them over accordingly.
+    > In the reference example, the [*app/poetryslams/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/app/poetryslams/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
 
 ### Test Locally
 
@@ -733,11 +733,11 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 5. Open the */poetryslams/webapp* web application and open one of the poetry slams. 
 
 6. Choose *Create Project in SAP S/4HANA Cloud*. The system creates a project in SAP S/4HANA Cloud Public Edition and displays the details in the *Project Details* section.
-    > Note: The link to the project won't work in a local application. To test the full integration including navigation to the SAP S/4HANA Cloud system, you will have to test with the deployed application.
+    > Note: The link to the project won't work in a local application. To test the full integration, including navigation to the SAP S/4HANA Cloud system, you will have to test with the deployed application.
 
 7. Test the *Service Endpoints* for *PoetrySlams* and note down the ID of the poetry slam for which you created the SAP S/4HANA Cloud Public Edition project in step 2 as **poetry-slam-ID**.
 
-8. Append `(ID={{poetry-slam-ID}},IsActiveEntity=true)` to the service endpoint URL, replace the place holder *{{poetry-slam-ID}}* by the **poetry-slam-ID**, and run again.
+8. Append `(ID={{poetry-slam-ID}},IsActiveEntity=true)` to the service endpoint URL, replace the place holder *{{poetry-slam-ID}}* with the **poetry-slam-ID**, and run it again.
 
 9. The system returns the record with the project ID and the SAP S/4HANA Cloud Public Edition project details as sub-node.
 

@@ -93,7 +93,7 @@ Let's assume a typical data volume of two poetry slams per week (or 125 slams pe
  - 750,000 visitors and artists
  - 1,500,000 bookings
 
-> Note: The required quantities of most services are calculated on basis of memory, storage or usage counts. The SAP HANA Cloud database bases on capacity units (CU), which considers several factors like memory, CPUs and storage. You can use the [SAP HANA Cloud Capacity Unit Estimator](https://hcsizingestimator.cfapps.eu10.hana.ondemand.com/) to calculate the required capacity units.
+> Note: The required quantities of most services are calculated on the basis of memory, storage or usage counts. The SAP HANA Cloud database is based on capacity units (CU), which consider several factors like memory, CPUs and storage. You can use the [SAP HANA Cloud Capacity Unit Estimator](https://hcsizingestimator.cfapps.eu10.hana.ondemand.com/) to calculate the capacity units required.
 
 The table below shows how the required quantities scale with typical numbers of customers. The scaling is less than linear. This means the costs per customer decrease significantly the more customers you serve with the multi-tenant application.
 
@@ -108,4 +108,4 @@ The table below shows how the required quantities scale with typical numbers of 
 
 # Information on Versions and What's New
 
-The SAP Help page ["What's New for SAP Business Technology Platform"](https://help.sap.com/whats-new/cf0cb2cb149647329b5d02aa96303f56?clear=all&locale=en-US) allows to subscribe for updates. 
+The SAP Help page ["What's New for SAP Business Technology Platform"](https://help.sap.com/whats-new/cf0cb2cb149647329b5d02aa96303f56?clear=all&locale=en-US) allows you to subscribe for updates. 

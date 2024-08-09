@@ -65,8 +65,8 @@ Therefore, you need to ensure that the same e-mail addresses are entered for use
     10. Go to the *My System* sheet and choose *SP Metadata* to download the **SAP Business ByDesign Service provider SAML metadata file**.
 2. Configure the Identity Authentication service.
     1. On the Identity Authentication service admin UI, open the *Applications* menu item and create a new application of type *SAP BTP Solution*.
-    2. Enter the required information such as application display name, home URL, and so on. 
-        > Note: The display name appears on the user log-in screen and the login applies to all applications linked to the Identity Authentication service tenant (following the single sign-on principle). Choose a meaningful display name from an end-user perspective representing the scope of the Identity Authentication service, for example, `Almika Inc. - User login` or `Almika Inc. - SAP Business ByDesign user authentication`. As home URL, you may use the SAP Business ByDesign access URL for single sign-on, for example, `https://myXXXXXX-sso.sapbydesign.com`.
+    2. Enter the required information, such as application display name, home URL, and so on. 
+        > Note: The display name appears on the user log-in screen and the login applies to all applications linked to the Identity Authentication service tenant (following the single sign-on principle). Choose a meaningful display name from an end-user perspective, representing the scope of the Identity Authentication service, for example, `Almika Inc. - User login` or `Almika Inc. - SAP Business ByDesign user authentication`. For the home URL, you may use the SAP Business ByDesign access URL for single sign-on, for example, `https://myXXXXXX-sso.sapbydesign.com`.
     3. Open the *SAML 2.0 Configuration* section and upload the **SAP Business ByDesign Service provider SAML metadata file** that you downloaded from SAP Business ByDesign.
     4. Open the *Subject Name identifier* section and select *E-Mail* as basic attribute.
     5. Open the *Default Name ID Format* section and select *E-Mail*.
@@ -180,7 +180,7 @@ At runtime, you dynamically assemble the parameterized URL to launch the SAP Bus
 
 As a last step, Poetry Slams and Visitors and SAP BTP admin applications are added to the SAP Business ByDesign launchpad to make it possible for both poetry slam managers and system administrators to launch all relevant applications from a single launchpad.
 
-1. To create mashup, go to SAP Business ByDesign and open the *Application and User Management - Mashup Authoring* work center view.
+1. To create a mashup, go to SAP Business ByDesign and open the *Application and User Management - Mashup Authoring* work center view.
 
 2. Create and activate a new URL mashup for the *Poetry Slam Manager - Poetry Slams* application with the following data:
 
@@ -188,7 +188,7 @@ As a last step, Poetry Slams and Visitors and SAP BTP admin applications are add
     - *Mashup Category*: Select *Application Integration*.
     - *Mashup Name*: ``Poetry Slams``
     - *Description*: ``Manage poetry slams``
-    - *URL*: Enter the **SAP BTP Application Poetry Slams Tenant URL**, you noted down in a previous step.
+    - *URL*: Enter the **SAP BTP Application Poetry Slams Tenant URL** you noted down in a previous step.
     - *HTTP Method*: Select *Get*.
 
     For more information on mashup creation in SAP Business ByDesign, go to the [SAP help](https://help.sap.com/docs/SAP_BUSINESS_BYDESIGN/2754875d2d2a403f95e58a41a9c7d6de/2be269a4722d1014a96d9a0ba09c255a.html).
@@ -214,7 +214,7 @@ As a last step, Poetry Slams and Visitors and SAP BTP admin applications are add
 5. Add the SAP BTP applications to the SAP Business ByDesign launchpad in SAP Business ByDesign
     1. Open the *Home - My Launchpad* work center view.
     2. Go to the *Me Area* in the top shell bar and select *Start Personalization Mode*.
-    3. Choose the launchpad group that fits your use case best (or create a new group), choose the *+* tile.
+    3. Choose the launchpad group that fits your use case best (or create a new group), then choose the *+* tile.
     4. Pin the tiles referring to the mashups created above from the *Mashup* gallery to the launchpad. 
     4. Save your changes and leave the personalization mode.
 
@@ -222,7 +222,7 @@ As a last step, Poetry Slams and Visitors and SAP BTP admin applications are add
 
     1. Open a poetry slam that is *published* or *fully booked* and create a project in SAP Business ByDesign. 
         
-    2. Check that the navigation to the project in SAP Business ByDesign works.
+    2. Check that the navigation to the project in SAP Business ByDesign functions properly.
 
 
 <img src="./images/3x_byd_launchpad.png" width="80%">

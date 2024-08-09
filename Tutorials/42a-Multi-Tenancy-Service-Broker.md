@@ -1,6 +1,6 @@
 # Enable API Access to SAP BTP Applications Using Service Broker
 
-In the multi-tenant setup, the OData services that the UI is based on are not directly accessible. To enable access to application OData services, you make use of a service broker using tenant-specific credentials. It issues OAuth2 client credentials that are specific to the application tenant and APIs that ensure tenant isolation. The OAuth2 client credentials can be used for inbound API integration scenarios, enabling integration between your SAP BTP application and third-party applications as well as SAP Build solutions.
+In the multi-tenant setup, the OData services that the UI is based on are not directly accessible. To enable access to application OData services, you make use of a service broker using tenant-specific credentials. It issues OAuth2 client credentials that are specific to the application tenant and APIs that ensure tenant isolation. The OAuth2 client credentials can be used for inbound API integration scenarios, enabling integration between your SAP BTP application and third-party applications, as well as with SAP Build solutions.
 
 > Note: Service broker is an implementation of the Open Service Broker API.
 
@@ -117,7 +117,7 @@ If you want to have different access authorizations for APIs, such as full acces
      - A service instance with parameter _service: auditlog_ is required in the resources section of the project deployment descriptor file [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml)
      - The service instance needs to be referenced in the _requires_ section of the service broker module (see sample configuration in step 11)
 
-9. Generate a secure broker password (nothing to do here).
+9. Generate a secure broker password (there is nothing to do here).
    - Later, you create instances of the service broker service per consumer tenant. To do so, you need to authenticate the consumer instance against the provider instance with credentials that you define in the provider.
    - You can execute the command `npx hash-broker-password -b` to generate a random password hash, which you can use as specified credentials. However, this would mean that the credentials are stored in the *mta.yaml* in the next step. Instead, use the credentials that are automatically generated during deployment.
 
@@ -173,7 +173,7 @@ If you want to have different access authorizations for APIs, such as full acces
 
 11. To test with named users, you need an authorization code. For this code, you will need a `callback url`. 
 
-In the tests provided in the next chapter, `http://localhost` will be used as `callback url`. You must declare this to the authorization service to ensure that this service accepts corresponding authorization request. For this purpose, add the `callback url` to the resource `poetry-slams-auth` in the [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml) file.
+In the tests provided in the next chapter, `http://localhost` will be used as a `callback url`. You must declare this to the authorization service to ensure that this service accepts the corresponding authorization request. For this purpose, add the `callback url` to the resource `poetry-slams-auth` in the [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml) file.
 
     Here is the corresponding addition:
   

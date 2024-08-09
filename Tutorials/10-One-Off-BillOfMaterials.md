@@ -1,5 +1,5 @@
 # Bill of Materials
-In the one-off version of Poetry Slam Manager, the Partner Reference Application uses two subaccounts and several entitlements. One subaccount is recommended for the development of the application and one to run the application for a customer. Find an overview in the section below.
+In the one-off version of Poetry Slam Manager, the Partner Reference Application uses two subaccounts and several entitlements. One subaccount is recommended for the development of the application and the other to run the application for a customer. Find an overview in the section below.
 
 ## Subaccounts
 The example setup serves one consumer.

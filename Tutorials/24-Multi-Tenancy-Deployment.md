@@ -30,7 +30,7 @@ In this example, you use the default domain provided by SAP and use the SAP Cust
 #### Procedure 
 1. Create entitlement to the SAP Custom Domain service:
     1. If you haven't created an entitlement yet, create one for Custom Domain Manager in the SAP BTP Control Center (Custom Domain Service | custom-domain-manager).
-    2. Select *Custom Domain service* as application, select *Standard* as a plan.
+    2. Select *Custom Domain service* as the application, and *Standard* as a plan.
     
 2. Create an instance of SAP Custom Domain service in the provider SAP BTP subaccount:
     1. If not yet done, in the provider SAP BTP subaccount, navigate to *Entitlements*. Press *Edit*, press *Add Service Plans* and select *Custom Domain Service* with plan *Standard (Application)*. Add the service plan and save your changes.

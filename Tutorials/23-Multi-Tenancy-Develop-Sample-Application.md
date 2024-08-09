@@ -15,13 +15,13 @@ To fast-forward:
 
 ## Option 2: Develop the Multi-Tenant Application
 
-In this approach, you keep the core of your single-tenant application (as contained in the branch [*main-single-tenant*](../../../tree/main-single-tenant)) and add changes to enable the deployment as a multi-tenant application (as contained in the branch [*main-multi-tenant*](../../../tree/main-multi-tenant)). You can easily compare both branches using [GitHub comparison](https://github.tools.sap/erp4sme/partner-reference-application/compare/main-single-tenant..main-multi-tenant). 
+In this approach, you keep the core of your single-tenant application (as contained in the branch [*main-single-tenant*](../../../tree/main-single-tenant)) and add changes to enable deployment as a multi-tenant application (as contained in the branch [*main-multi-tenant*](../../../tree/main-multi-tenant)). You can easily compare both branches using [GitHub comparison](https://github.tools.sap/erp4sme/partner-reference-application/compare/main-single-tenant..main-multi-tenant). 
 
 > Note: The comparison contains both the multi-tenant enablement and the enhancement for the integration with different ERP back ends.
 
 Therefore, clone the Partner Reference Application and switch to the branch *main-single-tenant* in the SAP Business Application Studio of your development account. 
 
-Follow the steps described in this section to enhance your application. Additionally, find detailed information at
+Follow the steps described in this section to enhance your application. Additionally, find detailed information in
 - the [CAP Multitenancy Documentation](https://cap.cloud.sap/docs/guides/multitenancy/)
 - the [SAP BTP Implemented Application Router Documentation](https://help.sap.com/docs/btp/sap-business-technology-platform/application-router).
 
@@ -33,7 +33,7 @@ cds add multitenancy,approuter --for production
 
 This creates the following:
  - *mtx* folder with subfolder *sidecar*, containing a [*package.json*](../../../tree/main-multi-tenant/mtx/sidecar/package.json).
- - *router* folder within the already existing *app* folder.
+ - *router* folder within the preexisting *app* folder.
  - [*package.json*](../../../tree/main-multi-tenant/app/router/package.json) within the newly created *router* folder.
    > Note: from the originally created file you can remove the field „engines“. It sets the node version. This is not required since the available node version during runtime is defined by SAP Cloud Foundry and is updated automatically and reqularly.
  - [*xs-app.json*](../../../tree/main-multi-tenant/app/router/xs-app.json) within the newly created *router* folder.
@@ -64,7 +64,7 @@ Now, follow the next steps to make further required changes:
                   - name: poetry-slams-destination-service
               ```
 
-        2. Change the `SUBSCRIPTION_URL` delimiter (-) to (.), which allows you to use generic routes for all tenants:
+        2. Change the `SUBSCRIPTION_URL` delimiter from (-) to (.), which allows you to use generic routes for all tenants:
 
             ```yaml
               requires:
@@ -116,7 +116,7 @@ Now, follow the next steps to make further required changes:
                     redirect-uris: ${protocol}://*.${default-uri}/** # Redirect URI to connect modules running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
             ```
 
-    6. In the `poetry-slams-destination-service` resource, you can remove all settings that are handled by the application router in the multi-tenant application. Those were only needed for the single-tenant implementation with managed application router using SAP Build Work Zone. Therefore, replace the service with the following definition. 
+    6. In the `poetry-slams-destination-service` resource, you can remove all the settings that are handled by the application router in the multi-tenant application. Those were only needed for the single-tenant implementation with a managed application router using SAP Build Work Zone. Therefore, replace the service with the following definition. 
           ```yaml
             - name: poetry-slams-destination-service
               type: org.cloudfoundry.managed-service
@@ -177,7 +177,7 @@ Now, follow the next steps to make further required changes:
               service-plan: app-runtime
         ```
 
-  2. Go to the app router config file, which is located in the *app/router* folder ([*xs-app.json*](../../../tree/main-multi-tenant/app/router/xs-app.json)) and route the app router to the `poetryslams` application as default. This will forward requests to the app router directly to the *Poetry Slams* application. Ensure that the file is as follows:
+  2. Go to the app router config file, which is located in the *app/router* folder ([*xs-app.json*](../../../tree/main-multi-tenant/app/router/xs-app.json)) and route the app router to the `poetryslams` application as the default. This will forward requests to the app router directly to the *Poetry Slams* application. Ensure that the file is as follows:
 
         ```json
         {
@@ -220,7 +220,7 @@ Now, follow the next steps to make further required changes:
 
         ```
 
-  4. Go to the *index.html* file located in */app/poetryslams/webapp/* folder. In the project, an implemented app router is used to serve the web page now instead of the managed app router provided by SAP Build Work Zone, so the file needs to be reverted back to the originally generated HTML file. Besides this, the style information is put into a separate file ([*initAppStyle.css*](../../../tree/main-multi-tenant/app/poetryslams/webapp/util/initAppStyle.css)) to avoid inline style definitions. 
+  4. Go to the *index.html* file located in the */app/poetryslams/webapp/* folder. In the project, an implemented app router is used to serve the web page now instead of the managed app router provided by the SAP Build Work Zone, so the file needs to be reverted back to the originally generated HTML file. Also, the style information is put into a separate file ([*initAppStyle.css*](../../../tree/main-multi-tenant/app/poetryslams/webapp/util/initAppStyle.css)) to avoid inline style definitions. 
 
       1. Copy the file [*initAppStyle.css*](../../../tree/main-multi-tenant/app/poetryslams/webapp/util/initAppStyle.css) into the folder */app/poetryslams/webapp/util/* of your project.
       2. Delete the files *setContent.js* and *setShellConfig.js* in the folder */app/poetryslams/webapp/util/*. They were only needed in the one-off deployment with SAP Build Work Zone.
@@ -262,7 +262,7 @@ Now, follow the next steps to make further required changes:
             </html>
           ```
 
-  5. Repeat the steps 3 and 4 for the *Visitors* application.
+  5. Repeat steps 3 and 4 for the *Visitors* application.
 
   6. In the root [*package.json*](../../../tree/main-multi-tenant/package.json): With the multitenancy feature, the predefined *with-mtx-sidecar* profile values are added. Unit tests that are dependent on the in-memory SQLite database for development testing are affected by this profile. Add the following section to the [*package.json*](../../../tree/main-multi-tenant/package.json) to ensure that Mocha testing works:
         ```json
@@ -297,4 +297,4 @@ Now, follow the next steps to make further required changes:
         ```
 
 
-Now, your project is consistent with the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch. You can [deploy the multi-tenant application to the provider SAP BTP account](./24-Multi-Tenancy-Deployment.md).
+Your project is now consistent with the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch. You can [deploy the multi-tenant application to the provider SAP BTP account](./24-Multi-Tenancy-Deployment.md).
