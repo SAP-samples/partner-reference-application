@@ -9,6 +9,7 @@ const fs = require('fs');
 const path = require('path');
 
 const poetrySlamsHandler = require('./poetrySlamServicePoetrySlamsImplementation');
+const outputHandler = require('./poetrySlamServiceOutputImplementation');
 const visitsHandler = require('./poetrySlamServiceVisitsImplementation');
 
 module.exports = cds.service.impl(async (srv) => {
@@ -16,6 +17,7 @@ module.exports = cds.service.impl(async (srv) => {
   poetrySlamsHandler(srv); // Forward handler to the Poetry Slam entity
   visitsHandler(srv); // Forward handler to the Visits entity
   erpForwardHandler(srv); // Forward handler to the ERP systems
+  outputHandler(srv); // Forward handler for output
 
   // ----------------------------------------------------------------------------
   // Implementation of oData function

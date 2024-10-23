@@ -17,8 +17,14 @@
     "profile": "mtx-sidecar",
     "requires": {
       "auth": "xsuaa",
+      "audit-log": true,
       "destinations": true,
-      "html5-repo": true
+      "html5-repo": true,
+      "poetry-slams-print-service": {
+        "subscriptionDependency": {
+          "uaa": "xsappname"
+        }
+      }
     }
   }
 }

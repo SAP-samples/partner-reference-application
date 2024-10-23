@@ -414,6 +414,13 @@ annotate service.PoetrySlams with @(
           {$Path: 'createB1PurchaseOrderEnabled'},
           {$Path: 'IsActiveEntity'}
         ]}}}
+      },
+      // Print the guest list
+      {
+        $Type        : 'UI.DataFieldForAction',
+        Action       : 'PoetrySlamService.printGuestList',
+        Label        : '{i18n>printGuestList}',
+        ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
       }
     ],
     // Definition of fields shown on the list page / table
@@ -568,7 +575,12 @@ annotate service.Visits with @(
         $Type : 'UI.DataFieldForAction',
         Action: 'PoetrySlamService.confirmVisit',
         Label : '{i18n>confirmVisit}'
-      }
+      },
+      {
+        $Type : 'UI.DataFieldForAction',
+        Action: 'PoetrySlamService.sendEMail',
+        Label : '{i18n>sendEMail}',
+      },
     ],
     Facets                        : [
       {

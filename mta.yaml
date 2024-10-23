@@ -33,7 +33,10 @@ modules:
       - name: poetry-slams-auditlog
       - name: poetry-slams-cloud-logging
       - name: poetry-slams-db
+      - name: poetry-slams-html5-runtime
+      - name: poetry-slams-adsrestapi
       - name: poetry-slams-destination-service
+      - name: poetry-slams-print-service
     provides:
       - name: srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
@@ -57,6 +60,8 @@ modules:
         - npm install
         - npm run build:cf
       supported-platforms: []
+    requires:
+      - name: poetry-slams-auth
 
   - name: visitors
     type: html5
@@ -107,10 +112,13 @@ modules:
     requires:
       - name: poetry-slams-db
       - name: poetry-slams-auth
+      - name: poetry-slams-auditlog
       - name: poetry-slams-cloud-logging
       - name: poetry-slams-registry
       - name: poetry-slams-destination-service
       - name: poetry-slams-html5-runtime
+      - name: poetry-slams-print-service
+      - name: poetry-slams-adsrestapi
       - name: app-api
         properties:
           SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}.~{app-uri}
@@ -148,9 +156,7 @@ modules:
           name: mtx-api # must be used in xs-app.json as well
           url: ~{mtx-url}
       - name: poetry-slams-auth
-      - name: poetry-slams-auditlog
       - name: poetry-slams-cloud-logging
-      - name: poetry-slams-registry
       - name: poetry-slams-html5-runtime
       - name: poetry-slams-destination-service
     provides:
@@ -279,7 +285,7 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: auditlog
-      service-plan: premium 
+      service-plan: premium
 
   # Cloud Logging Service
   - name: poetry-slams-cloud-logging
@@ -292,3 +298,17 @@ resources:
           enabled: true
         backend:
           api_enabled: true
+
+  # Print Service
+  - name: poetry-slams-print-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: print
+      service-plan: sender
+
+  # Adobe Forms REST API Service
+  - name: poetry-slams-adsrestapi
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: adsrestapi
+      service-plan: standard

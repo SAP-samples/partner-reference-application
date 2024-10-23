@@ -1,4 +1,4 @@
-sap.ui.define(['sap/ui/core/library'], function () {
+sap.ui.define([], function () {
   'use strict';
   return {
     /**
@@ -50,6 +50,15 @@ sap.ui.define(['sap/ui/core/library'], function () {
         console.error('Invalid URL:', error.message);
         return null;
       }
+    },
+    createGuestList: function (oBindingContext) {
+      const poetrySlamID = oBindingContext.getObject().ID;
+      const oModel = this._controller.getView().getModel();
+      // Redirect to guest list creation endpoint
+      sap.m.URLHelper.redirect(
+        oModel.sServiceUrl + `PDFDocument(${poetrySlamID})/content`,
+        true
+      );
     }
   };
 });

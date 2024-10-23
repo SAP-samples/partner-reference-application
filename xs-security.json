@@ -47,6 +47,5 @@
       "role-template-references": ["$XSAPPNAME.PoetrySlamVisitorRole"]
     }
   ],
-  "authorities-inheritance": false,
-  "authorities": ["$XSAPPNAME.mtdeployment"]
+  "authorities-inheritance": false
 }
