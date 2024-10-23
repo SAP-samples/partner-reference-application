@@ -10,21 +10,24 @@ const sinon = require('sinon');
 const { expect } = cds.test(__dirname + '/../../../..');
 
 describe('Destination', () => {
+  let stubErrorLog;
   let stubLog;
 
   beforeEach(() => {
+    stubErrorLog = sinon.stub(console, 'error');
     stubLog = sinon.stub(console, 'log');
   });
 
   afterEach(() => {
+    stubErrorLog.restore();
     stubLog.restore();
   });
 
-  it('should return the URL of the destination object', async () => {
+  it('should fail if service binding for destination service is missing', async () => {
     await destination.readDestination(null, 'testDestination');
 
     sinon.assert.calledWith(
-      stubLog,
+      stubErrorLog,
       "GET_DESTINATION; TypeError: Cannot read properties of null (reading 'headers')"
     );
   });

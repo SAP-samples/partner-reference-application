@@ -34,7 +34,6 @@ modules:
       - name: poetry-slams-cloud-logging
       - name: poetry-slams-db
       - name: poetry-slams-destination-service
-      - name: poetry-slams-html5-runtime
     provides:
       - name: srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
@@ -111,6 +110,7 @@ modules:
       - name: poetry-slams-cloud-logging
       - name: poetry-slams-registry
       - name: poetry-slams-destination-service
+      - name: poetry-slams-html5-runtime
       - name: app-api
         properties:
           SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}.~{app-uri}
@@ -123,7 +123,6 @@ modules:
     parameters:
       keep-existing-routes: true
       routes:
-        - route: approuter-${default-uri} # used for getDependencies
         - route: '*.${default-uri}' # generic route for all subscriptions
       disk-quota: 256M
       memory: 256M
@@ -159,7 +158,6 @@ modules:
         properties:
           app-protocol: ${protocol}
           app-uri: ${default-uri}
-          app-url: ${protocol}://approuter-${default-uri} # used for getDependencies
           redirect-uris: ${protocol}://*.${default-uri}/** # Redirect URI to connect modules running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
 
   # The service broker for the poetry slam manager
@@ -243,7 +241,6 @@ resources:
     type: org.cloudfoundry.managed-service
     requires:
       - name: mtx-api
-      - name: app-api
     parameters:
       service: saas-registry
       service-plan: application
@@ -254,7 +251,7 @@ resources:
         description: Manage poetry slam events and bookings of artists and visitors.
         category: 'Applications / Multi-Customer Partner Solutions'
         appUrls:
-          getDependencies: ~{app-api/app-url}/-/cds/saas-provisioning/dependencies
+          getDependencies: ~{mtx-api/mtx-url}/-/cds/saas-provisioning/dependencies
           onSubscription: ~{mtx-api/mtx-url}/-/cds/saas-provisioning/tenant/{tenantId}
           onSubscriptionAsync: true
           onUnSubscriptionAsync: true

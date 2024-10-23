@@ -460,7 +460,12 @@ annotate service.PoetrySlams with @(
         $Type: 'UI.DataFieldWithUrl',
         Value: purchaseOrderID,
         Url  : purchaseOrderURL
-      }
+      },
+      {
+        $Type : 'UI.DataFieldForAction',
+        Action: 'PoetrySlamService.EntityContainer/createTestData',
+        Label : '{i18n>generateSampleData}',
+      },
     ],
     // Default filters on the list page
     SelectionFields               : [

@@ -1,5 +1,4 @@
 {
-  "tenant-mode": "shared",
   "scopes": [
     {
       "name": "$XSAPPNAME.PoetrySlamFull",
@@ -16,17 +15,6 @@
     {
       "name": "$XSAPPNAME.mtcallback",
       "description": "Subscription via SaaS Registry",
-      "grant-as-authority-to-apps": [
-        "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
-      ]
-    },
-    {
-      "name": "$XSAPPNAME.mtdeployment",
-      "description": "Scope to trigger a re-deployment of the database artifacts"
-    },
-    {
-      "name": "$XSAPPNAME.Callback",
-      "description": "Multi Tenancy Callback Access (approuter)",
       "grant-as-authority-to-apps": [
         "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
       ]

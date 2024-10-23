@@ -1,0 +1,74 @@
+{
+  "visits": [
+    {
+      "ID": "79ceab87-300d-4b66-8cc3-f82c679b77e1",
+      "parent_ID": "79ceab87-300d-4b66-8cc3-f82c679b77a1",
+      "visitor_ID": "79ceab87-300d-4b66-8cc3-182c679b7c01",
+      "artistIndicator": true,
+      "status_code": 1
+    },
+    {
+      "ID": "79ceab87-300d-4b66-8cc3-f82c679b77e2",
+      "parent_ID": "79ceab87-300d-4b66-8cc3-f82c679b77a2",
+      "visitor_ID": "79ceab87-300d-4b66-8cc3-182c679b7c01",
+      "artistIndicator": false,
+      "status_code": 1
+    },
+    {
+      "ID": "79ceab87-300d-4b66-8cc3-f82c679b77e3",
+      "parent_ID": "79ceab87-300d-4b66-8cc3-f82c679b77a2",
+      "visitor_ID": "79ceab87-300d-4b66-8cc3-182c679b7c02",
+      "artistIndicator": true,
+      "status_code": 1
+    },
+    {
+      "ID": "79ceab87-300d-4b66-8cc3-f82c679b77e4",
+      "parent_ID": "79ceab87-300d-4b66-8cc3-f82c679b77a4",
+      "visitor_ID": "79ceab87-300d-4b66-8cc3-182c679b7c03",
+      "artistIndicator": false,
+      "status_code": 1
+    },
+    {
+      "ID": "79ceab87-300d-4b66-8cc3-f82c679b77e5",
+      "parent_ID": "79ceab87-300d-4b66-8cc3-f82c679b77a1",
+      "visitor_ID": "79ceab87-300d-4b66-8cc3-182c679b7c03",
+      "artistIndicator": true,
+      "status_code": 1
+    },
+    {
+      "ID": "79ceab87-300d-4b66-8cc3-f82c679b77e6",
+      "parent_ID": "79ceab87-300d-4b66-8cc3-f82c679b77a4",
+      "visitor_ID": "79ceab87-300d-4b66-8cc3-182c679b7c04",
+      "artistIndicator": false,
+      "status_code": 2
+    },
+    {
+      "ID": "79ceab87-300d-4b66-8cc3-f82c679b77e7",
+      "parent_ID": "79ceab87-300d-4b66-8cc3-f82c679b77a4",
+      "visitor_ID": "79ceab87-300d-4b66-8cc3-182c679b7c05",
+      "artistIndicator": false,
+      "status_code": 2
+    },
+    {
+      "ID": "79ceab87-300d-4b66-8cc3-f82c679b77e8",
+      "parent_ID": "79ceab87-300d-4b66-8cc3-f82c679b77a7",
+      "visitor_ID": "79ceab87-300d-4b66-8cc3-182c679b7c05",
+      "artistIndicator": false,
+      "status_code": 1
+    },
+    {
+      "ID": "79ceab87-300d-4b66-8cc3-f82c679b77e9",
+      "parent_ID": "79ceab87-300d-4b66-8cc3-f82c679b77a7",
+      "visitor_ID": "79ceab87-300d-4b66-8cc3-182c679b7c04",
+      "artistIndicator": true,
+      "status_code": 1
+    },
+    {
+      "ID": "79ceab87-300d-4b66-8cc3-f82c679b77e0",
+      "parent_ID": "79ceab87-300d-4b66-8cc3-f82c679b77a7",
+      "visitor_ID": "79ceab87-300d-4b66-8cc3-182c679b7c03",
+      "artistIndicator": false,
+      "status_code": 1
+    }
+  ]
+}

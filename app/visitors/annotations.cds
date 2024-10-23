@@ -28,8 +28,9 @@ annotate service.Visitors with @(
           Value: name
         },
         {
-          $Type: 'UI.DataField',
-          Value: email
+          $Type                  : 'UI.DataField',
+          Value                  : email,
+          ![@Common.FieldControl]: #Mandatory,
         },
       ],
     },
