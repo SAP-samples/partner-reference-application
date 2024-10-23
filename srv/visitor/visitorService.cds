@@ -1,5 +1,4 @@
 using {sap.samples.poetryslams as poetrySlamManagerModel} from '../../db/poetrySlamManagerModel';
-using sap from '@sap/cds/common';
 
 //Service for Visitors Application for role PoetrySlamManager
 service VisitorService @(path: 'visitorservice') {
@@ -8,34 +7,33 @@ service VisitorService @(path: 'visitorservice') {
   // Entity inclusions
 
 
-  // Visitors
+  // Select all fields of the Visitors database model
   @odata.draft.enabled
   @Common.SemanticObject: 'visitors'
   @Common.SemanticKey   : [ID]
   entity Visitors    as
-                       // Selects all fields of the Visitors database model
-                         projection on poetrySlamManagerModel.Visitors {
-    *
-  };
+    projection on poetrySlamManagerModel.Visitors {
+      *
+    };
 
+  // Select all fields of the Visits database model with status 'booked'
   @readonly
   @Common.SemanticObject: 'visits'
   @Common.SemanticKey   : [ID]
   entity Visits      as
-                       // Only select visits with status booked
-                         select * from poetrySlamManagerModel.Visits
-  where
-    status.code = 1;
+    select * from poetrySlamManagerModel.Visits
+    where
+      status.code = 1;
 
+  // Select specific fields of the PoetrySlams database model
   @readonly
   @Common.SemanticObject: 'poetryslams'
   @Common.SemanticKey   : [ID]
   entity PoetrySlams as
-                       // Selects specific fields of the PoetrySlams database model
-                         select from poetrySlamManagerModel.PoetrySlams {
-    ID,
-    title,
-    dateTime
-  };
+    select from poetrySlamManagerModel.PoetrySlams {
+      ID,
+      title,
+      dateTime
+    };
 
 }

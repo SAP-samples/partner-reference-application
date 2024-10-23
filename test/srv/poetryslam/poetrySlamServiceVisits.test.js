@@ -35,7 +35,7 @@ describe('Visits in PoetrySlamService', () => {
   let visits;
 
   before(async () => {
-    await test.data.reset();
+    await GET(`/odata/v4/poetryslamservice/createTestData`);
 
     // Read all poetry slams for usage in the tests
     visits = await GET(`/odata/v4/poetryslamservice/Visits`);
@@ -44,6 +44,7 @@ describe('Visits in PoetrySlamService', () => {
 
   beforeEach(async () => {
     await test.data.reset();
+    await GET(`/odata/v4/poetryslamservice/createTestData`);
   });
 
   it('should set the correct statusCriticality during read of visits', async () => {

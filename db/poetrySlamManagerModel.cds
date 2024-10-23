@@ -80,17 +80,17 @@ annotate PoetrySlams with @fiori.draft.enabled {
 }
 
 annotate Visits with {
-  ID               @title: '{i18n>uuid}'             @Core.Computed;
-  parent           @title: '{i18n>poetrySlamUUID}';
-  visitor          @title: '{i18n>visitorUUID}';
-  artistIndicator  @title: '{i18n>artistIndicator}'  @mandatory;
-  status           @title: '{i18n>status}'           @mandatory;
+  ID              @title: '{i18n>uuid}'         @Core.Computed;
+  parent          @title: '{i18n>poetrySlamUUID}';
+  visitor         @title: '{i18n>visitorUUID}'  @mandatory;
+  artistIndicator @title: '{i18n>artistIndicator}';
+  status          @title: '{i18n>status}';
 }
 
 annotate Visitors with {
   ID     @title: '{i18n>uuid}'   @Core.Computed;
   name   @title: '{i18n>name}'   @mandatory;
-  email  @title: '{i18n>email}'  @mandatory  @Communication.IsEmailAddress;
+  email  @title: '{i18n>email}'  @Communication.IsEmailAddress;
   visits @title: '{i18n>visits}';
 }
 
