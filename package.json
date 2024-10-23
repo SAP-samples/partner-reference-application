@@ -1,6 +1,6 @@
 {
   "name": "partner-reference-application",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "SAP Partner Reference Application Version 2.0",
   "repository": "github.com/sap-samples/partner-reference-application.git",
   "author": "SAP",
@@ -24,10 +24,11 @@
     "rimraf": "^6.0.1"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^1.7.3",
-    "@sap/ux-specification": "^1.120.15",
-    "axios": "^1.7.2",
-    "chai": "^4.4.1",
+    "@cap-js/sqlite": "^1.7.4",
+    "@sap/ux-specification": "^1.124.3",
+    "@sap/cds-dk": "^8.3.0",
+    "axios": "^1.7.7",
+    "chai": "^4.5.0",
     "chai-as-promised": "^7.1.2",
     "chai-subset": "^1.6.0",
     "mocha": "^10.6.0",

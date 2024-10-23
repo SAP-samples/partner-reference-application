@@ -1,6 +1,6 @@
 'strict';
 
-const cds = require('@sap/cds-dk/lib/cds');
+const cds = require('@sap/cds/lib');
 
 module.exports = class uniqueNumberGenerator {
   static async getNextNumber(sequenceName, dbKind, poetrySlamID) {
@@ -16,7 +16,7 @@ module.exports = class uniqueNumberGenerator {
         nextNumber = await cds.run(
           `SELECT "${sequenceName}".NEXTVAL AS NEXTNO FROM DUMMY`
         );
-        // retrun the result as string
+        // Return the result as string
         return nextNumber[0]['NEXTNO'].toString();
       case 'sqlite':
         // With sqlite db, Auto-increment is used.

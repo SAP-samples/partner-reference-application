@@ -15,13 +15,15 @@ const { expect, GET, POST, axios, test } = cds.test(__dirname + '/../../..');
 // ----------------------------------------------------------------------------
 
 describe('Authorizations of PoetrySlamService with User Denise (authenticated user only)', () => {
-  before(async () => {
+  beforeEach(async () => {
+    // Authorized user from .cdsrc.json with PoetrySlamManager role
+    axios.defaults.auth = { username: 'peter', password: 'welcome' };
+
+    await test.data.reset();
+    await GET(`/odata/v4/poetryslamservice/createTestData`);
+
     // Authentication for tests
     axios.defaults.auth = { username: 'denise', password: 'welcome' };
-  });
-
-  beforeEach(async () => {
-    await test.data.reset();
   });
 
   it('should reject the reading of the poetry slams', async () => {
@@ -98,13 +100,15 @@ describe('Authorizations of PoetrySlamService with User Denise (authenticated us
 // ----------------------------------------------------------------------------
 
 describe('Authorizations of PoetrySlamService with User Julie (role PoetrySlamVisitor)', () => {
-  before(async () => {
+  beforeEach(async () => {
+    // Authorized user from .cdsrc.json with PoetrySlamManager role
+    axios.defaults.auth = { username: 'peter', password: 'welcome' };
+
+    await test.data.reset();
+    await GET(`/odata/v4/poetryslamservice/createTestData`);
+
     // Authentication for tests
     axios.defaults.auth = { username: 'julie', password: 'welcome' };
-  });
-
-  beforeEach(async () => {
-    await test.data.reset();
   });
 
   it('should return data of poetry slams in status booked and published', async () => {
