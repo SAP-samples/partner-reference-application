@@ -5,17 +5,16 @@ const { getDestination, retrieveJwt } = require('@sap-cloud-sdk/connectivity');
 
 async function readDestination(req, destinationName) {
   try {
-    // Check if the destination exist using the SAP Cloud SDK reusable getDestination function:
-    // The JWT-token contains the subaccount information, such that the function works for single tenant as well as for multi-tenant apps:
-    // - Single tenant: Get destination from the subaccount that hosts the app.
-    // - Multi tenant: Get destination from subscriber subaccount.
+    // Check if the destination exists using the SAP Cloud SDK reusable getDestination function
+    // The incoming JWT-token contains the subaccount information to retrieve the destination for the correct tenant
+    const jwt = retrieveJwt(req) || retrieveJwt(cds.context.http?.req);
     return await getDestination({
       destinationName: destinationName,
-      jwt: retrieveJwt(req)
+      jwt: jwt
     });
   } catch (error) {
     // App reacts error tolerant if the destination cannot be retrieved
-    console.log(`GET_DESTINATION; ${error}`);
+    console.error(`GET_DESTINATION; ${error}`);
   }
   return null;
 }

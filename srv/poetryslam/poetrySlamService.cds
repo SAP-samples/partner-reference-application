@@ -173,6 +173,8 @@ service PoetrySlamService @(
   };
 
   function userInfo()       returns user;
+
+  @Common.SideEffects: {TargetEntities: ['/PoetrySlamService.EntityContainer/PoetrySlams']}
   action   createTestData() returns Boolean;
 }
 

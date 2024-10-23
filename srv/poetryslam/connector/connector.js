@@ -23,7 +23,7 @@ class Connector {
       const project = await cds.connect.to(remoteService);
       return await project.run(req.query);
     } catch (error) {
-      console.log(error);
+      console.error('Connector - delegateODataRequests:', error);
     }
   }
 
