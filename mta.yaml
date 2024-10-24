@@ -33,7 +33,6 @@ modules:
       - name: poetry-slams-auditlog
       - name: poetry-slams-cloud-logging
       - name: poetry-slams-db
-      - name: poetry-slams-html5-runtime
       - name: poetry-slams-adsrestapi
       - name: poetry-slams-destination-service
       - name: poetry-slams-print-service
