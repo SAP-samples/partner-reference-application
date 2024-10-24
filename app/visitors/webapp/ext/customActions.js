@@ -6,16 +6,15 @@ sap.ui.define(['sap/ui/core/library'], function () {
      * @param aSelectedContexts contains an array of binding contexts corresponding to selected items in case of table actions
      */
     navigatePoetrySlamList: function () {
-      let linkPoetrySlam = window.location.href.replace(
-        'visitors',
-        'poetryslams'
-      );
+      let linkPoetrySlam = window.location.href
+        .replace('/visitors/', '/poetryslams/')
+        .replace('visitors-', 'poetryslams-');
 
       // Locally the path to the app is different to the path in workzone or multi tenancy deployment
       const path = linkPoetrySlam.includes('&/Visitors')
         ? '&/Visitors'
         : '/Visitors';
-      window.location.href = linkPoetrySlam.split(path)[0];
+      window.location.href = encodeURI(linkPoetrySlam.split(path)[0]);
     }
   };
 });
