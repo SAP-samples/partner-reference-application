@@ -25,15 +25,18 @@ Let us take you on a guided tour through the integrated sample solution after th
     > Note: The partner application is embedded in the SAP Business ByDesign launchpad using the SAP Business ByDesign URL mash-up capabilities. Additionally, you can launch other SAP BTP applications relevant to key users and administrators such as the *Identity Authentication Service* to manage user authentications and authorizations.
     Launching these applications doesn't require any additional login because they are linked to your corporate IdP as you benefit from single sign-on.
 
-3. In the Poetry Slams application, you find multiple poetry slams: Some are still in preparation and have not yet been released while others are already published. 
+3. In the Poetry Slams application, an empty list is displayed.
 
-4. To go to the details of a poetry slam, choose one that is neither canceled nor in draft mode. 
+4. To create sample data for mutable data, such as poetry slams, visitors, and visits, click the button *Generate Sample Data* and refresh the list. As a result, multiple poetry slams are listed: Some are still in preparation and have not been released yet while others are already published. 
+    > Note: If you click the *Generate Sample Data* button again, the sample data is set to the default values.
 
-5. Choose *Create Project in SAP Business ByDesign*. As a result, the system creates a project in SAP Business ByDesign based on a project template.
+5. To view the details of a poetry slam, choose one that is neither canceled nor in draft mode. 
 
-    > Note: The application creates the project in SAP Business ByDesign using an SAP Business ByDesign OData service for projects with user propagation. This means your SAP Business ByDesign user authorizations apply in the partner application as well; you can only create a project if your user has write-authorizations for SAP Business ByDesign projects. 
+6. Choose *Create Project in SAP Business ByDesign*. As a result, the system creates a project in SAP Business ByDesign based on a project template.
 
-6. After creating the project, you see the project details in the *Project Data* section. The project ID is displayed as a link. To go to the project overview, click on the project ID.
+    > Note: The application creates the project in SAP Business ByDesign using an SAP Business ByDesign OData service for projects with user propagation. This means that your SAP Business ByDesign user authorizations apply in the partner application as well; you can only create a project if your user has write-authorizations for SAP Business ByDesign projects. 
+
+7. After creating the project, you can see the project details in the *Project Data* section. The project ID is displayed as a link. To go to the project overview, click the project ID.
 
     <img src="./images/31_byd_project_mixin.png" width="80%">
 

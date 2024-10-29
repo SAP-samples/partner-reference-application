@@ -4,7 +4,7 @@ In [Test and Troubleshoot](16-Test-Trace-Debug.md#check-application-logs), you c
 
 The [SAP Cloud Logging service](https://help.sap.com/docs/cloud-logging/cloud-logging/what-is-sap-cloud-logging?version=Cloud) provides the big picture of the behavior and health of your application, since it offers more features by collecting logs, traces, and metrics in a central place with a longer storage time. In this way, it helps you ensure and improve efficiency, scalability, resilience, and availability.
 
-Note that this service is not aimed at the users of the app, but at the app provider.
+> Note: This service is not intended for the users of the app, but rather the app provider.
 
 This tutorial describes how to connect the SAP Cloud Logging service to your SAP BTP application.
 

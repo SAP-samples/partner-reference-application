@@ -2,13 +2,13 @@
 
 When developing a productive application, quality assurance and the detection of issues are essential.
 
-To keep things simple, here's a high-level summary of what it's all about: 
-
 ## Manual Test
 
-You can manually test the application on your local machine. 
+You can manually test the application on your local machine:  
 
-Run the command `cds watch` on the command line interface. This will start a Node.js server including the web application. The server uses an SQLight database, which makes local testing easy. 
+1. Run the command `npm install` on the command line interface to install the node modules defined in *package.json*.
+2. [Optional] Only in the *main-multi-tenant-features* branch, run command `npm run prebuild`. This generates access classes to external APIs and is required to avoid syntax errors in the application and unit tests.
+3. Run the command `cds watch`. This will start a Node.js server including the web application. The server uses an SQLight database which makes local testing easy. 
 
 ## Automated Tests
 
@@ -40,9 +40,11 @@ it('should ensure the uniqueness of the combination of visitor ID and poetry sla
 
 #### Example of an HTTP API
 
-The HTTP API is used to test the Poetry Slam Manager service. There is one test file for each entity and a file to test the OData function of the service. Axios is used as HTTP client in the tests. The authorization is set to the user Peter.
+The HTTP API is used to test the Poetry Slam Manager service. There is one test file for each entity and a file to test the OData function of the service. Axios is used as HTTP client in the tests. The authorization is set to the user *Peter*.
 
-In the following example, all poetry slams are read via OData GET call in the *before* function. In the test, a published poetry slam is selected and the *Cancel* action is executed via OData. It checks if the status is correctly set to *Canceled*. Afterwards, the entry is read and the status code and statusCriticality are checked. You can find the tests in [poetrySlamServicePoetrySlams.test.js](../../../tree/main-single-tenant/test/srv/poetryslam/poetrySlamServicePoetrySlams.test.js).
+In the following example, in the *beforeEach* function, the [sample data is reset](https://cap.cloud.sap/docs/node.js/cds-test#test-data-reset) and newly created. Besides this, all poetry slams are read via OData GET call. In the test, a published poetry slam is selected and the *Cancel* action is executed via OData. It checks if the status is correctly set to *Canceled*. Afterwards, the entry is read and the status code and criticality are checked. You can find the tests in [poetrySlamServicePoetrySlams.test.js](../../../tree/main-single-tenant/test/srv/poetryslam/poetrySlamServicePoetrySlams.test.js).
+
+> Note: In the *beforeEach* function, the OData action *createTestData* is called. The action creates sample data for the entities *poetryslams*, *visitors* and *visits*. This is for demo purposes only.
 
 ```javascript
 
@@ -51,27 +53,20 @@ const ACTION = (url, name, parameters = {}) => POST (url+ `/PoetrySlamService.${
 axios.defaults.auth = { username: 'peter', password: 'welcome' };
 
 describe('Poetryslams in PoetrySlamService', () => {
-    let poetrySlams;
+  let poetrySlams;
 
-    before(async () => {
-      // Connect to the database of the current project
-      db = await cds.connect.to('db');
-      expect(db).to.exist;
+  beforeEach(async () => {
+    await test.data.reset();
+    await GET(`/odata/v4/poetryslamservice/createTestData`);
 
-      test.data.reset;
-
-      // Read all poetry slams for usage in the tests
-      poetrySlams = await GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
-        params: { $select: `ID,status_code,statusCriticality` }
-      });
-      expect(poetrySlams.data.value.length).to.greaterThan(0);
+    // Read all poetry slams for usage in the tests
+    poetrySlams = await GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
+      params: { $select: `ID,status_code,statusCriticality` }
     });
+    expect(poetrySlams.data.value.length).to.greaterThan(0);
+  });
 
-    beforeEach(async () => {
-      await test.data.reset();
-    });
-
-    it('changes the status of poetryslams during action cancel on published entities', async () => {
+  it('should change the status of poetry slams in action cancel on published entities', async () => {
       const id = poetrySlams.data.value.find(
         (poetrySlam) => poetrySlam.status_code === poetrySlamStatusCode.published
       ).ID;
@@ -98,14 +93,25 @@ describe('Poetryslams in PoetrySlamService', () => {
 
 To take over the unit tests and the configuration from the example implementation, take the following steps:
 
-1. Copy the [entity unit tests](../../../tree/main-single-tenant/test/db) into your project.
-2. Copy the [service unit tests](../../../tree/main-single-tenant/test/srv) into your project.
-3. Add the Mocha, Chai, and Axios devDependencies to your *package.json*. You can take them over from the [*package.json* of the example implementation](../../../tree/main-single-tenant/package.json). 
-4. Copy the script with the name *test* into your *package.json*. 
-5. Run the command `npm install`.
-6. Copy the Mocha configuration file [*.mocharc.json*](../../../tree/main-single-tenant/.mocharc.json) into your project.
+1. Copy the [entity unit tests](../../../tree/main-single-tenant/test/db) to your project.
+2. Copy the [service unit tests](../../../tree/main-single-tenant/test/srv) to your project.
+3. Add the Mocha, Chai, and Axios devDependencies to your *package.json*:
+  
+    1. Run command `npm add mocha -D`.
+    2. Run command `npm add chai -D`.
+    3. Run command `npm add chai-as-promised -D`.
+    4. Run command `npm add chai-subset -D`.
+  
+    > Note: You can compare this with the [*package.json* of the example implementation](../../../tree/main-single-tenant/package.json). 
 
-To run the automated SAP Cloud Application Programming Model tests, enter the command `npm run test` in a terminal in SAP Business Application Studio. All tests will be executed and the result will be shown afterwards.
+4. Copy the script with the name *test* to your *package.json*. 
+5. Copy the Mocha configuration file [*.mocharc.json*](../../../tree/main-single-tenant/.mocharc.json) to your project.
+
+To run the automated SAP Cloud Application Programming Model tests:
+
+1. Run the command `npm install` in a terminal in SAP Business Application Studio.
+2. [Optional] Only in *main-multi-tenant-features* branch, run command `npm run prebuild`. This generates access classes to external APIs and is required to avoid syntax errors in the application and unit tests.
+3. Enter the command `npm run test`. All tests will be executed and the result will be shown afterwards.
 
 ### One Page Acceptance (OPA5) Tests
 
@@ -129,7 +135,13 @@ The tests are located in the directories [*app/poetryslams/webapp/test*](../../.
   - [sap.fe.test](https://sapui5.hana.ondemand.com/#/api/sap.fe.test)
   - [sap.ui.test](https://sapui5.hana.ondemand.com/#/api/sap.ui.test)
 
-## Trace
+## Testing Your Application During Development
+
+When developing your application in SAP Business Application Studio, you can always start your application using `cds watch` or `cds serve` (refer to [Jumpstarting a CAP project](https://cap.cloud.sap/docs/get-started/in-a-nutshell#jumpstart)).
+
+> Note: In case you get the error "port 4004 already used" and you cannot close a previously started `cds watch` (because the corresponding terminal is already closed), you can stop this process using terminal commands. To achieve this, you can find the process using port 4004 with the command `netstat -nlp | grep 4004` in the terminal to find the process ID, and stop that process using `kill -2 <process id>`.
+
+### Trace
 
 Consider adding log statements to the service implementations, for example: 
 ```javascript
@@ -137,23 +149,23 @@ console.log("Poetry Slam " + PoetrySlamIdentifier +" is canceled");
 ```
 The log statements are written during the usage of your deployed application. Use the command `cf logs poetry-slams-srv --recent` in the SAP Business Application Studio terminal to review your own log messages or the ones created by others. You need to be logged in to your SAP BTP Cloud Foundry runtime space.
 
-## Debug
+### Debug
 
 You can debug locally with the standard Node.js debugging tools.
 See also the [SAP Cloud Application Programming Model documentation on debugging](https://cap.cloud.sap/docs/tools/#debugging-with-cds-watch).
 
-## Hybrid Testing
+### Hybrid Testing
 As described, your local environment will run with an SQLite database. If you want to connect your local test environment with an SAP HANA Cloud database to run your test against the same database technology as the deployed solution does, follow the instructions in this section.
 
 For general guidelines on how to connect your local test against services in the Cloud, refer to the [SAP Cloud Application Programming Model documentation on hybrid testing](https://cap.cloud.sap/docs/advanced/hybrid-testing).
 
-### Prerequisites
+#### Prerequisites
 When this project was created, the SAP HANA Cloud capability was included. As a result, the dependency @sap/cds_hana is listed in the file *package.json* and the
 file *[.hdiconfig](../../../tree/main-single-tenant/db/src/.hdiconfig)* has been added to the project.
 
 Now, you need to provide the credentials to connect to the SAP HANA Cloud database.
 
-### Step-By-Step Procedure
+#### Step-By-Step Procedure
 1. Log on to SAP BTP Cloud Foundry runtime and select the *org* and *space* of the instance where your application is deployed. 
 
 2. You need to create a service key for your SAP HANA HDI Container service instance and add the key information to your local development environment. This can be achieved by executing the CDS command in your terminal: `cds deploy --to hana:<HDI Container service instance name> --profile hybrid --store-credentials`.
@@ -188,7 +200,7 @@ Now, you need to provide the credentials to connect to the SAP HANA Cloud databa
 
 ## Troubleshoot Your Application
 
-There are a number of out-of-the-box tools that can be used to troubleshoot your application.
+There are a number of out-of-the-box tools that can be used to troubleshoot your application. Besides the options explained in the [CAP documentation on troubleshooting](https://cap.cloud.sap/docs/get-started/troubleshooting), a few general approaches are described below that can help identify where an issue originates from.
 
 ### Use Browser Development Tools
 

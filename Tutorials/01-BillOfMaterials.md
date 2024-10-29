@@ -43,11 +43,17 @@ The list shows the entitlements that are required in the different subaccounts t
 |               | SAP HTML5 Application Repository service for SAP BTP | app-runtime               | Service       | 1                                 | 
 |               | SAP Software-as-a-Service Provisioning service       | application               | Service       | 1                                 | 
 |               | SAP HANA Cloud                                       | hana-td                   | Service       | 1                                 | 
+|               | SAP HANA Cloud                                       | tools                     | Application   | 1                                 | 
 |               | SAP HANA Schemas & HDI Containers                    | hdi-shared                | Service       | 1                                 | 
 |               | SAP Service Manager service                          | container                 | Service       | 1                                 | 
 |               | SAP Cloud Logging service                            | standard                  | Service       | 1                                 | 
+|               | SAP Forms service by Adobe                           | default (Application)     | Application   | 1                                 | 
+|               | SAP Forms service by Adobe API                       | standard                  | Service       | 1                                 | 
+|               | SAP Print service                                    | standard                  | Service       | 1                                 | 
 | Consumer      |                                                      |                           |               |                                   |
 |               | SAP Audit Log Viewer service for SAP BTP             | default                   | Application   | 1                                 |
+|               | SAP Print service                                    | standard                  | Application   | 1                                 | 
+|               | SAP Print service                                    | receiver                  | Service       | 1                                 | 
 |               | (optional) SAP Build Work Zone, standard edition     | standard                  | Application   | 1                                 |
 
 
@@ -66,7 +72,7 @@ On top of the mentioned entitlements, the connectivity and security services are
 ## Modules
 
 ### Running in Cloud Foundry
-The application consists of the following modules, which are deployed into the SAP BTP Cloud Foundry runtime of the provider subaccount. 
+The application consists of the following modules which are deployed into the SAP BTP Cloud Foundry runtime of the provider subaccount. 
 
 Provided by SAP:
 - Application Router                                                           
@@ -83,19 +89,24 @@ Provided by SAP:
 - SAP Cloud Application Programming Model on Node.js 
 - SAPUI5 with SAP Fiori elements 
 - SAP Cloud SDK 
-                                                  
+
+## Applications
+SAP offers several applications to build the solution. These applications need to be downloaded and installed on the local machine.
+
+Provided by SAP:
+- Adobe LiveCycle Designer                                                 
 
 # Scaling
-To get an overview of how the services scale and how many entitlements you require for an application, here's an example based on the projected use of the Partner Reference Application:
+To get an overview of how the services scale and how many entitlements you require for an application, here's an example based on the projected use of the Partner Reference Application.
 
-Let's assume a typical data volume of two poetry slams per week (or 125 slams per year), each poetry slam records 200 visits. After three years, if you assume that a visitor books on average two different poetry slams, for 20 subscriptions (customers), this results in a volume of:
+Let's assume a typical data volume of two poetry slams per week (or 125 slams per year), with 200 visits per event. After three years, if you assume that one visitor books on average two different poetry slams, for 20 subscriptions (customers), this results in a volume of:
  - 7,500 poetry slam events
  - 750,000 visitors and artists
  - 1,500,000 bookings
 
-> Note: The required quantities of most services are calculated on the basis of memory, storage or usage counts. The SAP HANA Cloud database is based on capacity units (CU), which consider several factors like memory, CPUs and storage. You can use the [SAP HANA Cloud Capacity Unit Estimator](https://hcsizingestimator.cfapps.eu10.hana.ondemand.com/) to calculate the capacity units required.
+> Note: The required quantities of most services are calculated on the basis of memory, storage, or usage counts. The SAP HANA Cloud database is based on capacity units (CU), which consider several factors like memory, CPUs, and storage. You can use the [SAP HANA Cloud Capacity Unit Estimator](https://hcsizingestimator.cfapps.eu10.hana.ondemand.com/) to calculate the capacity units required. The chapter [Estimating the Required Size of the SAP HANA Cloud Database](/Tutorials/27-Hana-DB-Scaling.md) explains how to calculate the required CUs based on the above business volume. However, this requires measurements in a deployed and running (test) version of the application.
 
-The table below shows how the required quantities scale with typical numbers of customers. The scaling is less than linear. This means the costs per customer decrease significantly the more customers you serve with the multi-tenant application.
+The table below shows how the required quantities scale with typical numbers of customers. The scaling is less than linear which is the benefit of resource sharing in multi-tenant application. This means the costs per customer decrease significantly the more customers you serve.
 
 | Service Name                    | Service Plan              | 5 Customers                     | 20 Customers                     | 100 Customers                     | 
 | -------------------             | ---------                 | ---------                       | ---------                        | ---------                         |

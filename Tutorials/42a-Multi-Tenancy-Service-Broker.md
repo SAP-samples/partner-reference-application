@@ -6,11 +6,11 @@ In the multi-tenant setup, the OData services that the UI is based on are not di
 
 To try this feature with Poetry Slam Manager, you have two options:
 
-A. Clone the repository of the Partner Reference Application. Check out the *main-multi-tenant* branch and enhance the application step-by-step.
+1. Clone the repository of the Partner Reference Application. Check out the *main-multi-tenant* branch and enhance the application step-by-step.
 
-B. Alternatively, check out the *main-multi-tenant-features* branch, in which the feature is already included.
+2. Alternatively, check out the *main-multi-tenant-features* branch, where the feature is already included.
 
-The following section describes how you enhance the *main-multi-tenant* branch (option A).
+The following section describes how to enhance the *main-multi-tenant* branch (option 1).
 
 ## Optional: Add API-Specific Authorizations
 
@@ -111,7 +111,7 @@ If you want to have different access authorizations for APIs, such as full acces
    - The service broker can use different services to generate and store credentials that are needed later on by applications to access your reusable service. In this example, the existing SAP Authorization and Trust Management service (_XSUAA service_) is used as a credentials provider.
    - An SAP Authorization and Trust Management service (_XSUAA service_) instance with _service-plan: broker_ is already configured to be created via configuration in the project deployment descriptor file [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml).
 
-8. Reuse the instance of the SAP Audit Log service (see [Manage Data Privacy](./41-Manage-Data-Privacy.md)).
+8. Reuse the instance of the SAP Audit Log service (see [Manage Data Privacy](./41-Multi-Tenancy-Features-Data-Privacy.md)).
    - The service broker is configured by default to audit log every operation.
    - Configurations to connect the SAP Audit Log service:
      - A service instance with parameter _service: auditlog_ is required in the resources section of the project deployment descriptor file [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml)
@@ -173,19 +173,18 @@ If you want to have different access authorizations for APIs, such as full acces
 
 11. To test with named users, you need an authorization code. For this code, you will need a `callback url`. 
 
-In the tests provided in the next chapter, `http://localhost` will be used as a `callback url`. You must declare this to the authorization service to ensure that this service accepts the corresponding authorization request. For this purpose, add the `callback url` to the resource `poetry-slams-auth` in the [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml) file.
+    For the tests that are provided in the next chapter, `http://localhost` will be used as a `callback url`. You must declare this to the authorization service to ensure that this service accepts the corresponding authorization request. For this purpose, add the `callback url` to the resource `poetry-slams-auth` in the [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml) file.
 
     Here is the corresponding addition:
-  
-      ```yml
-      resources:
-        - name: poetry-slams-auth
-          parameters:
-            config:
-              oauth2-configuration:
-                redirect-uris:
-                  - http://localhost # Redirect for local testing with the service broker
-      ```
+    ```yml
+    resources:
+      - name: poetry-slams-auth
+        parameters:
+          config:
+            oauth2-configuration:
+              redirect-uris:
+                - http://localhost # Redirect for local testing with the service broker
+    ```
 
 12. Build and deploy the multi-tenant application to the provider SAP BTP subaccount.
 

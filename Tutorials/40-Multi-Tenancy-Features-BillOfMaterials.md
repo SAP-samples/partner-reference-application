@@ -9,13 +9,18 @@ In addition to the entitlements listed for the [multitenancy version](./20-Multi
 
 Check if the SAP BTP Cloud Foundry runtime entitlement includes 4 units to account for the additional runtime required for the service broker module.
 
-| Subaccount    |  Entitlement Name                         | Service Plan      | Type          | Quantity                  | 
-| ------------- |  ---------------------------------------- | ----------------- | ------------- | ------------------------- |
-| Provider      |                                           |                   |               |                           |
-|               | SAP Audit Log service                     | premium           | Service       | 1                         |
-|               | SAP Cloud Logging                         | standard          | Service       | 1                         |
-| Consumer      |                                           |                   |               |                           |
-|               | SAP Audit Log Viewer service for SAP BTP  | default           | Application   | 1                         |
+| Subaccount    |  Entitlement Name                         | Service Plan          | Type          | Quantity                  | 
+| ------------- |  ---------------------------------------- | -----------------     | ------------- | ------------------------- |
+| Provider      |                                           |                       |               |                           |
+|               | SAP Audit Log service                     | premium               | Service       | 1                         |
+|               | SAP Cloud Logging                         | standard              | Service       | 1                         |
+|               | SAP Forms service by Adobe                | default (Application) | Application   | 1                         | 
+|               | SAP Forms service by Adobe API            | standard              | Service       | 1                         | 
+|               | SAP Print service                         | standard              | Service       | 1                         | 
+| Consumer      |                                           |                       |               |                           |
+|               | SAP Audit Log Viewer service for SAP BTP  | default               | Application   | 1                         |
+|               | SAP Print service                         | standard              | Application   | 1                         | 
+|               | SAP Print service                         | receiver              | Service       | 1                         | 
 
 
 ## Services Without Entitlements
@@ -32,5 +37,11 @@ The application with all features comes with the following modules, which are de
 
 Provided by SAP:         
 - Service Broker                                                
-                                              
-Now that you're familiar with the bill of materials, in the [next section](41-Manage-Data-Privacy.md), you enhance the application with the data privacy feature. 
+
+## Applications
+SAP offers several applications to build the solution. These applications need to be downloaded and installed on the local machine.
+
+Provided by SAP:
+- Adobe LiveCycle Designer   
+
+Now that you're familiar with the bill of materials, in the [next section](41-Multi-Tenancy-Features-Data-Privacy.md), you will learn how to enhance the application with the data privacy feature. 

@@ -40,6 +40,7 @@ The list shows the entitlements that are required in the different subaccounts t
 |               | SAP HTML5 Application Repository service for SAP BTP | app-runtime               | Service       | 1                                 | 
 |               | SAP Software-as-a-Service Provisioning service       | application               | Service       | 1                                 | 
 |               | SAP HANA Cloud                                       | hana-td                   | Service       | 1                                 | 
+|               | SAP HANA Cloud                                       | tools                     | Application   | 1                                 | 
 |               | SAP HANA Schemas & HDI Containers                    | hdi-shared                | Service       | 1                                 | 
 |               | SAP Service Manager service                          | container                 | Service       | 1                                 | 
 | Consumer      |                                                      |                           |               |                                   |
