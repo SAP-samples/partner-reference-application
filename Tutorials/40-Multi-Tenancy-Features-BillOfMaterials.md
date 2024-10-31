@@ -39,7 +39,7 @@ Provided by SAP:
 - Service Broker                                                
 
 ## Applications
-SAP offers several applications to build the solution. These applications need to be downloaded and installed on the local machine.
+The following application needs to be downloaded and installed on the local machine.
 
 Provided by SAP:
 - Adobe LiveCycle Designer   
