@@ -89,7 +89,7 @@ class ConnectorByD extends Connector {
         ]
       };
     } catch (error) {
-      console.log(error);
+      console.error('ConnectorByD - projectDataRecord:', error);
     }
   }
 
@@ -144,7 +144,7 @@ class ConnectorByD extends Connector {
       return poetrySlams;
     } catch (error) {
       // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
-      console.log('ACTION_READ_PROJECT_CONNECTION' + '; ' + error);
+      console.error('ACTION_READ_PROJECT_CONNECTION' + '; ' + error);
     }
   }
 

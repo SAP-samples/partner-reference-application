@@ -91,7 +91,7 @@ class ConnectorB1 extends Connector {
         ]
       };
     } catch (error) {
-      console.log(error);
+      console.error('ConnectorB1 - purchaseOrderDataRecord:', error);
     }
   }
 
@@ -147,7 +147,7 @@ class ConnectorB1 extends Connector {
       return poetrySlams;
     } catch (error) {
       // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
-      console.log(`ACTION_READ_PURCHASE_ORDER_CONNECTION; ${error}`);
+      console.error(`ACTION_READ_PURCHASE_ORDER_CONNECTION; ${error}`);
     }
   }
 

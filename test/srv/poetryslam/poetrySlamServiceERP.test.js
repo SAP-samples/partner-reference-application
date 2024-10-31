@@ -25,17 +25,13 @@ axios.defaults.auth = { username: 'peter', password: 'welcome' };
 // ----------------------------------------------------------------------------
 // Remote Projects Tests
 // ----------------------------------------------------------------------------
-let db;
 describe('Remote Projects in PoetrySlamService', () => {
   let stubDestination;
   let poetrySlams;
 
   before(async () => {
-    // Connect to the database of the current project
-    db = await cds.connect.to('db');
-    expect(db).to.exist;
-    
     await test.data.reset();
+    await GET(`/odata/v4/poetryslamservice/createTestData`);
 
     // Read all poetry slams for usage in the tests
     poetrySlams = await GET(
@@ -49,6 +45,7 @@ describe('Remote Projects in PoetrySlamService', () => {
 
   beforeEach(async () => {
     await test.data.reset();
+    await GET(`/odata/v4/poetryslamservice/createTestData`);
     stubDestination = sinon.stub(destination, 'readDestination');
   });
 

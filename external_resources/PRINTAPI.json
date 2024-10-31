@@ -1,0 +1,768 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "version": "1.2",
+    "title": "SAP Print Service",
+    "description": "SAP Print service offers public APIs, including Query Print Queue, Upload Documents and Create Print Task that can help manage print queues, connect print clients and monitor print status.  \nThis API is implemented based on REST API specification."
+  },
+  "externalDocs": {
+    "description": "Help Document",
+    "url": "https://help.sap.com/viewer/product/SCP_PRINT_SERVICE/SHIP/en-US"
+  },
+  "x-sap-shortText": "Manage print queue and create print queue items",
+  "servers": [
+    {
+      "url": "https://api.{region}.print.services.sap",
+      "variables": {
+        "region": {
+          "description": "The region chosen while deploying the application on SAP Business Technology Platform",
+          "default": "eu10"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/qm/api/v1/rest/queues": {
+      "get": {
+        "tags": ["Queues"],
+        "summary": "Get print queue list",
+        "description": "You can use the following request to fetch the existing print queue from SAP  Print service. Afterwards, you can pick one and use it for the next API call, for example, create print task.",
+        "responses": {
+          "200": {
+            "description": "Retrieved print queues.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PrintQueueDTOList" }
+              },
+              "application/xml": {
+                "schema": { "$ref": "#/components/schemas/PrintQueueDTOList" }
+              }
+            }
+          },
+          "500": {
+            "description": "The schema doesn't exist. \n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "schema.not.exist"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Unfortunately, your tenant cannot be found. Please contact administrator to check subscription status."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dm/api/v1/rest/print-documents": {
+      "post": {
+        "tags": ["Documents"],
+        "summary": "Put print document",
+        "description": "You can use the following request to send the business document to a particular print queue that is created in SAP  Print service. You can specify information, for example, numberOfCopies, username, etc. Maximum document size is 1 MB.",
+        "parameters": [
+          {
+            "name": "If-None-Match",
+            "description": "It should always be '*'",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "example": "*" }
+          },
+          {
+            "name": "scan",
+            "description": "Set to true to enable virus scan; Set to false to skip virus scan",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": "true",
+              "default": "true"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "document file",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Document uploaded successfully.",
+            "content": {
+              "plain/text": {
+                "schema": {
+                  "type": "string",
+                  "example": "4056bb6c-f544-41d7-87e1-ffe818573e6e\n"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "no document in the request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": { "type": "string" },
+                        "message": { "type": "string" }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "error1": {
+                    "summary": "document.required",
+                    "value": {
+                      "error": {
+                        "code": "document.required",
+                        "message": "no document in the request"
+                      }
+                    }
+                  },
+                  "error2": {
+                    "summary": "document.content.cannot.empty",
+                    "value": {
+                      "error": {
+                        "code": "document.content.cannot.empty",
+                        "message": "Document content cannot be empty"
+                      }
+                    }
+                  },
+                  "error3": {
+                    "summary": "document.zid.required",
+                    "value": {
+                      "error": {
+                        "code": "document.zid.required",
+                        "message": "no 'Zid' header in the request"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request entity too large.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "request.entity.too.large"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Request Entity Too Large"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "rate.limiter.error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "rate.limiter.error"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "High traffic!"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Virus scan failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "document.virus.scan.failed"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Virus scan failed {error message}"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/qm/api/v1/rest/print-tasks/{itemId}": {
+      "put": {
+        "tags": ["Print Tasks"],
+        "summary": "Create print task",
+        "description": "You can use the following request to send the business document to the particular print queue that is created in SAP Print service. You can specify information, for example, numberOfCopies, username, etc.",
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "description": "The itemId should be the same as any one of objectKey in body. Once one objectKey is chosen as itemId, it will be considered as the main document during Print Queue Item creation, the rest of objectKey will be considered as the attachments which will be associated to that main document.",
+            "example": "0adcfcae-4119-4225-b031-3d5718165798",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "If-None-Match",
+            "description": "It should always be '*'",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "example": "*" }
+          }
+        ],
+        "requestBody": {
+          "description": "This API is used to create a print task. The field itemId should be identical to one of the documentId from printContents. The documentId should be created successfully via API /dm/api/v1/rest/print-documents. The field qname should be included in the response of API qm/api/v1/rest/queues. If you want to print the attached document that is associated with the specific main document, the documentName should include the extension, for example, attachment.pdf.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PrintTask" }
+            }
+          }
+        },
+        "responses": {
+          "204": { "description": "Print task created successfully." },
+          "400": {
+            "description": "Paas Tenant Information is null.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": { "type": "string" },
+                        "message": { "type": "string" }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "error1": {
+                    "summary": "printTask.metadata.length",
+                    "value": {
+                      "error": {
+                        "code": "printTask.metadata.length",
+                        "message": "The length of the metadata cannot exceed"
+                      }
+                    }
+                  },
+                  "error2": {
+                    "summary": "printTask.metadata.wrong.type",
+                    "value": {
+                      "error": {
+                        "code": "printTask.metadata.wrong.type",
+                        "message": "metadata format is wrong."
+                      }
+                    }
+                  },
+                  "error3": {
+                    "summary": "printTask.metadata.missing.version",
+                    "value": {
+                      "error": {
+                        "code": "printTask.metadata.missing.version",
+                        "message": "metadata version is mandatory."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "ifNoneMatch.header.wrong.content\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "ifNoneMatch.header.wrong.content"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "If-None-Match' header only allow '*' as input value."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests. The service is busy and doesn't permit further calls.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "rate.limiter.error"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "The service is busy and doesn't permit further calls"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unfortunately, the schema wasn''t created successfully. If this error persists, please contact the component BC-CCM-PRN-OM-SCP.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "schema.not.exist"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Unfortunately, the schema wasn''t created successfully. If this error persists, please contact the component BC-CCM-PRN-OM-SCP."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/qm/api/v1/rest/queues/{qname}/profiles": {
+      "get": {
+        "tags": ["Print Profile"],
+        "summary": "Get print profile",
+        "description": "You can use this API to fetch and check the print profile information for each print queue, afterwards, it allows to specify the valid profileName for the particular print task via print-task API, and then, SAP Print service will directly pass those profile parameter to local physical printers. profileParams field is reserved to response the profile parameter detail, it is empty in current version, if you can have any reasonable use case which needs this data, please contact with us, our support component is BC-CCM-PRN-OM-SCP.",
+        "parameters": [
+          {
+            "name": "qname",
+            "in": "path",
+            "required": true,
+            "description": "The qname should be exist.",
+            "example": "pq01",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrieved print profile.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PrintProfileDTOList" }
+              },
+              "application/xml": {
+                "schema": { "$ref": "#/components/schemas/PrintProfileDTOList" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": { "type": "string" },
+                        "message": { "type": "string" }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "error1": {
+                    "summary": "invalid.tenant.id",
+                    "value": {
+                      "error": {
+                        "code": "invalid.tenant.id",
+                        "message": "invalid.tenant.id"
+                      }
+                    }
+                  },
+                  "error2": {
+                    "summary": "PQ.not.exist",
+                    "value": {
+                      "error": {
+                        "code": "PQ.not.exist",
+                        "message": "The print queue XXX doesn't exist"
+                      }
+                    }
+                  },
+                  "error3": {
+                    "summary": "required.request.header.missing",
+                    "value": {
+                      "error": {
+                        "code": "required.request.header.missing",
+                        "message": "Required request header 'Zid' for method parameter type String is not present"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid owner.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "invalid.owner"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Sorry, you don't have the authorization to access this queue."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/anonymize/api/v1.0/anonymize": {
+      "post": {
+        "tags": ["Anonymization (Beta)"],
+        "summary": "Upload a file for anonymization",
+        "description": "By applying anonymization techniques, this API offers the suitable capacity to anonymize Personally Identifiable Information (PII) for your customer data. It can support you to mask email, address, phone and url for personal data. Currently, it is still Beta release and only available on EU20 region, if you have the specific requirement and want to improve the accuracy of anonymization, please contact support component BC-CCM-PRN-OM-SCP.",
+        "parameters": [
+          {
+            "name": "entities",
+            "in": "query",
+            "description": "Use the default entities for anonymization.",
+            "example": "profile-email; profile-address; profile-person; profile-phone; profile-url",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text_file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The supported Document Types \\:.jpeg, .jpg, .png, .pdf, .text, .json"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary",
+                  "example": "pdf binary"
+                }
+              },
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary",
+                  "example": "png binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": { "format": "binary", "example": "jpeg  binary" }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "example": "{\"result\": [{\"ticket_id\": \"12345\", \"description\":\"Dear HR, I want to ask for sick leave for one day. Best Regards, <person>\"}]}"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Wrong Input parameters"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Failed adding task to queue, please contact administrator"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "oauth2api": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://{identityzone}.authentication.{region}.hana.ondemand.com/oauth/token",
+            "scopes": {}
+          }
+        }
+      }
+    },
+    "schemas": {
+      "PrintProfileDTO": {
+        "type": "object",
+        "properties": {
+          "queueName": {
+            "type": "string",
+            "nullable": false,
+            "example": "pq01"
+          },
+          "profileName": {
+            "type": "string",
+            "nullable": false,
+            "example": "profile_01"
+          },
+          "profileParams": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          },
+          "profileStatus": {
+            "type": "string",
+            "nullable": false,
+            "example": "OK"
+          }
+        },
+        "xml": { "name": "PrintProfileDTO" }
+      },
+      "PrintProfileDTOList": {
+        "type": "array",
+        "items": { "$ref": "#/components/schemas/PrintProfileDTO" }
+      },
+      "PrintQueueDTO": {
+        "type": "object",
+        "properties": {
+          "qname": { "type": "string", "nullable": false, "example": "pq01" },
+          "qdescription": {
+            "type": "string",
+            "nullable": true,
+            "example": "Example Print Queue"
+          },
+          "qstatus": { "type": "string", "nullable": false, "example": "R" },
+          "qformat": { "type": "string", "nullable": false, "example": "PDF" },
+          "cleanupPrd": { "type": "integer", "nullable": false, "example": 1 },
+          "techUserName": {
+            "type": "string",
+            "nullable": false,
+            "example": "tech_user"
+          },
+          "creator": {
+            "type": "string",
+            "nullable": false,
+            "example": "user_name"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date",
+            "description": "Creation date",
+            "example": "2017-01-01",
+            "pattern": "YYYY-MM-DD"
+          }
+        },
+        "xml": { "name": "PrintQueueDTO" }
+      },
+      "PrintQueueDTOList": {
+        "type": "array",
+        "items": { "$ref": "#/components/schemas/PrintQueueDTO" }
+      },
+      "PrintTask": {
+        "type": "object",
+        "properties": {
+          "numberOfCopies": {
+            "type": "integer",
+            "nullable": false,
+            "example": 1
+          },
+          "username": {
+            "type": "string",
+            "nullable": false,
+            "example": "test user"
+          },
+          "qname": { "type": "string", "nullable": false, "example": "pq01" },
+          "profileName": {
+            "type": "string",
+            "nullable": true,
+            "example": "Defaults"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "business_metadata": {
+                "type": "object",
+                "nullable": false,
+                "properties": {
+                  "business_user": {
+                    "type": "string",
+                    "nullable": false,
+                    "example": "user1"
+                  },
+                  "object_node_type": {
+                    "type": "string",
+                    "nullable": false,
+                    "example": "object_node_1"
+                  }
+                }
+              },
+              "version": { "type": "number", "nullable": false, "example": 1.2 }
+            }
+          },
+          "printContents": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PrintContent" },
+            "example": [
+              {
+                "objectKey": "0adcfcae-4119-4225-b031-3d5718165798",
+                "documentName": "main document name"
+              },
+              {
+                "objectKey": "0adcfcae-4119-4225-b031-3d5718165854",
+                "documentName": "attachment_document_one.pdf"
+              },
+              {
+                "objectKey": "0adcfcae-4119-4225-b031-3d5718165123",
+                "documentName": "attachment_document_two.pdf"
+              },
+              {
+                "objectKey": "0adcfcae-4119-4225-b031-3d5718165234",
+                "documentName": "attachment_document_three.pdf"
+              }
+            ]
+          }
+        },
+        "xml": { "name": "PrintTask" }
+      },
+      "PrintContent": {
+        "type": "object",
+        "properties": {
+          "objectKey": {
+            "type": "string",
+            "nullable": false,
+            "example": "0adcfcae-4119-4225-b031-3d5718165798"
+          },
+          "documentName": {
+            "type": "string",
+            "nullable": false,
+            "example": "test document name"
+          }
+        },
+        "xml": { "name": "PrintContent" }
+      }
+    }
+  },
+  "security": [{ "oauth2api": [] }]
+}

@@ -64,7 +64,7 @@
   "sap.ui5": {
     "flexEnabled": true,
     "dependencies": {
-      "minUI5Version": "1.120.15",
+      "minUI5Version": "1.120.20",
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
@@ -157,6 +157,12 @@
               "content": {
                 "header": {
                   "actions": {
+                    "CreateGuestList": {
+                      "press": "poetryslams.ext.customActions.createGuestList",
+                      "visible": "{= ${ui>/editMode} !== 'Editable'}",
+                      "enabled": "{= ${ui>/editMode} !== 'Editable'}",
+                      "text": "{i18n>createGuestList}"
+                    },
                     "MaintainVisitors": {
                       "press": "poetryslams.ext.customActions.navigateVisitorList",
                       "visible": true,

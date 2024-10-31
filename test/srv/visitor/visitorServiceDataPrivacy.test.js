@@ -21,47 +21,14 @@ axios.defaults.auth = { username: 'peter', password: 'welcome' };
 // Tests Data Privacy
 // ----------------------------------------------------------------------------
 
-const _logger = require('../../logger')({ debug: true });
-const __logger = cds.log.Logger;
+const { filterLog } = require('../../auditLogUtil.js');
 
 describe('personal data audit logging in CRUD', () => {
-  let __log, _logs;
-  // Writes the audit-logs into an array for comparison
-  const _log = (...args) => {
-    if (
-      !(
-        args.length === 2 &&
-        typeof args[0] === 'string' &&
-        args[0].match(/\[audit-log\]/i)
-      )
-    ) {
-      // not an audit log
-      return __log(...args);
-    }
-
-    _logs.push(args[1]);
-  };
-
-  before(() => {
-    // Overwrites the CDS logger
-    cds.log.Logger = _logger;
-    // Stores and overwrites the global console log
-    __log = global.console.log;
-    global.console.log = _log;
-  });
+  let cdsTestLog = cds.test.log();
 
   beforeEach(async () => {
     await test.data.reset();
-    // Clears the log
-    _logs = [];
-    _logger._resetLogs();
-  });
-
-  after(() => {
-    // Restores the global console log
-    global.console.log = __log;
-    // Restores the CDS logger
-    cds.log.Logger = __logger;
+    await GET(`/odata/v4/poetryslamservice/createTestData`);
   });
 
   it('should log audit log messages when a visitor is changed and activated', async function () {
@@ -82,7 +49,8 @@ describe('personal data audit logging in CRUD', () => {
     );
 
     expect(result.data.name).to.eql('Thomas Schmitt');
-    expect(_logs.length).to.eql(1);
+    let auditLog = filterLog(cdsTestLog);
+    expect(auditLog.length).to.eql(1);
 
     // Read the updated poetry slam in draft mode
     result = await GET(
@@ -90,7 +58,8 @@ describe('personal data audit logging in CRUD', () => {
     );
 
     expect(result.data.name).to.eql('Thomas Schmitt');
-    expect(_logs.length).to.eql(1);
+    auditLog = filterLog(cdsTestLog);
+    expect(auditLog.length).to.eql(1);
 
     // Change the name back
     await PATCH(
@@ -107,23 +76,27 @@ describe('personal data audit logging in CRUD', () => {
     );
 
     // Audit Log updates of visitors
-    expect(_logs.length).to.eql(3);
-    expect(_logs[0].attributes[0].name).to.eql('email');
-    expect(_logs[0].data_subject.role).to.eql('Visitors');
+    auditLog = filterLog(cdsTestLog);
+    const types = auditLog.map((log) => log.type);
+    expect(auditLog.length).to.eql(3);
+    expect(types).to.include('PersonalDataModified');
 
     result = await GET(
       `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=true)`
     );
 
     expect(result.data.IsActiveEntity).to.eql(true);
-    expect(_logs.length).to.eql(4);
+    auditLog = filterLog(cdsTestLog);
+    expect(auditLog.length).to.eql(4);
   });
 
   it('should log an audit log message when a visitor is read', async function () {
     // Read the updated poetry slam in draft mode
     const visitors = await GET(`/odata/v4/visitorservice/Visitors?$top=1`);
     expect(visitors.data.value.length).to.greaterThan(0);
-    expect(_logs.length).to.eql(1);
-    expect(_logs[0].attributes[0].name).to.eql('email');
+    const auditLog = filterLog(cdsTestLog);
+    expect(auditLog.length).to.eql(1);
+    expect(auditLog[0].type).to.eql('SensitiveDataRead');
+    expect(auditLog[0].attributes[0]).to.eql('email');
   });
 });

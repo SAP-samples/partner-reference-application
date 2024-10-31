@@ -53,12 +53,12 @@ service PoetrySlamService @(
     actions {
       // Action: Cancel
       @(
-        // Defines that poetryslam entitiy is affected and targeted by the action
+        // Defines that poetryslam entity is affected and targeted by the action
         Common.SideEffects             : {TargetProperties: [
           'poetryslam/status_code',
           'poetryslam/statusCriticality'
         ]},
-        // Determines that poetryslam entitiy is used when the action is performed
+        // Determines that poetryslam entity is used when the action is performed
         cds.odata.bindingparameter.name: 'poetryslam'
       )
       action cancel()                returns PoetrySlams;
@@ -70,7 +70,7 @@ service PoetrySlamService @(
           'poetryslam/status_code',
           'poetryslam/statusCriticality'
         ]},
-        // Determines that poetryslam entitiy is used when the action is performed
+        // Determines that poetryslam entity is used when the action is performed
         cds.odata.bindingparameter.name: 'poetryslam'
       )
       action publish()               returns PoetrySlams;
@@ -106,7 +106,41 @@ service PoetrySlamService @(
         cds.odata.bindingparameter.name: '_poetryslam'
       )
       action createB1PurchaseOrder() returns PoetrySlams;
+
+      // Action: print guest list
+      action printGuestList(
+                            @(
+                              title:'{i18n>selectPrintQueue}',
+                              mandatory:true,
+                              Common:{
+                                ValueListWithFixedValues: true,
+                                ValueList               : {
+                                  $Type         : 'Common.ValueListType',
+                                  CollectionPath: 'PrintQueues',
+                                  Parameters    : [
+                                    {
+                                      $Type            : 'Common.ValueListParameterInOut',
+                                      ValueListProperty: 'name',
+                                      LocalDataProperty: printQueue
+                                    },
+                                    {
+                                      $Type            : 'Common.ValueListParameterDisplayOnly',
+                                      ValueListProperty: 'descr'
+                                    }
+                                  ]
+                                },
+                              }
+                            )
+                            printQueue : String);
     };
+
+  // PrintQueues (virtual entity for value help)
+  @readonly
+  @cds.persistence.skip
+  entity PrintQueues {
+    key name  : String;
+        descr : String;
+  };
 
   // Visitors
   @readonly
@@ -153,7 +187,22 @@ service PoetrySlamService @(
         cds.odata.bindingparameter.name: 'visits'
       )
       action confirmVisit() returns Visits;
+
+      // Action: Inform the visitor about the event
+      action sendEMail();
     };
+
+  // Generated PDF document with SAP Forms Service by Adobe
+  @readonly  @cds.persistence.skip
+  entity PDFDocument {
+    key ID        : UUID;
+
+        @Core.MediaType  : mediaType
+        content   : LargeBinary;
+
+        @Core.IsMediaType: true
+        mediaType : String;
+  }
 
   // Currencies
   entity Currencies  as projection on sap.common.Currencies;
@@ -172,7 +221,10 @@ service PoetrySlamService @(
     roles  : userRoles;
   };
 
-  function userInfo() returns user;
+  function userInfo()       returns user;
+
+  @Common.SideEffects: {TargetEntities: ['/PoetrySlamService.EntityContainer/PoetrySlams']}
+  action   createTestData() returns Boolean;
 }
 
 // -------------------------------------------------------------------------------

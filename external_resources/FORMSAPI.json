@@ -1,0 +1,3385 @@
+{
+  "components": {
+    "schemas": {
+      "API Error": {
+        "description": "Constrait Violation error",
+        "properties": {
+          "errorMessage": {
+            "type": "string"
+          },
+          "jsonFieldName": {
+            "type": "string"
+          },
+          "jsonInvalidValue": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "API Validation Error": {
+        "description": "API Validation error response",
+        "properties": {
+          "errorLevel": {
+            "type": "string"
+          },
+          "message": {
+            "enum": [
+              "100 CONTINUE",
+              "101 SWITCHING_PROTOCOLS",
+              "102 PROCESSING",
+              "103 EARLY_HINTS",
+              "103 CHECKPOINT",
+              "200 OK",
+              "201 CREATED",
+              "202 ACCEPTED",
+              "203 NON_AUTHORITATIVE_INFORMATION",
+              "204 NO_CONTENT",
+              "205 RESET_CONTENT",
+              "206 PARTIAL_CONTENT",
+              "207 MULTI_STATUS",
+              "208 ALREADY_REPORTED",
+              "226 IM_USED",
+              "300 MULTIPLE_CHOICES",
+              "301 MOVED_PERMANENTLY",
+              "302 FOUND",
+              "302 MOVED_TEMPORARILY",
+              "303 SEE_OTHER",
+              "304 NOT_MODIFIED",
+              "305 USE_PROXY",
+              "307 TEMPORARY_REDIRECT",
+              "308 PERMANENT_REDIRECT",
+              "400 BAD_REQUEST",
+              "401 UNAUTHORIZED",
+              "402 PAYMENT_REQUIRED",
+              "403 FORBIDDEN",
+              "404 NOT_FOUND",
+              "405 METHOD_NOT_ALLOWED",
+              "406 NOT_ACCEPTABLE",
+              "407 PROXY_AUTHENTICATION_REQUIRED",
+              "408 REQUEST_TIMEOUT",
+              "409 CONFLICT",
+              "410 GONE",
+              "411 LENGTH_REQUIRED",
+              "412 PRECONDITION_FAILED",
+              "413 PAYLOAD_TOO_LARGE",
+              "413 REQUEST_ENTITY_TOO_LARGE",
+              "414 URI_TOO_LONG",
+              "414 REQUEST_URI_TOO_LONG",
+              "415 UNSUPPORTED_MEDIA_TYPE",
+              "416 REQUESTED_RANGE_NOT_SATISFIABLE",
+              "417 EXPECTATION_FAILED",
+              "418 I_AM_A_TEAPOT",
+              "419 INSUFFICIENT_SPACE_ON_RESOURCE",
+              "420 METHOD_FAILURE",
+              "421 DESTINATION_LOCKED",
+              "422 UNPROCESSABLE_ENTITY",
+              "423 LOCKED",
+              "424 FAILED_DEPENDENCY",
+              "425 TOO_EARLY",
+              "426 UPGRADE_REQUIRED",
+              "428 PRECONDITION_REQUIRED",
+              "429 TOO_MANY_REQUESTS",
+              "431 REQUEST_HEADER_FIELDS_TOO_LARGE",
+              "451 UNAVAILABLE_FOR_LEGAL_REASONS",
+              "500 INTERNAL_SERVER_ERROR",
+              "501 NOT_IMPLEMENTED",
+              "502 BAD_GATEWAY",
+              "503 SERVICE_UNAVAILABLE",
+              "504 GATEWAY_TIMEOUT",
+              "505 HTTP_VERSION_NOT_SUPPORTED",
+              "506 VARIANT_ALSO_NEGOTIATES",
+              "507 INSUFFICIENT_STORAGE",
+              "508 LOOP_DETECTED",
+              "509 BANDWIDTH_LIMIT_EXCEEDED",
+              "510 NOT_EXTENDED",
+              "511 NETWORK_AUTHENTICATION_REQUIRED"
+            ],
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "results": {
+            "type": "string"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "trace": {
+            "items": {
+              "$ref": "#/components/schemas/API Error"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "Attachment File": {
+        "description": "List of Attachments",
+        "properties": {
+          "creationDate": {
+            "description": "Creationdate of the file",
+            "type": "string"
+          },
+          "description": {
+            "description": "Description of the file",
+            "type": "string"
+          },
+          "fileContent": {
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          },
+          "fileName": {
+            "description": "Name of the file",
+            "type": "string"
+          },
+          "id": {
+            "description": "Id of the file",
+            "type": "string"
+          },
+          "mimeType": {
+            "description": "Mimetype of the file",
+            "type": "string"
+          },
+          "modificationDate": {
+            "description": "Modificationdate of the file",
+            "type": "string"
+          },
+          "size": {
+            "description": "Size of the file",
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "File"
+        }
+      },
+      "Attachment Input": {
+        "description": "SetAttachment JSON. FileContent and PDF encoded in BASE64.",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "fileContent": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "pdf": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["fileContent", "fileName", "mimeType", "pdf"],
+        "type": "object",
+        "xml": {
+          "name": "SetAttachment"
+        }
+      },
+      "AttachmentList File": {
+        "properties": {
+          "creationDate": {
+            "description": "Creationdate of the file",
+            "type": "string"
+          },
+          "description": {
+            "description": "Description of the file",
+            "type": "string"
+          },
+          "fileName": {
+            "description": "Name of the file",
+            "type": "string"
+          },
+          "id": {
+            "description": "Id of the file",
+            "type": "string"
+          },
+          "mimeType": {
+            "description": "Mimetype of the file",
+            "type": "string"
+          },
+          "modificationDate": {
+            "description": "Modificationdate of the file",
+            "type": "string"
+          },
+          "size": {
+            "description": "Size of the file",
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "File"
+        }
+      },
+      "Attachments Output": {
+        "properties": {
+          "attachments": {
+            "description": "List of Attachments",
+            "items": {
+              "$ref": "#/components/schemas/Attachment File"
+            },
+            "type": "array"
+          },
+          "traceString": {
+            "description": "Added if TraceLevel \u003E 0.",
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "Attachments"
+        }
+      },
+      "AttachmentsList Output": {
+        "properties": {
+          "attachments": {
+            "items": {
+              "$ref": "#/components/schemas/AttachmentList File"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "Attachments"
+        }
+      },
+      "Certificate": {
+        "properties": {
+          "cert": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "certificate"
+        }
+      },
+      "File Output": {
+        "properties": {
+          "fileContent": {
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          },
+          "fileName": {
+            "description": "Name of the file",
+            "type": "string"
+          },
+          "traceString": {
+            "description": "Added if TraceLevel \u003E 0.",
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "FileOutput"
+        }
+      },
+      "File Version Info": {
+        "properties": {
+          "isLatestVersion": {
+            "type": "boolean"
+          },
+          "lastModificationDate": {
+            "type": "string"
+          },
+          "versionNumber": {
+            "type": "string"
+          },
+          "versionObjectId": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Form Metadata": {
+        "properties": {
+          "creationDate": {
+            "type": "string"
+          },
+          "lastModificationDate": {
+            "type": "string"
+          },
+          "managedBy": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Form Store Input": {
+        "description": "Form JSON Input.\u003Cbr /\u003E\u003Cbr /\u003E\u003Cbr /\u003E**FormName Options:** `Optional` Limited to 30 characters. Only alphanumeric characters allowed and '_' character.\u003Cbr /\u003E\u003Cbr /\u003E**Description Options:**  `Optional` Limited to 280 characters.\u003Cbr /\u003E\u003Cbr /\u003E**Note Options:** `Optional` Limited to 280 characters.",
+        "properties": {
+          "description": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "formName": {
+            "description": "Form naming restricted to unicode letters or digits.",
+            "maxLength": 30,
+            "type": "string"
+          },
+          "note": {
+            "maxLength": 280,
+            "type": "string"
+          }
+        },
+        "required": ["formName"],
+        "type": "object",
+        "xml": {
+          "name": "FormUpdateStore"
+        }
+      },
+      "Form Store Output": {
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "formName": {
+            "type": "string"
+          },
+          "metaData": {
+            "$ref": "#/components/schemas/Form Metadata"
+          },
+          "note": {
+            "type": "string"
+          },
+          "schema": {
+            "$ref": "#/components/schemas/Schema Store Output"
+          },
+          "templates": {
+            "items": {
+              "$ref": "#/components/schemas/Template Store Output"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "PDF Input": {
+        "description": "PDF file encoded in BASE64.",
+        "properties": {
+          "pdf": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "pattern": "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$",
+            "type": "string"
+          }
+        },
+        "required": ["pdf"],
+        "type": "object",
+        "xml": {
+          "name": "PDF"
+        }
+      },
+      "Render Input": {
+        "description": "XdpTemplate file and XmlData file are encoded in BASE64.\n\u003Cbr /\u003E\u003Cbr /\u003E**For rendering, templates can be retrieved directly from the data storage:**\n\u003Cbr /\u003E\u003Cbr /\u003EAs value field of key field 'xdpTemplate' include either `{your_formName}/{your_templateName}` + as QueryParam add `?templateSource = storageName`or `{your_formName}/{your_templateObjectId}` + as QueryParam add `?templateSource = storageId`.\u003Cbr /\u003E\n\u003Cbr /\u003E\u003Cbr /\u003E**FormType Options:** [Print] - `default`, [Interactive], [DynamicInteractive].\n\u003Cbr /\u003E\u003Cbr /\u003E**FormLocale Options:**  Combination of ISO-639 language code and ISO-3166 country code (language_country)., [en_US] - `default`.\n\u003Cbr /\u003E\u003Cbr /\u003E**TaggedPDF Options:** [1] - `default`, [0].\n\u003Cbr /\u003E\u003Cbr /\u003E**EmbedFont Options:** [1], [0] - `default`.\n\u003Cbr /\u003E\u003Cbr /\u003E**ChangeNotAllowed Options:** [false] - `default`, [true].\n\u003Cbr /\u003E\u003Cbr /\u003E**PrintNotAllowed Options:** [false] - `default`, [true].\n",
+        "properties": {
+          "changeNotAllowed": {
+            "default": false,
+            "type": "boolean"
+          },
+          "embedFont": {
+            "default": 0,
+            "enum": [0, 1],
+            "format": "int32",
+            "type": "integer"
+          },
+          "formLocale": {
+            "default": "en_US",
+            "type": "string"
+          },
+          "formType": {
+            "default": "print",
+            "enum": ["interactive", "print", "dynamicInteractive"],
+            "type": "string"
+          },
+          "printNotAllowed": {
+            "default": false,
+            "title": "printNotAllowed",
+            "type": "boolean"
+          },
+          "taggedPdf": {
+            "default": 1,
+            "enum": [0, 1],
+            "format": "int32",
+            "type": "integer"
+          },
+          "xdpTemplate": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          },
+          "xmlData": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["xdpTemplate", "xmlData"],
+        "type": "object"
+      },
+      "Repository Metadata": {
+        "properties": {
+          "creationDate": {
+            "type": "string"
+          },
+          "repositoryId": {
+            "type": "string"
+          },
+          "repositoryName": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Schema Metadata": {
+        "properties": {
+          "creationDate": {
+            "type": "string"
+          },
+          "isLatestVersion": {
+            "type": "boolean"
+          },
+          "lastModificationDate": {
+            "type": "string"
+          },
+          "managedBy": {
+            "type": "string"
+          },
+          "objectId": {
+            "type": "string"
+          },
+          "versionNumber": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Schema Store Input": {
+        "description": "Schema JSON Input to store a schema. There is only one single schema per form entity.\u003Cbr /\u003E\u003Cbr /\u003E\u003Cbr /\u003E**XsdSchema Options:** `Required` Schema file encoded in BASE64 string.\u003Cbr /\u003E\u003Cbr /\u003E**SchemaName Options:** `Required` Limited to 30 characters. Only alphanumeric characters allowed and '_' character.\u003Cbr /\u003E\u003Cbr /\u003E**Note Options:** `Optional` Limited to 280 characters.",
+        "properties": {
+          "note": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "schemaName": {
+            "description": "Schema naming restricted to unicode letters or digits.",
+            "maxLength": 30,
+            "type": "string"
+          },
+          "xsdSchema": {
+            "default": "Base64 String",
+            "description": "Schema file encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["schemaName", "xsdSchema"],
+        "type": "object",
+        "xml": {
+          "name": "SchemaStore"
+        }
+      },
+      "Schema Store Output": {
+        "properties": {
+          "metaData": {
+            "$ref": "#/components/schemas/Schema Metadata"
+          },
+          "note": {
+            "type": "string"
+          },
+          "schemaName": {
+            "type": "string"
+          },
+          "versions": {
+            "items": {
+              "$ref": "#/components/schemas/File Version Info"
+            },
+            "type": "array"
+          },
+          "xsdSchema": {
+            "default": "Base64 String",
+            "description": "Schema file encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Schema Update Store Input": {
+        "description": "Schema JSON Input to update a schema. There is only one single schema per form entity.\u003Cbr /\u003E\u003Cbr /\u003E\u003Cbr /\u003E**XsdSchema Options:** `Optional` Schema file encoded in BASE64 string.\u003Cbr /\u003E\u003Cbr /\u003E**SchemaName Options:** `Optional` Limited to 30 characters. Only alphanumeric characters allowed and '_' character.\u003Cbr /\u003E\u003Cbr /\u003E**Note Options:** `Optional` Limited to 280 characters.",
+        "properties": {
+          "note": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "schemaName": {
+            "description": "Schema naming restricted to unicode letters or digits.",
+            "maxLength": 30,
+            "type": "string"
+          },
+          "xsdSchema": {
+            "default": "Base64 String",
+            "description": "Schema file encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["schemaName", "xsdSchema"],
+        "type": "object",
+        "xml": {
+          "name": "SchemaUpdateStore"
+        }
+      },
+      "Signature": {
+        "properties": {
+          "certificates": {
+            "items": {
+              "$ref": "#/components/schemas/Certificate"
+            },
+            "type": "array"
+          },
+          "contactInfo": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "legalAttestations": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "maxRevisions": {
+            "type": "string"
+          },
+          "permissions": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "signer": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "signature"
+        }
+      },
+      "Signature Input": {
+        "description": "SetSignature JSON. PDF encoded in BASE64.",
+        "properties": {
+          "contactInfo": {
+            "type": "string"
+          },
+          "credentialAlias": {
+            "type": "string"
+          },
+          "locationInfo": {
+            "type": "string"
+          },
+          "pdf": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          },
+          "reasonInfo": {
+            "type": "string"
+          },
+          "signatureFieldName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "contactInfo",
+          "credentialAlias",
+          "locationInfo",
+          "pdf",
+          "reasonInfo",
+          "signatureFieldName"
+        ],
+        "type": "object",
+        "xml": {
+          "name": "SetSignature"
+        }
+      },
+      "Signatures Output": {
+        "properties": {
+          "Signatures": {
+            "description": "List of Signatures",
+            "items": {
+              "$ref": "#/components/schemas/Signature"
+            },
+            "type": "array"
+          },
+          "signature": {
+            "items": {
+              "$ref": "#/components/schemas/Signature"
+            },
+            "type": "array",
+            "writeOnly": true
+          }
+        },
+        "type": "object",
+        "xml": {
+          "name": "signatures"
+        }
+      },
+      "Template Input": {
+        "description": "Template file encoded in BASE64.",
+        "properties": {
+          "template": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["template"],
+        "type": "object",
+        "xml": {
+          "name": "Template"
+        }
+      },
+      "Template Metadata": {
+        "properties": {
+          "contentLength": {
+            "type": "string"
+          },
+          "creationDate": {
+            "type": "string"
+          },
+          "isLatestVersion": {
+            "type": "boolean"
+          },
+          "lastModificationDate": {
+            "type": "string"
+          },
+          "managedBy": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "objectId": {
+            "type": "string"
+          },
+          "versionNumber": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Template Store Input": {
+        "description": "Template JSON Input to store templates as part of a form entity. One form entity can have multiple templates.\u003Cbr /\u003E\u003Cbr /\u003E\u003Cbr /\u003E**XdpTemplate Options:** `Required` Template file encoded as BASE64 string.\u003Cbr /\u003E\u003Cbr /\u003E**TemplateName Options:** `Required` Limited to 30 characters. Only alphanumeric characters allowed and '_' character.\u003Cbr /\u003E\u003Cbr /\u003E**Description Options:** `Optional` Limited to 280 characters.\u003Cbr /\u003E\u003Cbr /\u003E**Note Options:** `Optional` Limited to 280 characters.\u003Cbr /\u003E\u003Cbr /\u003E**Locale Options:** `Optional` Combination of ISO-639 language code and ISO-3166 country code (language_country).\u003Cbr /\u003E\u003Cbr /\u003E**Language Options:** `Required` Only one template language per form entity allowed.\u003Cbr /\u003E\u003Cbr /\u003E**MasterLanguage Options:** `Optional` Limited to 280 characters.\u003Cbr /\u003E\u003Cbr /\u003E**BusinessArea Options:** `Optional` Limited to 280 characters.\u003Cbr /\u003E\u003Cbr /\u003E**BusinessDepartment Options:**; `Optional` Limited to 280 characters.",
+        "properties": {
+          "businessArea": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "businessDepartment": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "language": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "locale": {
+            "description": "Locale must be 'language_country' according to ISO 639",
+            "type": "string"
+          },
+          "masterLanguage": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "note": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "templateName": {
+            "description": "Form naming restricted to unicode letters or digits.",
+            "maxLength": 30,
+            "type": "string"
+          },
+          "xdpTemplate": {
+            "default": "Base64 String",
+            "description": "Template file encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["language", "templateName", "xdpTemplate"],
+        "type": "object",
+        "xml": {
+          "name": "TemplateStore"
+        }
+      },
+      "Template Store Output": {
+        "properties": {
+          "businessArea": {
+            "type": "string"
+          },
+          "businessDepartment": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "masterLanguage": {
+            "type": "string"
+          },
+          "metaData": {
+            "$ref": "#/components/schemas/Template Metadata"
+          },
+          "note": {
+            "type": "string"
+          },
+          "templateName": {
+            "type": "string"
+          },
+          "versions": {
+            "items": {
+              "$ref": "#/components/schemas/File Version Info"
+            },
+            "type": "array"
+          },
+          "xdpTemplate": {
+            "default": "Base64 String",
+            "description": "Template file encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Template Update Store Input": {
+        "description": "Template JSON Input to update templates as part of a form entity. One form entity can have multiple templates.\u003Cbr /\u003E\u003Cbr /\u003E\u003Cbr /\u003E**XdpTemplate Options:** `Optional` Template file encoded as BASE64 string.\u003Cbr /\u003E\u003Cbr /\u003E**TemplateName Options:** `Optional` Limited to 30 characters. Only alphanumeric characters allowed and '_' character.\u003Cbr /\u003E\u003Cbr /\u003E**Description Options:** `Optional` Limited to 280 characters.\u003Cbr /\u003E\u003Cbr /\u003E**Note Options:** `Optional` Limited to 280 characters.\u003Cbr /\u003E\u003Cbr /\u003E**Locale Options:** `Optional` Combination of ISO-639 language code and ISO-3166 country code (language_country).\u003Cbr /\u003E\u003Cbr /\u003E**MasterLanguage Options:** `Optional` Limited to 280 characters.\u003Cbr /\u003E\u003Cbr /\u003E**BusinessArea Options:** `Optional` Limited to 280 characters.\u003Cbr /\u003E\u003Cbr /\u003E**BusinessDepartment Options:**; `Optional` Limited to 280 characters.",
+        "properties": {
+          "businessArea": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "businessDepartment": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "locale": {
+            "description": "Locale must be 'language_country' according to ISO 639",
+            "type": "string"
+          },
+          "masterLanguage": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "note": {
+            "maxLength": 280,
+            "type": "string"
+          },
+          "templateName": {
+            "description": "Form naming restricted to unicode letters or digits.",
+            "maxLength": 30,
+            "type": "string"
+          },
+          "xdpTemplate": {
+            "default": "Base64 String",
+            "description": "Template file encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["templateName", "xdpTemplate"],
+        "type": "object",
+        "xml": {
+          "name": "TemplateUpdateStore"
+        }
+      }
+    },
+    "securitySchemes": {
+      "OAuth2": {
+        "description": "OAuth client credentials (client ID and secret) are required. These can be retrieved from SAP BTP cloud cockpit (For more details check the SAP help portal - SAP Forms Service by Adobe REST API)",
+        "flows": {
+          "clientCredentials": {
+            "scopes": {},
+            "tokenUrl": "https://{user account subdomain}.authentication.{cf region}.hana.ondemand.com/oauth/token"
+          }
+        },
+        "type": "oauth2"
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Help portal - SAP Forms Service by Adobe REST API ",
+    "url": "https://help.sap.com/viewer/dcbea777ceb3411cb10500a1a392273e/Cloud/en-US/661c02ef20d54bfeb309d42608baeaca.html"
+  },
+  "info": {
+    "description": "The SAP Forms service by Adobe is a cloud service based on the ADS (Adobe Document Services). The Forms service REST API provides a subset of the SAP Forms service capabilities. They are addressed by different URIs (Uniform Resource Identifiers) where each URI supports data and document exchange in a JSON format. The SAP Forms service REST API delivers a comprehensive description and is easy to test. The application calls the REST API via an SAP BTP subaccount that must be subscribed to the SAP Forms service.",
+    "license": {
+      "name": "Copyright",
+      "url": "https://www.sap.com/corporate/en/legal/copyright.html"
+    },
+    "termsOfService": "https://help.sap.com/viewer/c8d59beee28140499436402f31a98063/Cloud/en-US",
+    "title": "Forms Service by Adobe API (Cloud Foundry)",
+    "version": "v1"
+  },
+  "openapi": "3.0.1",
+  "paths": {
+    "/v1/adsRender/pdf": {
+      "post": {
+        "description": "Post template and data files to render an interactive, dynamic interactive or print pdf object. TraceLevel set to 1 or 2 adds a [traceString] node to response JSON. In case of rendering errors, [errorPDF] node will be attached to the error response.",
+        "operationId": "renderingPDFPost",
+        "parameters": [
+          {
+            "description": "storageId or storageName",
+            "in": "query",
+            "name": "templateSource",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Render Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Render a PDF Form",
+        "tags": ["ADS - Render Request"]
+      }
+    },
+    "/v1/forms": {
+      "get": {
+        "description": "Retrieve all forms. Use query params to filter the result.",
+        "operationId": "formsGet",
+        "parameters": [
+          {
+            "description": "Amount of elements which should be returned.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Starting element.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Filter form json blocks, Possible Values: formData, formMetaData, xdpTemplate, templateData, templateMetaData, templateVersions, xsdSchema, schemaData, schemaMetaData, schemaVersions.",
+            "in": "query",
+            "name": "select",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Form Store Output"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Read forms",
+        "tags": ["Store - Forms"]
+      },
+      "post": {
+        "description": "Create a form first to store templates and schema.",
+        "operationId": "formPost",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Form Store Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Form Metadata"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Create a form",
+        "tags": ["Store - Forms"]
+      }
+    },
+    "/v1/forms/{formName}": {
+      "delete": {
+        "description": "Delete a form including all related files, templates and schema.",
+        "operationId": "formDelete",
+        "parameters": [
+          {
+            "description": "Name of a form.",
+            "in": "path",
+            "name": "formName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete a form",
+        "tags": ["Store - Forms"]
+      },
+      "get": {
+        "description": "Retrieve a form using 'formName' path param. Use query params to filter the result.",
+        "operationId": "formGet",
+        "parameters": [
+          {
+            "description": "Name of a form.",
+            "in": "path",
+            "name": "formName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter form json blocks, Possible Values: formData, formMetaData, xdpTemplate, templateData, templateMetaData, templateVersions, xsdSchema, schemaData, schemaMetaData, schemaVersions.",
+            "in": "query",
+            "name": "select",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Form Store Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Read a form",
+        "tags": ["Store - Forms"]
+      },
+      "put": {
+        "description": "Update a form using 'formName' path param.",
+        "operationId": "formPut",
+        "parameters": [
+          {
+            "description": "Name of a form.",
+            "in": "path",
+            "name": "formName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Form Store Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Form Metadata"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Update a form",
+        "tags": ["Store - Forms"]
+      }
+    },
+    "/v1/forms/{formName}/schema": {
+      "post": {
+        "description": "Store a schema of a form.",
+        "operationId": "schemaPost",
+        "parameters": [
+          {
+            "description": "Name of a form.",
+            "in": "path",
+            "name": "formName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Schema Store Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schema Metadata"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Store a schema",
+        "tags": ["Store - Form Schema"]
+      }
+    },
+    "/v1/forms/{formName}/schema/{schemaName}": {
+      "delete": {
+        "description": "Delete a schema of a form using.",
+        "operationId": "schemaDelete",
+        "parameters": [
+          {
+            "description": "Name of a form.",
+            "in": "path",
+            "name": "formName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name of a schema.",
+            "in": "path",
+            "name": "schemaName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Set to true if all schema versions should be deleted.",
+            "in": "query",
+            "name": "allVersions",
+            "required": false,
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Set to true if schema is queried via objectId.",
+            "in": "query",
+            "name": "isObjectId",
+            "required": false,
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete a schema",
+        "tags": ["Store - Form Schema"]
+      },
+      "get": {
+        "description": "Read a schema of a form.",
+        "operationId": "schemaGet",
+        "parameters": [
+          {
+            "description": "Name of a form.",
+            "in": "path",
+            "name": "formName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name of a schema.",
+            "in": "path",
+            "name": "schemaName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter schema json blocks, Possible Values: xsdSchema, schemaData, schemaMetaData, schemaVersions.",
+            "in": "query",
+            "name": "select",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Set to true if schema is queried via objectId.",
+            "in": "query",
+            "name": "isObjectId",
+            "required": false,
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schema Store Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Read a schema",
+        "tags": ["Store - Form Schema"]
+      },
+      "put": {
+        "description": "Update a schema of a form.",
+        "operationId": "schemaPut",
+        "parameters": [
+          {
+            "description": "Name of a form.",
+            "in": "path",
+            "name": "formName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name of a schema.",
+            "in": "path",
+            "name": "schemaName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Set to true if schema is queried via objectId.",
+            "in": "query",
+            "name": "isObjectId",
+            "required": false,
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Schema Update Store Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schema Metadata"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Update a schema",
+        "tags": ["Store - Form Schema"]
+      }
+    },
+    "/v1/forms/{formName}/templates": {
+      "get": {
+        "description": "Retrieve all templates of a form. Use query params to filter the result.",
+        "operationId": "templatesGet",
+        "parameters": [
+          {
+            "description": "Name of a form",
+            "in": "path",
+            "name": "formName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter a templates locale.",
+            "in": "query",
+            "name": "locale",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter a templates language.",
+            "in": "query",
+            "name": "language",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter a templates name.",
+            "in": "query",
+            "name": "templateName",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter a templates masterLanguage.",
+            "in": "query",
+            "name": "masterLanguage",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter a templates businessArea.",
+            "in": "query",
+            "name": "businessArea",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter a templates businessDepartment.",
+            "in": "query",
+            "name": "businessDepartment",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Amount of elements which should be returned.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Starting element.",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Filter template json blocks, Possible Values: 'xdpTemplate', 'templateData', 'templateMetaData', 'templateVersions'.",
+            "in": "query",
+            "name": "select",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Template Store Output"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Read templates",
+        "tags": ["Store - Form Templates"]
+      },
+      "post": {
+        "description": "Store a template of a form.",
+        "operationId": "templatePost",
+        "parameters": [
+          {
+            "description": "Name of form",
+            "in": "path",
+            "name": "formName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Template Store Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Template Metadata"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Store a template",
+        "tags": ["Store - Form Templates"]
+      }
+    },
+    "/v1/forms/{formName}/templates/{templateName}": {
+      "delete": {
+        "description": "Delete a template of a form using 'name' or 'objectId' path param.",
+        "operationId": "templateDelete",
+        "parameters": [
+          {
+            "description": "Name of a form.",
+            "in": "path",
+            "name": "formName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name of a template.",
+            "in": "path",
+            "name": "templateName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Set to true if all template versions should be deleted.",
+            "in": "query",
+            "name": "allVersions",
+            "required": false,
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Set to true if template is queried via objectId.",
+            "in": "query",
+            "name": "isObjectId",
+            "required": false,
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete a template",
+        "tags": ["Store - Form Templates"]
+      },
+      "get": {
+        "description": "Read a template of a form using 'name' or 'objectId' path param.",
+        "operationId": "templateGet",
+        "parameters": [
+          {
+            "description": "Name of a form.",
+            "in": "path",
+            "name": "formName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name of a template.",
+            "in": "path",
+            "name": "templateName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter template json blocks, Possible Values: 'xdpTemplate', 'templateData', 'templateMetaData', 'templateVersions'.",
+            "in": "query",
+            "name": "select",
+            "required": false,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Set to true if template is queried via objectId.",
+            "in": "query",
+            "name": "isObjectId",
+            "required": false,
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Template Store Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Read a template",
+        "tags": ["Store - Form Templates"]
+      },
+      "put": {
+        "description": "Update a template of a form using 'name' or 'objectId' path param.",
+        "operationId": "templatePut",
+        "parameters": [
+          {
+            "description": "Name of a form.",
+            "in": "path",
+            "name": "formName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name of a template to be updated.",
+            "in": "path",
+            "name": "templateName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Set to true if template is queried via objectId.",
+            "in": "query",
+            "name": "isObjectId",
+            "required": false,
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Template Update Store Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Template Metadata"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Update a template",
+        "tags": ["Store - Form Templates"]
+      }
+    },
+    "/v1/pdf/adsGet/attachments": {
+      "post": {
+        "operationId": "pDFGetAttachmentsPost",
+        "parameters": [
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PDF Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attachments Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Attachments from PDF",
+        "tags": ["ADS - Get Requests"]
+      }
+    },
+    "/v1/pdf/adsGet/attachmentsList": {
+      "post": {
+        "operationId": "pDFListAttachmentsPost",
+        "parameters": [
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PDF Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttachmentsList Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get a List of all Attachments from PDF",
+        "tags": ["ADS - Get Requests"]
+      }
+    },
+    "/v1/pdf/adsGet/data": {
+      "post": {
+        "operationId": "pDFGetDataPost",
+        "parameters": [
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PDF Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Data from PDF",
+        "tags": ["ADS - Get Requests"]
+      }
+    },
+    "/v1/pdf/adsGet/signatures": {
+      "post": {
+        "operationId": "pDFGetSignaturePost",
+        "parameters": [
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PDF Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Signatures Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Signatures from PDF",
+        "tags": ["ADS - Get Requests"]
+      }
+    },
+    "/v1/pdf/adsSet/attachment": {
+      "post": {
+        "description": "Attaches content to a pdf file. TraceLevel set to 1 or 2 adds a 'traceString' node to response JSON.",
+        "operationId": "pDFSetAttachmentPost",
+        "parameters": [
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Attachment Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid JSON supplied"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Set Attachment to PDF",
+        "tags": ["ADS - Set Requests"]
+      }
+    },
+    "/v1/pdf/adsSet/signature": {
+      "post": {
+        "description": "Sets a signature to a pdf file. TraceLevel set to 1 or 2 adds a 'traceString' node to response JSON.",
+        "operationId": "pDFSetSignaturePost",
+        "parameters": [
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Signature Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid JSON supplied"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Set Signature to PDF",
+        "tags": ["ADS - Set Requests"]
+      }
+    },
+    "/v1/repository": {
+      "post": {
+        "description": "Creates a repository to store form templates and schema",
+        "operationId": "repositoryPost",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Repository Metadata"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          }
+        },
+        "summary": "Create a repository",
+        "tags": ["Store - Create Repository"]
+      }
+    },
+    "/v1/template/adsGet/schema": {
+      "post": {
+        "operationId": "templateGetSchema",
+        "parameters": [
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Template Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Validation Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Schema from Template",
+        "tags": ["ADS - Get Requests"]
+      }
+    }
+  },
+  "security": [
+    {
+      "OAuth2": []
+    }
+  ],
+  "servers": [
+    {
+      "description": "Before you can call the endpoints of a SAP Forms service REST API service instance, you must subscribe to the SAP Forms service by Adobe",
+      "url": "https://adsrestapi-formsprocessing.cfapps.{cf region}.hana.ondemand.com",
+      "variables": {
+        "cf region": {
+          "default": "",
+          "description": "Refers to the region prefix of your region domain, for example, eu10 for Europe (Frankfurt)"
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "description": "Create, read, update, and delete forms",
+      "name": "Store - Forms"
+    },
+    {
+      "description": "Set an attachment or signature to a PDF file.",
+      "name": "ADS - Set Requests"
+    },
+    {
+      "description": "Retrieve attachments from a PDF file or a schema from a template file.",
+      "name": "ADS - Get Requests"
+    },
+    {
+      "description": "Store, read, update, and delete a schema file",
+      "name": "Store - Form Schema"
+    },
+    {
+      "description": "Store, read, update, and delete template files.",
+      "name": "Store - Form Templates"
+    },
+    {
+      "description": "Render a PDF file by sending a template and a data file.",
+      "name": "ADS - Render Request"
+    },
+    {
+      "description": "Creates a new template store repository.",
+      "name": "Store - Create Repository"
+    }
+  ],
+  "x-sap-shortText": "Create and process your own print and interactive PDF forms"
+}

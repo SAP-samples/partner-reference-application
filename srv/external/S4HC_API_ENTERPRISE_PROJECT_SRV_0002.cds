@@ -1,4 +1,4 @@
-/* checksum : d79b6ce89c5afd71d4edb28b708b5c81 */
+/* checksum : 9c8c596fd1273d1d8a3c2cfcb8a2bfa5 */
 @cds.external               : true
 @m.IsDefaultEntityContainer : 'true'
 @sap.message.scope.supported: 'true'
@@ -44,10 +44,7 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjBlkFunc {
       @sap.label     : 'Boolean Variable (X = True, - = False, Space = Unknown)'
       @sap.heading   : ''
       EntProjPurchasingIsBlkd        : Boolean;
-
-      @cds.ambiguous : 'missing on condition?'
-      to_EnterpriseProject           : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject
-                                         on to_EnterpriseProject.ProjectUUID = ProjectUUID;
+      to_EnterpriseProject           : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject {};
 };
 
 @cds.external        : true
@@ -441,36 +438,14 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement {
       @sap.creatable     : 'false'
       @sap.updatable     : 'false'
       LastChangedByUser                : String(12);
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EntProjectElementJVA          : Composition of S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjectElementJVA
-                                           on to_EntProjectElementJVA.ProjectElementUUID = ProjectElementUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EntProjectElmntPublicSector   : Composition of S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjectElmntPublicSector
-                                           on to_EntProjectElmntPublicSector.ProjectElementUUID = ProjectElementUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EntProjElmntBlkFunc           : Composition of S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntBlockFunc
-                                           on to_EntProjElmntBlkFunc.ProjectElementUUID = ProjectElementUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EntProjElmntDlvbrl            : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntDlvbrl
-                                           on to_EntProjElmntDlvbrl.ProjectElementUUID = ProjectElementUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EntProjElmntWorkItem          : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntWorkItem
-                                           on to_EntProjElmntWorkItem.ProjectElementUUID = ProjectElementUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
+      to_EntProjectElementJVA          : Composition of S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjectElementJVA {};
+      to_EntProjectElmntPublicSector   : Composition of S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjectElmntPublicSector {};
+      to_EntProjElmntBlkFunc           : Composition of S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntBlockFunc {};
+      to_EntProjElmntDlvbrl            : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntDlvbrl {};
+      to_EntProjElmntWorkItem          : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntWorkItem {};
       to_ParentProjElement             : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement {};
-
-      @cds.ambiguous     : 'missing on condition?'
       to_SubProjElement                : Association to many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement {};
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProject             : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject
-                                           on to_EnterpriseProject.ProjectUUID = ProjectUUID;
+      to_EnterpriseProject             : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject {};
 } actions {
   action ChangeEntProjElmntPosition(
                                     @sap.label:'PrjElmnt GUID'
@@ -581,10 +556,7 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectJVA {
       @sap.field.control : 'JntIntrstBillgSubClass_fc'
       @sap.label         : 'JIB/JIBE Subclass A'
       JntIntrstBillgSubClass          : String(5);
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProject            : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject
-                                          on to_EnterpriseProject.ProjectUUID = ProjectUUID;
+      to_EnterpriseProject            : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject {};
 };
 
 @cds.external        : true
@@ -635,10 +607,7 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectRole {
       @sap.label         : 'Changed On'
       @sap.quickinfo     : 'Timestamp of Last Object Change'
       LastChangeDateTime   : DateTime;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProject : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject
-                               on to_EnterpriseProject.ProjectUUID = ProjectUUID;
+      to_EnterpriseProject : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject {};
 };
 
 @cds.external        : true
@@ -688,14 +657,8 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectTeamMember {
       @sap.label         : 'Changed On'
       @sap.quickinfo     : 'Timestamp of Last Object Change'
       LastChangeDateTime       : DateTime;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EntProjEntitlement    : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntTeamMemberEntitlement
-                                   on to_EntProjEntitlement.TeamMemberUUID = TeamMemberUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProject     : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject
-                                   on to_EnterpriseProject.ProjectUUID = ProjectUUID;
+      to_EntProjEntitlement    : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntTeamMemberEntitlement {};
+      to_EnterpriseProject     : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject {};
 };
 
 @cds.external        : true
@@ -1143,30 +1106,12 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject {
       @sap.field.control : 'CostingSheet_fc'
       @sap.label         : 'Costing Sheet'
       CostingSheet                     : String(6);
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProjectElement      : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement
-                                           on to_EnterpriseProjectElement.ProjectUUID = ProjectUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProjectJVA          : Composition of S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectJVA
-                                           on to_EnterpriseProjectJVA.ProjectUUID = ProjectUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EntProjBlkFunc                : Composition of S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjBlkFunc
-                                           on to_EntProjBlkFunc.ProjectUUID = ProjectUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EntProjectPublicSector        : Composition of S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjectPublicSector
-                                           on to_EntProjectPublicSector.ProjectUUID = ProjectUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EntProjRole                   : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectRole
-                                           on to_EntProjRole.ProjectUUID = ProjectUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EntProjTeamMember             : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectTeamMember
-                                           on to_EntProjTeamMember.ProjectUUID = ProjectUUID;
+      to_EnterpriseProjectElement      : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement {};
+      to_EnterpriseProjectJVA          : Composition of S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectJVA {};
+      to_EntProjBlkFunc                : Composition of S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjBlkFunc {};
+      to_EntProjectPublicSector        : Composition of S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjectPublicSector {};
+      to_EntProjRole                   : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectRole {};
+      to_EntProjTeamMember             : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectTeamMember {};
 } actions {
   action ChangeEntProjProcgStatus(
                                   @sap.label:'Proc. Status'
@@ -1276,14 +1221,8 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjectElementJVA {
       @sap.field.control : 'JntIntrstBillgSubClass_fc'
       @sap.label         : 'JIB/JIBE Subclass A'
       JntIntrstBillgSubClass          : String(5);
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProjectElement     : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement
-                                          on to_EnterpriseProjectElement.ProjectElementUUID = ProjectElementUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProject            : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject
-                                          on to_EnterpriseProject.ProjectUUID = ProjectUUID;
+      to_EnterpriseProjectElement     : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement {};
+      to_EnterpriseProject            : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject {};
 };
 
 @cds.external        : true
@@ -1384,10 +1323,7 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjectPublicSector {
       @sap.field.control : 'SponsoredProgram_fc'
       @sap.label         : 'Sponsored Program'
       SponsoredProgram               : String(20);
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProject           : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject
-                                         on to_EnterpriseProject.ProjectUUID = ProjectUUID;
+      to_EnterpriseProject           : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject {};
 };
 
 @cds.external        : true
@@ -1478,14 +1414,8 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntBlockFunc {
       @sap.label        : 'Boolean Variable (X = True, - = False, Space = Unknown)'
       @sap.heading      : ''
       EntProjPurchasingIsBlkd           : Boolean;
-
-      @cds.ambiguous    : 'missing on condition?'
-      to_EnterpriseProjectElement       : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement
-                                            on to_EnterpriseProjectElement.ProjectElementUUID = ProjectElementUUID;
-
-      @cds.ambiguous    : 'missing on condition?'
-      to_EnterpriseProject              : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject
-                                            on to_EnterpriseProject.ProjectUUID = ProjectUUID;
+      to_EnterpriseProjectElement       : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement {};
+      to_EnterpriseProject              : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject {};
 };
 
 @cds.external        : true
@@ -1562,14 +1492,8 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntDlvbrl {
       @sap.label         : 'Changed By'
       @sap.quickinfo     : 'Name of Person Who Changed Object'
       LastChangedByUser              : String(12);
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProjectElement    : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement
-                                         on to_EnterpriseProjectElement.ProjectElementUUID = ProjectElementUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EntProjElmntDlvDistr        : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntDlvbrlDistr
-                                         on to_EntProjElmntDlvDistr.EntProjElmntDeliverableUUID = EntProjElmntDeliverableUUID;
+      to_EnterpriseProjectElement    : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement {};
+      to_EntProjElmntDlvDistr        : Composition of many S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntDlvbrlDistr {};
 };
 
 @cds.external        : true
@@ -1630,10 +1554,7 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntDlvbrlDistr {
       @sap.updatable     : 'false'
       @sap.semantics     : 'unit-of-measure'
       EntProjElmntDlvbrlDistrQtyUnit : String(3);
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EntProjElmntDlvbrl          : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntDlvbrl
-                                         on to_EntProjElmntDlvbrl.EntProjElmntDeliverableUUID = EntProjElmntDeliverableUUID;
+      to_EntProjElmntDlvbrl          : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntDlvbrl {};
 };
 
 @cds.external        : true
@@ -1738,14 +1659,8 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjectElmntPublicSector {
       @sap.field.control : 'SponsoredProgram_fc'
       @sap.label         : 'Sponsored Program'
       SponsoredProgram               : String(20);
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProjectElement    : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement
-                                         on to_EnterpriseProjectElement.ProjectElementUUID = ProjectElementUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProject           : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject
-                                         on to_EnterpriseProject.ProjectUUID = ProjectUUID;
+      to_EnterpriseProjectElement    : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement {};
+      to_EnterpriseProject           : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject {};
 };
 
 @cds.external        : true
@@ -1838,14 +1753,8 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntProjElmntWorkItem {
       @sap.creatable     : 'false'
       @sap.updatable     : 'false'
       EntProjElmntWrkItmLstChgDteTme : DateTime;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProjectElement    : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement
-                                         on to_EnterpriseProjectElement.ProjectElementUUID = ProjectElementUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProject           : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject
-                                         on to_EnterpriseProject.ProjectUUID = ProjectUUID;
+      to_EnterpriseProjectElement    : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectElement {};
+      to_EnterpriseProject           : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject {};
 };
 
 @cds.external        : true
@@ -1912,15 +1821,7 @@ entity S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EntTeamMemberEntitlement {
       @sap.label         : 'Changed On'
       @sap.quickinfo     : 'Timestamp of Last Object Change'
       LastChangeDateTime     : DateTime;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_TeamMember          : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectTeamMember
-                                 on to_TeamMember.TeamMemberUUID = TeamMemberUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
-      to_EnterpriseProject   : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject
-                                 on to_EnterpriseProject.ProjectUUID = ProjectUUID;
-
-      @cds.ambiguous     : 'missing on condition?'
+      to_TeamMember          : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectTeamMember {};
+      to_EnterpriseProject   : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProject {};
       to_Role                : Association to S4HC_API_ENTERPRISE_PROJECT_SRV_0002.A_EnterpriseProjectRole {};
 };
