@@ -25,6 +25,15 @@ sap.ui.define([], function () {
         linkVisitor.split('PoetrySlams')[0] + 'Visitors(' + visitorID + ')';
 
       window.location.href = encodeURI(linkVisitor);
+    },
+    createGuestList: function (oBindingContext) {
+      const poetrySlamID = oBindingContext.getObject().ID;
+      const oModel = this._controller.getView().getModel();
+      // Redirect to guest list creation endpoint
+      sap.m.URLHelper.redirect(
+        oModel.sServiceUrl + `PDFDocument(${poetrySlamID})/content`,
+        true
+      );
     }
   };
 });
