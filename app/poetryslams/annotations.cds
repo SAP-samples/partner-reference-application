@@ -262,7 +262,12 @@ annotate service.PoetrySlams with @(
       {
         $Type : 'UI.DataFieldForAnnotation',
         Target: '@UI.DataPoint#bookedSeats'
-      }
+      },
+      {
+        $Type : 'UI.DataFieldForAction',
+        Action: 'PoetrySlamService.EntityContainer/createTestData',
+        Label : '{i18n>generateSampleData}',
+      },
     ],
     // Default filters on the list page
     SelectionFields               : [

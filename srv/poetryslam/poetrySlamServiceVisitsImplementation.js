@@ -267,10 +267,6 @@ module.exports = async (srv) => {
       result = false;
     }
 
-    if (!result) {
-      req.error(400, 'VISIT_BOOK_CREATE_NOT_POSSIBLE', [poetrySlam.number]);
-    }
-
     return result;
   }
 

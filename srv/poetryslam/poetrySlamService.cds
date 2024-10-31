@@ -26,12 +26,12 @@ service PoetrySlamService @(
 
       // Action: Cancel
       @(
-        // Defines that poetryslam entitiy is affected and targeted by the action
+        // Defines that poetryslam entity is affected and targeted by the action
         Common.SideEffects             : {TargetProperties: [
           'poetryslam/status_code',
           'poetryslam/statusCriticality'
         ]},
-        // Determines that poetryslam entitiy is used when the action is performed
+        // Determines that poetryslam entity is used when the action is performed
         cds.odata.bindingparameter.name: 'poetryslam'
       )
       action cancel()  returns PoetrySlams;
@@ -43,7 +43,7 @@ service PoetrySlamService @(
           'poetryslam/status_code',
           'poetryslam/statusCriticality'
         ]},
-        // Determines that poetryslam entitiy is used when the action is performed
+        // Determines that poetryslam entity is used when the action is performed
         cds.odata.bindingparameter.name: 'poetryslam'
       )
       action publish() returns PoetrySlams;
@@ -113,5 +113,6 @@ service PoetrySlamService @(
     roles  : userRoles;
   };
 
-  function userInfo() returns user;
+  function userInfo()       returns user;
+  action   createTestData() returns Boolean;
 }

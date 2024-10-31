@@ -1,5 +1,4 @@
 # CAP partner-reference-application
-**/package-lock.json
 _out
 *.db
 *.sqlite
@@ -12,6 +11,9 @@ target/
 dist/
 resources/
 .vscode/
+coverage/
+srv/external/*
+cli/
 
 # Web IDE, App Studio
 .che/
