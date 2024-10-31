@@ -29,26 +29,18 @@ axios.defaults.auth = { username: 'peter', password: 'welcome' };
 // ----------------------------------------------------------------------------
 // Entity PoetrySlams Tests
 // ----------------------------------------------------------------------------
-let db;
 describe('Poetryslams in PoetrySlamService', () => {
   let poetrySlams;
 
-  before(async () => {
-    // Connect to the database of the current project
-    db = await cds.connect.to('db');
-    expect(db).to.exist;
-
+  beforeEach(async () => {
     await test.data.reset();
+    await GET(`/odata/v4/poetryslamservice/createTestData`);
 
     // Read all poetry slams for usage in the tests
     poetrySlams = await GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
       params: { $select: `ID,status_code,statusCriticality` }
     });
     expect(poetrySlams.data.value.length).to.greaterThan(0);
-  });
-
-  beforeEach(async () => {
-    await test.data.reset();
   });
 
   it('should set the correct statusCriticality in read of poetry slams', async () => {
@@ -137,6 +129,12 @@ describe('Poetryslams in PoetrySlamService', () => {
     poetrySlamToBeCreated.createdBy = 'peter';
     poetrySlamToBeCreated.status_code = poetrySlamStatusCode.inPreparation;
     poetrySlamToBeCreated.statusCriticality = color.grey;
+
+    // @cap-js/hana: Reading decimal as string to not loose precision in case the db is of kind 'hana'
+    if (cds.env.requires.db.kind === 'hana') {
+      poetrySlamToBeCreated.visitorsFeeAmount =
+        poetrySlamToBeCreated.visitorsFeeAmount.toString();
+    }
 
     // Read the newly created poetry slam in draft mode
     let result = await GET(

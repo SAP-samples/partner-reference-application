@@ -88,7 +88,7 @@ class ConnectorS4HC extends Connector {
         ]
       };
     } catch (error) {
-      console.log(error);
+      console.error('ConnectorS4HC - projectDataRecord:', error);
     }
   }
 
@@ -103,51 +103,58 @@ class ConnectorS4HC extends Connector {
 
   // Enhance poetry slam with data of remote project
   async readProject(poetrySlams) {
+    const s4hcProject = await cds.connect.to(
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
+    const s4hcProjectsProjectProfileCode = await cds.connect.to(
+      'S4HC_ENTPROJECTPROFILECODE_0001'
+    );
+    const s4hcProjectsProcessingStatus = await cds.connect.to(
+      'S4HC_ENTPROJECTPROCESSINGSTATUS_0001'
+    );
+    let isProjectIDs = false;
+
+    // Read Project ID's related to SAP S/4HANA Cloud
+    let projectIDs = [];
+    for (const poetrySlam of convertToArray(poetrySlams)) {
+      // Check if the Project ID exists in the poetryslam record AND backend ERP is SAP S/4HANA Cloud => then read project information from SAP S/4HANA Cloud
+      if (
+        poetrySlam.projectSystem == ConnectorS4HC.PROJECT_SYSTEM &&
+        poetrySlam.projectID
+      ) {
+        projectIDs.push(poetrySlam.projectID);
+        isProjectIDs = true;
+      }
+    }
+
+    // Read SAP S/4HANA Cloud projects data
+    if (!isProjectIDs) {
+      return poetrySlams;
+    }
+
+    let projects;
     try {
-      const s4hcProject = await cds.connect.to(
-        'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
-      );
-      const s4hcProjectsProjectProfileCode = await cds.connect.to(
-        'S4HC_ENTPROJECTPROFILECODE_0001'
-      );
-      const s4hcProjectsProcessingStatus = await cds.connect.to(
-        'S4HC_ENTPROJECTPROCESSINGSTATUS_0001'
-      );
-      let isProjectIDs = false;
-
-      // Read Project ID's related to SAP S/4HANA Cloud
-      let projectIDs = [];
-      for (const poetrySlam of convertToArray(poetrySlams)) {
-        // Check if the Project ID exists in the poetryslam record AND backend ERP is SAP S/4HANA Cloud => then read project information from SAP S/4HANA Cloud
-        if (
-          poetrySlam.projectSystem == ConnectorS4HC.PROJECT_SYSTEM &&
-          poetrySlam.projectID
-        ) {
-          projectIDs.push(poetrySlam.projectID);
-          isProjectIDs = true;
-        }
-      }
-
-      // Read SAP S/4HANA Cloud projects data
-      if (!isProjectIDs) {
-        return poetrySlams;
-      }
-
       // Request all associated projects
-      const projects = await s4hcProject.run(
+      projects = await s4hcProject.run(
         SELECT.from('PoetrySlamService.S4HCProjects').where({
           project: projectIDs
         })
       );
+    } catch (error) {
+      // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
+      console.error('ACTION_READ_PROJECT_CONNECTION - Project; ' + error);
+      return;
+    }
 
-      // Convert in a map for easier lookup
-      const projectsMap = {};
-      for (const project of projects) projectsMap[project.project] = project;
+    // Convert in a map for easier lookup
+    const projectsMap = {};
+    for (const project of projects) projectsMap[project.project] = project;
 
-      // Assemble result
-      for (const poetrySlam of convertToArray(poetrySlams)) {
-        poetrySlam.toS4HCProject = projectsMap[poetrySlam.projectID];
+    // Assemble result
+    for (const poetrySlam of convertToArray(poetrySlams)) {
+      poetrySlam.toS4HCProject = projectsMap[poetrySlam.projectID];
 
+      try {
         // Get Project Profile Code Text from SAP S/4HANA Cloud
         const projectProfileCode = poetrySlam.toS4HCProject.projectProfileCode;
         const S4HCProjectsProjectProfileCodeRecords =
@@ -160,7 +167,14 @@ class ConnectorS4HC extends Connector {
           poetrySlam.projectProfileCodeText =
             S4HCProjectsProjectProfileCodeRecord.projectProfileCodeText;
         }
+      } catch (error) {
+        // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
+        console.error(
+          'ACTION_READ_PROJECT_CONNECTION - Project Profile Code; ' + error
+        );
+      }
 
+      try {
         // Get Project Processing Status Text from SAP S/4HANA Cloud
         const processingStatus = poetrySlam.toS4HCProject.processingStatus;
         const S4HCProjectsProcessingStatusRecords =
@@ -175,12 +189,15 @@ class ConnectorS4HC extends Connector {
           poetrySlam.processingStatusText =
             S4HCProjectsProcessingStatusRecord.processingStatusText;
         }
+      } catch (error) {
+        // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
+        console.error(
+          'ACTION_READ_PROJECT_CONNECTION  - Project Processing Status Code; ' +
+            error
+        );
       }
-      return poetrySlams;
-    } catch (error) {
-      // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
-      console.log('ACTION_READ_PROJECT_CONNECTION' + '; ' + error);
     }
+    return poetrySlams;
   }
 
   // Get the project record

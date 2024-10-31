@@ -7,7 +7,7 @@
 // Adds cds module
 const cds = require('@sap/cds');
 // Defines required CDS functions for testing
-const { expect, GET, POST, axios } = cds.test(__dirname + '/../../..');
+const { expect, GET, POST, axios, test } = cds.test(__dirname + '/../../..');
 
 // Executes an action, like 'draftActivate', 'draftEdit' or 'publish'
 const ACTION = (url, name, parameters = {}) =>
@@ -21,6 +21,11 @@ axios.defaults.auth = { username: 'peter', password: 'welcome' };
 // ----------------------------------------------------------------------------
 
 describe('VisitorService', () => {
+  beforeEach(async () => {
+    await test.data.reset();
+    await GET(`/odata/v4/poetryslamservice/createTestData`);
+  });
+
   it('should return the visitor data', async () => {
     // Read all visitors
     const visitors = await GET(`/odata/v4/visitorservice/Visitors`, {

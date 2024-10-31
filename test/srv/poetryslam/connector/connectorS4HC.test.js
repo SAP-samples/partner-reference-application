@@ -11,7 +11,8 @@ const sinon = require('sinon');
 const { expect } = cds.test(__dirname + '/../../../..');
 
 describe('ConnectorS4HC', () => {
-  let stubLog,
+  let stubErrorLog,
+    stubLog,
     stubCreateConnectorData,
     connector,
     stubINSERT,
@@ -30,6 +31,7 @@ describe('ConnectorS4HC', () => {
   beforeEach(() => {
     connector = new ConnectorS4HC(connectorData);
 
+    stubErrorLog = sinon.stub(console, 'error');
     stubLog = sinon.stub(console, 'log');
     stubCreateConnectorData = sinon
       .stub(Connector, 'createConnectorData')
@@ -75,6 +77,7 @@ describe('ConnectorS4HC', () => {
   });
 
   afterEach(() => {
+    stubErrorLog.restore();
     stubLog.restore();
     stubCreateConnectorData.restore();
     stubINSERT.restore();
@@ -157,6 +160,60 @@ describe('ConnectorS4HC', () => {
 
     const objectData = await connector.readProject(poetrySlams);
     expect(objectData).to.eql(expectedResult);
+  });
+
+  it('should throw an error when remote project data cannot be read', async () => {
+    stubCDS.restore();
+
+    stubCDS = sinon.stub(cds.connect, 'to').resolves({
+      run: () => {
+        throw new Error('test');
+      }
+    });
+
+    const poetrySlams = {
+      projectSystem: ConnectorS4HC.PROJECT_SYSTEM,
+      projectID: 999
+    };
+
+    await connector.readProject(poetrySlams);
+
+    sinon.assert.calledWith(
+      stubErrorLog,
+      `ACTION_READ_PROJECT_CONNECTION - Project; Error: test`
+    );
+  });
+
+  it('should throw an error when remote project data cannot be read', async () => {
+    stubCDS.restore();
+
+    stubCDS = sinon.stub(cds.connect, 'to').resolves({
+      run: (data) => {
+        if (data) {
+          if (data[0].project && data[0].project[0] === 1) {
+            return data;
+          }
+          throw new Error('test');
+        }
+      }
+    });
+
+    const poetrySlams = {
+      projectSystem: ConnectorS4HC.PROJECT_SYSTEM,
+      projectID: 1
+    };
+
+    await connector.readProject(poetrySlams);
+
+    sinon.assert.calledWith(
+      stubErrorLog,
+      `ACTION_READ_PROJECT_CONNECTION - Project Profile Code; Error: test`
+    );
+
+    sinon.assert.calledWith(
+      stubErrorLog,
+      `ACTION_READ_PROJECT_CONNECTION  - Project Processing Status Code; Error: test`
+    );
   });
 
   it('should return poetry slam data when reading remote project data of a poetry slam entitiy without project ID', async () => {

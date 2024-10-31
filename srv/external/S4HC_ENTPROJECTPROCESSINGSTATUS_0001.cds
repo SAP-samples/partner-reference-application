@@ -1,4 +1,4 @@
-/* checksum : 00f09dd0af35f1e77dae2ab5acdb9e1f */
+/* checksum : fdfb6388135be9407c6987af3faf5080 */
 @cds.external                                       : true
 @Aggregation.ApplySupported                         : {
   Transformations: [
@@ -72,9 +72,8 @@ entity S4HC_ENTPROJECTPROCESSINGSTATUS_0001.ProcessingStatus {
       @Common.QuickInfo  : 'Processing Status Text'
       ProcessingStatusText  : String(60) not null;
 
-      @cds.ambiguous     : 'missing on condition?'
       @Common.Composition: true
-      _ProcessingStatusText : Composition of many S4HC_ENTPROJECTPROCESSINGSTATUS_0001.ProcessingStatusText;
+      _ProcessingStatusText : Composition of many S4HC_ENTPROJECTPROCESSINGSTATUS_0001.ProcessingStatusText {};
 };
 
 @cds.external                                                    : true
@@ -102,8 +101,5 @@ entity S4HC_ENTPROJECTPROCESSINGSTATUS_0001.ProcessingStatusText {
       @Common.Heading    : 'Processing Status Text'
       @Common.QuickInfo  : 'Processing Status Text'
       ProcessingStatusText : String(60) not null;
-
-      @cds.ambiguous     : 'missing on condition?'
-      _ProcessingStatus    : Association to one S4HC_ENTPROJECTPROCESSINGSTATUS_0001.ProcessingStatus
-                               on _ProcessingStatus.ProcessingStatus = ProcessingStatus;
+      _ProcessingStatus    : Association to one S4HC_ENTPROJECTPROCESSINGSTATUS_0001.ProcessingStatus {};
 };

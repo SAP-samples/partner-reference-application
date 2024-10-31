@@ -201,7 +201,7 @@ async function createProject(req, srv, ConnectorClass, errorText) {
       .where({ ID: poetrySlamID });
   } catch (error) {
     // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
-    console.log(`ACTION_CREATE_PROJECT_FAILED; ${error}`);
+    console.error(`ACTION_CREATE_PROJECT_FAILED; ${error}`);
     req.warn(500, 'ACTION_CREATE_PROJECT_FAILED', [poetrySlamIdentifier]);
   }
 }

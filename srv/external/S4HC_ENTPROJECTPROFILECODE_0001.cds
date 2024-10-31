@@ -1,4 +1,4 @@
-/* checksum : 0a1d38eaf6133b36c24159a05639f188 */
+/* checksum : 75bfd0aab06c500ca8f445d460b420fb */
 @cds.external                                       : true
 @Aggregation.ApplySupported                         : {
   Transformations: [
@@ -72,9 +72,8 @@ entity S4HC_ENTPROJECTPROFILECODE_0001.ProjectProfileCode {
       @Common.QuickInfo                 : 'Text for Profile'
       ProjectProfileCodeText  : String(40) not null;
 
-      @cds.ambiguous                    : 'missing on condition?'
       @Common.Composition               : true
-      _ProjectProfileCodeText : Composition of many S4HC_ENTPROJECTPROFILECODE_0001.ProjectProfileCodeText;
+      _ProjectProfileCodeText : Composition of many S4HC_ENTPROJECTPROFILECODE_0001.ProjectProfileCodeText {};
 };
 
 @cds.external                                                    : true
@@ -101,8 +100,5 @@ entity S4HC_ENTPROJECTPROFILECODE_0001.ProjectProfileCodeText {
       @Common.Label      : 'Description'
       @Common.QuickInfo  : 'Text for Profile'
       ProjectProfileCodeText : String(40) not null;
-
-      @cds.ambiguous     : 'missing on condition?'
-      _ProjectProfileCode    : Association to one S4HC_ENTPROJECTPROFILECODE_0001.ProjectProfileCode
-                                 on _ProjectProfileCode.ProjectProfileCode = ProjectProfileCode;
+      _ProjectProfileCode    : Association to one S4HC_ENTPROJECTPROFILECODE_0001.ProjectProfileCode {};
 };

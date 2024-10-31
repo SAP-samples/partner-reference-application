@@ -1,4 +1,4 @@
-/* checksum : 6e6b666341e193fec863b18ecf07b165 */
+/* checksum : ecd8b7fb9515e4aa71cea38da2dd4a4a */
 @cds.external              : true
 @m.IsDefaultEntityContainer: 'true'
 service byd_khproject {};
@@ -242,17 +242,9 @@ entity byd_khproject.ProjectCollection {
       @sap.updatable  : 'false'
       @sap.filterable : 'true'
       StoppingStatusCodeText               : LargeString;
-
-      @cds.ambiguous  : 'missing on condition?'
       Team                                 : Association to many byd_khproject.TeamCollection {};
-
-      @cds.ambiguous  : 'missing on condition?'
       ProjectSummaryTask                   : Association to byd_khproject.ProjectSummaryTaskCollection {};
-
-      @cds.ambiguous  : 'missing on condition?'
       Task                                 : Association to many byd_khproject.TaskCollection {};
-
-      @cds.ambiguous  : 'missing on condition?'
       ProjectBuyerParty                    : Association to byd_khproject.ProjectBuyerPartyCollection {};
 };
 
@@ -353,8 +345,6 @@ entity byd_khproject.ProjectSummaryTaskCollection {
       @sap.updatable  : 'false'
       @sap.filterable : 'true'
       LifeCycleStatusCodeText          : LargeString;
-
-      @cds.ambiguous  : 'missing on condition?'
       Project                          : Association to byd_khproject.ProjectCollection {};
 };
 
@@ -486,8 +476,6 @@ entity byd_khproject.TeamCollection {
       @sap.updatable  : 'false'
       @sap.filterable : 'true'
       TotalRemainingWorkQuantityUnitCodeText        : LargeString;
-
-      @cds.ambiguous  : 'missing on condition?'
       Project                                       : Association to byd_khproject.ProjectCollection {};
 };
 
@@ -515,8 +503,6 @@ entity byd_khproject.ProjectBuyerPartyCollection {
       @sap.filterable: 'true'
       @sap.label     : 'Party ID'
       PartyID        : String(60);
-
-      @cds.ambiguous : 'missing on condition?'
       Project        : Association to byd_khproject.ProjectCollection {};
 };
 
@@ -710,23 +696,11 @@ entity byd_khproject.TaskCollection {
       @sap.updatable  : 'false'
       @sap.filterable : 'true'
       ScheduleActivityEndDateTimeConstraintTypeCodeText   : LargeString;
-
-      @cds.ambiguous  : 'missing on condition?'
       TaskService                                         : Association to many byd_khproject.TaskServiceCollection {};
-
-      @cds.ambiguous  : 'missing on condition?'
       Project                                             : Association to byd_khproject.ProjectCollection {};
-
-      @cds.ambiguous  : 'missing on condition?'
       TaskRelationship                                    : Association to many byd_khproject.TaskRelationshipCollection {};
-
-      @cds.ambiguous  : 'missing on condition?'
       TaskMaterial                                        : Association to many byd_khproject.TaskMaterialCollection {};
-
-      @cds.ambiguous  : 'missing on condition?'
       TaskExpense                                         : Association to many byd_khproject.TaskExpenseCollection {};
-
-      @cds.ambiguous  : 'missing on condition?'
       TaskRevenue                                         : Association to many byd_khproject.TaskRevenueCollection {};
 };
 
@@ -773,11 +747,7 @@ entity byd_khproject.TaskRelationshipCollection {
       @sap.filterable: 'true'
       @sap.label     : 'Lag'
       LagDuration            : String(20);
-
-      @cds.ambiguous : 'missing on condition?'
       Task                   : Association to byd_khproject.TaskCollection {};
-
-      @cds.ambiguous : 'missing on condition?'
       Project                : Association to byd_khproject.ProjectCollection {};
 };
 
@@ -918,14 +888,8 @@ entity byd_khproject.TaskServiceCollection {
       @sap.updatable : 'false'
       @sap.filterable: 'true'
       ValuationPriceAmountCurrencyCodeText : LargeString;
-
-      @cds.ambiguous : 'missing on condition?'
       Task                                 : Association to byd_khproject.TaskCollection {};
-
-      @cds.ambiguous : 'missing on condition?'
       Project                              : Association to byd_khproject.ProjectCollection {};
-
-      @cds.ambiguous : 'missing on condition?'
       TaskServiceConfirmation              : Association to many byd_khproject.TaskServiceConfirmationCollection {};
 };
 
@@ -1041,11 +1005,7 @@ entity byd_khproject.TaskMaterialCollection {
       @sap.updatable : 'false'
       @sap.filterable: 'true'
       TotalCostAmountCurrencyCodeText : LargeString;
-
-      @cds.ambiguous : 'missing on condition?'
       Task                            : Association to byd_khproject.TaskCollection {};
-
-      @cds.ambiguous : 'missing on condition?'
       Project                         : Association to byd_khproject.ProjectCollection {};
 };
 
@@ -1124,11 +1084,7 @@ entity byd_khproject.TaskExpenseCollection {
       @sap.updatable : 'false'
       @sap.filterable: 'true'
       TotalCostAmountCurrencyCodeText    : LargeString;
-
-      @cds.ambiguous : 'missing on condition?'
       Task                               : Association to byd_khproject.TaskCollection {};
-
-      @cds.ambiguous : 'missing on condition?'
       Project                            : Association to byd_khproject.ProjectCollection {};
 };
 
@@ -1188,11 +1144,7 @@ entity byd_khproject.TaskRevenueCollection {
       @sap.updatable : 'false'
       @sap.filterable: 'true'
       PlannedRevenueAmountCurrencyCodeText : LargeString;
-
-      @cds.ambiguous : 'missing on condition?'
       Task                                 : Association to byd_khproject.TaskCollection {};
-
-      @cds.ambiguous : 'missing on condition?'
       Project                              : Association to byd_khproject.ProjectCollection {};
 };
 
@@ -1326,11 +1278,7 @@ entity byd_khproject.TaskServiceConfirmationCollection {
       @sap.filterable : 'true'
       @sap.label      : 'CreationDateTime'
       CreationDateTime                  : Timestamp;
-
-      @cds.ambiguous  : 'missing on condition?'
       TaskService                       : Association to byd_khproject.TaskServiceCollection {};
-
-      @cds.ambiguous  : 'missing on condition?'
       Project                           : Association to byd_khproject.ProjectCollection {};
 };
 

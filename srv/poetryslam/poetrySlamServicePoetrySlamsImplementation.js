@@ -188,6 +188,11 @@ module.exports = async (srv) => {
       poetrySlam.isByD = connectorByD.isConnected();
       poetrySlam.isS4HC = connectorS4HC.isConnected();
       poetrySlam.isB1 = connectorB1.isConnected();
+
+      // Initialize the associations
+      poetrySlam.toByDProject = poetrySlam.toByDProject || null;
+      poetrySlam.toB1PurchaseOrder = poetrySlam.toB1PurchaseOrder || null;
+      poetrySlam.toS4HCProject = poetrySlam.toS4HCProject || null;
     }
 
     // Return remote data
