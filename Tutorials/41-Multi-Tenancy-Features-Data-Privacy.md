@@ -5,10 +5,10 @@ Put yourself in the shoes of an administrator of a poetry slam management applic
 Using the SAP Audit Log service of the SAP Cloud Application Programming Model, you ensure that your application is compliant to data privacy requirements. For more information, go to the [SAP Cloud Application Programming Model documentation on managing data privacy](https://cap.cloud.sap/docs/guides/data-privacy/).
 
 To try this feature with the Poetry Slam Manager, you have two options: 
-- A. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step-by-step. 
-- B. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch, in which the feature is already included. 
+1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step-by-step. 
+2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch, where the feature is already included. 
 
-The following section describes how you enhance the **main-multi-tenant** branch (option A).
+The following section describes how to enhance the **main-multi-tenant** branch (option 1).
 
 ## Application Enablement 
 
@@ -56,18 +56,18 @@ The following section describes how you enhance the **main-multi-tenant** branch
     ```yaml
     modules:
     - name: poetry-slams-srv
-    requires:
-    - name: poetry-slams-auditlog
+      requires:
+        - name: poetry-slams-auditlog
     
     - name: poetry-slams
-    requires:
-    - name: poetry-slams-auditlog
+      requires:
+        - name: poetry-slams-auditlog
 
-    # Audit Log Service 
-    # For automatic audit logging
+     # Audit Log Service 
+     # For automatic audit logging
     - name: poetry-slams-auditlog
-    type: org.cloudfoundry.managed-service
-    parameters:
+      type: org.cloudfoundry.managed-service
+      parameters:
         service: auditlog
         service-plan: premium
     ```
@@ -105,19 +105,24 @@ Now, let us take you on a guided tour through the data privacy feature of Poetry
 
     > Note: Use the subaccount to which you added the SAP Audit Log Viewer service.
 
-2. Open the Poetry Slams application. As a result, a list with several poetry slams is shown.
+2. Open the Poetry Slams application. 
 
-3. Open a poetry slam that has the status *Fully Booked*.
+3. If the list is empty, you can create sample data for mutable data, such as poetry slams, visitors, and visits, by clicking the button *Generate Sample Data* and refreshing the list. As a result, a list with several poetry slams is shown.
+    > Note: If you click the *Generate Sample Data* button again, the sample data is set to the default values.
+ 
+4. Open a poetry slam that has the status *Fully Booked*.
 
      > Note: Several visitors are shown in the *Bookings* list. As the *email* is annotated with *isPotentiallySensitive*, the read access will be logged.
 
-4. Choose *Edit* and change the description of the poetry slam. Save your changes.
+5. Choose *Edit* and change the description of the poetry slam. Save your changes.
 
     > Note: As *Changed By* is annotated with *isPotentiallyPersonal*, the write access will be logged.
 
-5. Now, go back to the SAP BTP cockpit and go to the SAP Audit Log Viewer service. 
-6. In the SAP Audit Log Viewer service, change the *from-date* to yesterday and choose *Play* in the upper right corner. 
-7. Enter your name in the filter to search for your own logs. 
+6. Return to the SAP BTP cockpit and go to the SAP Audit Log Viewer service. 
+
+7. In the SAP Audit Log Viewer service, change the *from-date* to yesterday and choose *Play* in the upper right corner. 
+
+8. Enter your name in the filter to search for your own logs. 
     
     For example, when looking for data-modification events, you can find the log entry of *modifiedBy* as you changed the poetry slam. Additionally, you find an entry for the *email* as you read visitor data in step 4.
 

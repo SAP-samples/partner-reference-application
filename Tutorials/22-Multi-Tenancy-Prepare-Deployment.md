@@ -20,6 +20,8 @@ You have already created a subaccount for the one-off deployment. Similar steps 
 		- As *Plan*, select *standard-edition (Application)*.
 	- *SAP HANA Cloud* (1 unit)
 		- As *Plan*, select *hana*.
+	- *SAP HANA Cloud* (1 unit)
+		- As *Plan*, select *tools*.
 	- *SAP HANA Schemas & HDI Containers* (min. 5 units: for the provider and four tenants)
 		- As *Plan*, select *hdi-shared*.
 	- *SAP Authorization and Trust Management service* (1 unit)
@@ -65,16 +67,42 @@ In the SAP BTP cockpit (provider subaccount), create an SAP BTP Cloud Foundry ru
 
 4. Keep the standard roles and add [Cloud Foundry org members](https://help.sap.com/docs/btp/sap-business-technology-platform/add-org-members-using-cockpit) and [Cloud Foundry space members](https://help.sap.com/docs/btp/sap-business-technology-platform/add-space-members-using-cockpit).
 
-### Create a SAP HANA Cloud Database
+### Create an SAP HANA Cloud Database
 
-1. In the SAP BTP cockpit (provider subaccount), in the left navigation pane, go to *Cloud Foundry* and *Spaces*. Open the desired space.
-2. Go to SAP HANA Cloud.
-3. To create an SAP HANA Cloud database, 
-	- Click *Create*.
-	- Select *SAP HANA database*.
-	- Choose *CF Organization + Space*.
-	- As *Instance Name*, enter `poetryslams-db`.
+1. In the SAP BTP cockpit (subaccount), open the *Service Marketplace* and select the service *SAP HANA Cloud*.
+
+2. Create a subscription of *SAP HANA Cloud* with
+    - *Service*: *SAP HANA Cloud, standard edition*
+    -  *Plan*: *tools*
+
+		> Note: The subscribed tool SAP HANA Cloud Central can be used to manage the database configuration, to upgrade the database, to create backups and start a recovery, and to access the stored data.
+
+		> Note: You can find more details about the administration of the SAP HANA Cloud database in the [SAP HANA Cloud Administration Guide](https://help.sap.com/docs/hana-cloud/sap-hana-cloud-administration-guide/sap-hana-cloud-administration-guide).
+
+3. In the left navigation pane, open *Security > Users* and add the role collection *SAP HANA Cloud Administrator* to your user.
+
+4. In the navigation bar, select *Services* and go to *Instances and Subscriptions*. 
+
+5. In the *Subscriptions* section, find the subscription of the service *SAP HANA Cloud* and select the *SAP HANA Cloud* hyperlink.
+
+6. On the *SAP HANA Cloud Central* screen, choose the button *Create Instance* to create the new database.
+
+7. Choose *SAP HANA Cloud, SAP HANA Database* as type.
+
+8. In the section *Runtime Environment*, select *Cloud Foundry*. If the *Cloud Foundry* tab is disabled, log in to *Cloud Foundry*.
+
+9. Select the space you previously created, for example `app`.
+
+10. On the next page *General*, 
+	- enter `poetryslams-db` as *Instance Name*.
 	- Enter a password.
-	- Choose *Create Now* and save your changes.
 
-You have now successfully prepared your provider account for deployment. Afterwards, you can directly clone this repository into your *Dev Space* to deploy and run the multi-tenant application. Alternatively, you can create the application manually from scratch. Both variants are described in the section [Enhance the One-Off Application for Multitenancy](./23-Multi-Tenancy-Develop-Sample-Application.md).
+11. On the next page *SAP HANA Database*, you can select the performance class to optimize the performance-cost balance. Use the default for this example.
+
+12. On the next pages *SAP HANA Database Availability Zone and Replicas* and *SAP HANA Database Advanced Settings*, use the default settings.
+
+13. On the right, you get an overview of the used capacity units (CUs) per month. Select *Review and Create* to create the SAP HANA Cloud database instance. 
+
+14. The *poetry-slams-db* is now in state *Creating*. Once the status switches to *Running*, the database can be used.
+
+You have now successfully prepared your provider account for deployment. You can clone this repository to your *Dev Space* to deploy and run the multi-tenant application. Alternatively, you can create the application manually from scratch. Both variants are described in the section [Enhance the One-Off Application for Multitenancy](./23-Multi-Tenancy-Develop-Sample-Application.md).

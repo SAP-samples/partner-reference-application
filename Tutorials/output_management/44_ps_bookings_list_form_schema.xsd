@@ -1,0 +1,38 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="ps_bookings_list_form">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element type="xs:string" name="image"/>
+        <xs:element type="xs:string" name="title"/>
+        <xs:element type="xs:string" name="description"/>
+        <xs:element type="xs:string" name="date"/>
+        <xs:element name="visitors_table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="visitor_row" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="name"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="artists_table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="artist_row" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="name"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

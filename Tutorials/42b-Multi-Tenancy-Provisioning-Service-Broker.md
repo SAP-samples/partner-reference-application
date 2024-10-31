@@ -105,6 +105,8 @@ This section describes how to use the SAP BTP CLI. For more details, go to the [
       ```
       btp create services/instance --subaccount <consumer subaccount id> --plan-name fullaccess --offering-name psm-servicebroker-dev --parameters '{ "xs-security": { "xsappname": "psm-sb-sub1-full", "oauth2-configuration": { "credential-types": ["binding-secret"] } } }' --name psm-sb-sub1-full
       ```
+      > Note: The offering-name psm-servicebroker-dev has the suffix *-dev* which is the space in the provider subaccount where the application is deployed
+      
    2. Afterward, you will find the instance in the SAP BTP consumer subaccount cockpit under *Services* - *Instances and Subscriptions* - *Instances*.
 
 6. To create credentials for the consumer service broker, run the command:
@@ -167,7 +169,7 @@ With these details, you're ready to explore and test the OData services.
 
 ## Consume the Application APIs
 
-There are two ways to consume the application APIs: via a technical user or a named user.
+There are two ways to consume the application APIs with a configured service broker: via a technical user or a named user.
 However, the technical user is preferred when using the OData services within an automatic (background) process where the login cannot be forwarded to the IdP logon and, hence, no "named" user can be authenticated.
 
 ### Consume the Application APIs as a Technical User
@@ -195,3 +197,44 @@ In other use cases, you want to consume the services with principal propagation:
 You use a regular user that logs on to the IdP, for example, an SAP Build application that has its own UI, but needs to consume the APIs of the Poetry Slams application. In this case, you don't want to use a technical user, but use the logon of a regular user with user-specific authorizations.
 
 You can test this scenario using Postman. In the folder [*api-samples*](./api-samples/), you find a Postman collection and a Postman environment with some examples. Check the documentation of the Postman collection for further details about how to run the examples.
+
+## Unsubscribe the Service Broker in a Consumer SAP BTP Subaccount
+
+During testing you might need to unsubscribe the Poetry Slam Manager in a consumer subaccount or undeploy the Poetry Slam Manager from the provider subaccount. Both require that the service broker in the consumer subaccount is unsubscribed first.
+
+If you updated the Poetry Slam Manager in the provider subaccount, the credentials of the service provider module in the provider subaccount changed. In this case, you will need to update the subscription.
+
+With the steps below, you can unsubscribe the service broker again. Following the sequence of these steps is required for a seamingless removal.
+
+1. Get the name of the subscribed service broker (**name of subscribed service broker**).
+   ```
+   btp list services/broker --subaccount <consumer subaccount id>
+   ```
+
+2. Get the current credentials of the provider service broker.
+
+   1. In the SAP BTP cockpit of the provider subaccount, navigate to the SAP BTP Cloud Foundry runtime space where the application is deployed.
+
+   2. In the space cockpit, navigate to *Applications* and click the link *poetry-slams-servicebroker*.
+
+   3. Copy the *Application Route* from the *Application Overview* (**provider service broker url**).
+   
+   4. Go to *User-Provided Variables* in the *Application Cockpit* of the service broker.
+
+   5. Copy the value of *SBF_BROKER_CREDENTIALS*: The first value is the user (marked in green in the image below), the second is the password (marked in red).
+      
+      <img src="./images/42_ServiceBroker_Credentials.png" width="50%">
+
+3. Update the service broker subscription in the consumer subaccount.
+   ```
+   btp update services/broker --name <name of subscribed service broker> --url <provider service broker url> --user="<user>" --password="<password>" --subaccount <consumer subaccount id>
+   ```
+
+4. In the SAP BTP cockpit of the consumer account, in *Instances and Subscriptions*, delete all service bindings for the service broker instances.
+
+5. As a next step, delete the instances of the service broker.
+
+6. Finally, unregister the consumer service broker by executing:
+   ```
+   btp unregister services/broker --name <name of subscribed service broker> --subaccount <consumer subaccount id> --confirm
+   ```

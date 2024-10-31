@@ -48,10 +48,11 @@ Upcoming versions of the sample application might include further features provi
 
 ### Features
 
-- Create and change poetry slam events, publish and cancel poetry slams.
+- Create and change poetry slam events, publish, and cancel poetry slams.
 - Maintain, add and remove visitors, cancel bookings.
 - Calculate the number of free seats and block overbookings.
-- Create projects for poetry slam events in one click and preview project information on the Poetry Slam Manager UI (here, ERP authorizations must apply in the partner application as well!).
+- Create projects for poetry slam events with one click and preview project information on the Poetry Slam Manager UI (here, ERP authorizations apply in the partner application as well).
+- Create and print a guest list.
 - As an ERP user, start Poetry Slam Manager from your ERP launchpad and navigate from Poetry Slam Manager to the associated project in the ERP system.
 - Make use of a standardized online development environment using SAP Business Application Studio.
 - Use a state-of-the-art web application architecture based on HTML5, Node.js, and SAP HANA Cloud.
@@ -63,6 +64,7 @@ Upcoming versions of the sample application might include further features provi
 - Offer seamless and secure front-end and back-channel integration with SAP ERP solutions.
 - Deliver open solutions by integration-ready OData APIs and business events following SAP technology alignments.
 - Deploy the app as a one-off and/or as a multi-customer solution.
+- Analyze and monitor logging data of the customer deployment.
 
 **Join our community!**
 
@@ -119,8 +121,9 @@ Updates to this repository are documented in the [change history](./Tutorials/99
     2. [Prepare your SAP BTP subaccount for multi-tenant deployment](./Tutorials/22-Multi-Tenancy-Prepare-Deployment.md)
     3. [Enhance the core application for multitenancy](./Tutorials/23-Multi-Tenancy-Develop-Sample-Application.md)
     4. [Deploy your SAP BTP multi-tenant application](./Tutorials/24-Multi-Tenancy-Deployment.md)
-    5. [Provision your multi-tenant application to subscriber accounts](./Tutorials/25-Multi-Tenancy-Provisioning.md)
+    5. [Provision your multi-tenant application to consumer accounts](./Tutorials/25-Multi-Tenancy-Provisioning.md)
     6. [Test and troubleshoot multitenancy](Tutorials/26-Test-Trace-Debug-Multi-Tenancy.md)
+    7. [Estimate the required size of the SAP HANA Cloud database](/Tutorials/27-Hana-DB-Scaling.md)
     
 3. Integrate the application with the **ERP back end** of your customer:   
     1. SAP Business One as ERP back end:
@@ -140,11 +143,15 @@ Updates to this repository are documented in the [change history](./Tutorials/99
 
 4. To extend your market reach, add **additional features** and integrate your SAP BTP application with more SAP BTP features and services:
     1. [Get an overview of the bill of materials](Tutorials/40-Multi-Tenancy-Features-BillOfMaterials.md)
-    2. [Manage data privacy](Tutorials/41-Manage-Data-Privacy.md)
+    2. [Manage data privacy](Tutorials/41-Multi-Tenancy-Features-Data-Privacy.md)
     3. Open the APIs of the SAP BTP application for third-party integrations:
         1. [Enable API access to SAP BTP applications using service broker](Tutorials/42a-Multi-Tenancy-Service-Broker.md)
         2. [Configure and consume the APIs of the SAP BTP application](Tutorials/42b-Multi-Tenancy-Provisioning-Service-Broker.md)
-    4. [Observability: Logging, Metrics, and Tracing](Tutorials/43-Multi-Tenancy-Features-Observability.md)
+    4. [Observability: logging, metrics, and tracing](Tutorials/43-Multi-Tenancy-Features-Observability.md)
+    5. Add capabilities for output management to your application:
+        1. [Manage forms](Tutorials/44a-Multi-Tenancy-Features-Forms.md)
+        2. [Print documents](Tutorials/44b-Multi-Tenancy-Features-Print.md)
+        3. [Send emails](Tutorials/44c-Multi-Tenancy-Features-EMail.md)
 
 ## More Information
 - [SAP BTP Developer’s Guide](https://help.sap.com/docs/btp/btp-developers-guide/what-is-btp-developers-guide)
@@ -152,6 +159,7 @@ Updates to this repository are documented in the [change history](./Tutorials/99
 - [SAP Cloud SDK](https://sap.github.io/cloud-sdk/)
 - [SAP Discovery Center](https://discovery-center.cloud.sap/missionssearch)
 - [What's New for SAP Business Technology Platform](https://help.sap.com/whats-new/cf0cb2cb149647329b5d02aa96303f56?clear=all&locale=en-US)
+- [SAP HANA Cloud Administration Guide](https://help.sap.com/docs/hana-cloud/sap-hana-cloud-administration-guide/sap-hana-cloud-administration-guide)
 
 ## Known Issues
 

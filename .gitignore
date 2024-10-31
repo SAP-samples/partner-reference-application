@@ -10,10 +10,12 @@ target/
 dist/
 resources/
 app/
+srv/
 approuter/
 mtx/
 *.*-mt_mta_build_tmp
 coverage/
+srv/external/*
 
 # Web IDE, App Studio
 .che/

@@ -27,6 +27,7 @@ The list shows the entitlements that are required in the subaccounts to develop 
 |               | SAP HTML5 Application Repository service for SAP BTP | app-host                  | Service       | 1                                 | 
 |               | SAP HTML5 Application Repository service for SAP BTP | app-runtime               | Service       | 1                                 | 
 |               | SAP HANA Cloud                                       | hana-td                   | Service       | 1                                 | 
+|               | SAP HANA Cloud                                       | tools                     | Application   | 1                                 | 
 |               | SAP HANA Schemas & HDI Containers                    | hdi-shared                | Service       | 1                                 | 
 |               | SAP Build Work Zone, standard edition                | standard                  | Application   | 1                                 |
 

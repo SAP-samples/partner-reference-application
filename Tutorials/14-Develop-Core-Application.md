@@ -73,13 +73,13 @@ The following steps are required to use the module in the project:
 
 ## Create an Initial Data Set
 
-Create an [initial data set](https://cap.cloud.sap/docs/guides/databases#providing-initial-data), which will be available after you've started the application. You can specify the data in SAP Cloud Application Programming Model by creating a set of CSV files in the */db/data* folder of the project.
+Create an [initial data set](https://cap.cloud.sap/docs/guides/databases#providing-initial-data) which will be available after you've started the application. You can specify the data in SAP Cloud Application Programming Model by creating a set of CSV files in the */db/data* folder of the project. Initial data sets should only be used for immutable data, for example code lists. Refer to the information in the [capire documentation](https://cap.cloud.sap/docs/guides/databases#using-csv-files). 
 
-The corresponding entity is encoded in the file name by concatenating the namespace and the entity name (for example, *sap.samples.poetryslams-Visitors.csv*).
+The corresponding entity is encoded in the file name by concatenating the namespace and the entity name (for example, *sap.samples.poetryslams-PoetrySlamStatusCodes.csv*). 
 
 Copy the [initial data set](../../../tree/main-single-tenant/db/data/) into your project.
 
-> Note: Initial data sets can be great for quick testing, but in productive environments they should be used for immutable data only. See also the information in the [capire documentation](https://cap.cloud.sap/docs/guides/databases#using-csv-files).
+> Note: To add entries to mutable data, such as poetry slams, visitors, and visits, in a productive setup, use APIs. For demo purposes in this reference application, the OData action *createTestData* is added to the Poetry Slams service which can be called with a button on the user interface.
 
 ## Define Services
 
@@ -105,10 +105,12 @@ Note that some code functions have been defined in separate utility files such a
 
 Copy the main file of the [Poetry Slams service implementation](../../../tree/main-single-tenant/srv/poetryslam/poetrySlamServiceImplementation.js), the service implementation of the [poetry slams entity](../../../tree/main-single-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) and the service implementation of the [visits entity](../../../tree/main-single-tenant/srv/poetryslam/poetrySlamServiceVisitsImplementation.js) into the *srv* folder and the [code definitions](../../../tree/main-single-tenant/srv/poetryslam/util/codes.js) and [entity calculation functions](../../../tree/main-single-tenant/srv/poetryslam/util/entityCalculations.js) into the *srv/poetryslam/util* folder of your project.
 
-### Readable IDs
-In addition to technical UUIDs, this solution generates readable IDs that end users can use to uniquely identify poetry slam documents. Compared to randomly generated UUIDs, these readable IDs are user-friendlier as they are easier to remember. One common approach for generating readable IDs is to use a combination of meaningful words and numbers. In this example, the poetry slam number is a combination of a prefix and a generated number, for example, *PS-10*.
+> Note: The Poetry Slams service definition and implementation define and handle the `createTestData` action which is used to create and reset sample entries of mutable data, such as poetry slams, visitors, and visits, after the application is deployed and running. This function is available for demo purpose only. The implementation of the action reads the files [*srv/poetryslam/sample_data/poetrySlams.json*](../../../tree/main-single-tenant/srv/poetryslam/sample_data/poetrySlams.json), [*srv/poetryslam/sample_data/visitors.json*](../../../tree/main-single-tenant/srv/poetryslam/sample_data/visitors.json), and [*srv/poetryslam/sample_data/visits.json*](../../../tree/main-single-tenant/srv/poetryslam/sample_data/visits.json) containing sample data, and adds the data to the corresponding database tables using [`UPSERT`](https://cap.cloud.sap/docs/node.js/cds-ql#upsert ).
 
-The number generation depends on the database that you use. For local testing, you use an SQLite database and, for deployed solutions, SAP HANA Cloud. In SQLite, you use the AUTOINCREMENT feature. In SAP HANA Cloud, you use a HANA sequence. This distinction is implemented in the function [getNextNumber of class uniqueNumberGenerator](../../../tree/main-single-tenant/srv/poetryslam/util/uniqueNumberGenerator.js), which is called in the [Poetry Slams service implementation](../../../tree/main-single-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) when the poetry slam is created (which is the first time a draft is saved).
+### Readable IDs
+In addition to technical UUIDs, this solution generates readable IDs that end users can use to uniquely identify poetry slam documents. Compared to randomly generated UUIDs, these readable IDs are easier to remember. One common approach for generating readable IDs is to use a combination of meaningful words and numbers. In this example, the poetry slam number is a combination of a prefix and a generated number, for example, *PS-10*.
+
+The number generation depends on the database that you use. For local testing purposes, use an SQLite database and, for deployed solutions, SAP HANA Cloud. In SQLite, use the AUTOINCREMENT feature. In SAP HANA Cloud, use an SAP HANA sequence. This distinction is implemented in the function [getNextNumber of class uniqueNumberGenerator](../../../tree/main-single-tenant/srv/poetryslam/util/uniqueNumberGenerator.js) which is called in the [Poetry Slams service implementation](../../../tree/main-single-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) when the poetry slam is created (meaning the first time a draft is saved).
 
 The sequence used by SAP HANA Cloud is defined in the [poetrySlamNumber.hdbsequence](../../../tree/main-single-tenant/db/src/poetrySlamNumber.hdbsequence). Note that, for SAP HANA Cloud sequences, the generated numbers can't be rolled back. So, if a transaction is not committed, a number is lost from the sequence.
 
@@ -124,7 +126,7 @@ You can find an example of input validation via an annotation in the [visitors e
 entity Visitors : cuid, managed {
     ...
     // Regex annotation to validate the input of the e-mail 
-    e-mail  : String @assert.format: '^[\w\-\.]+@([\w-]+\.)+[\w-]{2,4}$';
+    email  : String @assert.format: '^[\w\-\.]+@([\w-]+\.)+[\w-]{2,4}$';
     ...
 }
 ```
@@ -256,6 +258,8 @@ Copy the content of the [*ui5.yaml*](../../../tree/main-single-tenant/app/poetry
 | [Side Effects](https://sapui5.hana.ondemand.com/sdk/#/topic/18b17bdd49d1436fa9172cbb01e26544.html) | Reload data, permissions, or messages, or trigger determine actions based on data changes in the UI scenarios | [annotations.cds > service.Visits](../../../tree/main-single-tenant/app/poetryslams/annotations.cds) |
 | [Value List](https://sapui5.hana.ondemand.com/sdk/#/topic/16d43eb0472c4d5a9439ca1bf92c915d.html)   | Enable the selection of a value in a column with the help of a value list                                 | [annotations.cds > service.Visits](../../../tree/main-single-tenant/app/poetryslams/annotations.cds) |
 
+> Note: The annotations add the OData action *createTestData* to the Poetry Slams list report. The action creates sample data for mutable entities and is for demo purposes only.
+
 #### Sandbox Environment for the SAP Fiori Launchpad
 After the SAP Fiori application is created by the wizard, a single component is loaded when the application is started via managed app router or when locally executed. In the Partner Reference Application, the loaded single component is the SAP Fiori elements *ListReportPage* named *PoetrySlamsList*. If an SAP Fiori launchpad is loaded to show tiles for several applications, some changes are required in the *app/poetryslams/webapp/index.html*. 
 
@@ -270,9 +274,9 @@ Use the different scripts in the `<head>` section of the [`app/poetryslams/webap
 ```html
 <script type="text/javascript" src="util/setShellConfig.js"></script>
 
-<script src="https://sapui5.hana.ondemand.com/1.120.4/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
+<script src="https://sapui5.hana.ondemand.com/1.120.20/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
 <script
-    src="https://sapui5.hana.ondemand.com/1.120.4/resources/sap-ui-core.js"
+    src="https://sapui5.hana.ondemand.com/1.120.20/resources/sap-ui-core.js"
     data-sap-ui-libs="sap.m, sap.ushell, sap.fe.templates, sap.uxap"
     data-sap-ui-compatVersion="edge"
     data-sap-ui-theme="sap_horizon"
@@ -283,7 +287,7 @@ Use the different scripts in the `<head>` section of the [`app/poetryslams/webap
 <script type="text/javascript" src="util/setContent.js"></script>
 ```
 
-> Note: in the above snippet you see a reference to a specific SAP UI5 version. See section [Update Project Dependencies](./14-Develop-Core-Application.md#update-project-dependencies) about updating the SAP UI5 version.
+> Note: In the snippet above, a reference to a specific SAP UI5 version is provided. For information about updating the SAP UI5 version, refer to section [Update Project Dependencies](./14-Develop-Core-Application.md#update-project-dependencies).
 
 #### Autoload Data
 By default, lists aren't automatically prefilled when the *List Report* is displayed. However, you can change this behavior by enabling the autoload feature. To do so, simply go to */app/poetryslams/webapp/manifest.json* and add the following parameters:
@@ -371,11 +375,11 @@ For non-default languages, add the ISO code of the language to the file name, fo
 Copy the [domain model-i18n files](../../../tree/main-single-tenant/db/i18n), [service model and message-i18n files](../../../tree/main-single-tenant/srv/i18n), [web application texts](../../../tree/main-single-tenant/app/poetryslams/webapp/i18n), and [web application texts for the manifest](../../../tree/main-single-tenant/app/poetryslams/i18n) into your project.
 
 ## Add Authentication and Role-Based Authorization
-To protect the application against unauthorized access, add user-based authentication and authorizations to the application. Broadly speaking, the application defines roles and assigns them statically to service operations such as reading or writing of a certain entity. The customer creates role templates that group a set of roles, which are assigned to the customer's users. You can find further details in the [SAP Cloud Application Programming Model documentation on authorization and access control](https://cap.cloud.sap/docs/guides/authorization).
+To protect the application against unauthorized access, add user-based authentication and authorizations to the application. Broadly speaking, the application defines roles and assigns them statically to service operations, such as the reading or writing of a certain entity. The customer creates role templates that group a set of roles which are assigned to the customer's users. You can find further details in the [SAP Cloud Application Programming Model documentation on authorization and access control](https://cap.cloud.sap/docs/guides/security/authorization).
 
-First, you define the *Roles* as part of the application definition concept. For the Poetry Slam Manager application, two roles are defined: *PoetrySlamManager* and *PoetrySlamVisitor*.
+First define the *Roles* as part of the application definition concept. For the Poetry Slam Manager application, two roles are defined: *PoetrySlamManager* and *PoetrySlamVisitor*.
 
-The authorization is always defined on the service level; in this application on the level of the */srv/poetryslam/poetrySlamService.cds*. For better readability, separate the authorization definitions from the service definitions by creating a new file */srv/poetryslam/poetrySlamServiceAuthorizations.cds* that contains all the authorization-relevant model parts. Copy the content from the example implementation [srv/poetryslam/poetrySlamServiceAuthorizations.cds](../../../tree/main-single-tenant/srv/poetryslam/poetrySlamServiceAuthorizations.cds). Enhance the file */srv/services.cds* with the reference to the Poetry Slam Service Authorizations:
+The authorization is always defined on service level; in this application on the level of the */srv/poetryslam/poetrySlamService.cds*. For better readability, separate the authorization definitions from the service definitions by creating a new file */srv/poetryslam/poetrySlamServiceAuthorizations.cds* that contains all authorization-relevant model parts. Copy the content from the example implementation [srv/poetryslam/poetrySlamServiceAuthorizations.cds](../../../tree/main-single-tenant/srv/poetryslam/poetrySlamServiceAuthorizations.cds). Enhance the file */srv/services.cds* with the reference to the Poetry Slam Service Authorizations:
 
 ```cds
 using from './poetryslam/poetrySlamServiceAuthorizations';
@@ -605,11 +609,13 @@ Now, you can start the web application and test it locally in SAP Business Appli
 3. Use the run command `cds watch` to start the app. A success message indicates that the runtime has been started: *A service is listening to port 4004*.
 4. To open the test environment, choose *Open in a New Tab* in the pop-up message or click on the link `http://localhost:4004` in the terminal. As a result, a browser tab opens with the web applications and OData service endpoints. 
 5. Now it's time to test the web app: 
-    1. Click on the *Web Application* */poetryslams/webapp/index.html*.
+    1. Choose the *Web Application* */poetryslams/webapp/index.html*.
     2. A log-on message appears. Use the test users as listed in the file *.cdsrc.json*.
     3. The SAP Fiori launchpad including the generated tile appears. To launch the app, choose *Manage Poetry Slams*.
     
         <img src="./images/14_FLP1.png">
+6. When starting the application, no data is available. To create sample data for mutable data, such as poetry slams, visitors, and visits, choose the button *Generate Sample Data* and refresh the list. 
+    > Note: If you choose the *Generate Sample Data* button a second time, the sample data is set to the default values.
 
 > Note: If you would like to switch users, clear the browser cache first. For example, in Google Chrome, press `CTRL+SHIFT+DEL`, go to *Advanced*, and choose a time range and *Passwords and other sign-in data*. 
 

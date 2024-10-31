@@ -23,11 +23,17 @@ This tutorial guides you through the steps to deploy and configure the multi-ten
 > Note: The first deployment of the application creates instances of SAP BTP services in the provider subaccount. Navigate to the SAP BTP provider subaccount and view the created services.
 
 ## Configure the Application Subdomain (Custom Domain)
-### SAP Custom Domain Service
-The [SAP Custom Domain service](https://help.sap.com/docs/custom-domain?version=Cloud&locale=en-US) helps you configure your own custom domain to publicly expose your application. This can be accomplished by configuring subdomains for your application and combining them with your own company-specific domain. 
-In this example, you use the default domain provided by SAP and use the SAP Custom Domain service to configure the subdomains used by the multi-tenant application. 
 
-#### Procedure 
+In the previous chapter [Enhance the Core Application for Multitenancy](./23-Multi-Tenancy-Develop-Sample-Application.md) you adjusted the tenant host pattern from `<subdomain>-<application identifier>.<generic domain>` to `<subdomain>.<application identifier>.<generic domain>` (the difference is a `.` instead of a `-`). This change allows you to route all consumer clients to your application with a generic route `*.<application identifier>.<generic domain>`. Without this adjustment, every new subscription would require an additional route because you cannot define a generic route as `*-<application identifier>.<generic domain>`. Therefore, without this adjustment, automatic provisioning of new subscriptions would be more complicated. With the `.` a sample url for a subscriber looks like `poetryslamsmtsubscriber1.sap-psm-mt-app-poetry-slams.cfapps.eu10-004.hana.ondemand.com`.
+
+Also, SAP provides a generic server certificate for all server urls of the pattern `*.<generic domain>`. This does not (and cannot) include `*.<application identifier>.<generic domain>` because server certificates are not multi-level. Hence, using the generic route `*.<application identifier>.<generic domain>` requires an appropriate server certificate. This is provided with the SAP Custom Domain service. This service also allows you to map your own domain (like `my-application.my-domain.com` instead of the SAP BTP default domain) to your application.
+
+### SAP Custom Domain Service
+
+The [SAP Custom Domain service](https://help.sap.com/docs/custom-domain) helps you configure and expose the subdomains used by your multi-tenant application including the mapping to your own custom domain. The linked documentation explains the [prerequisites](https://help.sap.com/docs/custom-domain/custom-domain-manager/prerequisites) and required steps to [create custom domains](https://help.sap.com/docs/custom-domain/custom-domain-service/creating-custom-domains-with-tls-ssl-server-authentication).
+
+Below is a condensed version using the SAP default domain.
+
 1. Create entitlement to the SAP Custom Domain service:
     1. If you haven't created an entitlement yet, create one for Custom Domain Manager in the SAP BTP Control Center (Custom Domain Service | custom-domain-manager).
     2. Select *Custom Domain service* as the application, and *Standard* as a plan.
@@ -46,8 +52,8 @@ In this example, you use the default domain provided by SAP and use the SAP Cust
         2. Select the option *Create Custom Domain* and *for your subaccount’s Cloud Foundry organization*.
         3. Select the default landscape in the *Landscape Info* step and go to the next step.
         4. Select the default reserved domain proposed by the system and go to the next step.
-        5. Enter the subdomain name as `{cloud-foundry-org-name}-{cloud-foundry-space-name}-{approuter-module-name}` and choose *Finish*.
-            > Note: The system creates a custom domain with the name *{cloud-foundry-org-name}-{cloud-foundry-space-name}-{approuter-module-name}.{reserved domain name}*. 
+        5. Enter the subdomain name as `<cloud-foundry-org-name>-<cloud-foundry-space-name>-<approuter-module-name>` and choose *Finish*.
+            > Note: The system creates a custom domain with the name `<cloud-foundry-org-name>-<cloud-foundry-space-name>-<approuter-module-name>.<reserved domain name>`, e.g. `sap-psm-mt-app-poetry-slams.cfapps.eu10-004.hana.ondemand.com`. 
 
             > Note: By default, the *_approuter-module-name_* is `poetry-slams`.
 
@@ -60,25 +66,16 @@ In this example, you use the default domain provided by SAP and use the SAP Cust
         3. In the *Select Landscape* section, select the desired landscape to continue and go to the next step. 
              > Note: The landscape refers to the Cloud Foundry instance.
         4. In the *Select Alternative Names* section, select the entry with wildcard and choose *Next Step*. 
-            > Note: Here's what the sample entry looks like *.{cloud-foundry-org-name}-{cloud-foundry-space-name}-{approuter-module-name}.{cloud foundry endpoint}.
-        5. In the *Set Subject* section, use the default as the *Common Name (CN)*, which is *.{cloud-foundry-org-name}-{cloud-foundry-space-name}-{approuter-module-name}.{cloud foundry endpoint} and choose *Finish*. Now the creation of Certificate Signing Request (CSR) is initated and the status is *CSR in progress*. 
-        6. Once the server certificate status is changed to *CSR created* (the status change can take a few seconds up to a minute), open the server certificate. *Automation* is set to *disabled*, however, we recommend that you set the Automated Certificate Lifecycle Management to *Automated*. To do so, choose *Automate*. 
-           > Note: Automation will enable the certificate to be created using DigiCert as certificate provider. As long as automation is enabled, the certificate will be automatically renewed before the expiration date.
-        7. In the *Enable Automation* message, choose *Enable*. 
-           > Note: The automation process starts and the system tells you that the automation process in progress, which may take a few hours. However, ideally, automation takes only few minutes.
-        
-        8. If automation is enabled and the status is inactive, **you must activate the certificate**:
-
+            > Note: the sample entry looks like `*.<cloud-foundry-org-name>-<cloud-foundry-space-name>-<approuter-module-name>.<reserved domain name>`.
+        5. In the *Set Subject* section, use the default as the *Common Name (CN)* which is `*.<cloud-foundry-org-name>-<cloud-foundry-space-name>-<approuter-module-name>.<reserved domain name>` and choose *Finish*. Now the creation of Certificate Signing Request (CSR) is initated and the status is *CSR in progress*. 
+        6. Once the server certificate status is changed to *CSR created* you can download it and get the certificate signed by an appropriate authority.
+            > Note: SAP does not offer the signing of certificates. There are free-of-charge options, such as [https://letsencrypt.org/](https://letsencrypt.org/) that offer (short-lived) signatures.
+        7. After you have received the signed certificate, upload and activate it.
             1. To activate the server certificate, choose *Activate*.
-
-            2. Now, in the first step *Subject Alternative Names*, select the entry with wildcard *.{cloud-foundry-org-name}-{cloud-foundry-space-name}-{approuter-module-name}.{cloud foundry endpoint}, and choose *Next step*.
-
+            2. In the first step *Subject Alternative Names*, select the entry with wildcard `*.<cloud-foundry-org-name>-<cloud-foundry-space-name>-<approuter-module-name>.<reserved domain name>`, and choose *Next step*.
             3. In the second step *Select TLS Configuration*, no TLS configuration is available, but a default one without client authentication will be created and used. Choose *Next step*.
-
-            4. In the *Summary and confirmation* step, review the configuration and choose *Finish*. The status of the server certificate will be set to *In Progress* and the **process can take a few seconds up to a minutes**.
-
+            4. In the *Summary and confirmation* step, review the configuration and choose *Finish*. The status of the server certificate will be set to *In Progress*.
             5. Once the process is completed, the status of the server certificate changes to *Active*. As a result, an active custom domain is created. 
-            
-    5. Go to the *Domains* tab and navigate to *CUSTOM DOMAINS*. A custom domain with the name *{cloud-foundry-org-name}-{cloud-foundry-space-name}-{approuter-module-name}.{cloud foundry endpoint}* and with the status *active* is listed.
+    5. Go to the *Domains* tab and navigate to *CUSTOM DOMAINS*. A custom domain with the name `*.<cloud-foundry-org-name>-<cloud-foundry-space-name>-<approuter-module-name>.<reserved domain name>` and with the status *active* is listed.
 
 You have now successfully deployed the application to the provider subaccount and you are ready to [provision tenants of the multi-tenant application to customers](./25-Multi-Tenancy-Provisioning.md).
