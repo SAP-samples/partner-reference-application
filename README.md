@@ -51,7 +51,7 @@ Upcoming versions of the sample application might include further features provi
 - Create and change poetry slam events, publish, and cancel poetry slams.
 - Maintain, add and remove visitors, cancel bookings.
 - Calculate the number of free seats and block overbookings.
-- Create projects for poetry slam events with one click and preview project information on the Poetry Slam Manager UI (here, ERP authorizations must apply in the partner application as well!).
+- Create projects for poetry slam events with one click and preview project information on the Poetry Slam Manager UI (here, ERP authorizations apply in the partner application as well).
 - Create and print a guest list.
 - As an ERP user, start Poetry Slam Manager from your ERP launchpad and navigate from Poetry Slam Manager to the associated project in the ERP system.
 - Make use of a standardized online development environment using SAP Business Application Studio.
