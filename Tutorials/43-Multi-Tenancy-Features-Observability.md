@@ -60,8 +60,13 @@ For more information, refer to the CDS plugin [@cap-js/telemetry](https://github
 
 1. Open a terminal and run the command `npm add @cap-js/telemetry`. As a result, a dependency to the latest version of the @cap-js/telemetry is added to the *package.json* of your project.
 
-2. Add the two dependencies for the [OpenTelemetry Collector Metrics Exporter](https://www.npmjs.com/package/@opentelemetry/exporter-metrics-otlp-grpc) and the [OpenTelemetry Collector Traces Exporter](https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-grpc) to the *package.json* by executing the commands `npm add @opentelemetry/exporter-metrics-otlp-grpc` and `@opentelemetry/exporter-trace-otlp-grpc`.
-    ```
+2. Add the dependencies for the [OpenTelemetry Collector Metrics Exporter](https://www.npmjs.com/package/@opentelemetry/exporter-metrics-otlp-grpc) and the [OpenTelemetry Collector Traces Exporter](https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-grpc) to the *package.json*.
+
+    1. Open a terminal.
+
+    2. Run the command `npm add @opentelemetry/exporter-metrics-otlp-grpc`.
+
+    3. Run the command `npm add @opentelemetry/exporter-trace-otlp-grpc`.
 
 3. Make CDS write telemetry data to the SAP Cloud Logging service by adding the following code snippet to the profile `[production]` in the [*package.json*](../../../tree/main-multi-tenant-features/package.json):
     ```json
