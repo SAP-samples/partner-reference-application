@@ -157,17 +157,17 @@ You can use the SAP Forms service by Adobe REST API to call the service from a c
     
     2. Run the command `npm add @sap-cloud-sdk/openapi`. The package handles the HTTP requests to the SAP Forms service by Adobe. 
 
-    2. Run the command `npm add -D @sap-cloud-sdk/openapi-generator`. The generator is used to create your own service module using an OpenAPI specification. 
+    3. Run the command `npm add -D @sap-cloud-sdk/openapi-generator`. The generator is used to create your own service module using an OpenAPI specification. 
 
-    3. Run the command `npm add xml-escape`. This handles the xml escaping of the poetry slam data during runtime.
+    4. Run the command `npm add xml-escape`. This handles the xml escaping of the poetry slam data during runtime.
 
-    4. Run the command `npm add fast-xml-parser`. The package converts a java script object to an XML string. 
+    5. Run the command `npm add fast-xml-parser`. The package converts a java script object to an XML string. 
 
-    5. Run the command `npm add stream`. The package supports streaming objects to the browser. 
+    6. Run the command `npm add stream`. The package supports streaming objects to the browser. 
 
-    6. Run the command `npm add @sap/textbundle`. This package allows you to access language-dependent texts from your i18n-files.
+    7. Run the command `npm add @sap/textbundle`. This package allows you to access language-dependent texts from your i18n-files.
     
-    6. Run the command `npm install` in your project root folder to install the npm modules. 
+    8. Run the command `npm install` in your project root folder to install the npm modules. 
 
 ## SAP BTP Configuration and Deployment
 
@@ -296,9 +296,9 @@ For more efficient development, test your changes locally before deploying them 
 
 Unit tests are available to test the forms feature:
 
-1. Copy the [test/srv/poetryslam/poetrySlamServiceForms.test.js](../../../tree/main-multi-tenant-features/test/srv/poetryslam/poetrySlamServiceForms.test.js) to your project. This file checks the enhancements of the poetry slam service.
+1. Copy the [test/srv/poetryslam/poetrySlamServiceOutputImplemention.test.js](../../../tree/main-multi-tenant-features/test/srv/poetryslam/poetrySlamServiceOutputImplemention.test.js) to your project. This file checks the enhancements of the poetry slam service.
 
-2. Copy the [test/srv/poetryslam/util/forms.test.js](../../../tree/main-multi-tenant-features/test/test/srv/poetryslam/util/forms.test.js) to your project. This file checks the forms util class.
+2. Copy the [test/srv/poetryslam/util/forms.test.js](../../../tree/main-multi-tenant-features/test/srv/poetryslam/util/forms.test.js) to your project. This file checks the forms util class.
 
 3. To run the automated SAP Cloud Application Programming Model tests:
 
