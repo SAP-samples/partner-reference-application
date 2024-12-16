@@ -39,7 +39,7 @@ module.exports = cds.service.impl(async (srv) => {
     const db = await cds.connect.to('db');
     const { PoetrySlams, Visits, Visitors } = cds.entities;
 
-    // Read logo image to be used in the form from the file system
+    // Read the json-files with the test data from the file system
     const poetrySlamsJson = fs.readFileSync(
       path.join(__dirname, './sample_data/poetrySlams.json')
     );
@@ -59,6 +59,18 @@ module.exports = cds.service.impl(async (srv) => {
     if (!poetrySlamsTestData || !visitorsTestData || !visitsTestData) {
       return false;
     }
+
+    let count = 1;
+    poetrySlamsTestData.forEach((poetrySlam) => {
+      poetrySlam.dateTime = new Date();
+      // Determine days to add to today as event date; in 30 days steps
+      const daysToAdd = poetrySlam.dateTime.getDate() + 30 * count;
+      poetrySlam.dateTime.setDate(daysToAdd);
+      // Determine hours of the event between between 2 and 22 p.m.
+      poetrySlam.dateTime.setHours(13 + count, 0, 0);
+      poetrySlam.dateTime.setMilliseconds(0);
+      count++;
+    });
 
     await db.run(UPSERT(poetrySlamsTestData).into(PoetrySlams));
     await db.run(UPSERT(visitorsTestData).into(Visitors));

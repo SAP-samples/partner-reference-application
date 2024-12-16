@@ -8,6 +8,7 @@
 const cds = require('@sap/cds');
 // Offers entity calculations
 const entityCalculations = require('./../../../../srv/poetryslam/util/entityCalculations');
+const { httpCodes } = require('./../../../../srv/poetryslam/util/codes');
 
 const ConnectorByD = require('./../../../../srv/poetryslam/connector/connectorByD');
 const ConnectorB1 = require('./../../../../srv/poetryslam/connector/connectorB1');
@@ -162,7 +163,7 @@ describe('Util Entity Calculations - Project', () => {
       'errorTextTest'
     );
 
-    expect(errorObject.ID).to.eql(500);
+    expect(errorObject.ID).to.eql(httpCodes.internal_server_error);
     expect(errorObject.text).to.eql('errorTextTest');
 
     sinon.assert.notCalled(stubProjectDataRecord);
@@ -188,7 +189,7 @@ describe('Util Entity Calculations - Project', () => {
       'errorTextTest'
     );
 
-    expect(errorObject.ID).to.eql(400);
+    expect(errorObject.ID).to.eql(httpCodes.bad_request);
     expect(errorObject.text).to.eql('ACTION_CREATE_PROJECT_DRAFT');
 
     sinon.assert.notCalled(stubProjectDataRecord);
@@ -214,7 +215,7 @@ describe('Util Entity Calculations - Project', () => {
       'errorTextTest'
     );
 
-    expect(errorObject.ID).to.eql(500);
+    expect(errorObject.ID).to.eql(httpCodes.internal_server_error);
     expect(errorObject.text).to.eql('ACTION_CREATE_PROJECT_FAILED');
 
     sinon.assert.calledOnce(stubProjectDataRecord);
@@ -342,7 +343,7 @@ describe('Util Entity Calculations - Purchase Order', () => {
       'errorTextTest'
     );
 
-    expect(errorObject.ID).to.eql(500);
+    expect(errorObject.ID).to.eql(httpCodes.internal_server_error);
     expect(errorObject.text).to.eql('errorTextTest');
 
     sinon.assert.notCalled(stubPurchaseOrderDataRecord);
@@ -368,7 +369,7 @@ describe('Util Entity Calculations - Purchase Order', () => {
       'errorTextTest'
     );
 
-    expect(errorObject.ID).to.eql(400);
+    expect(errorObject.ID).to.eql(httpCodes.bad_request);
     expect(errorObject.text).to.eql('ACTION_CREATE_PURCHASE_ORDER_DRAFT');
 
     sinon.assert.notCalled(stubPurchaseOrderDataRecord);
@@ -393,7 +394,7 @@ describe('Util Entity Calculations - Purchase Order', () => {
       'errorTextTest'
     );
 
-    expect(errorObject.ID).to.eql(500);
+    expect(errorObject.ID).to.eql(httpCodes.internal_server_error);
     expect(errorObject.text).to.eql('ACTION_CREATE_PURCHASE_ORDER_FAILED');
 
     sinon.assert.calledOnce(stubPurchaseOrderDataRecord);

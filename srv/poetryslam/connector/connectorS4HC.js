@@ -44,11 +44,7 @@ class ConnectorS4HC extends Connector {
   // ----------------------------------------------------------------------------
 
   // Return json-payload to create SAP S/4HANA Cloud projects
-  async projectDataRecord(
-    poetrySlamIdentifier,
-    poetrySlamTitle,
-    poetrySlamDate
-  ) {
+  projectDataRecord(poetrySlamIdentifier, poetrySlamTitle, poetrySlamDate) {
     try {
       // Set project ID with pattern PRA-{{poetrySlam identifier}}
       const generatedID =
@@ -103,17 +99,6 @@ class ConnectorS4HC extends Connector {
 
   // Enhance poetry slam with data of remote project
   async readProject(poetrySlams) {
-    const s4hcProject = await cds.connect.to(
-      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
-    );
-    const s4hcProjectsProjectProfileCode = await cds.connect.to(
-      'S4HC_ENTPROJECTPROFILECODE_0001'
-    );
-    const s4hcProjectsProcessingStatus = await cds.connect.to(
-      'S4HC_ENTPROJECTPROCESSINGSTATUS_0001'
-    );
-    let isProjectIDs = false;
-
     // Read Project ID's related to SAP S/4HANA Cloud
     let projectIDs = [];
     for (const poetrySlam of convertToArray(poetrySlams)) {
@@ -123,19 +108,23 @@ class ConnectorS4HC extends Connector {
         poetrySlam.projectID
       ) {
         projectIDs.push(poetrySlam.projectID);
-        isProjectIDs = true;
       }
     }
 
-    // Read SAP S/4HANA Cloud projects data
-    if (!isProjectIDs) {
+    if (!projectIDs.length) {
       return poetrySlams;
     }
 
+    // Read SAP S/4HANA Cloud projects data
     let projects;
     try {
+      const s4hcProjectService = await cds.connect.to(
+        'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+      );
+
       // Request all associated projects
-      projects = await s4hcProject.run(
+      // Use the remote service but select from the projection as defined in the PoetrySlamService; CAP takes care of the attribute mapping
+      projects = await s4hcProjectService.run(
         SELECT.from('PoetrySlamService.S4HCProjects').where({
           project: projectIDs
         })
@@ -146,27 +135,27 @@ class ConnectorS4HC extends Connector {
       return;
     }
 
-    // Convert in a map for easier lookup
-    const projectsMap = {};
-    for (const project of projects) projectsMap[project.project] = project;
-
     // Assemble result
     for (const poetrySlam of convertToArray(poetrySlams)) {
-      poetrySlam.toS4HCProject = projectsMap[poetrySlam.projectID];
+      poetrySlam.toS4HCProject = projects.find(
+        (project) => project.project === poetrySlam.projectID
+      );
 
       try {
         // Get Project Profile Code Text from SAP S/4HANA Cloud
-        const projectProfileCode = poetrySlam.toS4HCProject.projectProfileCode;
-        const S4HCProjectsProjectProfileCodeRecords =
-          await s4hcProjectsProjectProfileCode.run(
-            SELECT.from(
-              'PoetrySlamService.S4HCProjectsProjectProfileCode'
-            ).where({ ProjectProfileCode: projectProfileCode })
+        const s4hcProfileCodeService = await cds.connect.to(
+          'S4HC_ENTPROJECTPROFILECODE_0001'
+        );
+        const S4HCProjectsProjectProfileCodeRecord =
+          await s4hcProfileCodeService.run(
+            SELECT.one
+              .from(s4hcProfileCodeService.entities.ProjectProfileCode)
+              .where({
+                ProjectProfileCode: poetrySlam.toS4HCProject.projectProfileCode
+              })
           );
-        for (const S4HCProjectsProjectProfileCodeRecord of S4HCProjectsProjectProfileCodeRecords) {
-          poetrySlam.projectProfileCodeText =
-            S4HCProjectsProjectProfileCodeRecord.projectProfileCodeText;
-        }
+        poetrySlam.projectProfileCodeText =
+          S4HCProjectsProjectProfileCodeRecord.ProjectProfileCodeText;
       } catch (error) {
         // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
         console.error(
@@ -176,19 +165,19 @@ class ConnectorS4HC extends Connector {
 
       try {
         // Get Project Processing Status Text from SAP S/4HANA Cloud
-        const processingStatus = poetrySlam.toS4HCProject.processingStatus;
-        const S4HCProjectsProcessingStatusRecords =
-          await s4hcProjectsProcessingStatus.run(
-            SELECT.from('PoetrySlamService.S4HCProjectsProcessingStatus').where(
-              {
-                ProcessingStatus: processingStatus
-              }
-            )
+        const s4hcProcessingStatusService = await cds.connect.to(
+          'S4HC_ENTPROJECTPROCESSINGSTATUS_0001'
+        );
+        const S4HCProjectsProcessingStatusRecord =
+          await s4hcProcessingStatusService.run(
+            SELECT.one
+              .from(s4hcProcessingStatusService.entities.ProcessingStatus)
+              .where({
+                ProcessingStatus: poetrySlam.toS4HCProject.processingStatus
+              })
           );
-        for (const S4HCProjectsProcessingStatusRecord of S4HCProjectsProcessingStatusRecords) {
-          poetrySlam.processingStatusText =
-            S4HCProjectsProcessingStatusRecord.processingStatusText;
-        }
+        poetrySlam.processingStatusText =
+          S4HCProjectsProcessingStatusRecord.ProcessingStatusText;
       } catch (error) {
         // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
         console.error(
@@ -204,7 +193,7 @@ class ConnectorS4HC extends Connector {
   async getRemoteProjectData(srv) {
     const { S4HCProjects } = srv.entities;
 
-    // GET service call on remote project entity; remote calls shall use srv.run to run in the root transaction with the correct cds.context
+    // GET service call on remote project entity
     const remoteProject = await srv.run(
       SELECT.one.from(S4HCProjects).where({
         project: this.projectRecord.Project
@@ -218,19 +207,24 @@ class ConnectorS4HC extends Connector {
     };
   }
 
-  // POST request to create the project via remote service; remote calls shall use srv.run to run in the root transaction with the correct cds.context
-  async insertRemoteProjectData(srv) {
-    const { S4HCProjects } = srv.entities;
+  // POST request to create the project via remote service
+  // The request is executed with the remote service and the remote entity definition avoiding CDS data type assertions and a complete model copy of the remote entity and its composition associations
+  async insertRemoteProjectData() {
+    const s4hcProjectService = await cds.connect.to(
+      'S4HC_API_ENTERPRISE_PROJECT_SRV_0002'
+    );
 
-    // GET service call on remote project entity; remote calls shall use srv.run to run in the root transaction with the correct cds.context
-    const remoteProject = await srv.run(
-      INSERT.into(S4HCProjects).entries(this.projectRecord)
+    // GET service call on remote project entity
+    const remoteProject = await s4hcProjectService.run(
+      INSERT.into(s4hcProjectService.entities.A_EnterpriseProject).entries(
+        this.projectRecord
+      )
     );
 
     // Determine project ID and UUID and return it as object
     return {
-      projectID: remoteProject?.project,
-      projectObjectID: remoteProject?.projectUUID
+      projectID: remoteProject?.Project,
+      projectObjectID: remoteProject?.ProjectUUID
     };
   }
 
