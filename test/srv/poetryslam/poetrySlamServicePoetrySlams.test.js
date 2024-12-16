@@ -8,8 +8,10 @@
 const cds = require('@sap/cds');
 const {
   poetrySlamStatusCode,
-  color
+  color,
+  httpCodes
 } = require('../../../srv/poetryslam/util/codes');
+
 // Defines required CDS functions for testing
 const { expect, GET, POST, PATCH, axios, test, DELETE } = cds.test(
   __dirname + '/../../..'
@@ -31,10 +33,17 @@ axios.defaults.auth = { username: 'peter', password: 'welcome' };
 // ----------------------------------------------------------------------------
 describe('Poetryslams in PoetrySlamService', () => {
   let poetrySlams;
+  let db;
+
+  before(async () => {
+    // Connect to the database of the current project
+    db = await cds.connect.to('db');
+    expect(db).to.exist;
+  });
 
   beforeEach(async () => {
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
 
     // Read all poetry slams for usage in the tests
     poetrySlams = await GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
@@ -264,7 +273,7 @@ describe('Poetryslams in PoetrySlamService', () => {
       `publish`
     );
     expect(actionResult.data.status_code).to.eql(poetrySlamStatusCode.booked);
-    expect(actionResult.status).to.eql(200);
+    expect(actionResult.status).to.eql(httpCodes.ok);
 
     // Info message expected that it is already booked
     expect(actionResult.headers['sap-messages']).to.include(
@@ -286,7 +295,7 @@ describe('Poetryslams in PoetrySlamService', () => {
     // ID that is not available
     const id = '79ceab87-300d-4b66-8cc3-f82c679b77bb';
 
-    return expect(
+    await expect(
       ACTION(
         `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
         `publish`
@@ -354,7 +363,7 @@ describe('Poetryslams in PoetrySlamService', () => {
     const result = await DELETE(
       `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`
     );
-    expect(result.status).to.eql(204);
+    expect(result.status).to.eql(httpCodes.ok_no_content);
   });
 
   it('should be possible to delete a poetry slam that is canceled', async () => {
@@ -365,7 +374,7 @@ describe('Poetryslams in PoetrySlamService', () => {
     const result = await DELETE(
       `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`
     );
-    expect(result.status).to.eql(204);
+    expect(result.status).to.eql(httpCodes.ok_no_content);
   });
 
   it('should not be possible to delete a poetry slam that is published', async () => {
@@ -373,60 +382,110 @@ describe('Poetryslams in PoetrySlamService', () => {
       (poetrySlam) => poetrySlam.status_code === poetrySlamStatusCode.published
     ).ID;
 
-    return expect(
+    await expect(
       DELETE(
         `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`
       )
     ).to.rejected;
   });
 
-  it('should reset project data when project ID is reset', async () => {
+  it('should reset project data when clearProjectData action is called', async () => {
     const id = poetrySlams.data.value.find(
       (poetrySlam) => poetrySlam.status_code === poetrySlamStatusCode.published
     ).ID;
 
-    // Move poetry slam into draft mode by calling action 'draftEdit'
-    await ACTION(
-      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
-      `draftEdit`
-    );
+    const { PoetrySlams } = db.model.entities;
 
-    // When project ID is reset all project fields are set to null
-    const result = await PATCH(
-      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=false)`,
+    let result = await db.update(PoetrySlams).with({
+      projectID: '1',
+      projectObjectID: '2',
+      projectURL: 'URL',
+      projectSystem: 'System'
+    }).where`ID=${id}`;
+
+    expect(result).to.eql(1);
+
+    result = await GET(
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
       {
-        projectID: ''
+        params: {
+          $select: `ID,projectID,projectObjectID,projectURL,projectSystem`
+        }
       }
     );
+
+    expect(result.data.projectID).to.eql('1');
+    expect(result.data.projectObjectID).to.eql('2');
+    expect(result.data.projectURL).to.eql('URL');
+    expect(result.data.projectSystem).to.eql('System');
+
+    await ACTION(
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
+      `clearProjectData`
+    );
+
+    result = await GET(
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`
+    );
+
     expect(result.data.projectID).to.eql(null);
     expect(result.data.projectObjectID).to.eql(null);
     expect(result.data.projectURL).to.eql(null);
     expect(result.data.projectSystem).to.eql(null);
-    expect(result.data.projectSystemName).to.eql('');
   });
 
-  it('should reset purchase order data when purchase order ID is reset', async () => {
+  it('should reset purchase order data when clearPurchaseOrderData action is called', async () => {
     const id = poetrySlams.data.value.find(
       (poetrySlam) => poetrySlam.status_code === poetrySlamStatusCode.published
     ).ID;
 
-    // Move poetry slam into draft mode by calling action 'draftEdit'
-    await ACTION(
-      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
-      `draftEdit`
-    );
+    const { PoetrySlams } = db.model.entities;
 
-    // When purchase order ID is reset all purchase order fields are set to null
-    const result = await PATCH(
-      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=false)`,
+    let result = await db.update(PoetrySlams).with({
+      purchaseOrderID: '1',
+      purchaseOrderObjectID: '2',
+      purchaseOrderURL: 'URL',
+      purchaseOrderSystem: 'System'
+    }).where`ID=${id}`;
+
+    expect(result).to.eql(1);
+
+    result = await GET(
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
       {
-        purchaseOrderID: ''
+        params: {
+          $select: `ID,purchaseOrderID,purchaseOrderObjectID,purchaseOrderURL,purchaseOrderSystem`
+        }
       }
     );
+
+    expect(result.data.purchaseOrderID).to.eql('1');
+    expect(result.data.purchaseOrderObjectID).to.eql('2');
+    expect(result.data.purchaseOrderURL).to.eql('URL');
+    expect(result.data.purchaseOrderSystem).to.eql('System');
+
+    await ACTION(
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
+      `clearPurchaseOrderData`
+    );
+
+    result = await GET(
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`
+    );
+
     expect(result.data.purchaseOrderID).to.eql(null);
     expect(result.data.purchaseOrderObjectID).to.eql(null);
     expect(result.data.purchaseOrderURL).to.eql(null);
     expect(result.data.purchaseOrderSystem).to.eql(null);
-    expect(result.data.purchaseOrderSystemName).to.eql('');
+  });
+
+  it('should reject createWithAI action without running SAP BTP AI Core service', async () => {
+    await expect(
+      ACTION(`/odata/v4/poetryslamservice/PoetrySlams`, `createWithAI`, {
+        language: 'English',
+        tags: 'funny',
+        rhyme: false
+      })
+    ).to.rejectedWith();
   });
 });

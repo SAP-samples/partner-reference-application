@@ -36,6 +36,7 @@ modules:
       - name: poetry-slams-adsrestapi
       - name: poetry-slams-destination-service
       - name: poetry-slams-print-service
+      - name: poetry-slams-aicore
     provides:
       - name: srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
@@ -118,6 +119,7 @@ modules:
       - name: poetry-slams-html5-runtime
       - name: poetry-slams-print-service
       - name: poetry-slams-adsrestapi
+      - name: poetry-slams-aicore
       - name: app-api
         properties:
           SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}.~{app-uri}
@@ -311,3 +313,10 @@ resources:
     parameters:
       service: adsrestapi
       service-plan: standard
+
+  # AI Core Service
+  - name: poetry-slams-aicore
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: aicore
+      service-plan: extended

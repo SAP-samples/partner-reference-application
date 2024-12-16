@@ -1,6 +1,6 @@
 'use strict';
 
-const codes = require('./codes');
+const { httpCodes, poetrySlamStatusCode, visitStatusCode } = require('./codes');
 // ----------------------------------------------------------------------------
 // Implementation of reuse functions
 // ----------------------------------------------------------------------------
@@ -12,7 +12,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
   const tableExtension = req.target.name.endsWith('drafts') ? '.drafts' : '';
   const changedData = {};
   if (!id) {
-    req.error(500, 'POETRYSLAM_NOT_FOUND', [id]);
+    req.error(httpCodes.internal_server_error, 'POETRYSLAM_NOT_FOUND', [id]);
     return;
   }
 
@@ -24,7 +24,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
 
   // If poetry slam was not found, throw an error
   if (!poetrySlam) {
-    req.error(500, 'POETRYSLAM_NOT_FOUND', [id]);
+    req.error(httpCodes.internal_server_error, 'POETRYSLAM_NOT_FOUND', [id]);
     return;
   }
 
@@ -33,7 +33,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
   if (req.data?.visits?.length) {
     visitConfirmedCount =
       req.data.visits.filter(
-        (visit) => visit.status_code === codes.visitStatusCode.booked
+        (visit) => visit.status_code === visitStatusCode.booked
       )?.length || 0;
   } else {
     // Request does not contain data in all cases. If it is not included, the data needs to be read from the database
@@ -41,7 +41,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
     let visit = await SELECT.one
       .from(`PoetrySlamService.Visits${tableExtension}`)
       .columns('parent_ID', 'count(*) as visitConfirmedCount')
-      .where({ parent_ID: id, status_code: codes.visitStatusCode.booked })
+      .where({ parent_ID: id, status_code: visitStatusCode.booked })
       .groupBy('parent_ID');
 
     visitConfirmedCount = visit?.visitConfirmedCount ?? 0;
@@ -70,16 +70,16 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
 // Calculate the status in cases of changes
 function calculatePoetrySlamStatus(currentStatus, freeVisitorSeats) {
   if (
-    currentStatus === codes.poetrySlamStatusCode.published &&
+    currentStatus === poetrySlamStatusCode.published &&
     freeVisitorSeats === 0
   ) {
-    return codes.poetrySlamStatusCode.booked;
+    return poetrySlamStatusCode.booked;
   } else if (
-    currentStatus === codes.poetrySlamStatusCode.booked &&
+    currentStatus === poetrySlamStatusCode.booked &&
     freeVisitorSeats > 0
   ) {
     // Check if there are free seats and status was booked, then change the status to published
-    return codes.poetrySlamStatusCode.published;
+    return poetrySlamStatusCode.published;
   }
   return currentStatus;
 }
@@ -110,12 +110,14 @@ async function updatePoetrySlam(
     .where({ ID: poetrySlamID });
 
   if (result !== 1) {
-    req.error(500, errorMessage.text, [errorMessage.param]);
+    req.error(httpCodes.internal_server_error, errorMessage.text, [
+      errorMessage.param
+    ]);
     return false;
   }
 
   if (successMessage) {
-    req.info(200, successMessage.text, [successMessage.param]);
+    req.info(httpCodes.ok, successMessage.text, [successMessage.param]);
   }
   return true;
 }
@@ -139,7 +141,7 @@ async function createProject(req, srv, ConnectorClass, errorText) {
   const connector = await ConnectorClass.createConnectorInstance(req);
 
   if (!connector.isConnected()) {
-    req.warn(500, errorText);
+    req.warn(httpCodes.internal_server_error, errorText);
     return;
   }
 
@@ -149,7 +151,7 @@ async function createProject(req, srv, ConnectorClass, errorText) {
     .where({ ID: poetrySlamID });
   // Allow action for active entity instances only
   if (!poetrySlam) {
-    req.error(400, 'ACTION_CREATE_PROJECT_DRAFT');
+    req.error(httpCodes.bad_request, 'ACTION_CREATE_PROJECT_DRAFT');
     return;
   }
 
@@ -157,7 +159,7 @@ async function createProject(req, srv, ConnectorClass, errorText) {
     poetrySlam.projectSystem &&
     poetrySlam.projectSystem !== ConnectorClass.PROJECT_SYSTEM
   ) {
-    req.warn(500, errorText);
+    req.warn(httpCodes.internal_server_error, errorText);
     return;
   }
 
@@ -166,7 +168,7 @@ async function createProject(req, srv, ConnectorClass, errorText) {
   const poetrySlamDate = poetrySlam.dateTime;
 
   try {
-    await connector.projectDataRecord(
+    connector.projectDataRecord(
       poetrySlamIdentifier,
       poetrySlamTitle,
       poetrySlamDate
@@ -178,14 +180,18 @@ async function createProject(req, srv, ConnectorClass, errorText) {
     let remoteProject = await connector.getRemoteProjectData(srv);
 
     if (!remoteProject?.projectID) {
-      remoteProject = await connector.insertRemoteProjectData(srv);
+      remoteProject = await connector.insertRemoteProjectData();
     }
 
     if (!remoteProject?.projectID) {
       console.info(
         'Remote Project ID is not available. PoetrySlam could not be updated.'
       );
-      req.warn(500, 'ACTION_CREATE_PROJECT_FAILED', [poetrySlamIdentifier]);
+      req.warn(
+        httpCodes.internal_server_error,
+        'ACTION_CREATE_PROJECT_FAILED',
+        [poetrySlamIdentifier]
+      );
       return;
     }
 
@@ -202,7 +208,9 @@ async function createProject(req, srv, ConnectorClass, errorText) {
   } catch (error) {
     // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
     console.error(`ACTION_CREATE_PROJECT_FAILED; ${error}`);
-    req.warn(500, 'ACTION_CREATE_PROJECT_FAILED', [poetrySlamIdentifier]);
+    req.warn(httpCodes.internal_server_error, 'ACTION_CREATE_PROJECT_FAILED', [
+      poetrySlamIdentifier
+    ]);
   }
 }
 
@@ -211,7 +219,7 @@ async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
   const connector = await ConnectorClass.createConnectorInstance(req);
 
   if (!connector.isConnected()) {
-    req.warn(500, errorText);
+    req.warn(httpCodes.internal_server_error, errorText);
     return;
   }
 
@@ -221,7 +229,7 @@ async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
     .where({ ID: poetrySlamID });
   // Allow action for active entity instances only
   if (!poetrySlam) {
-    req.error(400, 'ACTION_CREATE_PURCHASE_ORDER_DRAFT');
+    req.error(httpCodes.bad_request, 'ACTION_CREATE_PURCHASE_ORDER_DRAFT');
     return;
   }
 
@@ -229,13 +237,13 @@ async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
     poetrySlam.purchaseOrderSystem &&
     poetrySlam.purchaseOrderSystem !== ConnectorClass.PURCHASE_ORDER_SYSTEM
   ) {
-    req.warn(500, errorText);
+    req.warn(httpCodes.internal_server_error, errorText);
     return;
   }
 
   // With purchase order the read is not possible. It is always a create. Remove the purchase order first
   if (poetrySlam.purchaseOrderID) {
-    req.error(500, errorText);
+    req.error(httpCodes.internal_server_error, errorText);
     return;
   }
 
@@ -247,7 +255,7 @@ async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
   const poetrySlamsVisitorsFeeAmount = poetrySlam.visitorsFeeAmount;
 
   try {
-    await connector.purchaseOrderDataRecord(
+    connector.purchaseOrderDataRecord(
       poetrySlamIdentifier,
       poetrySlamTitle,
       poetrySlamDescription,
@@ -257,16 +265,17 @@ async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
     );
 
     // Create the purchase Order instance
-    const remotePurchaseOrder =
-      await connector.insertRemotePurchaseOrderData(srv);
+    const remotePurchaseOrder = await connector.insertRemotePurchaseOrderData();
 
     if (!remotePurchaseOrder?.purchaseOrderID) {
       console.info(
         'Remote Purchase Order ID is not available. PoetrySlam could not be updated.'
       );
-      req.warn(500, 'ACTION_CREATE_PURCHASE_ORDER_FAILED', [
-        poetrySlamIdentifier
-      ]);
+      req.warn(
+        httpCodes.internal_server_error,
+        'ACTION_CREATE_PURCHASE_ORDER_FAILED',
+        [poetrySlamIdentifier]
+      );
       return;
     }
 
@@ -284,9 +293,11 @@ async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
   } catch (error) {
     // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
     console.log(`ACTION_CREATE_PURCHASE_ORDER_FAILED; ${error}`);
-    req.warn(500, 'ACTION_CREATE_PURCHASE_ORDER_FAILED', [
-      poetrySlamIdentifier
-    ]);
+    req.warn(
+      httpCodes.internal_server_error,
+      'ACTION_CREATE_PURCHASE_ORDER_FAILED',
+      [poetrySlamIdentifier]
+    );
   }
 }
 

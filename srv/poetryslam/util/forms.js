@@ -6,6 +6,8 @@ const escape = require('xml-escape');
 const { XMLBuilder } = require('fast-xml-parser');
 const { Readable } = require('stream');
 
+const { httpCodes } = require('./codes');
+
 const path = require('path');
 const { TextBundle } = require('@sap/textbundle');
 const Logo = require('./logo');
@@ -27,7 +29,7 @@ class Forms {
   static FORM_TYPE = 'print';
   static FORM_LOCALE = 'en_US';
   static TAGGED_PDF = 1;
-  static EMBED_FONT = 0;
+  static EMBED_FONT = 1;
   static CHANGE_NOT_ALLOWED = false;
   static PRINT_NOT_ALLOWED = false;
 
@@ -49,7 +51,9 @@ class Forms {
 
     // If poetry slam was not found, throw an error
     if (!this.poetrySlam) {
-      this.req.error(400, 'POETRYSLAM_NOT_FOUND', [this.poetrySlamId]);
+      this.req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [
+        this.poetrySlamId
+      ]);
       return;
     }
 
@@ -66,12 +70,12 @@ class Forms {
         'visits.status_code': 1
       });
 
-    this.poetrySlamVisitors = await poetrySlamBookings.filter(
+    this.poetrySlamVisitors = poetrySlamBookings.filter(
       (visitor) =>
         visitor.artistIndicator === 0 || visitor.artistIndicator === false
     );
 
-    this.poetrySlamArtists = await poetrySlamBookings.filter(
+    this.poetrySlamArtists = poetrySlamBookings.filter(
       (artist) =>
         artist.artistIndicator === 1 || artist.artistIndicator === true
     );
@@ -157,12 +161,15 @@ class Forms {
 
     if (xmlDataBase64 === undefined) {
       console.error('Util Forms: xml creation failed');
-      this.req.error(400, 'DATA_XML_CREATION_FAILED', [this.poetrySlamId]);
+      this.req.error(httpCodes.bad_request, 'DATA_XML_CREATION_FAILED', [
+        this.poetrySlamId
+      ]);
       return;
     }
 
     // Send render request to SAP Forms Service by Adobe API
-    return await this.callFormsService(xmlDataBase64);
+    const formsResult = await this.callFormsService(xmlDataBase64);
+    return formsResult;
   }
 
   // Get a file name for the guest list PDF - used for print and download

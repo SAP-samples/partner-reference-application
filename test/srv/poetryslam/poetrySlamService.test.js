@@ -9,6 +9,8 @@ const cds = require('@sap/cds');
 // Defines required CDS functions for testing
 const { expect, GET, axios, POST, test } = cds.test(__dirname + '/../../..');
 
+const { httpCodes } = require('../../../srv/poetryslam/util/codes');
+
 // ----------------------------------------------------------------------------
 // OData Function Tests
 // ----------------------------------------------------------------------------
@@ -22,7 +24,7 @@ describe('OData userInfo function in PoetrySlamService', () => {
       headers: { 'Accept-Language': 'de-DE' }
     });
 
-    expect(userInfo.status).to.eql(200);
+    expect(userInfo.status).to.eql(httpCodes.ok);
     expect(userInfo.data.id).to.eql(axios.defaults.auth.username);
     expect(userInfo.data.locale).to.eql('de');
     expect(userInfo.data.roles).to.deep.eql({
@@ -35,7 +37,7 @@ describe('OData userInfo function in PoetrySlamService', () => {
     // Unauthorized user from .cdsrc.json without role
     axios.defaults.auth = { username: 'denise', password: 'welcome' };
 
-    return expect(
+    await expect(
       GET(`/odata/v4/poetryslamservice/userInfo()`, {})
     ).to.rejectedWith(403);
   });
@@ -60,7 +62,7 @@ describe('OData createTestData action in PoetrySlamService', () => {
     // Create test data
     const result = await POST(`/odata/v4/poetryslamservice/createTestData`);
 
-    expect(result.status).to.eql(200);
+    expect(result.status).to.eql(httpCodes.ok);
     expect(result.data.value).to.eql(true);
 
     // Read all poetry slams
@@ -92,7 +94,7 @@ describe('OData createTestData action in PoetrySlamService', () => {
     // Unauthorized user from .cdsrc.json without role
     axios.defaults.auth = { username: 'denise', password: 'welcome' };
 
-    return expect(
+    await expect(
       POST(`/odata/v4/poetryslamservice/createTestData`)
     ).to.rejectedWith(403);
   });

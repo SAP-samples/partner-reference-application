@@ -4,6 +4,8 @@ const Forms = require('./util/forms');
 const EMail = require('./util/email');
 const { getPrintQueues, print } = require('./util/print');
 
+const { httpCodes } = require('./util/codes');
+
 module.exports = async (srv) => {
   // ----------------------------------------------------------------------------
   // Implementation of service call to SAP Forms by Adobe API Service
@@ -19,7 +21,7 @@ module.exports = async (srv) => {
       return await forms.getReadable(fileContent);
     } catch (e) {
       console.error('READ PDFDocument error:', e.message);
-      req.error(400, 'PDF_RENDER_ERROR', [poetrySlam.ID]);
+      req.error(httpCodes.bad_request, 'PDF_RENDER_ERROR', [poetrySlam.ID]);
     }
   });
 
@@ -34,6 +36,12 @@ module.exports = async (srv) => {
     // In case you want to use/test the print service without the forms service you can replace the next 2 lines by any other logic or a constant (test) file content
     const forms = new Forms(req, poetrySlam.ID);
     const fileContent = await forms.getRenderedPDF();
+
+    if (!fileContent) {
+      console.error('PrintGuestList error: Forms file content is empty');
+      req.error(httpCodes.bad_request, 'ACTION_PRINT_FAIL', [poetrySlam.ID]);
+      return;
+    }
 
     // Sent the file content to the print service
     const fileContentRaw = Buffer.from(fileContent, 'base64');
@@ -70,7 +78,7 @@ module.exports = async (srv) => {
     // If visit was not found, throw an error
     if (!visit) {
       const id = req.params[req.params.length - 1]?.ID;
-      req.error(400, 'VISITS_NOT_FOUND', [id]);
+      req.error(httpCodes.bad_request, 'VISITS_NOT_FOUND', [id]);
       return;
     }
 

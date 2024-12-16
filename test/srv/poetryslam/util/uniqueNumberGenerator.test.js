@@ -16,19 +16,19 @@ describe('Util Unique Number Generator', () => {
   // Number Range UniqueNumberGenerator Tests
   // ----------------------------------------------------------------------------
   it('should throw error message because of unknown database ', async () => {
-    return expect(
+    await expect(
       uniqueNumberGenerator.getNextNumber('poetrySlamNumber', 'unknownDB', '')
     ).to.rejected;
   });
 
   it('should throw error message because of unknown sequence (only hana) ', async () => {
-    return expect(
+    await expect(
       uniqueNumberGenerator.getNextNumber('unkownSequenceName', 'hana', '')
     ).to.rejected;
   });
 
   it('should reject sequences with invalid characters in the name to avoid SQL injection', async () => {
-    return expect(
+    await expect(
       uniqueNumberGenerator.getNextNumber('invalid/SequenceName', 'sqlite', '')
     ).to.rejected;
   });
