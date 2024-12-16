@@ -8,8 +8,10 @@
 const cds = require('@sap/cds');
 const {
   poetrySlamStatusCode,
-  color
+  color,
+  httpCodes
 } = require('../../../srv/poetryslam/util/codes');
+
 // Defines required CDS functions for testing
 const { expect, GET, POST, PATCH, axios, test, DELETE } = cds.test(
   __dirname + '/../../..'
@@ -34,7 +36,7 @@ describe('Poetryslams in PoetrySlamService', () => {
 
   beforeEach(async () => {
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
 
     // Read all poetry slams for usage in the tests
     poetrySlams = await GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
@@ -264,7 +266,7 @@ describe('Poetryslams in PoetrySlamService', () => {
       `publish`
     );
     expect(actionResult.data.status_code).to.eql(poetrySlamStatusCode.booked);
-    expect(actionResult.status).to.eql(200);
+    expect(actionResult.status).to.eql(httpCodes.ok);
 
     // Info message expected that it is already booked
     expect(actionResult.headers['sap-messages']).to.include(
@@ -354,7 +356,7 @@ describe('Poetryslams in PoetrySlamService', () => {
     const result = await DELETE(
       `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`
     );
-    expect(result.status).to.eql(204);
+    expect(result.status).to.eql(httpCodes.ok_no_content);
   });
 
   it('should be possible to delete a poetry slam that is canceled', async () => {
@@ -365,7 +367,7 @@ describe('Poetryslams in PoetrySlamService', () => {
     const result = await DELETE(
       `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`
     );
-    expect(result.status).to.eql(204);
+    expect(result.status).to.eql(httpCodes.ok_no_content);
   });
 
   it('should not be possible to delete a poetry slam that is published', async () => {

@@ -1,7 +1,13 @@
 'strict';
 
 // Include utility files
-const codes = require('./util/codes');
+const {
+  httpCodes,
+  visitStatusCode,
+  poetrySlamStatusCode,
+  color
+} = require('./util/codes');
+
 const {
   calculatePoetrySlamData,
   updatePoetrySlam,
@@ -24,7 +30,7 @@ module.exports = async (srv) => {
   srv.on('UPDATE', ['Visits.drafts', 'Visits'], async (req, next) => {
     // In case visitor is updated, default status of visit
     if (req.data.visitor_ID) {
-      req.data.status_code = codes.visitStatusCode.booked;
+      req.data.status_code = visitStatusCode.booked;
     }
 
     return next();
@@ -39,7 +45,9 @@ module.exports = async (srv) => {
 
     if (!visit) {
       // Error message: update not possible
-      req.error(500, 'UPDATE_VISIT_NOT_POSSIBLE', [req.data.ID]);
+      req.error(httpCodes.internal_server_error, 'UPDATE_VISIT_NOT_POSSIBLE', [
+        req.data.ID
+      ]);
       return;
     }
 
@@ -57,7 +65,9 @@ module.exports = async (srv) => {
   // Updates the poetry slam status and freevistor seats in case of deletion of a visit
   srv.before('DELETE', ['Visits.drafts', 'Visits'], async (req) => {
     if (!req.data.ID) {
-      req.error(500, 'VISIT_NOT_FOUND', [req.data.ID]);
+      req.error(httpCodes.internal_server_error, 'VISIT_NOT_FOUND', [
+        req.data.ID
+      ]);
       return;
     }
 
@@ -66,7 +76,9 @@ module.exports = async (srv) => {
       .columns('ID', 'parent_ID', 'visitor_ID', 'status_code');
 
     if (!currentVisit) {
-      req.error(500, 'VISIT_NOT_FOUND', [req.data.ID]);
+      req.error(httpCodes.internal_server_error, 'VISIT_NOT_FOUND', [
+        req.data.ID
+      ]);
       return;
     }
 
@@ -74,7 +86,7 @@ module.exports = async (srv) => {
     const changedData = await calculatePoetrySlamData(
       currentVisit.parent_ID,
       req,
-      currentVisit.status_code === codes.visitStatusCode.booked ? -1 : null
+      currentVisit.status_code === visitStatusCode.booked ? -1 : null
     );
 
     await updatePoetrySlam(
@@ -95,11 +107,11 @@ module.exports = async (srv) => {
       const status = visits.status?.code || visits.status_code;
       // Set status colour code
       switch (status) {
-        case codes.visitStatusCode.booked:
-          visits.statusCriticality = codes.color.green; // Booked visits are green
+        case visitStatusCode.booked:
+          visits.statusCriticality = color.green; // Booked visits are green
           break;
-        case codes.visitStatusCode.canceled:
-          visits.statusCriticality = codes.color.red; // Canceled visits are yellow
+        case visitStatusCode.canceled:
+          visits.statusCriticality = color.red; // Canceled visits are yellow
           break;
         default:
           // In case the status is defined, but not filled, return statusCriticality with null, otherwise UI will break
@@ -124,20 +136,20 @@ module.exports = async (srv) => {
 
     if (!visit) {
       const id = req.params[req.params.length - 1]?.ID;
-      req.error(400, 'VISIT_NOT_FOUND', [id]);
+      req.error(httpCodes.bad_request, 'VISIT_NOT_FOUND', [id]);
       return;
     }
 
     // Determine the visitorname for the success and error messages
     const vistitorName = await readVisitorName(visit.visitor_ID);
 
-    if (visit.status_code === codes.visitStatusCode.canceled) {
-      req.info(200, 'ACTION_CANCELED_ALREADY', [vistitorName]);
+    if (visit.status_code === visitStatusCode.canceled) {
+      req.info(httpCodes.ok, 'ACTION_CANCELED_ALREADY', [vistitorName]);
       return visit;
     }
 
     // Change the status of the visit
-    visit.status_code = codes.visitStatusCode.canceled;
+    visit.status_code = visitStatusCode.canceled;
 
     // Update the free visitor seats and the status of the poetry slam
     const changedData = await calculatePoetrySlamData(visit.parent_ID, req, -1);
@@ -160,10 +172,14 @@ module.exports = async (srv) => {
     });
 
     if (result !== 1) {
-      req.error(500, 'ACTION_VISIT_CANCEL_NOT_POSSIBLE', [vistitorName]);
+      req.error(
+        httpCodes.internal_server_error,
+        'ACTION_VISIT_CANCEL_NOT_POSSIBLE',
+        [vistitorName]
+      );
       return;
     }
-    req.info(200, 'ACTION_VISIT_CANCEL_SUCCESS', [vistitorName]);
+    req.info(httpCodes.ok, 'ACTION_VISIT_CANCEL_SUCCESS', [vistitorName]);
 
     return visit; // Return the changed visit; visit data is returned in OData request
   });
@@ -179,14 +195,14 @@ module.exports = async (srv) => {
     // If visit was not found, throw an error
     if (!visit) {
       const id = req.params[req.params.length - 1]?.ID;
-      req.error(400, 'VISITS_NOT_FOUND', [id]);
+      req.error(httpCodes.bad_request, 'VISITS_NOT_FOUND', [id]);
       return;
     }
 
     const vistitorName = await readVisitorName(visit.visitor_ID);
 
-    if (visit.status_code === codes.visitStatusCode.booked) {
-      req.info(200, 'ACTION_BOOKED_ALREADY', [vistitorName]);
+    if (visit.status_code === visitStatusCode.booked) {
+      req.info(httpCodes.ok, 'ACTION_BOOKED_ALREADY', [vistitorName]);
       return visit;
     }
 
@@ -195,7 +211,7 @@ module.exports = async (srv) => {
     if (!allowed) {
       return;
     }
-    visit.status_code = codes.visitStatusCode.booked;
+    visit.status_code = visitStatusCode.booked;
 
     // Update the free visitor seats and the status of the poetry slam
     const changedData = await calculatePoetrySlamData(visit.parent_ID, req, 1);
@@ -219,11 +235,13 @@ module.exports = async (srv) => {
     // Handle error case of update result
     if (result !== 1) {
       // Error message: could not be booked
-      req.error(400, 'ACTION_VISIT_BOOK_NOT_POSSIBLE', [vistitorName]);
+      req.error(httpCodes.bad_request, 'ACTION_VISIT_BOOK_NOT_POSSIBLE', [
+        vistitorName
+      ]);
       return;
     }
 
-    req.info(200, 'ACTION_BOOKING_SUCCESS', [vistitorName]);
+    req.info(httpCodes.ok, 'ACTION_BOOKING_SUCCESS', [vistitorName]);
 
     return visit;
   });
@@ -235,7 +253,9 @@ module.exports = async (srv) => {
   // Enable creation of visits only for published poetry slams
   async function checkPoetrySlamForVisitCreation(poetrySlamID, req) {
     if (!poetrySlamID) {
-      req.error(500, 'POETRYSLAM_NOT_FOUND', [poetrySlamID]);
+      req.error(httpCodes.internal_server_error, 'POETRYSLAM_NOT_FOUND', [
+        poetrySlamID
+      ]);
       return false;
     }
 
@@ -252,18 +272,22 @@ module.exports = async (srv) => {
 
     // Check poetry slam status
     if (!poetrySlam) {
-      req.error(400, 'POETRYSLAM_NOT_FOUND', [poetrySlamID]);
+      req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [poetrySlamID]);
       result = false;
-    } else if (poetrySlam.status_code === codes.poetrySlamStatusCode.booked) {
-      req.error(400, 'POETRYSLAM_FULLY_BOOKED', [poetrySlam.number]);
+    } else if (poetrySlam.status_code === poetrySlamStatusCode.booked) {
+      req.error(httpCodes.bad_request, 'POETRYSLAM_FULLY_BOOKED', [
+        poetrySlam.number
+      ]);
       result = false;
-    } else if (poetrySlam.status_code === codes.poetrySlamStatusCode.canceled) {
-      req.error(400, 'POETRYSLAM_CANCELED', [poetrySlam.number]);
+    } else if (poetrySlam.status_code === poetrySlamStatusCode.canceled) {
+      req.error(httpCodes.bad_request, 'POETRYSLAM_CANCELED', [
+        poetrySlam.number
+      ]);
       result = false;
-    } else if (
-      poetrySlam.status_code === codes.poetrySlamStatusCode.inPreparation
-    ) {
-      req.error(400, 'POETRYSLAM_NOT_PUBLISHED', [poetrySlam.number]);
+    } else if (poetrySlam.status_code === poetrySlamStatusCode.inPreparation) {
+      req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_PUBLISHED', [
+        poetrySlam.number
+      ]);
       result = false;
     }
 

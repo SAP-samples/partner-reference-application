@@ -9,6 +9,8 @@ const cds = require('@sap/cds');
 // Defines required CDS functions for testing
 const { expect, GET, POST, axios, test } = cds.test(__dirname + '/../../..');
 
+const { httpCodes } = require('../../../srv/poetryslam/util/codes');
+
 // ----------------------------------------------------------------------------
 // Tests authorizations for authorized user without role assignment for application
 // Authorizations of PoetrySlamService with User Peter are tested in poetrySlamService.test.js
@@ -20,7 +22,7 @@ describe('Authorizations of PoetrySlamService with User Denise (authenticated us
     axios.defaults.auth = { username: 'peter', password: 'welcome' };
 
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
 
     // Authentication for tests
     axios.defaults.auth = { username: 'denise', password: 'welcome' };
@@ -105,7 +107,7 @@ describe('Authorizations of PoetrySlamService with User Julie (role PoetrySlamVi
     axios.defaults.auth = { username: 'peter', password: 'welcome' };
 
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
 
     // Authentication for tests
     axios.defaults.auth = { username: 'julie', password: 'welcome' };
@@ -116,7 +118,7 @@ describe('Authorizations of PoetrySlamService with User Julie (role PoetrySlamVi
       params: { $select: `ID,status_code` }
     });
 
-    expect(poetrySlams.status).to.eql(200);
+    expect(poetrySlams.status).to.eql(httpCodes.ok);
     // Read all poetry slams; shall be possible
     expect(poetrySlams.data.value.length).to.greaterThan(0);
 
@@ -154,7 +156,7 @@ describe('Authorizations of PoetrySlamService with User Julie (role PoetrySlamVi
       params: { $select: `ID,name` }
     });
 
-    expect(visitors.status).to.eql(200);
+    expect(visitors.status).to.eql(httpCodes.ok);
     // Read all visitors; allowed but none were created by Julie
     expect(visitors.data.value.length).to.eql(0);
   });

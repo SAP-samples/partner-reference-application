@@ -23,7 +23,7 @@ axios.defaults.auth = { username: 'peter', password: 'welcome' };
 describe('Visitors in PoetrySlamService', () => {
   beforeEach(async () => {
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
   });
 
   it('should return the visitor data', async () => {

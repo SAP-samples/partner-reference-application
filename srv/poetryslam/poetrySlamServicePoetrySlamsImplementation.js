@@ -1,7 +1,7 @@
 'strict';
 
 // Include utility files
-const codes = require('./util/codes');
+const { color, poetrySlamStatusCode, httpCodes } = require('./util/codes');
 const {
   calculatePoetrySlamData,
   updatePoetrySlam,
@@ -40,7 +40,9 @@ module.exports = async (srv) => {
           req.data.ID
         ));
     } catch (error) {
-      req.error(500, 'NO_POETRYSLAM_NUMBER', [error.message]);
+      req.error(httpCodes.internal_server_error, 'NO_POETRYSLAM_NUMBER', [
+        error.message
+      ]);
     }
   });
 
@@ -62,10 +64,12 @@ module.exports = async (srv) => {
       .columns('status_code', 'number');
 
     if (
-      poetrySlam.status_code !== codes.poetrySlamStatusCode.inPreparation &&
-      poetrySlam.status_code !== codes.poetrySlamStatusCode.canceled
+      poetrySlam.status_code !== poetrySlamStatusCode.inPreparation &&
+      poetrySlam.status_code !== poetrySlamStatusCode.canceled
     ) {
-      req.error(400, 'POETRYSLAM_COULD_NOT_BE_DELETED', [poetrySlam.number]);
+      req.error(httpCodes.bad_request, 'POETRYSLAM_COULD_NOT_BE_DELETED', [
+        poetrySlam.number
+      ]);
     }
   });
 
@@ -75,17 +79,17 @@ module.exports = async (srv) => {
       const status = poetrySlam.status?.code || poetrySlam.status_code;
       // Set status colour code
       switch (status) {
-        case codes.poetrySlamStatusCode.inPreparation:
-          poetrySlam.statusCriticality = codes.color.grey; // New poetry slams are grey
+        case poetrySlamStatusCode.inPreparation:
+          poetrySlam.statusCriticality = color.grey; // New poetry slams are grey
           break;
-        case codes.poetrySlamStatusCode.published:
-          poetrySlam.statusCriticality = codes.color.green; // Published poetry slams are green
+        case poetrySlamStatusCode.published:
+          poetrySlam.statusCriticality = color.green; // Published poetry slams are green
           break;
-        case codes.poetrySlamStatusCode.booked:
-          poetrySlam.statusCriticality = codes.color.yellow; // Fully booked poetry slams are yellow
+        case poetrySlamStatusCode.booked:
+          poetrySlam.statusCriticality = color.yellow; // Fully booked poetry slams are yellow
           break;
-        case codes.poetrySlamStatusCode.canceled:
-          poetrySlam.statusCriticality = codes.color.red; // Canceled poetry slams are red
+        case poetrySlamStatusCode.canceled:
+          poetrySlam.statusCriticality = color.red; // Canceled poetry slams are red
           break;
         default:
           poetrySlam.statusCriticality = null;
@@ -109,17 +113,19 @@ module.exports = async (srv) => {
 
     // If poetry slam was not found, throw an error
     if (!poetrySlam) {
-      req.error(400, 'POETRYSLAM_NOT_FOUND', [id]);
+      req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [id]);
       return;
     }
 
-    if (poetrySlam.status_code === codes.poetrySlamStatusCode.inPreparation) {
+    if (poetrySlam.status_code === poetrySlamStatusCode.inPreparation) {
       // Poetry slams that are in preperation shall be deleted
-      req.info(200, 'ACTION_CANCEL_IN_PREPARATION', [poetrySlam.number]);
+      req.info(httpCodes.ok, 'ACTION_CANCEL_IN_PREPARATION', [
+        poetrySlam.number
+      ]);
       return poetrySlam;
     }
 
-    poetrySlam.status_code = codes.poetrySlamStatusCode.canceled;
+    poetrySlam.status_code = poetrySlamStatusCode.canceled;
 
     const success = await updatePoetrySlam(
       id,
@@ -145,15 +151,15 @@ module.exports = async (srv) => {
 
     // If poetry slam was not found, throw an error
     if (!poetrySlam) {
-      req.error(400, 'POETRYSLAM_NOT_FOUND', [id]);
+      req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [id]);
       return;
     }
 
     if (
-      poetrySlam.status_code === codes.poetrySlamStatusCode.booked ||
-      poetrySlam.status_code === codes.poetrySlamStatusCode.published
+      poetrySlam.status_code === poetrySlamStatusCode.booked ||
+      poetrySlam.status_code === poetrySlamStatusCode.published
     ) {
-      req.info(200, 'ACTION_PUBLISHED_ALREADY', [poetrySlam.number]);
+      req.info(httpCodes.ok, 'ACTION_PUBLISHED_ALREADY', [poetrySlam.number]);
       return poetrySlam;
     }
 
@@ -161,8 +167,8 @@ module.exports = async (srv) => {
     const data = await calculatePoetrySlamData(id, req);
     poetrySlam.status_code =
       data.freeVisitorSeats > 0
-        ? codes.poetrySlamStatusCode.published
-        : codes.poetrySlamStatusCode.booked;
+        ? poetrySlamStatusCode.published
+        : poetrySlamStatusCode.booked;
 
     // Update status
     const success = await updatePoetrySlam(

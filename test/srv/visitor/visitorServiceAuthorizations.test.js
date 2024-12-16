@@ -20,7 +20,7 @@ describe('Authorizations of VisitorService with User Denise (authenticated user 
     axios.defaults.auth = { username: 'peter', password: 'welcome' };
 
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
 
     // Authentication for tests
     axios.defaults.auth = { username: 'julie', password: 'welcome' };
@@ -100,7 +100,7 @@ describe('Authorizations of VisitorService with User Julie (role PoetrySlamVisit
     axios.defaults.auth = { username: 'peter', password: 'welcome' };
 
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
 
     // Authentication for tests
     axios.defaults.auth = { username: 'julie', password: 'welcome' };

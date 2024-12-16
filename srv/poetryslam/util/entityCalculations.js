@@ -1,6 +1,6 @@
 'use strict';
 
-const codes = require('./codes');
+const { httpCodes, visitStatusCode, poetrySlamStatusCode } = require('./codes');
 
 // ----------------------------------------------------------------------------
 // Implementation of reuse functions
@@ -11,7 +11,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
   const tableExtension = req.target.name.endsWith('drafts') ? '.drafts' : '';
   const changedData = {};
   if (!id) {
-    req.error(500, 'POETRYSLAM_NOT_FOUND', [id]);
+    req.error(httpCodes.internal_server_error, 'POETRYSLAM_NOT_FOUND', [id]);
     return;
   }
 
@@ -23,7 +23,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
 
   // If poetry slam was not found, throw an error
   if (!poetrySlam) {
-    req.error(500, 'POETRYSLAM_NOT_FOUND', [id]);
+    req.error(httpCodes.internal_server_error, 'POETRYSLAM_NOT_FOUND', [id]);
     return;
   }
 
@@ -32,7 +32,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
   if (req.data?.visits?.length) {
     visitConfirmedCount =
       req.data.visits.filter(
-        (visit) => visit.status_code === codes.visitStatusCode.booked
+        (visit) => visit.status_code === visitStatusCode.booked
       )?.length || 0;
   } else {
     // Request does not contain data in all cases. If it is not included, the data needs to be read from the database
@@ -40,7 +40,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
     let visit = await SELECT.one
       .from(`PoetrySlamService.Visits${tableExtension}`)
       .columns('parent_ID', 'count(*) as visitConfirmedCount')
-      .where({ parent_ID: id, status_code: codes.visitStatusCode.booked })
+      .where({ parent_ID: id, status_code: visitStatusCode.booked })
       .groupBy('parent_ID');
 
     visitConfirmedCount = visit?.visitConfirmedCount ?? 0;
@@ -69,16 +69,16 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
 // Calculate the status in cases of changes
 function calculatePoetrySlamStatus(currentStatus, freeVisitorSeats) {
   if (
-    currentStatus === codes.poetrySlamStatusCode.published &&
+    currentStatus === poetrySlamStatusCode.published &&
     freeVisitorSeats === 0
   ) {
-    return codes.poetrySlamStatusCode.booked;
+    return poetrySlamStatusCode.booked;
   } else if (
-    currentStatus === codes.poetrySlamStatusCode.booked &&
+    currentStatus === poetrySlamStatusCode.booked &&
     freeVisitorSeats > 0
   ) {
     // Check if there are free seats and status was booked, then change the status to published
-    return codes.poetrySlamStatusCode.published;
+    return poetrySlamStatusCode.published;
   }
   return currentStatus;
 }
@@ -109,12 +109,14 @@ async function updatePoetrySlam(
     .where({ ID: poetrySlamID });
 
   if (result !== 1) {
-    req.error(500, errorMessage.text, [errorMessage.param]);
+    req.error(httpCodes.internal_server_error, errorMessage.text, [
+      errorMessage.param
+    ]);
     return false;
   }
 
   if (successMessage) {
-    req.info(200, successMessage.text, [successMessage.param]);
+    req.info(httpCodes.ok, successMessage.text, [successMessage.param]);
   }
   return true;
 }

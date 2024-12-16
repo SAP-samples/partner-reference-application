@@ -7,7 +7,7 @@
 // Adds cds module
 const cds = require('@sap/cds');
 // Defines required CDS functions for testing
-const { expect, test, GET, axios } = cds.test(__dirname + '/../..');
+const { expect, test, POST, axios } = cds.test(__dirname + '/../..');
 
 // Authorized user from .cdsrc.json with PoetrySlamManager role
 axios.defaults.auth = { username: 'peter', password: 'welcome' };
@@ -25,7 +25,7 @@ describe('PoetrySlamManager Domain Model', () => {
 
   beforeEach(async () => {
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
   });
 
   it('should load with pre-defined poetry slams test data', async () => {

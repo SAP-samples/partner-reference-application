@@ -34,17 +34,13 @@ axios.defaults.auth = { username: 'peter', password: 'welcome' };
 describe('Visits in PoetrySlamService', () => {
   let visits;
 
-  before(async () => {
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+  beforeEach(async () => {
+    await test.data.reset();
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
 
     // Read all poetry slams for usage in the tests
     visits = await GET(`/odata/v4/poetryslamservice/Visits`);
     expect(visits.data.value.length).to.greaterThan(0);
-  });
-
-  beforeEach(async () => {
-    await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
   });
 
   it('should set the correct statusCriticality during read of visits', async () => {
