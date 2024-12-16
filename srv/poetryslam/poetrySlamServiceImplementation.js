@@ -13,9 +13,9 @@ const visitsHandler = require('./poetrySlamServiceVisitsImplementation');
 
 module.exports = cds.service.impl(async (srv) => {
   // For better readability, outsource implementation files
-  poetrySlamsHandler(srv); // Forward handler to the Poetry Slam entity
-  visitsHandler(srv); // Forward handler to the Visits entity
-  erpForwardHandler(srv); // Forward handler to the ERP systems
+  await poetrySlamsHandler(srv); // Forward handler to the Poetry Slam entity
+  await visitsHandler(srv); // Forward handler to the Visits entity
+  await erpForwardHandler(srv); // Forward handler to the ERP systems
 
   // ----------------------------------------------------------------------------
   // Implementation of oData function
