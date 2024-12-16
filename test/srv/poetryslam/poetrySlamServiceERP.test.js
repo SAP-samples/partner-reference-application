@@ -11,6 +11,8 @@ const destination = require('../../../srv/poetryslam/util/destination');
 const { expect, GET, POST, axios, test } = cds.test(__dirname + '/../../..');
 const sinon = require('sinon');
 
+const { httpCodes } = require('../../../srv/poetryslam/util/codes');
+
 // Executes an action, like draftActivate, draftEdit or publish
 const ACTION = (url, name, parameters = {}) =>
   POST(url + `/PoetrySlamService.${name}`, parameters);
@@ -31,7 +33,7 @@ describe('Remote Projects in PoetrySlamService', () => {
 
   before(async () => {
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
 
     // Read all poetry slams for usage in the tests
     poetrySlams = await GET(
@@ -45,7 +47,7 @@ describe('Remote Projects in PoetrySlamService', () => {
 
   beforeEach(async () => {
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
     stubDestination = sinon.stub(destination, 'readDestination');
   });
 
@@ -77,40 +79,40 @@ describe('Remote Projects in PoetrySlamService', () => {
   });
 
   it('should throw error message when retrieving SAP HANA Cloud project and no system is connected', async () => {
-    expect(
+    await expect(
       GET(
         `/odata/v4/poetryslamservice/S4HCProjects(projectUUID=00000000-0000-0000-0000-000000000000)`
       )
-    ).to.rejectedWith(500);
+    ).to.rejectedWith(httpCodes.internal_server_error);
   });
 
   it('should throw error message when retrieving SAP HANA Cloud processing status and no system is connected', async () => {
-    expect(
+    await expect(
       GET(
         `/odata/v4/poetryslamservice/S4HCProjectsProcessingStatus(processingStatus='aa')`
       )
-    ).to.rejectedWith(500);
+    ).to.rejectedWith(httpCodes.internal_server_error);
   });
 
   it('should throw error message when retrieving SAP HANA Cloud project profile code and no system is connected', async () => {
-    expect(
+    await expect(
       GET(
         `/odata/v4/poetryslamservice/S4HCProjectsProjectProfileCode(projectProfileCode='aaaaaaa')`
       )
-    ).to.rejectedWith(500);
+    ).to.rejectedWith(httpCodes.internal_server_error);
   });
 
   it('should throw error message when retrieving SAP Business ByDesign project and no system is connected', async () => {
-    expect(
+    await expect(
       GET(
         `/odata/v4/poetryslamservice/ByDProjects(ID='00000000-0000-0000-0000-000000000000')`
       )
-    ).to.rejectedWith(500);
+    ).to.rejectedWith(httpCodes.internal_server_error);
   });
 
   it('should throw error message when retrieving SAP Business One purchase order and no system is connected', async () => {
-    expect(
+    await expect(
       GET(`/odata/v4/poetryslamservice/B1PurchaseOrder(docEntry=1)`)
-    ).to.rejectedWith(500);
+    ).to.rejectedWith(httpCodes.internal_server_error);
   });
 });

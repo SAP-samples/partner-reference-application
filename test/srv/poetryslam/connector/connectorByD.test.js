@@ -39,8 +39,8 @@ describe('ConnectorByD', () => {
     stubINSERT = sinon.stub(INSERT, 'into').returns({
       entries: (projectRecord) => {
         return {
-          projectID: projectRecord.ProjectID,
-          ID: 'UUID'
+          ProjectID: projectRecord.ProjectID,
+          ObjectID: 'UUID'
         };
       }
     });
@@ -58,7 +58,7 @@ describe('ConnectorByD', () => {
       where: (whereClause) => {
         return [
           {
-            projectID: whereClause.ProjectID,
+            projectID: whereClause.ProjectID[0],
             costCenter: 'costCenterTest'
           }
         ];
@@ -68,7 +68,8 @@ describe('ConnectorByD', () => {
     stubCDS = sinon.stub(cds.connect, 'to').resolves({
       run: (data) => {
         return data;
-      }
+      },
+      entities: { ProjectCollection: 'test' }
     });
   });
 
@@ -127,7 +128,7 @@ describe('ConnectorByD', () => {
       ]
     };
 
-    await connector.projectDataRecord(1, 'testTitle', new Date('03/03/2024'));
+    connector.projectDataRecord(1, 'testTitle', new Date('03/03/2024'));
 
     expect(connector.projectRecord).to.eql(testProjectRecord);
   });
@@ -153,7 +154,7 @@ describe('ConnectorByD', () => {
       projectSystem: ConnectorByD.PROJECT_SYSTEM,
       toByDProject: {
         costCenter: 'costCenterTest',
-        projectID: [1]
+        projectID: 1
       }
     };
 
@@ -189,18 +190,8 @@ describe('ConnectorByD', () => {
   });
 
   it('should insert remote project data to database of poetry slam entitiy', async () => {
-    const srv = {
-      run: async function (data) {
-        return data;
-      },
-      entities: {
-        ByDProjects: 'test'
-      }
-    };
-
     connector.projectRecord = { ProjectID: 1 };
-
-    const objectData = await connector.insertRemoteProjectData(srv);
+    const objectData = await connector.insertRemoteProjectData();
     expect(objectData.projectID).to.eql(1);
     expect(objectData.projectObjectID).to.eql('UUID');
   });

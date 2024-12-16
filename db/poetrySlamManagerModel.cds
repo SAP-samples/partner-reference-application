@@ -85,11 +85,11 @@ annotate PoetrySlams with @fiori.draft.enabled {
   visitorsFeeCurrency    @title: '{i18n>visitorsFeeCurrency}';
   status                 @title: '{i18n>status}'                 @readonly;
   visits                 @title: '{i18n>visits}';
-  projectID              @title: '{i18n>projectID}';
+  projectID              @title: '{i18n>projectID}'              @readonly;
   projectObjectID        @title: '{i18n>projectObjectID}'        @readonly;
   projectURL             @title: '{i18n>projectURL}'             @readonly;
   projectSystem          @title: '{i18n>projectSystem}'          @readonly;
-  purchaseOrderID        @title: '{i18n>purchaseOrderID}';
+  purchaseOrderID        @title: '{i18n>purchaseOrderID}'        @readonly;
   purchaseOrderObjectID  @title: '{i18n>purchaseOrderObjectID}'  @readonly;
   purchaseOrderURL       @title: '{i18n>purchaseOrderURL}'       @readonly;
   purchaseOrderSystem    @title: '{i18n>purchaseOrderSystem}'    @readonly;

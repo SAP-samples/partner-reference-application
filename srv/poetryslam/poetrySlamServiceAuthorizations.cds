@@ -51,55 +51,20 @@ annotate PoetrySlamService.Visits with @(restrict: [
   }
 ]);
 
-// SAP Business ByDesign projects: Managers can read and create remote projects
+// SAP Business ByDesign projects: Managers can read remote projects (create is done using the remote service, not the projection in the PoetrySlamService)
 annotate PoetrySlamService.ByDProjects with @(restrict: [{
-  grant: ['*'],
+  grant: ['READ'],
   to   : 'PoetrySlamFull'
 }]);
 
-annotate PoetrySlamService.ByDProjectSummaryTasks with @(restrict: [{
-  grant: ['*'],
-  to   : 'PoetrySlamFull'
-}]);
-
-annotate PoetrySlamService.ByDProjectTasks with @(restrict: [{
-  grant: ['*'],
-  to   : 'PoetrySlamFull'
-}]);
-
-// S/4 projects: Managers can read and create remote projects
+// S/4 projects: Managers can read remote projects (create is done using the remote service, not the projection in the PoetrySlamService)
 annotate PoetrySlamService.S4HCProjects with @(restrict: [{
-  grant: ['*'],
+  grant: ['READ'],
   to   : 'PoetrySlamFull'
 }]);
 
-annotate PoetrySlamService.S4HCEnterpriseProjectElement with @(restrict: [{
-  grant: ['*'],
-  to   : 'PoetrySlamFull'
-}]);
-
-annotate PoetrySlamService.S4HCEntProjTeamMember with @(restrict: [{
-  grant: ['*'],
-  to   : 'PoetrySlamFull'
-}]);
-
-annotate PoetrySlamService.S4HCEntProjEntitlement with @(restrict: [{
-  grant: ['*'],
-  to   : 'PoetrySlamFull'
-}]);
-
-annotate PoetrySlamService.S4HCProjectsProjectProfileCode with @(restrict: [{
-  grant: ['*'],
-  to   : 'PoetrySlamFull'
-}]);
-
-annotate PoetrySlamService.S4HCProjectsProcessingStatus with @(restrict: [{
-  grant: ['*'],
-  to   : 'PoetrySlamFull'
-}]);
-
-// SAP Business One purchase orders: Managers can read and create remote purchase orders
+// SAP Business One purchase orders: Managers can read remote purchase orders (create is done using the remote service, not the projection in the PoetrySlamService)
 annotate PoetrySlamService.B1PurchaseOrder with @(restrict: [{
-  grant: ['*'],
+  grant: ['READ'],
   to   : 'PoetrySlamFull'
 }]);

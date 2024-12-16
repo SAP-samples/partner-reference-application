@@ -3,7 +3,6 @@
     {
       "ID": "79ceab87-300d-4b66-8cc3-f82c679b77a1",
       "number": 1,
-      "dateTime": "2025-01-02T16:00:00.178Z",
       "maxVisitorsNumber": 2,
       "freeVisitorSeats": 0,
       "visitorsFeeAmount": 100.0,
@@ -16,7 +15,6 @@
     {
       "ID": "79ceab87-300d-4b66-8cc3-f82c679b77a2",
       "number": 2,
-      "dateTime": "2025-02-07T11:00:00.178Z",
       "maxVisitorsNumber": 50,
       "freeVisitorSeats": 48,
       "visitorsFeeAmount": 105.0,
@@ -29,7 +27,6 @@
     {
       "ID": "79ceab87-300d-4b66-8cc3-f82c679b77a3",
       "number": 3,
-      "dateTime": "2024-12-14T15:00:00.178Z",
       "maxVisitorsNumber": 75,
       "freeVisitorSeats": 75,
       "visitorsFeeAmount": 95.0,
@@ -42,7 +39,6 @@
     {
       "ID": "79ceab87-300d-4b66-8cc3-f82c679b77a4",
       "number": 4,
-      "dateTime": "2024-12-07T09:00:00.178Z",
       "maxVisitorsNumber": 75,
       "freeVisitorSeats": 74,
       "visitorsFeeAmount": 1000.0,
@@ -55,7 +51,6 @@
     {
       "ID": "79ceab87-300d-4b66-8cc3-f82c679b77a5",
       "number": 5,
-      "dateTime": "2025-02-27T12:00:00.178Z",
       "maxVisitorsNumber": 50,
       "freeVisitorSeats": 50,
       "visitorsFeeAmount": 100.0,
@@ -68,7 +63,6 @@
     {
       "ID": "79ceab87-300d-4b66-8cc3-f82c679b77a6",
       "number": 6,
-      "dateTime": "2025-03-23T18:00:00.178Z",
       "maxVisitorsNumber": 75,
       "freeVisitorSeats": 74,
       "visitorsFeeAmount": 79.0,
@@ -81,7 +75,6 @@
     {
       "ID": "79ceab87-300d-4b66-8cc3-f82c679b77a7",
       "number": 7,
-      "dateTime": "2025-05-16T14:00:00.178Z",
       "maxVisitorsNumber": 3,
       "freeVisitorSeats": 0,
       "visitorsFeeAmount": 25.0,
@@ -94,7 +87,6 @@
     {
       "ID": "79ceab87-300d-4b66-8cc3-f82c679b77a8",
       "number": 8,
-      "dateTime": "2025-01-23T01:00:00.178Z",
       "maxVisitorsNumber": 20,
       "freeVisitorSeats": 20,
       "visitorsFeeAmount": 25.0,

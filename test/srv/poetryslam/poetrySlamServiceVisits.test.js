@@ -34,17 +34,13 @@ axios.defaults.auth = { username: 'peter', password: 'welcome' };
 describe('Visits in PoetrySlamService', () => {
   let visits;
 
-  before(async () => {
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+  beforeEach(async () => {
+    await test.data.reset();
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
 
     // Read all poetry slams for usage in the tests
     visits = await GET(`/odata/v4/poetryslamservice/Visits`);
     expect(visits.data.value.length).to.greaterThan(0);
-  });
-
-  beforeEach(async () => {
-    await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
   });
 
   it('should set the correct statusCriticality during read of visits', async () => {
@@ -145,7 +141,7 @@ describe('Visits in PoetrySlamService', () => {
     expect(visitResult.data.IsActiveEntity).to.false;
     expect(visitResult.data.status_code).to.eql(null);
 
-    return expect(
+    await expect(
       ACTION(
         `/odata/v4/poetryslamservice/PoetrySlams(ID=${poetrySlamId},IsActiveEntity=false)`,
         'draftActivate'
@@ -160,7 +156,7 @@ describe('Visits in PoetrySlamService', () => {
       `/odata/v4/poetryslamservice/PoetrySlams(ID=${poetrySlamId},IsActiveEntity=true)`,
       'draftEdit'
     );
-    return expect(
+    await expect(
       POST(
         `/odata/v4/poetryslamservice/PoetrySlams(ID=${poetrySlamId},IsActiveEntity=false)/visits`,
         {}
@@ -258,7 +254,7 @@ describe('Visits in PoetrySlamService', () => {
     // ID that is not available
     const id = '79ceab87-300d-4b66-8cc3-f82c679b77bb';
 
-    return expect(
+    await expect(
       ACTION(
         `/odata/v4/poetryslamservice/Visits(ID=${id},IsActiveEntity=true)`,
         `confirmVisit`
@@ -270,7 +266,7 @@ describe('Visits in PoetrySlamService', () => {
     // ID that is not available
     const id = '79ceab87-300d-4b66-8cc3-f82c679b77bb';
 
-    return expect(
+    await expect(
       ACTION(
         `/odata/v4/poetryslamservice/Visits(ID=${id},IsActiveEntity=true)`,
         `cancelVisit`

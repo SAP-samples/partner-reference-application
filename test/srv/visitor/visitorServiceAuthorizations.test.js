@@ -20,7 +20,7 @@ describe('Authorizations of VisitorService with User Denise (authenticated user 
     axios.defaults.auth = { username: 'peter', password: 'welcome' };
 
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
 
     // Authentication for tests
     axios.defaults.auth = { username: 'julie', password: 'welcome' };
@@ -29,11 +29,11 @@ describe('Authorizations of VisitorService with User Denise (authenticated user 
   it('should reject the reading of the poetry slams', async () => {
     // Read all poetry slams; shall be rejected
 
-    const test = GET(`/odata/v4/visitorservice/PoetrySlams`, {
-      params: { $select: `ID,status_code,statusCriticality` }
-    });
-
-    return expect(test).to.rejectedWith('403');
+    await expect(
+      GET(`/odata/v4/visitorservice/PoetrySlams`, {
+        params: { $select: `ID,status_code,statusCriticality` }
+      })
+    ).to.rejectedWith('403');
   });
 
   it('should reject the creation of a poetry slam', async () => {
@@ -43,14 +43,14 @@ describe('Authorizations of VisitorService with User Denise (authenticated user 
     };
 
     // Create a new poetry slam; shall be rejected
-    return expect(
+    await expect(
       POST(`/odata/v4/visitorservice/PoetrySlams`, poetrySlamToBeCreated)
     ).to.rejectedWith('403');
   });
 
   it('should reject the reading of visitors', async () => {
     // Read all poetry slams; shall be rejected
-    return expect(
+    await expect(
       GET(`/odata/v4/visitorservice/Visitors`, {
         params: { $select: `ID,name` }
       })
@@ -64,14 +64,14 @@ describe('Authorizations of VisitorService with User Denise (authenticated user 
     };
 
     // Create a new poetry slam; shall be rejected
-    return expect(
+    await expect(
       POST(`/odata/v4/visitorservice/Visitors`, entryToBeCreated)
     ).to.rejectedWith('403');
   });
 
   it('should reject the reading of visits', async () => {
     // Read all poetry slams; shall be rejected
-    return expect(
+    await expect(
       GET(`/odata/v4/visitorservice/Visits`, {
         params: { $select: `ID,artists` }
       })
@@ -85,7 +85,7 @@ describe('Authorizations of VisitorService with User Denise (authenticated user 
     };
 
     // Create a new poetry slam; shall be rejected
-    return expect(POST(`/odata/v4/visitorservice/Visits`, entryToBeCreated)).to
+    await expect(POST(`/odata/v4/visitorservice/Visits`, entryToBeCreated)).to
       .rejected;
   });
 });
@@ -100,14 +100,14 @@ describe('Authorizations of VisitorService with User Julie (role PoetrySlamVisit
     axios.defaults.auth = { username: 'peter', password: 'welcome' };
 
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
 
     // Authentication for tests
     axios.defaults.auth = { username: 'julie', password: 'welcome' };
   });
 
   it('should return data of poetry slams', async () => {
-    return expect(
+    await expect(
       GET(`/odata/v4/visitorservice/PoetrySlams`, {
         params: { $select: `ID` }
       })
@@ -121,13 +121,13 @@ describe('Authorizations of VisitorService with User Julie (role PoetrySlamVisit
     };
 
     // Create a new poetry slam; shall be rejected
-    return expect(
+    await expect(
       POST(`/odata/v4/visitorservice/PoetrySlams`, poetrySlamToBeCreated)
     ).to.rejectedWith('403');
   });
 
   it('should allow the reading of visitors', async () => {
-    return expect(
+    await expect(
       GET(`/odata/v4/visitorservice/Visitors`, {
         params: { $select: `ID,name` }
       })
@@ -140,13 +140,13 @@ describe('Authorizations of VisitorService with User Julie (role PoetrySlamVisit
       email: 'julie@pra.ondemand.com'
     };
 
-    return expect(
+    await expect(
       POST(`/odata/v4/visitorservice/Visitors`, entryToBeCreated)
     ).to.rejectedWith('403');
   });
 
   it('should allow reading of visits', async () => {
-    return expect(
+    await expect(
       GET(`/odata/v4/visitorservice/Visits`, {
         params: { $select: `ID,artistIndicator` }
       })
@@ -159,7 +159,7 @@ describe('Authorizations of VisitorService with User Julie (role PoetrySlamVisit
       visitor_ID: '79ceab87-300d-4b66-8cc3-c82c679b7c12'
     };
 
-    return expect(
+    await expect(
       POST(`/odata/v4/visitorservice/Visits`, entryToBeCreated)
     ).to.rejectedWith('403');
   });
