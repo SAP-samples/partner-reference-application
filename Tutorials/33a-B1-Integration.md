@@ -28,7 +28,7 @@ The SAP Business One OData service is consumed by using a destination. SAP Cloud
 
     > Note: Ensure a unique file name without special characters except "_".
     
-    > Note: The response contains many entities, which you don't require for this integration scenario. It's sufficient to use a self-contained excerpt of the complete $metadata file. For the example described here, you can use the file [b1_sbs_v2.edmx](../../../tree/main-multi-tenant//external_resources/b1_sbs_v2.edmx).
+    > Note: The response contains many entities, which you don't require for this integration scenario. It's sufficient to use a self-contained excerpt of the complete $metadata file. For the example described here, you can use the file [b1_sbs_v2.edmx](../../../tree/main-multi-tenant/external_resources/b1_sbs_v2.edmx).
 
 3. In SAP Business Application Studio, to import the SAP Business One OData service into the SAP Cloud Application Programming Model (CAP) project, create a folder with the name `external_resources` in the root folder of the application.
 
@@ -56,7 +56,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 2. Enhance the annotations of entity *PoetrySlams* with the following elements:
     ```javascript
-    purchaseOrderID       @title: '{i18n>purchaseOrderID}';
+    purchaseOrderID       @title: '{i18n>purchaseOrderID}';      @readonly;
     purchaseOrderObjectID @title: '{i18n>purchaseOrderObjectID}' @readonly;
     purchaseOrderURL      @title: '{i18n>purchaseOrderURL}'      @readonly;
     purchaseOrderSystem   @title: '{i18n>purchaseOrderSystem}'   @readonly;
@@ -76,7 +76,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 1. To extend the SAP Cloud Application Programming Model service model by remote entities, open the file [*/srv/poetryslam/poetrySlamService.cds*](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamService.cds) with the service models.
 
-2. Expose SAP Business One purchase order data throughout the SAP Cloud Application Programming Model service model for principal propagation:
+2. Add a projection of the SAP Business One purchase order to the service model for consumption in the Fiori Elements UI:
     ```javascript
     // -------------------------------------------------------------------------------
     // Extend service PoetrySlamService by SAP Business One Purchase Orders
@@ -84,32 +84,27 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     using {b1_sbs_v2 as RemoteB1} from '../external/b1_sbs_v2';
 
     extend service PoetrySlamService with {
-    entity B1PurchaseOrder                as
-        projection on RemoteB1.PurchaseOrders {
-        key DocEntry     as docEntry,
-            DocNum       as docNum,
-            DocType      as docType,
-            DocDate      as docDate,
-            DocDueDate   as docDueDate,
-            CreationDate as creationDate,
-            CardCode     as cardCode,
-            CardName     as cardName,
-            DocTotal     as docTotal,
-            DocCurrency  as docCurrency
-        }
+        entity B1PurchaseOrder as
+            projection on RemoteB1.PurchaseOrders {
+                key DocEntry     as docEntry,
+                    DocNum       as docNum,
+                    DocDueDate   as docDueDate,
+                    CreationDate as creationDate,
+                    DocTotal     as docTotal,
+                    DocCurrency  as docCurrency
+            }
     }
     ```
 
-2. Enhance the service model of the service *PoetrySlamService* with virtual elements to pass on the name of the ERP system from the destination to the UI, and the visualization of actions:
+3. Enhance the service model of the service *PoetrySlamService* with virtual elements and an association to the projection of the remote purchase order in SAP Business One. The virtual elements are calculated, non-persisted fields to pass on the name of the ERP system from the destination to the UI, and the visualization of actions.
     ```javascript
     // Poetry Slams (draft enabled)
     @odata.draft.enabled
     @Common.SemanticObject: 'poetryslams'
     @Common.SemanticKey   : [ID]
-    entity PoetrySlams                    as
-        select from poetrySlamManagerModel.PoetrySlams
-        into {
-            // Selects all fields of the PoetrySlams domain model,
+    entity PoetrySlams as
+        select from poetrySlamManagerModel.PoetrySlams {
+            // Selects all fields of the PoetrySlams domain model
             *,
             maxVisitorsNumber - freeVisitorSeats as bookedSeats                  : Integer @title     : '{i18n>bookedSeats}',
             // Relevant for coloring of status in UI to show criticality
@@ -118,22 +113,9 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
             virtual null                         as createB1PurchaseOrderEnabled : Boolean @odata.Type: 'Edm.Boolean',
             virtual null                         as purchaseOrderSystemName      : String  @title     : '{i18n>purchaseOrderSystemName}'  @odata.Type: 'Edm.String',
             virtual null                         as isB1                         : Boolean @odata.Type: 'Edm.Boolean',
-            toB1PurchaseOrder
-        }
-    ```
-    
-3. Enhance the service model of the service *PoetrySlamService * with an association to the remote purchase order in SAP Business One:
-    ```javascript
-    // Poetry Slams (draft enabled)
-    @odata.draft.enabled
-    @Common.SemanticObject: 'poetryslams'
-    @Common.SemanticKey   : [ID]
-    entity PoetrySlams as select from poetrySlamManagerModel.PoetrySlams
-        mixin {
-            // SAP Business One purchase orders: Mix-in of SAP Business One Purchase Order Data
-            toB1PurchaseOrder : Association to RemoteB1.PurchaseOrders
-                                    on toB1PurchaseOrder.DocNum = $projection.purchaseOrderID;
-        } 
+            // Projection of remote service data as required by the UI
+            toB1PurchaseOrder                                                    : Association to PoetrySlamService.B1PurchaseOrder on toB1PurchaseOrder.docNum = $self.purchaseOrderID
+ 
     ```
     
 4. Enhance the service model of the service *PoetrySlamService* with an action to create remote purchase orders:
@@ -150,6 +132,19 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     ```
     > Note: The side effect annotation refreshes the purchase order data right after executing the action.
 
+5. In case you want to support an option to clear the connection to the created purchase order, enhance the service model of service *PoetrySlamService* with the action `clearPurchaseOrderData`. 
+    ```javascript
+      // SAP Business One purchase order: action to clear the purchase order data
+      @(
+        Common.SideEffects             : {TargetEntities: [
+          '_poetryslam',
+          '_poetryslam/toB1PurchaseOrder'
+        ]},
+        cds.odata.bindingparameter.name: '_poetryslam'
+      )
+      action clearPurchaseOrderData();
+    ```
+
 ### Enhance the Authentication Model to Cover Remote Purchase Orders
 
 1. To extend the authorization annotation of the SAP Cloud Application Programming Model service model by restrictions referring to the remote services, open the file [*/srv/poetryslam/poetrySlamServiceAuthorizations.cds*](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceAuthorizations.cds) with the authorization annotations.
@@ -157,10 +152,10 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 2. Enhance the authorization model for the service entity *B1PurchaseOrder*.
 
     ```javascript
-    // SAP Business One purchase orders: Managers can read and create remote purchase orders
+    // SAP Business One purchase orders: Managers can read remote purchase orders (creation is done using the remote service, not the projection in the PoetrySlamService)
     annotate PoetrySlamService.B1PurchaseOrder with @(restrict: [{
-        grant: ['*'],
-        to   : 'PoetrySlamFull',
+        grant: ['READ'],
+        to   : 'PoetrySlamFull'
     }]);
     ```
 
@@ -193,7 +188,9 @@ Reuse functions specific to SAP Business One are defined in a separate file.
 1. Create a file with the path */srv/poetryslam/connector/connectorB1.js*. 
 2. Copy the SAP Business One-related functions in the file [*/srv/poetryslam/connector/connectorB1.js*](../../../tree/main-multi-tenant/srv/poetryslam/connector/connectorB1.js) into your project. The file contains functions to delegate OData requests to SAP Business One, to read SAP Business One purchase order data, and to assemble an OData payload to create SAP Business One purchase orders.
 
-> Note: This file contains sample data, which can vary depending on the system. Check the data set and maintain it accordingly to ensure consistency between the Partner Reference App and SAP Business One. The sample data is marked with a block comment *Purchase order data for SAP Business One; needs to be adopted according to SAP Business One configuration of the customer system*.
+    > Note: This file contains a function ```insertRemotePurchaseOrderData()```. This function creates a purchase order in SAP Business One by creating an entity directly using the external imported service and the external entity model. It does *not* use the projection as modelled in the *PoetrySlamService*. This is intentional: The projection is intended for fields shown in the Fiori Elements UI (read-only) or updates of individual fields. More complex write scenarios, including create scenarios, should directly call the external imported services. This avoids data type validations by CAP, leaving the validations to the external service. It also avoids a remodeling of all fields and compositions required for creation in the projection.
+    
+    > Note: This file contains sample data that can vary depending on the system. Check the data set and maintain it accordingly to ensure consistency between the Partner Reference app and SAP Business One. The sample data is marked with a block comment *Purchase order data for SAP Business One; needs to be adopted according to SAP Business One configuration of the customer system*.
 
 ### Enhance the Business Logic to Operate on SAP Business One Data
 
@@ -210,24 +207,22 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
         const ConnectorB1 = require('./connector/connectorB1');
 
         module.exports = async (srv) => {
-            // ----------------------------------------------------------------------------
+            // -------------------------------------------------------------------------------------------------
             // Implementation of remote OData services (back-channel integration with SAP Business One)
-            // ----------------------------------------------------------------------------
+            // -------------------------------------------------------------------------------------------------
 
             // Delegate OData requests to SAP Business One remote purchase order entities
-            srv.on(
-                ['READ', 'CREATE', 'UPDATE', 'DELETE'],
-                'B1PurchaseOrder',
-                async (req) => {
+            srv.on('READ', 'B1PurchaseOrder', async (req) => {
                 const connector = await ConnectorB1.createConnectorInstance(req);
                 return await connector.delegateODataRequests(
                     req,
                     ConnectorB1.PURCHASE_ORDER_SERVICE
                 );
-                }
-            );
+            });
         }
         ```
+
+        > Note: In this example, the projection of the remote purchase order in SAP Business One as modeled in the PoetrySlamService is only used for *READ* access. In case you want to support *UPDATE* as well, you would need to change ```srv.on('READ', ...)``` to ```srv.on(['READ', 'UPDATE'], ...)``` in the above snippet. The *CREATE* is implemented separately as described in the previous section.
 
     > Note: Without delegation, the remote entities return the error code 500 with the message: *SQLITE_ERROR: no such table* (local testing).
 
@@ -242,7 +237,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
     2. Call the ERP forward handler.
 
     ```javascript
-    erpForwardHandler(srv); // Forward handler to the ERP systems
+    await erpForwardHandler(srv); // Forward handler to the ERP systems
     ```
 
 3. In the file [*/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js), the poetry slams entity is enriched with SAP Business One-specific data. 
@@ -323,10 +318,10 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
             // Entity action: Create SAP Business One Purchase Order
             srv.on('createB1PurchaseOrder', async (req) => {
                 await createPurchaseOrder(
-                req,
-                srv,
-                ConnectorB1,
-                'ACTION_CREATE_PURCHASE_ORDER_NO_B1_SYSTEM'
+                    req,
+                    srv,
+                    ConnectorB1,
+                    'ACTION_CREATE_PURCHASE_ORDER_NO_B1_SYSTEM'
                 );
             });
             ```
@@ -348,23 +343,12 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
             } = require('./util/entityCalculations');
             ```
 
-        4. Extend the on-update event of the `PoetrySlams` entity with an implementation to clear all purchase order data if the `purchaseOrderID` is deleted:
-            ```javascript
-            srv.on('UPDATE', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
-                ...
-
-                // Remove all purchase order data if the purchase order id is cleared
-                if (req.data.purchaseOrderID === '') {
-                    req.data.purchaseOrderID = null;
-                    req.data.purchaseOrderObjectID = null;
-                    req.data.purchaseOrderURL = null;
-                    req.data.purchaseOrderSystem = null;
-                    req.data.purchaseOrderSystemName = null;
-                }
-
-                ...
-            });
-            ```
+        4. Copy the implementation of the action `clearPurchaseOrderData` to clear all project data:
+        ```javascript
+        srv.on('clearPurchaseOrderData', async (req) => {
+            ...
+        });
+        ```
 
 4. Copy the function `createPurchaseOrder` from the file [*/srv/poetryslam/util/entityCalculations.js*](../../../tree/main-multi-tenant/srv/poetryslam/util/entityCalculations.js) into the implementation and export the function at the end of the file.
 
@@ -377,6 +361,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
     ACTION_CREATE_PURCHASE_ORDER_NO_B1_SYSTEM               = No SAP Business One system connected. Purchase order cannot be created.
     ACTION_CREATE_PURCHASE_ORDER_FAILED                     = Purchase order creation failed. Poetry Slam {0} was not updated.
     ACTION_READ_PURCHASE_ORDER_CONNECTION                   = Purchase order cannot be retrieved.
+    ACTION_ERP_REMOVED                                      = The ERP information was removed from poetry slam {0}.
     ```
 
 ### Enhance the Web App to Display SAP Business One Data 
@@ -458,7 +443,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
         ]
         ```
 
-    4. Add a button to the identification area:
+    4. Add two buttons to the identification area:
         ```javascript
         // Create a purchase order in the connected SAP Business One system
         {
@@ -469,6 +454,19 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
                 {$Path: 'createB1PurchaseOrderEnabled'},
                 {$Path: 'IsActiveEntity'}
             ]}}}
+        },
+        // Clear the purchase order data
+        {
+            $Type        : 'UI.DataFieldForAction',
+            Label        : '{i18n>removePurchaseOrderData}',
+            Action       : 'PoetrySlamService.clearPurchaseOrderData',
+            ![@UI.Hidden]: {$edmJson: {$Or: [
+            {$Eq: [
+                {$Path: 'purchaseOrderID'},
+                {$Null: null}
+            ]},
+            {$Not: {$Path: 'IsActiveEntity'}}
+            ]}}
         }
         ```
         > Note: The visibility of the *Create Purchase Order in SAP Business One* button is dynamically controlled based on the value of the transient field *createB1PurchaseOrderEnabled*, which is calculated in the after read-event of the entity *PoetrySlam*.     
@@ -478,12 +476,13 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
     # -------------------------------------------------------------------------------------
     # Transient Service Elements
 
-    purchaseOrderSystemName = Purchase Order System
+    purchaseOrderSystemName = System Name
 
     # -------------------------------------------------------------------------------------
     # Service Actions
 
     createB1PurchaseOrder   = Create Purchase Order in SAP Business One
+    removePurchaseOrderData = Clear Purchase Order Data
     ```        
 
     > In the reference example, the [*/srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/srv/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.

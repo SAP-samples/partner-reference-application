@@ -6,7 +6,13 @@ The [SAP Cloud Logging service](https://help.sap.com/docs/cloud-logging/cloud-lo
 
 > Note: This service is not intended for the users of the app, but rather the app provider.
 
-This tutorial describes how to connect the SAP Cloud Logging service to your SAP BTP application.
+To explore this feature with the Poetry Slam Manager, you have two options: 
+
+1. Clone the repository of the Partner Reference application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
+
+2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch where the feature is already included. 
+
+The following describes how to enhance the **main-multi-tenant** branch (option 1).
 
 ## Integrate the SAP Cloud Logging Service 
 The SAP Cloud Logging service is an instance-based and environment-agnostic observability service that stores, visualizes, and helps analyze application logs, metrics, and traces from the SAP BTP Cloud Foundry.
@@ -14,7 +20,7 @@ The service builds upon [OpenSearch](https://opensearch.org/), which offers feat
 
 For more information, refer to the documentation on the [SAP Cloud Logging service](https://help.sap.com/docs/cloud-logging/cloud-logging/what-is-sap-cloud-logging?version=Cloud).
 
-For the Partner Reference Application, an SAP Cloud Logging instance is created with service plan [standard](https://help.sap.com/docs/cloud-logging/cloud-logging/service-plans?version=Cloud) using the [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml) file:
+For the Partner Reference application, an SAP Cloud Logging instance is created with service plan [standard](https://help.sap.com/docs/cloud-logging/cloud-logging/service-plans?version=Cloud) using the [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml) file:
 
 1. Enable the SAP Cloud Logging service instance and [OpenTelemetry](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-via-opentelemetry-api-endpoint?version=Cloud) by adding the following code snippet to the *resources* in the *mta.yaml*:
     ```yml

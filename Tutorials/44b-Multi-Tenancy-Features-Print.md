@@ -10,6 +10,14 @@ It consists of several parts:
 
 The next sections describe how the components are used and configured.
 
+To explore this feature with the Poetry Slam Manager, you have two options: 
+
+1. Clone the repository of the Partner Reference application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
+
+2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch where the feature is already included. 
+
+The following describes how to enhance the **main-multi-tenant** branch (option 1).
+
 ## Enabling Printing in the Poetry Slams Application
 
 1. As you will print the guest list which you created based on chapter [Manage Forms](./44a-Multi-Tenancy-Features-Forms.md) follow all enablement steps described there first. 
@@ -35,7 +43,9 @@ The next sections describe how the components are used and configured.
 
     6. Add `@sap-cloud-sdk/openapi-generator` to the `devDependencies` of your *package.json* by running `npm add -D @sap-cloud-sdk/openapi-generator`.
 
-    7. Run `npm install` and `npm run prebuild` to generate the access classes.
+    7. Run the command `npm install` in your project root folder to install the required npm modules for the application. 
+
+    8. Run `npm run prebuild` to generate the access classes.
 
 3. Extend your service by an action `Print Guest List`.
 
@@ -118,7 +128,7 @@ The next sections describe how the components are used and configured.
 
         module.exports = cds.service.impl(async (srv) => {
             ...
-            outputHandler(srv); // Forward handler for output
+            await outputHandler(srv); // Forward handler for output
             ...
         });
         ```

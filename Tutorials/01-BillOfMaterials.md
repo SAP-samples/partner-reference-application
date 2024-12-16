@@ -1,5 +1,5 @@
 # Bill of Materials
-In the full version of Poetry Slam Manager with multitenancy, SAP ERP integration, and additional features, the Partner Reference Application uses a number of subaccounts and entitlements. These subaccounts include a provider subaccount (to which the application is deployed) and consumer subaccounts (which include customer-specific information and configuration). Find an overview in the section below.
+In the full version of Poetry Slam Manager with multitenancy, SAP ERP integration, and additional features, the Partner Reference Application uses several subaccounts and entitlements. These subaccounts include a provider subaccount, where the application is deployed, and consumer subaccounts that contain customer-specific information and configuration. An overview is provided in the section below.
 
 ## Subaccounts
 The example setup serves four sample customers: 
@@ -49,7 +49,8 @@ The list shows the entitlements that are required in the different subaccounts t
 |               | SAP Cloud Logging service                            | standard                  | Service       | 1                                 | 
 |               | SAP Forms service by Adobe                           | default (Application)     | Application   | 1                                 | 
 |               | SAP Forms service by Adobe API                       | standard                  | Service       | 1                                 | 
-|               | SAP Print service                                    | standard                  | Service       | 1                                 | 
+|               | SAP Print service                                    | sender                    | Service       | 1                                 | 
+|               | SAP AI Core                                          | extended                  | Service       | 1                                 | 
 | Consumer      |                                                      |                           |               |                                   |
 |               | SAP Audit Log Viewer service for SAP BTP             | default                   | Application   | 1                                 |
 |               | SAP Print service                                    | standard                  | Application   | 1                                 | 
@@ -83,7 +84,7 @@ Your main development task:
 - Partner Application Module  
 
 ### Node Modules
-Some open source node modules offered by SAP are used to build the solution. 
+Some open-source node modules offered by SAP are used to build the solution. 
 
 Provided by SAP:
 - SAP Cloud Application Programming Model on Node.js 
@@ -104,9 +105,9 @@ Let's assume a typical data volume of two poetry slams per week (or 125 slams pe
  - 750,000 visitors and artists
  - 1,500,000 bookings
 
-> Note: The required quantities of most services are calculated on the basis of memory, storage, or usage counts. The SAP HANA Cloud database is based on capacity units (CU), which consider several factors like memory, CPUs, and storage. You can use the [SAP HANA Cloud Capacity Unit Estimator](https://hcsizingestimator.cfapps.eu10.hana.ondemand.com/) to calculate the capacity units required. The chapter [Estimating the Required Size of the SAP HANA Cloud Database](/Tutorials/27-Hana-DB-Scaling.md) explains how to calculate the required CUs based on the above business volume. However, this requires measurements in a deployed and running (test) version of the application.
+> Note: The required quantities of most services are calculated based on memory, storage, or usage counts. The SAP HANA Cloud database is based on capacity units (CU), which consider several factors like memory, CPUs, and storage. You can use the [SAP HANA Cloud Capacity Unit Estimator](https://hcsizingestimator.cfapps.eu10.hana.ondemand.com/) to calculate the capacity units required. The chapter [Estimating the Required Size of the SAP HANA Cloud Database](./27-Hana-DB-Scaling.md) explains how to calculate the required CUs based on the above business volume. However, this requires measurements in a deployed and running (test) version of the application.
 
-The table below shows how the required quantities scale with typical numbers of customers. The scaling is less than linear which is the benefit of resource sharing in multi-tenant application. This means the costs per customer decrease significantly the more customers you serve.
+The table below shows how the required quantities scale with typical numbers of customers. The scaling is less than linear which is the benefit of resource sharing in multi-tenant application. This means the costs per customer significantly decrease the more customers you serve.
 
 | Service Name                    | Service Plan              | 5 Customers                     | 20 Customers                     | 100 Customers                     | 
 | -------------------             | ---------                 | ---------                       | ---------                        | ---------                         |
@@ -115,6 +116,7 @@ The table below shows how the required quantities scale with typical numbers of 
 | SAP Custom Domain service       | standard                  | 1 Domain                        | 1 Domain                         | 1 Domain                          |
 | SAP Audit Log service           | premium                   | 1 GB Storage, 1 GB Writing​      | 1 GB Storage, 1 GB Writing​       | 1 GB Storage, 1 GB Writing        ​|
 | SAP Cloud Logging service       | standard                  | 538 CU                          | 538 CU                           | 538 CU                            |
+| SAP AI Core service             | extended                  | 1 CU                            | 1 CU                             | 1 CU                              |
 | SAP Business Application Studio | standard-edition          | 2 User                          | 2 User                           | 2 User                            |
 
 # Information on Versions and What's New

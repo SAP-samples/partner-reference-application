@@ -33,8 +33,7 @@ it('should ensure the uniqueness of the combination of visitor ID and poetry sla
     .from(Visits)
     .columns('parent_ID', 'visitor_ID');
 
-  // Asynchronous calls require a return to be checked correctly
-  return expect(db.create(Visits).entries(result)).to.rejected;
+  await expect(db.create(Visits).entries(result)).to.rejected;
 });
 ```
 
@@ -57,7 +56,7 @@ describe('Poetryslams in PoetrySlamService', () => {
 
   beforeEach(async () => {
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
 
     // Read all poetry slams for usage in the tests
     poetrySlams = await GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
@@ -200,7 +199,7 @@ Now, you need to provide the credentials to connect to the SAP HANA Cloud databa
 
 ## Troubleshoot Your Application
 
-There are a number of out-of-the-box tools that can be used to troubleshoot your application. Besides the options explained in the [CAP documentation on troubleshooting](https://cap.cloud.sap/docs/get-started/troubleshooting), a few general approaches are described below that can help identify where an issue originates from.
+There are several out-of-the-box tools that can be used to troubleshoot your application. Besides the options explained in the [CAP documentation on troubleshooting](https://cap.cloud.sap/docs/get-started/troubleshooting), a few general approaches are described below that can help identify where an issue originates from.
 
 ### Use Browser Development Tools
 
@@ -220,7 +219,7 @@ If you open the UI of your application and it doesn't look as expected, the brow
 
 #### Check User Groups
 
-The Identity Authentication service user groups are used to assign authorizaton roles to users. The user groups will be passed as *assertion attribute* to the SAP BTP subaccount and will be mapped to the respective role collections in the SAP BTP subaccount. Ensure that the user is configured from the Identity Authentication service admin UI and that the user groups have been configured for the typical user roles. Additionally, make sure that the attributes with the name *Groups* have also been assigned from the *Attributes* menu item.
+The Identity Authentication service user groups are used to assign authorization roles to users. The user groups will be passed as *assertion attribute* to the SAP BTP subaccount and will be mapped to the respective role collections in the SAP BTP subaccount. Ensure that the user is configured from the Identity Authentication service admin UI and that the user groups have been configured for the typical user roles. Additionally, make sure that the attributes with the name *Groups* have also been assigned from the *Attributes* menu item.
 
 For a detailed description of this process, go to [Configure Authentication and Authorization](15b-One-Off-Deployment.md#configure-authentication-and-authorization).
 
@@ -255,7 +254,7 @@ From here, you can navigate to the specific application and analyze the logs tha
 
 ## Code Quality
 
-Besides automated testing, code quality includes readability, maintainability, and compliance. There are a number of automated tools that help you to format your files in a consistent way, check for possible implementation, license or security issues, and update the included external packages. To keep your application up-to-date, you should configure such tools. See also [Update Project Dependencies](./14-Develop-Core-Application.md#update-project-dependencies).
+Besides automated testing, code quality includes readability, maintainability, and compliance. There are several automated tools that help you to format your files in a consistent way, check for possible implementation, license or security issues, and update the included external packages. To keep your application up to date, you should configure such tools. See also [Update Project Dependencies](./14-Develop-Core-Application.md#update-project-dependencies).
 
 ## Give Feedback
 

@@ -1,6 +1,8 @@
-# Deploy the Sample Application to a Customer SAP BTP Account
+# Deploy the Sample Application to a SAP BTP Account
 
-This tutorial guides you through the steps to deploy and configure the sample application (Poetry Slam Manager) in a dedicated SAP BTP subaccount, representing an end-to-end provisioning process of a single-tenant partner application in a customer SAP BTP account.
+This tutorial guides you through the steps to deploy and configure the sample application (Poetry Slam Manager) in a dedicated SAP BTP subaccount, representing an end-to-end provisioning process of a single-tenant partner application in a SAP BTP account.
+
+> Note: This description applies to partner BTP accounts of type "Test, Demo, and Development (TDD)". This is the recommended type for proof of concepts and development projects. For more details on partner BTP environments for TDD and productive use, as well as the associated ordering processes, visit the [SAP Partner Portal, SAP PartnerEdge – Build Experience](https://partneredge.sap.com/en/partnership/development/build.html).
 
 ## Clone and Deploy the Sample Application
 

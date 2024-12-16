@@ -1,6 +1,6 @@
 # Changes
 
-## Current Version - October 2024
+## Current Version - December 2024
 
 The current version is available in four branches:
 - Tutorials: [*main*](../../../)
@@ -9,6 +9,15 @@ The current version is available in four branches:
 - Additional features based on the multi-tenant version: [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features)
 
 The current version includes
+- [Example](45-Multi-Tenancy-Features-GenAI.md) for using generative artificial intelligence using large language models (genAI using LLMs)
+- Changes in the ERP integration to avoid issues with extended data validations introduced with CDS 8
+- Smaller corrections, improvements and updates
+
+## Older Versions
+
+## October 2024
+
+Includes
 - Output management: [forms](44a-Multi-Tenancy-Features-Forms.md), [print](44b-Multi-Tenancy-Features-Print.md), [email](44c-Multi-Tenancy-Features-EMail.md)
 - Tutorial on [SAP HANA Cloud Tools](27-Hana-DB-Scaling.md#sap-hana-cloud-tools) and [SAP HANA Cloud size estimation](27-Hana-DB-Scaling.md)
 - Switch to CDS8 including subscription handling by the MTX sidecar module
@@ -17,7 +26,11 @@ The current version includes
 - Extended explanation of the [SAP Custom Domain Service](24-Multi-Tenancy-Deployment.md#configure-the-application-subdomain-custom-domain)
 - Smaller corrections and updates
 
-## Older Versions
+Corresponding Tags
+- Tutorials: [release-tutorial-2410](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-tutorial-2410)
+- One-off deployment: [release-single-tenant-2410](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-single-tenant-2410)
+- Multitenancy/ERP: [release-multi-tenant-2410](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-2410)
+- Features: [release-multi-tenant-features-2410](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-features-2410)
 
 ### August 2024
 

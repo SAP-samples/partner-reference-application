@@ -16,7 +16,8 @@ Check if the SAP BTP Cloud Foundry runtime entitlement includes 4 units to accou
 |               | SAP Cloud Logging                         | standard              | Service       | 1                         |
 |               | SAP Forms service by Adobe                | default (Application) | Application   | 1                         | 
 |               | SAP Forms service by Adobe API            | standard              | Service       | 1                         | 
-|               | SAP Print service                         | standard              | Service       | 1                         | 
+|               | SAP Print service                         | sender                | Service       | 1                         | 
+|               | SAP AI Core                               | extended              | Service       | 1                         | 
 | Consumer      |                                           |                       |               |                           |
 |               | SAP Audit Log Viewer service for SAP BTP  | default               | Application   | 1                         |
 |               | SAP Print service                         | standard              | Application   | 1                         | 

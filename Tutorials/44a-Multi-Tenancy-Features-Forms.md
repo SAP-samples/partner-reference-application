@@ -4,16 +4,16 @@ Put yourself in the shoes of a poetry slam manager who uses a poetry slam manage
 
 Use the SAP Forms service by Adobe to manage print and interactive forms. For more information, refer to [SAP Help for SAP Forms Service by Adobe](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/sap-forms-service-by-adobe?q=xsd).
 
-To try out this feature with the Poetry Slam Manager, you have two options: 
+To explore this feature with the Poetry Slam Manager, you have two options: 
 
-1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step-by-step. 
+1. Clone the repository of the Partner Reference application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
 
-2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch, where the feature is already included. 
+2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch where the feature is already included. 
 
-The following section describes how to enhance the **main-multi-tenant** branch (option 1).
+The following describes how to enhance the **main-multi-tenant** branch (option 1).
 
 ## Architecture
-You can use the SAP Forms service by Adobe REST API to call the service from a cloud application, and the SAP Forms service configuration UI to customize rendering behaviour. Use the Adobe LifeCycle Designer to create a form.
+You can use the SAP Forms service by Adobe REST API to call the service from a cloud application, and the SAP Forms service configuration UI to customize rendering behaviour. Use the Adobe LiveCycle Designer to create a form.
 
 1. **Adobe LiveCycle Designer**: Supports you in creating templates for interactive and print forms by providing a wide set of design functions. The created form is then uploaded to the Template Store of the SAP Forms service by Adobe. For more information, refer to [SAP Help Using the Adobe LiveCycle Designer](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/using-adobe-livecycle-designer).
 
@@ -25,13 +25,14 @@ You can use the SAP Forms service by Adobe REST API to call the service from a c
         For more information, refer to the [Template Store API Endpoints](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/template-store-api-endpoints) and the [Template Store UI](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/template-store-ui).
 
 
-    2. Configuration UI: Use the configuration tool to manage your SAP Forms service settings, custom fonts, job profiles,and support files. For more information, refer to the [SAP Help Configuration Tool](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/configuration-tool).
+    2. Configuration UI: Use the configuration tool to manage your SAP Forms service settings, custom fonts, job profiles, and support files. For more information, refer to the [SAP Help Configuration Tool](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/configuration-tool).
 
 
 3. **SAP Forms Service by Adobe REST API**: Access the template store to get the data from SAP Forms service by Adobe and use it in the SAP BTP application. For more information, refer to [SAP Help SAP Forms Service by Adobe REST API](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/sap-forms-service-by-adobe-rest-api).
 
-<img src="./images/44_Forms_ADS_Service.png" width="40%">
-
+<p align="center">
+    <img src="./images/44_Forms_ADS_Service.png" width="40%">
+</p>
 
 ## Application Enablement 
 
@@ -89,9 +90,9 @@ You can use the SAP Forms service by Adobe REST API to call the service from a c
 
     4. Copy the logo util class [*logo.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/logo.js) to your project. The logo class offers functionality that is required by other services, for example email, too.
 
-    5. Copy the service credentials util class [*serviceCredentials.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/serviceCredentials.js) to your project. This class offers functionality to get the required logon to boud services (like the SAP Forms Service by Adobe API).
+    5. Copy the service credentials util class [*serviceCredentials.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/serviceCredentials.js) to your project. This class offers functionality to get the required logon to bound services (like the SAP Forms Service by Adobe API).
 
-    6. Copy the [poetry slam service output management implementation](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceOutputImplementation.js) with an on-READ event of the *PDFDocument* entity to your project. The implementation reads the poetry slam data including artists and visitors. Furthermore, it creates the form with the data and returns a media streaming object which includes the rendered PDF, a valid content type, and a file name for the guest list which is to be be downloaded as PDF.
+    6. Copy the [poetry slam service output management implementation](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceOutputImplementation.js) with an on-READ event of the *PDFDocument* entity to your project. The implementation reads the poetry slam data including artists and visitors. Furthermore, it creates the form with the data and returns a media streaming object that includes the rendered PDF, a valid content type, and a file name for the guest list which is to be downloaded as PDF.
         ```javascript
         const Forms = require('./util/forms');
         ...
@@ -109,7 +110,7 @@ You can use the SAP Forms service by Adobe REST API to call the service from a c
         const outputHandler = require('./poetrySlamServiceOutputImplementation');
         module.exports = cds.service.impl(async (srv) => {
             ...
-            outputHandler(srv); // Forward handler for output
+            await outputHandler(srv); // Forward handler for output
             ...
         });
         ```
@@ -167,7 +168,7 @@ You can use the SAP Forms service by Adobe REST API to call the service from a c
 
     7. Run the command `npm add @sap/textbundle`. This package allows you to access language-dependent texts from your i18n-files.
     
-    8. Run the command `npm install` in your project root folder to install the npm modules. 
+    8. Run the command `npm install` in your project root folder to install the required npm modules for the application. 
 
 ## SAP BTP Configuration and Deployment
 
@@ -177,28 +178,26 @@ You can use the SAP Forms service by Adobe REST API to call the service from a c
 
      2. *Forms Service by Adobe API* with the *standard* plan to connect to the forms service using the SAP BTP application and thus the REST API.
 
-2. Open and refer to the [mta.yaml](../../../tree/main-multi-tenant-features/mta.yaml) file.
+2. Add the SAP Forms service by Adobe API service as resource into the [mta.yaml](../../../tree/main-multi-tenant-features/mta.yaml) file. Besides this, the resource is required as dependency in the service and mtx modules.
 
-    1. Add the SAP Forms service by Adobe API service as resource and the module dependencies to the service module.
-
-        ```yaml
-        modules:
-            - name: poetry-slams-srv
-              requires:
-                - name: poetry-slams-adsrestapi
-            
-            - name: poetry-slams-mtx
-              requires:
-                - name: poetry-slams-adsrestapi
-
-        resources:
-            # Adobe Forms REST API Service
+    ```yaml
+    modules:
+        - name: poetry-slams-srv
+          requires:
             - name: poetry-slams-adsrestapi
-              type: org.cloudfoundry.managed-service
-              parameters:
-                service: adsrestapi
-                service-plan: standard
-        ```
+
+        - name: poetry-slams-mtx
+          requires:
+            - name: poetry-slams-adsrestapi
+
+    resources:
+        # Adobe Forms REST API Service
+        - name: poetry-slams-adsrestapi
+          type: org.cloudfoundry.managed-service
+          parameters:
+            service: adsrestapi
+            service-plan: standard
+    ```
 3. Run the command `npm install` in your project root folder to install the required npm modules. 
 
 4. Build and deploy the application. As a result, an SAP Forms service by Adobe API instance named *poetry-slams-adsrestapi* is created.
@@ -208,7 +207,7 @@ You can use the SAP Forms service by Adobe REST API to call the service from a c
       
       > Note: A new application called Forms Service by Adobe is added. 
 
-6. To enable you to confgure and store form templates:    
+6. To enable you to configure and store form templates:    
 
     1. Open the *Role Collections* menu item and create a new role collection called `ADSAdmin`.
     2. Edit the role collection. 
@@ -275,7 +274,7 @@ For more efficient development, test your changes locally before deploying them 
         "VCAP_SERVICES" : {
             "adsrestapi": [
                 {
-                    
+                    ...
                 }
             ]
         }
@@ -321,6 +320,6 @@ Now it is time to take you on a guided tour through the forms feature of Poetry 
 
      > Note: Several visitors are shown in the *Bookings* list. Check that all the artists and visitors have booked the event. Adjust the bookings accordingly, if required.
 
-5. Choose th button *Create Guest List* in the menu of the object page.
+5. Choose the button *Create Guest List* in the menu of the object page.
 
-6. The SAPUI5 PDF Viewer opens showing the generated form with a list of artsits and visitors of the poetry slam. A *download* button is available to download and print the guest list.
+6. The SAPUI5 PDF Viewer opens showing the generated form with a list of artists and visitors of the poetry slam. A *download* button is available to download and print the guest list.

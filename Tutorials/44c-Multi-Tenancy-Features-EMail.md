@@ -1,14 +1,15 @@
 # Send E-Mails
 
-Put yourself in the shoes of a poetry slam manager who uses a poetry slam management application to manage the events. You want to send an email reminder to your artists and guests before the event.
+Put yourself in the shoes of a poetry slam manager who uses a poetry slam management application to manage the events. You want to send an email reminder to your artists and guests before the event. The Partner Reference application uses the [SAP Cloud SDK Mail Client](https://sap.github.io/cloud-sdk/docs/js/features/mail-client) to send e-mails to your e-mail servers. 
+A detailed [API reference](https://sap.github.io/cloud-sdk/api/v3/modules/sap_cloud_sdk_mail_client.html) is available, too.
 
-To try this feature with the Poetry Slam Manager, you have two options: 
+To explore this feature with the Poetry Slam Manager, you have two options: 
 
-1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step-by-step. 
+1. Clone the repository of the Partner Reference application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
 
 2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch where the feature is already included. 
 
-The following section describes how you enhance the **main-multi-tenant** branch (option 1).
+The following describes how to enhance the **main-multi-tenant** branch (option 1).
 
 ## Application Enablement 
 
@@ -52,7 +53,7 @@ The following section describes how you enhance the **main-multi-tenant** branch
                 // If visit was not found, throw an error
                 if (!visit) {
                     const id = req.params[req.params.length - 1]?.ID;
-                    req.error(400, 'VISITS_NOT_FOUND', [id]);
+                    req.error(httpCodes.bad_request, 'VISITS_NOT_FOUND', [id]);
                     return;
                 }
 
@@ -76,7 +77,7 @@ The following section describes how you enhance the **main-multi-tenant** branch
         const outputHandler = require('./poetrySlamServiceOutputImplementation');
         module.exports = cds.service.impl(async (srv) => {
             ...
-            outputHandler(srv); // Forward handler for output
+            await outputHandler(srv); // Forward handler for output
             ...
         });
         ```
@@ -114,7 +115,7 @@ The following section describes how you enhance the **main-multi-tenant** branch
         sendEMail                = Send Confirmation Email
         ```
 
-        > Note: In the reference example, the [*/app/poetryslams/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features//app/poetryslams/i18n/i18n_de.properties) file with the German texts is available, too. You can adopt them accordingly.
+        > Note: In the reference example, the [*/app/poetryslams/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n_de.properties) file with the German texts is available, too. You can adopt them accordingly.
 
 4. Add the required npm modules as dependencies to the *package.json* of your project. Refer to the file [package.json](../../../tree/main-multi-tenant-features/package.json) of the sample application.
     
@@ -128,7 +129,7 @@ The following section describes how you enhance the **main-multi-tenant** branch
 
 ## SAP BTP Deployment
 
-1. Run the command `npm install` in your project root folder to install the required npm modules. 
+1. Run the command `npm install` in your project root folder to install the required npm modules for the application. 
 
 2. Build and deploy the application.
     > Note: For detailed instructions on how to deploy, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
