@@ -135,7 +135,7 @@ SAP has introduced a [certification program](https://community.sap.com/t5/techno
 
     1. Enhance the section *LineItem* of the file [*app/poetryslams/annotations*](../../../tree/main-multi-tenant-features/app/poetryslams/annotations.cds) to add a button that triggers the action to create the poetry slam with generative AI. 
     
-        ```
+        ```cds
         {
             $Type : 'UI.DataFieldForAction',
             Action: 'PoetrySlamService.createWithAI',

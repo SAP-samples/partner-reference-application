@@ -253,7 +253,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
             // In case none of these enriched fields are requested, we do not need to read from the external services
             // So we first check if the requested columns contain any of the enriched columns and return if not
             const requestedColumns = req.query.SELECT.columns?.map((item) =>
-            Array.isArray(item.ref) ? item.ref[0] : item.as
+                Array.isArray(item.ref) ? item.ref[0] : item.as
             );
 
             const enrichedFields = [

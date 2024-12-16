@@ -219,8 +219,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
       @(
         Common.SideEffects             : {TargetEntities: [
           '_poetryslam',
-          '_poetryslam/toS4HCProject',
-          '_poetryslam/toByDProject'
+          '_poetryslam/toS4HCProject'
         ]},
         cds.odata.bindingparameter.name: '_poetryslam'
       )

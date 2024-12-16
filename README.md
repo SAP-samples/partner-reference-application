@@ -113,14 +113,14 @@ Updates to this repository are documented in the [change history](./Tutorials/99
 
 1. Build a full-stack SAP BTP application with a **one-off deployment** in a customer SAP BTP account:
     1. [Get an overview of the bill of materials](./Tutorials/10-One-Off-BillOfMaterials.md) 
-    1. [Prepare your SAP BTP account for development](./Tutorials/11-Prepare-BTP-Account.md) 
-    2. [Prepare your SAP BTP subaccount for deployment](./Tutorials/12-Prepare-Deployment.md)
-    3. [Deploy the sample application to a customer SAP BTP account](./Tutorials/13-Deploy-Sample-Application.md)
-    4. [Develop the core of the SAP BTP application](./Tutorials/14-Develop-Core-Application.md)
-    5. [Enhance your SAP BTP application for deployment](./Tutorials/15a-Prepare-One-Off-Deployment.md)
-    6. [Deploy and set up your SAP BTP application](./Tutorials/15b-One-Off-Deployment.md)
-    7. [Test and troubleshoot the application](./Tutorials/16-Test-Trace-Debug.md)
-    8. [Go on a guided tour to explore the capabilities of the sample application](./Tutorials/17-Guided-Tour.md)
+    2. [Prepare your SAP BTP account for development](./Tutorials/11-Prepare-BTP-Account.md) 
+    3. [Prepare your SAP BTP subaccount for deployment](./Tutorials/12-Prepare-Deployment.md)
+    4. [Deploy the sample application to a customer SAP BTP account](./Tutorials/13-Deploy-Sample-Application.md)
+    5. [Develop the core of the SAP BTP application](./Tutorials/14-Develop-Core-Application.md)
+    6. [Enhance your SAP BTP application for deployment](./Tutorials/15a-Prepare-One-Off-Deployment.md)
+    7. [Deploy and set up your SAP BTP application](./Tutorials/15b-One-Off-Deployment.md)
+    8. [Test and troubleshoot the application](./Tutorials/16-Test-Trace-Debug.md)
+    9. [Go on a guided tour to explore the capabilities of the sample application](./Tutorials/17-Guided-Tour.md)
 
 2. Enhance the application to support **multiple customers** using shared SAP BTP resources:
     1. [Learn about multitenancy and get an overview of the bill of materials](./Tutorials/20-Multi-Tenancy-BillOfMaterials.md)

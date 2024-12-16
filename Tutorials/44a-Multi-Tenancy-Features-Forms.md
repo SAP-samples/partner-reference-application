@@ -106,7 +106,7 @@ You can use the SAP Forms service by Adobe REST API to call the service from a c
 
     7. Add the output management implementation handler to the [srv/poetryslam/poetrySlamServiceImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js).
     
-        ```
+        ```javascript
         const outputHandler = require('./poetrySlamServiceOutputImplementation');
         module.exports = cds.service.impl(async (srv) => {
             ...

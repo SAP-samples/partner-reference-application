@@ -73,7 +73,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
     5. Add the output management implementation handler to the [srv/poetryslam/poetrySlamServiceImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js).
     
-        ```
+        ```js
         const outputHandler = require('./poetrySlamServiceOutputImplementation');
         module.exports = cds.service.impl(async (srv) => {
             ...
@@ -101,7 +101,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
     1. Enhance the section *LineItem #VisitorData* of the [annotations file](../../../tree/main-multi-tenant-features/app/poetryslams/annotations.cds) to add a button which triggers the action to send the email. 
     
-        ```
+        ```cds
         {
             $Type : 'UI.DataFieldForAction',
             Action: 'PoetrySlamService.sendEMail',

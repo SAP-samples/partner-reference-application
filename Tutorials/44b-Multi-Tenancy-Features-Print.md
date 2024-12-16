@@ -29,7 +29,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     2. Copy the downloaded openAPI definition file (*PRINTAPI.json*) to the folder *external_resources*.
 
     3. Add a `prebuild` script to your [*package.json*](../../../tree/main-multi-tenant-features/package.json). This will generate the access classes out of the uploaded definition whenever you run the `npm run build` command. If you need to execute several commands in the *prebuild* step, you can concatenate them with `&&`.
-        ```
+        ```json
         "prebuild": "npm ci && npx openapi-generator --input external_resources/PRINTAPI.json --outputDir srv/external -t --overwrite && npx openapi-generator --input external_resources/FORMSAPI.json --outputDir srv/external -t --overwrite",
         ```
 
@@ -123,7 +123,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         ```
 
     6. Use the implementation in [*srv/poetryslam/poetrySlamServiceImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js)
-        ```
+        ```js
         const outputHandler = require('./poetrySlamServiceOutputImplementation');
 
         module.exports = cds.service.impl(async (srv) => {
@@ -136,7 +136,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
  4. Add the action to the user interface of your application.
 
     1. Add an action to the Poetry Slam Object page by annotating `Identification` of the `UI` of `service.PoetrySlams` in *annotations.cds*:
-        ```
+        ```cds
         // Print the guest list
         {
           $Type : 'UI.DataFieldForAction',
