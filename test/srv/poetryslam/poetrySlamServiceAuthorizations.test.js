@@ -10,6 +10,8 @@ const { httpCodes } = require('../../../srv/poetryslam/util/codes');
 // Defines required CDS functions for testing
 const { expect, GET, POST, axios, test } = cds.test(__dirname + '/../../..');
 
+const { httpCodes } = require('../../../srv/poetryslam/util/codes');
+
 // ----------------------------------------------------------------------------
 // Tests authorizations for authorized user without role assignment for application
 // Authorizations of PoetrySlamService with User Peter are tested in poetrySlamService.test.js
@@ -28,8 +30,6 @@ describe('Authorizations of PoetrySlamService with User Denise (authenticated us
   });
 
   it('should reject the reading of the poetry slams', async () => {
-    // Read all poetry slams; shall be rejected
-
     await expect(
       GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
         params: { $select: `ID,status_code,statusCriticality` }

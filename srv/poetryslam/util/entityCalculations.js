@@ -1,6 +1,7 @@
 'use strict';
 
 const { httpCodes, poetrySlamStatusCode, visitStatusCode } = require('./codes');
+
 // ----------------------------------------------------------------------------
 // Implementation of reuse functions
 // ----------------------------------------------------------------------------
