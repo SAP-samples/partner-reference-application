@@ -23,9 +23,17 @@ const visitStatusCode = {
   canceled: 2
 };
 
+const httpCodes = {
+  ok: 200,
+  ok_no_content: 204,
+  bad_request: 400,
+  internal_server_error: 500
+};
+
 // Publish constants and functions
 module.exports = {
   color,
   poetrySlamStatusCode,
-  visitStatusCode
+  visitStatusCode,
+  httpCodes
 };

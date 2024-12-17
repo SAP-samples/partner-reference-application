@@ -421,6 +421,33 @@ annotate service.PoetrySlams with @(
         Action       : 'PoetrySlamService.printGuestList',
         Label        : '{i18n>printGuestList}',
         ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
+
+      },
+      // Clear the project data
+      {
+        $Type        : 'UI.DataFieldForAction',
+        Label        : '{i18n>removeProjectData}',
+        Action       : 'PoetrySlamService.clearProjectData',
+        ![@UI.Hidden]: {$edmJson: {$Or: [
+          {$Eq: [
+            {$Path: 'projectID'},
+            {$Null: null}
+          ]},
+          {$Not: {$Path: 'IsActiveEntity'}}
+        ]}}
+      },
+      // Clear the purchase order data
+      {
+        $Type        : 'UI.DataFieldForAction',
+        Label        : '{i18n>removePurchaseOrderData}',
+        Action       : 'PoetrySlamService.clearPurchaseOrderData',
+        ![@UI.Hidden]: {$edmJson: {$Or: [
+          {$Eq: [
+            {$Path: 'purchaseOrderID'},
+            {$Null: null}
+          ]},
+          {$Not: {$Path: 'IsActiveEntity'}}
+        ]}}
       }
     ],
     // Definition of fields shown on the list page / table
@@ -470,9 +497,14 @@ annotate service.PoetrySlams with @(
       },
       {
         $Type : 'UI.DataFieldForAction',
-        Action: 'PoetrySlamService.EntityContainer/createTestData',
-        Label : '{i18n>generateSampleData}',
+        Action: 'PoetrySlamService.createWithAI',
+        Label : '{i18n>createWithAI}'
       },
+      {
+        $Type : 'UI.DataFieldForAction',
+        Action: 'PoetrySlamService.EntityContainer/createTestData',
+        Label : '{i18n>generateSampleData}'
+      }
     ],
     // Default filters on the list page
     SelectionFields               : [

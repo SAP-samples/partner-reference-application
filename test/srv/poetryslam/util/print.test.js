@@ -15,6 +15,8 @@ const serviceCredentials = require('../../../../srv/poetryslam/util/serviceCrede
 // Code to test
 const printUtil = require('../../../../srv/poetryslam/util/print');
 
+const { httpCodes } = require('./../../../../srv/poetryslam/util/codes');
+
 describe('Util print', () => {
   let serviceCredentialsStub;
   let serviceCredentialsTokenStub;
@@ -110,12 +112,16 @@ describe('Util print', () => {
 
     it('should fail in case of missing print queue', async () => {
       await printUtil.print(reqMock);
-      expect(reqCalls).eql([['E', 500, 'ACTION_PRINT_NO_QUEUE']]);
+      expect(reqCalls).eql([
+        ['E', httpCodes.bad_request, 'ACTION_PRINT_NO_QUEUE']
+      ]);
     });
 
     it('should fail in case of missing service credentials', async () => {
       await printUtil.print(reqMock, 'queue');
-      expect(reqCalls).eql([['E', 500, 'ACTION_PRINT_NO_ACCESS']]);
+      expect(reqCalls).eql([
+        ['E', httpCodes.internal_server_error, 'ACTION_PRINT_NO_ACCESS']
+      ]);
     });
 
     it('should fail in case external services are not connected', async () => {
@@ -124,7 +130,9 @@ describe('Util print', () => {
         .resolves('dummy token');
 
       await printUtil.print(reqMock, 'queue');
-      expect(reqCalls).eql([['E', 500, 'ACTION_PRINT_FAIL']]);
+      expect(reqCalls).eql([
+        ['E', httpCodes.internal_server_error, 'ACTION_PRINT_FAIL']
+      ]);
     });
 
     it('should fail in case of missing document response', async () => {
@@ -136,7 +144,9 @@ describe('Util print', () => {
         .returns(apiMock(undefined));
 
       await printUtil.print(reqMock, 'queue');
-      expect(reqCalls).eql([['E', 500, 'ACTION_PRINT_NO_DOCUMENT']]);
+      expect(reqCalls).eql([
+        ['E', httpCodes.internal_server_error, 'ACTION_PRINT_NO_DOCUMENT']
+      ]);
     });
 
     it('should fail in case print task cannot be created', async () => {
@@ -148,10 +158,12 @@ describe('Util print', () => {
         .returns(apiMock('dummy document'));
       printTasksApiStub = sinon
         .stub(PrintTasksApi, 'updateQmApiV1RestPrintTasksByItemId')
-        .returns(apiMock({ status: 500 }));
+        .returns(apiMock({ status: httpCodes.internal_server_error }));
 
       await printUtil.print(reqMock, 'queue');
-      expect(reqCalls).eql([['E', 500, 'ACTION_PRINT_NO_PRINTTASK']]);
+      expect(reqCalls).eql([
+        ['E', httpCodes.internal_server_error, 'ACTION_PRINT_NO_PRINTTASK']
+      ]);
     });
 
     it('should return success if print task can be created', async () => {
@@ -163,10 +175,10 @@ describe('Util print', () => {
         .returns(apiMock('dummy document'));
       printTasksApiStub = sinon
         .stub(PrintTasksApi, 'updateQmApiV1RestPrintTasksByItemId')
-        .returns(apiMock({ status: 204 }));
+        .returns(apiMock({ status: httpCodes.ok_no_content }));
 
       await printUtil.print(reqMock, 'queue');
-      expect(reqCalls).eql([['I', 200, 'ACTION_PRINT_SUCCESS']]);
+      expect(reqCalls).eql([['I', httpCodes.ok, 'ACTION_PRINT_SUCCESS']]);
     });
   });
 });

@@ -7,6 +7,8 @@ const {
   PrintTasksApi
 } = require('../../external/PRINTAPI');
 
+const { httpCodes } = require('./codes');
+
 // Include util classes to access the service binding
 const serviceCredentialsUtil = require('./serviceCredentials');
 
@@ -57,7 +59,7 @@ async function print(req, printQueue, fileContent, fileName = 'Document') {
     console.error(
       'Util print - function print: mandatory parameter printQueue not provided.'
     );
-    req.error(500, 'ACTION_PRINT_NO_QUEUE');
+    req.error(httpCodes.bad_request, 'ACTION_PRINT_NO_QUEUE');
     return;
   }
 
@@ -69,7 +71,7 @@ async function print(req, printQueue, fileContent, fileName = 'Document') {
     jwt = await serviceCredentialsUtil.getServiceToken('print');
   } catch (e) {
     console.error('ACTION print: Error retrieving jwt', e.message);
-    req.error(500, 'ACTION_PRINT_NO_ACCESS');
+    req.error(httpCodes.internal_server_error, 'ACTION_PRINT_NO_ACCESS');
     return;
   }
 
@@ -84,7 +86,7 @@ async function print(req, printQueue, fileContent, fileName = 'Document') {
 
     if (!documentResponse) {
       console.error('ACTION print: Document creation failed (empty response)');
-      req.error(500, 'ACTION_PRINT_NO_DOCUMENT');
+      req.error(httpCodes.internal_server_error, 'ACTION_PRINT_NO_DOCUMENT');
       return;
     }
     console.log(`Function print: document ${documentResponse} created`);
@@ -112,21 +114,21 @@ async function print(req, printQueue, fileContent, fileName = 'Document') {
         .executeRaw({ url: srvUrl });
 
     // Expected response status: 204 - success, no content
-    if (printTaskResponse.status !== 204) {
+    if (printTaskResponse.status !== httpCodes.ok_no_content) {
       console.error(
         `ACTION print: PrintTask creation failed (status ${printTaskResponse.status})`
       );
-      req.error(500, 'ACTION_PRINT_NO_PRINTTASK');
+      req.error(httpCodes.internal_server_error, 'ACTION_PRINT_NO_PRINTTASK');
       return;
     }
   } catch (e) {
     console.error('ACTION print - Error: ', e.message);
-    req.error(500, 'ACTION_PRINT_FAIL');
+    req.error(httpCodes.internal_server_error, 'ACTION_PRINT_FAIL');
     return;
   }
 
   //  Success
-  req.info(200, 'ACTION_PRINT_SUCCESS', [fileName, printQueue]);
+  req.info(httpCodes.ok, 'ACTION_PRINT_SUCCESS', [fileName, printQueue]);
 }
 
 // Publish constants and functions

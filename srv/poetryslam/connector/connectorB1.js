@@ -34,7 +34,7 @@ class ConnectorB1 extends Connector {
   }
 
   // Return json-payload to create SAP Business One purchase order
-  async purchaseOrderDataRecord(
+  purchaseOrderDataRecord(
     poetrySlamIdentifier,
     poetrySlamTitle,
     poetrySlamDescription,
@@ -106,9 +106,6 @@ class ConnectorB1 extends Connector {
   // Enhance poetry slam with data of remote purchase order
   async readPurchaseOrder(poetrySlams) {
     try {
-      const b1PurchaseOrder = await cds.connect.to('b1_sbs_v2');
-      let isPurchaseOrderIDs = false;
-
       // Read PurchaseOrder ID's related to SAP Business One
       let purchaseOrderIDs = [];
       for (const poetrySlam of convertToArray(poetrySlams)) {
@@ -118,31 +115,30 @@ class ConnectorB1 extends Connector {
           poetrySlam.purchaseOrderID
         ) {
           purchaseOrderIDs.push(poetrySlam.purchaseOrderID);
-          isPurchaseOrderIDs = true;
         }
       }
 
-      // Read SAP Business One purchase order data
-      if (!isPurchaseOrderIDs) {
+      if (!purchaseOrderIDs.length) {
         return poetrySlams;
       }
 
+      // Read SAP Business One purchase order data
+      const b1PurchaseOrderService = await cds.connect.to('b1_sbs_v2');
+
       // Request all associated purchase orders
-      const purchaseOrders = await b1PurchaseOrder.run(
+      // Use the remote service but select from the projection as defined in the PoetrySlamService; CAP takes care of the attribute mapping
+      const purchaseOrders = await b1PurchaseOrderService.run(
         SELECT.from('PoetrySlamService.B1PurchaseOrder').where({
           DocNum: purchaseOrderIDs
         })
       );
 
-      // Convert in a map for easier lookup
-      const purchaseOrderMap = {};
-      for (const purchaseOrder of purchaseOrders)
-        purchaseOrderMap[purchaseOrder.docNum] = purchaseOrder;
-
       // Assemble result
-      for (const poetrySlam of convertToArray(poetrySlams))
-        poetrySlam.toB1PurchaseOrder =
-          purchaseOrderMap[poetrySlam.purchaseOrderID];
+      for (const poetrySlam of convertToArray(poetrySlams)) {
+        poetrySlam.toB1PurchaseOrder = purchaseOrders.find(
+          (order) => order.docNum.toString() === poetrySlam.purchaseOrderID
+        );
+      }
 
       return poetrySlams;
     } catch (error) {
@@ -151,19 +147,21 @@ class ConnectorB1 extends Connector {
     }
   }
 
-  // POST request to create the purchase order via remote service; remote calls shall use srv.run to run in the root transaction with the correct cds.context
-  async insertRemotePurchaseOrderData(srv) {
-    const { B1PurchaseOrder } = srv.entities;
+  // POST request to create the purchase order via remote service
+  // The request is executed with the remote service and the remote entity definition avoiding CDS data type assertions and a complete model copy of the remote entity and its composition associations
+  async insertRemotePurchaseOrderData() {
+    const b1PurchaseOrderService = await cds.connect.to('b1_sbs_v2');
 
-    // GET service call on remote purchase order entity; remote calls shall use srv.run to run in the root transaction with the correct cds.context
-    const remotePurchaseOrder = await srv.run(
-      INSERT.into(B1PurchaseOrder).entries(this.purchaseOrderRecord)
+    const remotePurchaseOrder = await b1PurchaseOrderService.run(
+      INSERT.into(b1PurchaseOrderService.entities.PurchaseOrders).entries(
+        this.purchaseOrderRecord
+      )
     );
 
     // Determine purchase order ID and UUID and return it as object
     return {
-      purchaseOrderID: remotePurchaseOrder?.docNum?.toString(),
-      purchaseOrderObjectID: remotePurchaseOrder?.docEntry?.toString()
+      purchaseOrderID: remotePurchaseOrder?.DocNum?.toString(),
+      purchaseOrderObjectID: remotePurchaseOrder?.DocEntry?.toString()
     };
   }
 

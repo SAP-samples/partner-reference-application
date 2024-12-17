@@ -8,11 +8,14 @@ const path = require('path');
 // For security reasons: To prevent injections
 const escape = require('escape-html');
 
+const { httpCodes } = require('./codes');
+
 class EMail {
   // The sender needs to be adopted to an email address of the customer.
   // It is possible to add the sender to the destination instead.
   static sender = 'noreply+poetryslams-pra-ondemand@sap.corp';
   mailConfig;
+
   constructor(receiver, subject, text) {
     this.mailConfig = {
       from: EMail.sender,
@@ -29,7 +32,9 @@ class EMail {
       console.log(
         `ACTION send email: Sending email to pra.ondemand.com not allowed`
       );
-      req.error(400, 'ACTION_EMAIL_SEND_FAIL', [this.mailConfig.to]);
+      req.error(httpCodes.bad_request, 'ACTION_EMAIL_SEND_FAIL', [
+        this.mailConfig.to
+      ]);
       return;
     }
 
@@ -41,16 +46,22 @@ class EMail {
       );
 
       if (response[0]?.accepted?.length > 0) {
-        req.info(200, 'ACTION_EMAIL_SEND_SUCCESS', [this.mailConfig.to]);
+        req.info(httpCodes.ok, 'ACTION_EMAIL_SEND_SUCCESS', [
+          this.mailConfig.to
+        ]);
       } else {
         console.error(
           `ACTION send email: Error sending email: ${response[0].response}`
         );
-        req.error(400, 'ACTION_EMAIL_SEND_FAIL', [this.mailConfig.to]);
+        req.error(httpCodes.bad_request, 'ACTION_EMAIL_SEND_FAIL', [
+          this.mailConfig.to
+        ]);
       }
     } catch (error) {
       console.error(`ACTION send email: Error sending email: ${error.message}`);
-      req.error(400, 'ACTION_EMAIL_SEND_FAIL', [this.mailConfig.to]);
+      req.error(httpCodes.bad_request, 'ACTION_EMAIL_SEND_FAIL', [
+        this.mailConfig.to
+      ]);
     }
   }
 

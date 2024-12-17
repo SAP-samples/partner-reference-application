@@ -7,7 +7,10 @@
 const cds = require('@sap/cds');
 // Defines required CDS functions for testing
 const { expect, GET, axios, test, POST } = cds.test(__dirname + '/../../..');
-const { visitStatusCode } = require('../../../srv/poetryslam/util/codes');
+const {
+  visitStatusCode,
+  httpCodes
+} = require('../../../srv/poetryslam/util/codes');
 
 // Executes an action, like 'sendEmail'
 const ACTION = (url, name, parameters = {}) =>
@@ -23,7 +26,7 @@ describe('PoetrySlamService - Output', () => {
   describe('SAP Forms Service by Adobe', () => {
     before(async () => {
       await test.data.reset();
-      await GET(`/odata/v4/poetryslamservice/createTestData`);
+      await POST(`/odata/v4/poetryslamservice/createTestData`);
     });
 
     it('should throw an error when rendering a PDF document of a poetry slam due to missing SAP Forms Service by Adobe credentials for service connection', async () => {
@@ -31,14 +34,14 @@ describe('PoetrySlamService - Output', () => {
         GET(
           `/odata/v4/poetryslamservice/PDFDocument(ID=${poetrySlamId})/content`
         )
-      ).to.rejectedWith(400);
+      ).to.rejectedWith(httpCodes.bad_request);
     });
   });
 
   describe('SAP email', () => {
     before(async () => {
       await test.data.reset();
-      await GET(`/odata/v4/poetryslamservice/createTestData`);
+      await POST(`/odata/v4/poetryslamservice/createTestData`);
     });
 
     it('should reject sending an email for test data', async () => {
@@ -49,29 +52,29 @@ describe('PoetrySlamService - Output', () => {
       expect(visits.data.value.length).to.greaterThan(0);
       const visit = visits.data.value[0];
 
-      return expect(
+      await expect(
         ACTION(
           `/odata/v4/poetryslamservice/PoetrySlams(ID=${visit.parent_ID},IsActiveEntity=true)/visits(ID=${visit.ID},IsActiveEntity=true)`,
           'sendEMail'
         )
-      ).to.rejectedWith(400);
+      ).to.rejectedWith(httpCodes.bad_request);
     });
   });
 
   describe('Print Service', () => {
     before(async () => {
       await test.data.reset();
-      await GET(`/odata/v4/poetryslamservice/createTestData`);
+      await POST(`/odata/v4/poetryslamservice/createTestData`);
     });
 
     it('printGuestList should fail in test environment', async () => {
-      return expect(
+      await expect(
         ACTION(
           `/odata/v4/poetryslamservice/PoetrySlams(ID=${poetrySlamId},IsActiveEntity=true)`,
           'printGuestList',
           { printQueue: 'dummyPrintQueue' }
         )
-      ).to.rejectedWith(400);
+      ).to.rejectedWith(httpCodes.bad_request);
     });
 
     it('GET PrintQueues should return nothing in test environment', async () => {

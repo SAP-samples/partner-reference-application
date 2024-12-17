@@ -28,7 +28,7 @@ describe('personal data audit logging in CRUD', () => {
 
   beforeEach(async () => {
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
   });
 
   it('should log audit log messages when a visitor is changed and activated', async function () {

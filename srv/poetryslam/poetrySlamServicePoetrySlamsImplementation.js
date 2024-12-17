@@ -1,7 +1,8 @@
 'strict';
 
 // Include utility files
-const codes = require('./util/codes');
+const { color, poetrySlamStatusCode, httpCodes } = require('./util/codes');
+
 const {
   calculatePoetrySlamData,
   updatePoetrySlam,
@@ -11,6 +12,8 @@ const {
 } = require('./util/entityCalculations');
 
 const uniqueNumberGenerator = require('./util/uniqueNumberGenerator');
+
+const GenAI = require('./util/genAI');
 
 // Add connector for project management systems
 const ConnectorByD = require('./connector/connectorByD');
@@ -47,7 +50,9 @@ module.exports = async (srv) => {
           req.data.ID
         ));
     } catch (error) {
-      req.error(500, 'NO_POETRYSLAM_NUMBER', [error.message]);
+      req.error(httpCodes.internal_server_error, 'NO_POETRYSLAM_NUMBER', [
+        error.message
+      ]);
     }
   });
 
@@ -60,24 +65,6 @@ module.exports = async (srv) => {
       req.data.status_code = result.status_code;
     }
 
-    // Remove all project data if the project id is cleared
-    if (req.data.projectID === '') {
-      req.data.projectID = null;
-      req.data.projectObjectID = null;
-      req.data.projectURL = null;
-      req.data.projectSystem = null;
-      req.data.projectSystemName = null;
-    }
-
-    // Remove all purchase order data if the purchase order id is cleared
-    if (req.data.purchaseOrderID === '') {
-      req.data.purchaseOrderID = null;
-      req.data.purchaseOrderObjectID = null;
-      req.data.purchaseOrderURL = null;
-      req.data.purchaseOrderSystem = null;
-      req.data.purchaseOrderSystemName = null;
-    }
-
     return next();
   });
 
@@ -88,10 +75,12 @@ module.exports = async (srv) => {
       .columns('status_code', 'number');
 
     if (
-      poetrySlam.status_code !== codes.poetrySlamStatusCode.inPreparation &&
-      poetrySlam.status_code !== codes.poetrySlamStatusCode.canceled
+      poetrySlam.status_code !== poetrySlamStatusCode.inPreparation &&
+      poetrySlam.status_code !== poetrySlamStatusCode.canceled
     ) {
-      req.error(400, 'POETRYSLAM_COULD_NOT_BE_DELETED', [poetrySlam.number]);
+      req.error(httpCodes.bad_request, 'POETRYSLAM_COULD_NOT_BE_DELETED', [
+        poetrySlam.number
+      ]);
     }
   });
 
@@ -205,17 +194,17 @@ module.exports = async (srv) => {
       const status = poetrySlam.status?.code || poetrySlam.status_code;
       // Set status colour code
       switch (status) {
-        case codes.poetrySlamStatusCode.inPreparation:
-          poetrySlam.statusCriticality = codes.color.grey; // New poetry slams are grey
+        case poetrySlamStatusCode.inPreparation:
+          poetrySlam.statusCriticality = color.grey; // New poetry slams are grey
           break;
-        case codes.poetrySlamStatusCode.published:
-          poetrySlam.statusCriticality = codes.color.green; // Published poetry slams are green
+        case poetrySlamStatusCode.published:
+          poetrySlam.statusCriticality = color.green; // Published poetry slams are green
           break;
-        case codes.poetrySlamStatusCode.booked:
-          poetrySlam.statusCriticality = codes.color.yellow; // Fully booked poetry slams are yellow
+        case poetrySlamStatusCode.booked:
+          poetrySlam.statusCriticality = color.yellow; // Fully booked poetry slams are yellow
           break;
-        case codes.poetrySlamStatusCode.canceled:
-          poetrySlam.statusCriticality = codes.color.red; // Canceled poetry slams are red
+        case poetrySlamStatusCode.canceled:
+          poetrySlam.statusCriticality = color.red; // Canceled poetry slams are red
           break;
         default:
           poetrySlam.statusCriticality = null;
@@ -239,17 +228,19 @@ module.exports = async (srv) => {
 
     // If poetry slam was not found, throw an error
     if (!poetrySlam) {
-      req.error(400, 'POETRYSLAM_NOT_FOUND', [id]);
+      req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [id]);
       return;
     }
 
-    if (poetrySlam.status_code === codes.poetrySlamStatusCode.inPreparation) {
+    if (poetrySlam.status_code === poetrySlamStatusCode.inPreparation) {
       // Poetry slams that are in preperation shall be deleted
-      req.info(200, 'ACTION_CANCEL_IN_PREPARATION', [poetrySlam.number]);
+      req.info(httpCodes.ok, 'ACTION_CANCEL_IN_PREPARATION', [
+        poetrySlam.number
+      ]);
       return poetrySlam;
     }
 
-    poetrySlam.status_code = codes.poetrySlamStatusCode.canceled;
+    poetrySlam.status_code = poetrySlamStatusCode.canceled;
 
     const success = await updatePoetrySlam(
       id,
@@ -275,15 +266,15 @@ module.exports = async (srv) => {
 
     // If poetry slam was not found, throw an error
     if (!poetrySlam) {
-      req.error(400, 'POETRYSLAM_NOT_FOUND', [id]);
+      req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [id]);
       return;
     }
 
     if (
-      poetrySlam.status_code === codes.poetrySlamStatusCode.booked ||
-      poetrySlam.status_code === codes.poetrySlamStatusCode.published
+      poetrySlam.status_code === poetrySlamStatusCode.booked ||
+      poetrySlam.status_code === poetrySlamStatusCode.published
     ) {
-      req.info(200, 'ACTION_PUBLISHED_ALREADY', [poetrySlam.number]);
+      req.info(httpCodes.ok, 'ACTION_PUBLISHED_ALREADY', [poetrySlam.number]);
       return poetrySlam;
     }
 
@@ -291,8 +282,8 @@ module.exports = async (srv) => {
     const data = await calculatePoetrySlamData(id, req);
     poetrySlam.status_code =
       data.freeVisitorSeats > 0
-        ? codes.poetrySlamStatusCode.published
-        : codes.poetrySlamStatusCode.booked;
+        ? poetrySlamStatusCode.published
+        : poetrySlamStatusCode.booked;
 
     // Update status
     const success = await updatePoetrySlam(
@@ -305,6 +296,80 @@ module.exports = async (srv) => {
     );
 
     return success ? poetrySlam : {}; // Return the changed poetry slam
+  });
+
+  // Entity action: Clear project data
+  srv.on('clearProjectData', async (req) => {
+    const poetrySlamID = req.params[req.params.length - 1].ID;
+
+    // Allow action for active entity instances only
+    const poetrySlam = await SELECT.one
+      .from('PoetrySlamService.PoetrySlams')
+      .columns('ID', 'number')
+      .where({ ID: poetrySlamID });
+
+    // If poetry slam was not found, throw an error
+    if (!poetrySlam) {
+      req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [poetrySlamID]);
+      return;
+    }
+
+    // Remove all project data
+    const updateValues = {
+      projectID: null,
+      projectObjectID: null,
+      projectURL: null,
+      projectSystem: null
+    };
+
+    const result = await UPDATE(`PoetrySlamService.PoetrySlams`)
+      .set(updateValues)
+      .where({ ID: poetrySlamID });
+
+    if (result !== 1) {
+      req.error(
+        httpCodes.internal_server_error,
+        'POETRYSLAM_COULD_NOT_BE_UPDATED',
+        [poetrySlam.number]
+      );
+    }
+  });
+
+  // Entity action: clear purchase order data
+  srv.on('clearPurchaseOrderData', async (req) => {
+    const poetrySlamID = req.params[req.params.length - 1].ID;
+
+    // Allow action for active entity instances only
+    const poetrySlam = await SELECT.one
+      .from('PoetrySlamService.PoetrySlams')
+      .columns('ID', 'number')
+      .where({ ID: poetrySlamID });
+
+    // If poetry slam was not found, throw an error
+    if (!poetrySlam) {
+      req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [poetrySlamID]);
+      return;
+    }
+
+    // Remove all purchase order data
+    const updateValues = {
+      purchaseOrderID: null,
+      purchaseOrderObjectID: null,
+      purchaseOrderURL: null,
+      purchaseOrderSystem: null
+    };
+
+    const result = await UPDATE(`PoetrySlamService.PoetrySlams`)
+      .set(updateValues)
+      .where({ ID: poetrySlamID });
+
+    if (result !== 1) {
+      req.error(
+        httpCodes.internal_server_error,
+        'POETRYSLAM_COULD_NOT_BE_UPDATED',
+        [poetrySlam.number]
+      );
+    }
   });
 
   // ----------------------------------------------------------------------------
@@ -350,6 +415,35 @@ module.exports = async (srv) => {
       ConnectorB1,
       'ACTION_CREATE_PURCHASE_ORDER_NO_B1_SYSTEM'
     );
+  });
+
+  // Entity action: Create a poetry slam with generative artifical intelligence
+  srv.on('createWithAI', async (req) => {
+    // GenAI constructor is synchronous
+    // It returns a promise as soon as it is resolved the instance can be used
+    const genAI = new GenAI();
+
+    await genAI.initializeModels();
+
+    // Check if the deployment does already exist if not create one
+    if (!(await genAI.checkAndCreateDeployment(req))) {
+      return;
+    }
+
+    const response = await genAI.callAI(
+      req.data.tags,
+      req.data.language,
+      req.data.rhyme,
+      req
+    );
+
+    const poetrySlamDraft = await GenAI.createPoetrySlamWithAI(
+      response,
+      req,
+      srv,
+      db
+    );
+    return poetrySlamDraft;
   });
 
   // ----------------------------------------------------------------------------

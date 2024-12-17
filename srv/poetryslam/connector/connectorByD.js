@@ -42,17 +42,13 @@ class ConnectorByD extends Connector {
   // ----------------------------------------------------------------------------
 
   // Return json-payload to create SAP Business ByDesign projects
-  async projectDataRecord(
-    poetrySlamIdentifier,
-    poetrySlamTitle,
-    poetrySlamDate
-  ) {
+  projectDataRecord(poetrySlamIdentifier, poetrySlamTitle, poetrySlamDate) {
     try {
       // Set project ID with pattern AR-{{Poetry Slam identifier}}
       const generatedID =
         ConnectorByD.GENERATED_ID_PREFIX + poetrySlamIdentifier;
 
-      // Assemble project payload based the sample data provided by *SAP Business ByDesign Partner Demo Tenants* (reference systems)
+      // Assemble project payload
       this.projectRecord = {
         ProjectID: generatedID,
         EstimatedCompletionPercent: 10,
@@ -106,9 +102,6 @@ class ConnectorByD extends Connector {
   // Enhance poetry slam with data of remote project
   async readProject(poetrySlams) {
     try {
-      const bydProject = await cds.connect.to('byd_khproject');
-      let isProjectIDs = false;
-
       // Read Project ID's related to SAP Business ByDesign
       let projectIDs = [];
       for (const poetrySlam of convertToArray(poetrySlams)) {
@@ -118,29 +111,31 @@ class ConnectorByD extends Connector {
           poetrySlam.projectID
         ) {
           projectIDs.push(poetrySlam.projectID);
-          isProjectIDs = true;
         }
+      }
+
+      if (!projectIDs.length) {
+        return poetrySlams;
       }
 
       // Read SAP Business ByDesign projects data
-      if (isProjectIDs) {
-        // Request all associated projects
-        const projects = await bydProject.run(
-          SELECT.from('PoetrySlamService.ByDProjects').where({
-            ProjectID: projectIDs
-          })
+      const bydProjectService = await cds.connect.to('byd_khproject');
+
+      // Request all associated projects
+      // Use the remote service but select from the projection as defined in the PoetrySlamService; CAP takes care of the attribute mapping
+      const projects = await bydProjectService.run(
+        SELECT.from('PoetrySlamService.ByDProjects').where({
+          ProjectID: projectIDs
+        })
+      );
+
+      // Assemble result
+      for (const poetrySlam of convertToArray(poetrySlams)) {
+        poetrySlam.toByDProject = projects.find(
+          (project) => project.projectID === poetrySlam.projectID
         );
-
-        // Convert in a map for easier lookup
-        const projectsMap = {};
-        for (const project of projects)
-          projectsMap[project.projectID] = project;
-
-        // Assemble result
-        for (const poetrySlam of convertToArray(poetrySlams)) {
-          poetrySlam.toByDProject = projectsMap[poetrySlam.projectID];
-        }
       }
+
       return poetrySlams;
     } catch (error) {
       // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
@@ -152,7 +147,7 @@ class ConnectorByD extends Connector {
   async getRemoteProjectData(srv) {
     const { ByDProjects } = srv.entities;
 
-    // GET service call on remote project entity; remote calls shall use srv.run to run in the root transaction with the correct cds.context
+    // GET service call on projection of remote project entity
     const remoteProject = await srv.run(
       SELECT.one.from(ByDProjects).where({
         projectID: this.projectRecord.ProjectID
@@ -166,19 +161,21 @@ class ConnectorByD extends Connector {
     };
   }
 
-  // POST request to create the project via remote service; remote calls shall use srv.run to run in the root transaction with the correct cds.context
-  async insertRemoteProjectData(srv) {
-    const { ByDProjects } = srv.entities;
+  // POST request to create the project via remote service
+  // The request is executed with the remote service and the remote entity definition avoiding CDS data type assertions and a complete model copy of the remote entity and its composition associations
+  async insertRemoteProjectData() {
+    const bydProjectService = await cds.connect.to('byd_khproject');
 
-    // GET service call on remote project entity; remote calls shall use srv.run to run in the root transaction with the correct cds.context
-    const remoteProject = await srv.run(
-      INSERT.into(ByDProjects).entries(this.projectRecord)
+    const remoteProject = await bydProjectService.run(
+      INSERT.into(bydProjectService.entities.ProjectCollection).entries(
+        this.projectRecord
+      )
     );
 
     // Determine project ID and UUID and return it as object
     return {
-      projectID: remoteProject?.projectID,
-      projectObjectID: remoteProject?.ID
+      projectID: remoteProject?.ProjectID,
+      projectObjectID: remoteProject?.ObjectID
     };
   }
 

@@ -37,8 +37,8 @@ describe('ConnectorB1', () => {
     stubINSERT = sinon.stub(INSERT, 'into').returns({
       entries: () => {
         return {
-          docEntry: 'UUID',
-          docNum: 'generatedID'
+          DocEntry: 'UUID',
+          DocNum: 'generatedID'
         };
       }
     });
@@ -47,7 +47,7 @@ describe('ConnectorB1', () => {
       where: (whereClause) => {
         return [
           {
-            docNum: whereClause.DocNum,
+            docNum: whereClause.DocNum[0],
             comments: 'commentsTest'
           }
         ];
@@ -57,7 +57,8 @@ describe('ConnectorB1', () => {
     stubCDS = sinon.stub(cds.connect, 'to').resolves({
       run: (data) => {
         return data;
-      }
+      },
+      entities: { PurchaseOrders: 'test' }
     });
   });
 
@@ -122,7 +123,7 @@ describe('ConnectorB1', () => {
       ]
     };
 
-    await connector.purchaseOrderDataRecord(
+    connector.purchaseOrderDataRecord(
       1,
       'testTitle',
       'testDescription',
@@ -146,15 +147,15 @@ describe('ConnectorB1', () => {
   it('should read remote purchase order data of the poetry slam entitiy', async () => {
     const poetrySlams = {
       purchaseOrderSystem: ConnectorB1.PURCHASE_ORDER_SYSTEM,
-      purchaseOrderID: 1
+      purchaseOrderID: '1'
     };
 
     const expectedResult = {
-      purchaseOrderID: 1,
+      purchaseOrderID: '1',
       purchaseOrderSystem: ConnectorB1.PURCHASE_ORDER_SYSTEM,
       toB1PurchaseOrder: {
         comments: 'commentsTest',
-        docNum: [1]
+        docNum: '1'
       }
     };
 
@@ -173,16 +174,7 @@ describe('ConnectorB1', () => {
   });
 
   it('should insert remote purchase order data to database of poetry slam entitiy', async () => {
-    const srv = {
-      run: async function (data) {
-        return data;
-      },
-      entities: {
-        B1Projects: 'test'
-      }
-    };
-
-    const objectData = await connector.insertRemotePurchaseOrderData(srv);
+    const objectData = await connector.insertRemotePurchaseOrderData();
     expect(objectData.purchaseOrderID).to.eql('generatedID');
     expect(objectData.purchaseOrderObjectID).to.eql('UUID');
   });

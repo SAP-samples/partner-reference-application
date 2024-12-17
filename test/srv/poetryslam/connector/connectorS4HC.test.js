@@ -40,18 +40,32 @@ describe('ConnectorS4HC', () => {
     stubINSERT = sinon.stub(INSERT, 'into').returns({
       entries: (projectRecord) => {
         return {
-          project: projectRecord.project,
-          projectUUID: projectRecord.projectUUID
+          Project: projectRecord.project,
+          ProjectUUID: projectRecord.projectUUID
         };
       }
     });
 
     stubSELECTOne = sinon.stub(SELECT.one, 'from').returns({
-      where: (projectRecord) => {
-        return {
-          project: projectRecord.project,
-          projectUUID: 3
-        };
+      where: (whereClause) => {
+        if (whereClause.project) {
+          return {
+            project: whereClause.project,
+            projectUUID: 3
+          };
+        }
+        if (whereClause.ProjectProfileCode) {
+          return {
+            ProjectProfileCode: whereClause.ProjectProfileCode,
+            ProjectProfileCodeText: 'profileCodeTextTest'
+          };
+        }
+        if (whereClause.ProcessingStatus) {
+          return {
+            ProcessingStatus: whereClause.ProcessingStatus,
+            ProcessingStatusText: 'processingStatusTextTest'
+          };
+        }
       }
     });
 
@@ -59,11 +73,9 @@ describe('ConnectorS4HC', () => {
       where: (whereClause) => {
         return [
           {
-            project: whereClause.project,
+            project: whereClause.project[0],
             projectProfileCode: 'profileCodeTest',
-            projectProfileCodeText: 'profileCodeTextTest',
-            processingStatus: 'processingStatusTest',
-            processingStatusText: 'processingStatusTextTest'
+            processingStatus: 'processingStatusTest'
           }
         ];
       }
@@ -72,6 +84,11 @@ describe('ConnectorS4HC', () => {
     stubCDS = sinon.stub(cds.connect, 'to').resolves({
       run: (data) => {
         return data;
+      },
+      entities: {
+        A_EnterpriseProject: 'test',
+        ProjectProfileCode: 'test',
+        ProcessingStatus: 'test'
       }
     });
   });
@@ -123,7 +140,7 @@ describe('ConnectorS4HC', () => {
       ]
     };
 
-    await connector.projectDataRecord(1, 'testTitle', new Date('03/03/2024'));
+    connector.projectDataRecord(1, 'testTitle', new Date('03/03/2024'));
 
     expect(connector.projectRecord).to.eql(testProjectRecord);
   });
@@ -145,16 +162,14 @@ describe('ConnectorS4HC', () => {
     };
 
     const expectedResult = {
-      processingStatusText: 'processingStatusTextTest',
       projectID: 1,
-      projectProfileCodeText: 'profileCodeTextTest',
       projectSystem: ConnectorS4HC.PROJECT_SYSTEM,
+      projectProfileCodeText: 'profileCodeTextTest',
+      processingStatusText: 'processingStatusTextTest',
       toS4HCProject: {
-        processingStatus: 'processingStatusTest',
-        processingStatusText: 'processingStatusTextTest',
+        project: 1,
         projectProfileCode: 'profileCodeTest',
-        projectProfileCodeText: 'profileCodeTextTest',
-        project: [1]
+        processingStatus: 'processingStatusTest'
       }
     };
 
@@ -184,17 +199,20 @@ describe('ConnectorS4HC', () => {
     );
   });
 
-  it('should throw an error when remote project data cannot be read', async () => {
+  it('should throw an error when remote code texts cannot be read', async () => {
     stubCDS.restore();
 
     stubCDS = sinon.stub(cds.connect, 'to').resolves({
       run: (data) => {
-        if (data) {
-          if (data[0].project && data[0].project[0] === 1) {
-            return data;
-          }
-          throw new Error('test');
+        if (data && data[0] && data[0].project === 1) {
+          return data;
         }
+        throw new Error('test');
+      },
+      entities: {
+        A_EnterpriseProject: 'test',
+        ProjectProfileCode: 'test',
+        ProcessingStatus: 'test'
       }
     });
 
@@ -244,18 +262,9 @@ describe('ConnectorS4HC', () => {
   });
 
   it('should insert remote project data to database of poetry slam entitiy', async () => {
-    const srv = {
-      run: async function (data) {
-        return data;
-      },
-      entities: {
-        S4HCProjects: 'test'
-      }
-    };
-
     connector.projectRecord = { project: 1, projectUUID: 2 };
 
-    const objectData = await connector.insertRemoteProjectData(srv);
+    const objectData = await connector.insertRemoteProjectData();
     expect(objectData.projectID).to.eql(1);
     expect(objectData.projectObjectID).to.eql(2);
   });

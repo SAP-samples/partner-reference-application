@@ -3,7 +3,7 @@
 // Adds cds module
 const cds = require('@sap/cds');
 // Defines required CDS functions for testing
-const { expect, GET, axios, test } = cds.test(__dirname + '/../../../..');
+const { expect, POST, axios, test } = cds.test(__dirname + '/../../../..');
 
 // Add modules to allow mocking
 const sinon = require('sinon');
@@ -29,7 +29,6 @@ const expectedFormsData = {
     title: 'Being Human Poetry Slam',
     description:
       'Poetry Slams about human existence, revealing the beauty and complexity within',
-    date: '2025-02-07T11:00:00Z',
     visitors_table: {
       visitor_row: [
         {
@@ -50,7 +49,7 @@ const expectedFormsData = {
 describe('Util Forms', () => {
   before(async () => {
     await test.data.reset();
-    await GET(`/odata/v4/poetryslamservice/createTestData`);
+    await POST(`/odata/v4/poetryslamservice/createTestData`);
   });
 
   describe('Data XML', () => {
@@ -60,6 +59,15 @@ describe('Util Forms', () => {
     beforeEach(function () {
       // Create Data XML Stubs
       // Create a stub for the XMLBuilder instance
+
+      const date = new Date();
+      date.setDate(date.getDate() + 60);
+      date.setHours(15, 0, 0);
+
+      date.setMilliseconds(0);
+      expectedFormsData.ps_bookings_list_form.date =
+        date.toISOString().split('.')[0] + 'Z';
+
       sinon.createStubInstance(XMLBuilder);
       buildStub = sinon
         .stub(XMLBuilder.prototype, 'build')

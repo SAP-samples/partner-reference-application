@@ -13,6 +13,8 @@ const { expect } = cds.test(__dirname + '/../../../..');
 // Import EMail Service
 const EMail = require('./../../../../srv/poetryslam/util/email');
 
+const { httpCodes } = require('./../../../../srv/poetryslam/util/codes');
+
 describe('Util EMail - Reuse', () => {
   let cdsTestLog = cds.test.log();
 
@@ -40,7 +42,7 @@ describe('Util EMail - Reuse', () => {
     const eMail = new EMail('receiver@pra.ondemand.com', 'subject', 'text');
     await eMail.send(req);
 
-    expect(errorObject.statusCode).to.equal(400);
+    expect(errorObject.statusCode).to.equal(httpCodes.bad_request);
     expect(errorObject.i18n).to.equal('ACTION_EMAIL_SEND_FAIL');
     expect(errorObject.params[0]).to.equal('receiver@pra.ondemand.com');
     expect(cdsTestLog.output).to.eql(
@@ -62,7 +64,7 @@ describe('Util EMail - Reuse', () => {
     const eMail = new EMail('receiver@test.com', 'subject', 'text');
     await eMail.send(req);
 
-    expect(errorObject.statusCode).to.equal(400);
+    expect(errorObject.statusCode).to.equal(httpCodes.bad_request);
     expect(errorObject.i18n).to.equal('ACTION_EMAIL_SEND_FAIL');
     expect(errorObject.params[0]).to.equal('receiver@test.com');
     expect(cdsTestLog.output).to.eql(
