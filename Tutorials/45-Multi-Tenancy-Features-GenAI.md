@@ -1,11 +1,11 @@
 # Add Capabilities for Generative Artificial Intelligence (Gen AI)
 
 Put yourself in the shoes of a poetry slam manager who uses a poetry slam management application to manage the events. You want to easily create events with creative titles and descriptions. 
-For the title and description proposal, the Partner Reference application uses [generative artificial intelligence (generative AI or genAI)](https://www.sap.com/products/artificial-intelligence/what-is-generative-ai.html) based on [large language models (LLM)](https://www.sap.com/resources/what-is-large-language-model). The [SAP AI Core service of the SAP BTP](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/what-is-sap-ai-core) and the [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) offer easy consumption of generative AI features.
+For the title and description proposal, the Partner Reference Application uses [generative artificial intelligence (generative AI or genAI)](https://www.sap.com/products/artificial-intelligence/what-is-generative-ai.html) based on [large language models (LLM)](https://www.sap.com/resources/what-is-large-language-model). The [SAP AI Core service of the SAP BTP](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/what-is-sap-ai-core) and the [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) offer easy consumption of generative AI features.
 
 To explore this feature with the Poetry Slam Manager, you have two options: 
 
-1. Clone the repository of the Partner Reference application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
+1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
 
 2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch where the feature is already included. 
 
@@ -239,6 +239,6 @@ Now it is time to take you on a guided tour through the generative artificial In
 
 The use of models in the generative AI hub of the SAP AI Core service is metered using genAI tokens. For more information, refer to the documentation on [SAP Help Portal](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/metering-and-pricing-for-generative-ai-hub). 
 
-In case you want to estimate how many input and output tokens are required for the use case of the Partner Reference application, the method `callAI` of class `genAI` shows how to determine the used tokens per genAI request. On this basis, you can make an assumption for your use case.
+In case you want to estimate how many input and output tokens are required for the use case of the Partner Reference Application, the method `callAI` of class `genAI` shows how to determine the used tokens per genAI request. On this basis, you can make an assumption for your use case.
 
-> Note: Additionally, content filtering, data masking, and non-generative AI components come into account. In the Partner Reference application, these features are not used.
+> Note: Additionally, content filtering, data masking, and non-generative AI components come into account. In the Partner Reference Application, these features are not used.

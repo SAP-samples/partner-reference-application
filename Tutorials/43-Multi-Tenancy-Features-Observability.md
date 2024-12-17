@@ -8,7 +8,7 @@ The [SAP Cloud Logging service](https://help.sap.com/docs/cloud-logging/cloud-lo
 
 To explore this feature with the Poetry Slam Manager, you have two options: 
 
-1. Clone the repository of the Partner Reference application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
+1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
 
 2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch where the feature is already included. 
 
@@ -20,7 +20,7 @@ The service builds upon [OpenSearch](https://opensearch.org/), which offers feat
 
 For more information, refer to the documentation on the [SAP Cloud Logging service](https://help.sap.com/docs/cloud-logging/cloud-logging/what-is-sap-cloud-logging?version=Cloud).
 
-For the Partner Reference application, an SAP Cloud Logging instance is created with service plan [standard](https://help.sap.com/docs/cloud-logging/cloud-logging/service-plans?version=Cloud) using the [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml) file:
+For the Partner Reference Application, an SAP Cloud Logging instance is created with service plan [standard](https://help.sap.com/docs/cloud-logging/cloud-logging/service-plans?version=Cloud) using the [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml) file:
 
 1. Enable the SAP Cloud Logging service instance and [OpenTelemetry](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-via-opentelemetry-api-endpoint?version=Cloud) by adding the following code snippet to the *resources* in the *mta.yaml*:
     ```yml

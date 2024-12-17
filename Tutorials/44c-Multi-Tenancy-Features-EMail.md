@@ -1,11 +1,11 @@
 # Send E-Mails
 
-Put yourself in the shoes of a poetry slam manager who uses a poetry slam management application to manage the events. You want to send an email reminder to your artists and guests before the event. The Partner Reference application uses the [SAP Cloud SDK Mail Client](https://sap.github.io/cloud-sdk/docs/js/features/mail-client) to send e-mails to your e-mail servers. 
+Put yourself in the shoes of a poetry slam manager who uses a poetry slam management application to manage the events. You want to send an email reminder to your artists and guests before the event. The Partner Reference Application uses the [SAP Cloud SDK Mail Client](https://sap.github.io/cloud-sdk/docs/js/features/mail-client) to send e-mails to your e-mail servers. 
 A detailed [API reference](https://sap.github.io/cloud-sdk/api/v3/modules/sap_cloud_sdk_mail_client.html) is available, too.
 
 To explore this feature with the Poetry Slam Manager, you have two options: 
 
-1. Clone the repository of the Partner Reference application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
+1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
 
 2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch where the feature is already included. 
 
