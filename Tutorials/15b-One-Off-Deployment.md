@@ -93,7 +93,7 @@ Set up the trust relationship between the SAP BTP subaccount to the Identity Aut
 1. Within your SAP BTP subaccount, open the menu item *Security* and go to *Trust Configuration*. 
 2. Choose *Establish Trust* and select the Identity Authentication service tenant to set up the OIDC trust configuration.
 3. Log on to your Identity Authentication service Admin UI (URL: [IAS]/admin/). 
-4. Open the menu item *Applications* and search for the application that refers to your SAP BTP subaccount
+4. Open the menu item *Applications* and search for the application that refers to your SAP BTP subaccount.
    > Note that the name typically follows the pattern: *XSUAA_[subaccount-name]*.
 5. Edit the application and change the following fields:
     - The display name appears on the user log-on screen and the login applies to all applications linked to the Identity Authentication service tenant (following the single-sign-on principle). Change the *Display Name* to something meaningful from an end-user perspective representing the scope of the Identity Authentication service.
@@ -108,7 +108,7 @@ Set up the trust relationship between the SAP BTP subaccount to the Identity Aut
 1. Within your SAP BTP subaccount, open the menu item *Security* and go to *Trust Configuration*. 
 2. To download the *Service provider SAML metadata* file, choose *Download SAML Metadata*.
 3. Log on to your Identity Authentication service Admin UI (URL: [IAS]/admin/).
-4. Open the menu item *Applications* and create a new application of the type *SAP BTP solution*:
+4. Open the menu item *Applications* and create a new application of type *SAP BTP solution*:
 	1. Enter the required information such as application display name, application URL, and so on. The display name appears on the user log-on screen and the login applies to all applications linked to the Identity Authentication service tenant (following the single-sign-on principle). Choose something meaningful from an end-user perspective representing the scope of the Identity Authentication service.
 	2. Open the *SAML 2.0 Configuration* section and upload the *Service provider SAML metadata* file which you downloaded previously from the SAP BTP subaccount.
 	3. Open the *Subject Name Identifier* section and select *E-Mail* as the primary attribute.
@@ -123,9 +123,9 @@ Looking for more information on the SAP Authorization and Trust Management servi
 	
 ### Set Up Users and User Groups
 
-In this example, you use Identity Authentication service user groups to assign authorizaton roles to users. The user groups will be passed as *assertion attribute* to the SAP BTP subaccount and will be mapped to the respective role collections in the SAP BTP subaccount. 
+In this example, you use Identity Authentication service user groups to assign authorization roles to users. The user groups will be passed as *assertion attribute* to the SAP BTP subaccount and will be mapped to the respective role collections in the SAP BTP subaccount. 
 
-1. On the Identity Authentication service Admin UI, open the menu item *User Management* and add the users that should have access to the SAP BTP application. Enter user details such as name and e-mail. But take into account that the e-mail is used as the identifying attribute. As a recommendation, use the e-mail address that is used in the ERP system that you'll integrate later.
+1. On the Identity Authentication service Admin UI, open the menu item *User Management* and add the users that should have access to the SAP BTP application. Enter user details such as name and e-mail. Be aware that the e-mail is used as the identifying attribute. As a recommendation, use the e-mail address that is used in the ERP system that you'll integrate later.
 2. Open the menu item *Groups* and add user groups that represent typical user roles. Enter a unique (technical) *Name* and a meaningful *Display Name*, for example:
 
     | Name                      | Display Name              |

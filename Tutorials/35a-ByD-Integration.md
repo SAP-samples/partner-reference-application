@@ -65,7 +65,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 2. Enhance the annotations of entity *PoetrySlams* with the following elements:
     ```javascript
-    projectID           @title: '{i18n>projectID}';
+    projectID           @title: '{i18n>projectID}';         @readonly;
     projectObjectID     @title: '{i18n>projectObjectID}'    @readonly;
     projectURL          @title: '{i18n>projectURL}'         @readonly;
     projectSystem       @title: '{i18n>projectSystem}'      @readonly;
@@ -76,7 +76,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     projectID               = Project
     projectObjectID         = Project UUID
     projectURL              = Project URL
-    projectSystem           = Project System Type
+    projectSystem           = System Type
     ```
      > In the reference example, the [*/db/i18n/i18n_de.properties*](../../../tree/main-multi-tenant/db/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
   
@@ -85,83 +85,46 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 1. To extend the SAP Cloud Application Programming Model service model with remote entities, open the file [*/srv/poetryslam/poetrySlamService.cds*](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamService.cds) with the service models.
 
-2. Expose SAP Business ByDesign project data throughout the SAP Cloud Application Programming Model service model for principal propagation:
+2. Add a projection of the SAP Business ByDesign project to the service model for consumption in the Fiori Elements UI:
     ```javascript
     // -------------------------------------------------------------------------------
-    // Extend service PoetrySlamService by SAP Business ByDesign projects (principal propagation)
-
-    using { byd_khproject as RemoteByDProject } from '../external/byd_khproject';
+    // Extend service PoetrySlamService by SAP Business ByDesign projects
+    using {byd_khproject as RemoteByDProject} from '../external/byd_khproject';
 
     extend service PoetrySlamService with {
-        entity ByDProjects as projection on RemoteByDProject.ProjectCollection {
-            key ObjectID as ID,
-            ProjectID as projectID,
-            ResponsibleCostCentreID as costCenter,
-            ProjectTypeCode as typeCode,
-            ProjectTypeCodeText as typeCodeText,
-            ProjectLifeCycleStatusCode as statusCode,
-            ProjectLifeCycleStatusCodeText as statusCodeText,
-            BlockingStatusCode as blockingStatusCode,
-            PlannedStartDateTime as startDateTime,
-            PlannedEndDateTime as endDateTime,
-            ProjectSummaryTask as summaryTask : redirected to ByDProjectSummaryTasks,
-            Task as task : redirected to ByDProjectTasks                     
-        }
-        entity ByDProjectSummaryTasks as projection on RemoteByDProject.ProjectSummaryTaskCollection {
-            key ObjectID as ID,
-            ParentObjectID as parentID,
-            ID as taskID,
-            ProjectName as projectName,
-            ResponsibleEmployeeID as responsibleEmployee,
-            ResponsibleEmployeeFormattedName as responsibleEmployeeName
-        }
-        entity ByDProjectTasks as projection on RemoteByDProject.TaskCollection {
-            key ObjectID as ID,
-            ParentObjectID as parentID,
-            TaskID as taskID,
-            TaskName as taskName,
-            PlannedDuration as duration,
-            ResponsibleEmployeeID as responsibleEmployee,
-            ResponsibleEmployeeFormattedName as responsibleEmployeeName
-        }
+        entity ByDProjects     as
+            projection on RemoteByDProject.ProjectCollection {
+                key ObjectID                       as ID,
+                    ProjectID                      as projectID,
+                    ProjectTypeCodeText            as typeCodeText,
+                    ProjectLifeCycleStatusCodeText as statusCodeText,
+                    ResponsibleCostCentreID        as costCenter,
+                    PlannedStartDateTime           as startDateTime,
+                    PlannedEndDateTime             as endDateTime
+            }
     };
     ```
     
-2. Enhance the service model of the service *PoetrySlamService* with an association to the remote project in SAP Business ByDesign:
+3. Enhance the service model of the service *PoetrySlamService* with virtual elements and an association to the remote project in SAP Business ByDesign. The virtual elements are calculated, non-persisted fields to pass on the name of the ERP system from the destination to the UI, and the visualization of actions.
     ```javascript
     // Poetry Slams (draft enabled)
     @odata.draft.enabled
-    entity PoetrySlams as select from poetrySlamManagerModel.PoetrySlams
-        mixin {
-            // SAP Business ByDesign projects: Mix-in of SAP Business ByDesign project data
-            toByDProject      : Association to RemoteByDProject.ProjectCollection
-                                    on toByDProject.ProjectID = $projection.projectID;
-        } 
-    ```
-
-3. Enhance the service model of the service *PoetrySlamService* with virtual elements to pass on the name of the ERP system from the destination to the UI, and the visualization of actions:
-    ```javascript
-    // Poetry Slams (draft enabled)
-    @odata.draft.enabled
-    entity PoetrySlams                    as
-        select from poetrySlamManagerModel.PoetrySlams
-        mixin {
-            // SAP Business ByDesign projects: Mix-in of SAP Business ByDesign project data
-            toByDProject : Association to RemoteByDProject.ProjectCollection
-                               on toByDProject.ProjectID = $projection.projectID;
-        }
-        into {
-            // Selects all fields of the PoetrySlams domain model,
+    @Common.SemanticObject: 'poetryslams'
+    @Common.SemanticKey   : [ID]
+    entity PoetrySlams as
+        select from poetrySlamManagerModel.PoetrySlams {
+            // Selects all fields of the PoetrySlams domain model
             *,
-            maxVisitorsNumber - freeVisitorSeats as bookedSeats             : Integer  @title:      '{i18n>bookedSeats}',
+            maxVisitorsNumber - freeVisitorSeats as bookedSeats                  : Integer @title     : '{i18n>bookedSeats}',
             // Relevant for coloring of status in UI to show criticality
-            virtual null                         as statusCriticality       : Integer  @title:      '{i18n>statusCriticality}',
-            virtual null                         as projectSystemName       : String   @title:      '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
+            virtual null                         as statusCriticality            : Integer @title     : '{i18n>statusCriticality}',
+            virtual null                         as projectSystemName            : String  @title     : '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
             // SAP Business ByDesign projects: visibility of button "Create Project in SAP Business ByDesign"
-            virtual null                         as createByDProjectEnabled : Boolean  @title:      '{i18n>createByDProjectEnabled}'  @odata.Type: 'Edm.Boolean',
-            virtual null                         as isByD                   : Boolean  @odata.Type: 'Edm.Boolean',
-            toByDProject
-        }
+            virtual null                         as createByDProjectEnabled      : Boolean @odata.Type: 'Edm.Boolean',
+            virtual null                         as isByD                        : Boolean @odata.Type: 'Edm.Boolean',
+            // Projection of remote service data as required by the UI
+            toByDProject                                                         : Association to PoetrySlamService.ByDProjects on toByDProject.projectID = $self.projectID
+    }
     ```
     
 4. Enhance the service model of the service *PoetrySlamService* with an action to create remote projects:
@@ -180,6 +143,19 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     ```
     > Note: The side effect annotation refreshes the project data right after executing the action.
 
+5. In case you want to support an option to clear the connection to the created project, enhance the service model of service *PoetrySlamService* with the action `clearProjectData`.
+    ```javascript
+    // ERP systems: action to clear the project data
+    @(
+    Common.SideEffects             : {TargetEntities: [
+        '_poetryslam',
+        '_poetryslam/toByDProject'
+    ]},
+    cds.odata.bindingparameter.name: '_poetryslam'
+    )
+    action clearProjectData();
+    ```    
+
 ### Enhance the Authentication Model to Cover Remote Projects
 
 1. To extend the authorization annotation of the SAP Cloud Application Programming Model service model by restrictions referring to the remote services, open the file [*/srv/poetryslam/poetrySlamServiceAuthorizations.cds*](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceAuthorizations.cds) with the authorization annotations.
@@ -187,19 +163,9 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 2. Enhance the authorization model for the service entities *ByDProjects*, *ByDProjectSummaryTasks*, and *ByDProjectTasks*.
 
     ```javascript
-    // SAP Business ByDesign projects: Managers can read and create remote projects
+    // SAP Business ByDesign projects: Managers can read remote projects (creation is done using the remote service, not the projection in the PoetrySlamService)
     annotate PoetrySlamService.ByDProjects with @(restrict: [{
-        grant: ['*'],
-        to   : 'PoetrySlamFull'
-    }]);
-
-    annotate PoetrySlamService.ByDProjectSummaryTasks with @(restrict: [{
-        grant: ['*'],
-        to   : 'PoetrySlamFull'
-    }]);
-
-    annotate PoetrySlamService.ByDProjectTasks with @(restrict: [{
-        grant: ['*'],
+        grant: ['READ'],
         to   : 'PoetrySlamFull'
     }]);
     ```
@@ -231,11 +197,12 @@ You can define reuse functions that handle the connection for the different Ente
 
 Reuse functions specific to SAP Business ByDesign are defined in a separate file.
 
-1. Create a new folder *connector* in path */srv/poetryslam*.
 1. Create a file with the path */srv/poetryslam/connector/connectorByD.js*.
 2. Copy the SAP Business ByDesign reuse functions in the file [*/srv/poetryslam/connector/connectorByD.js*](../../../tree/main-multi-tenant/srv/poetryslam/connector/connectorByD.js) into your project. The file contains functions to delegate OData requests to SAP Business ByDesign, to read SAP Business ByDesign project data, and to assemble an OData payload to create SAP Business ByDesign projects using a project template.
 
-> Note: This file contains sample data, which can vary depending on the system. Check the data set and maintain it accordingly to ensure consistency between the Partner Reference App and SAP Business ByDesign. The sample data is marked with a block comment *Project data for SAP Business ByDesign; needs to be adopted according to SAP Business ByDesign configuration*.
+    > Note: This file contains a function ```insertRemoteProjectData()```. This function creates a project purchase order in SAP Business ByDesign by creating an entity directly using the external imported service and the external entity model. It does *not* use the projection as modeled in the *PoetrySlamService*. This is intentional: The projection is used for fields shown in the Fiori Elements UI (read-only) or updates of individual fields. More complex write scenarios, including create scenarios, should directly call the external imported services. This avoids data type validations by CAP, leaving the validations to the external service. It also avoids a remodeling of all fields and compositions required for creation in the projection.
+
+    > Note: This file contains sample data that can vary depending on the system. Check the data set and maintain it accordingly to ensure consistency between the Partner Reference App and SAP Business ByDesign. The sample data is marked with a block comment *Project data for SAP Business ByDesign; needs to be adopted according to SAP Business ByDesign configuration*.
 
 ### Enhance the Business Logic to Operate on SAP Business ByDesign Data
 
@@ -252,26 +219,24 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
         const ConnectorByD = require('./connector/connectorByD');
 
         module.exports = async (srv) => {
-            // ----------------------------------------------------------------------------
+            // -------------------------------------------------------------------------------------------------
             // Implementation of remote OData services (back-channel integration with SAP Business ByDesign)
-            // ----------------------------------------------------------------------------
+            // -------------------------------------------------------------------------------------------------
 
             // Delegate OData requests to remote project entities
-            srv.on(
-                ['READ', 'CREATE', 'UPDATE', 'DELETE'],
-                ['ByDProjects', 'ByDProjectSummaryTasks', 'ByDProjectTasks'],
-                async (req) => {
+            srv.on('READ', 'ByDProjects', async (req) => {
                 const connector = await ConnectorByD.createConnectorInstance(req);
                 return await connector.delegateODataRequests(
                     req,
                     ConnectorByD.PROJECT_SERVICE
                 );
-                }
-            );
+            });
         }
         ```
 
-    > Note: Without delegation, the remote entities return the error code 500 with the message: *SQLITE_ERROR: no such table* (local testing).
+        > Note: Without delegation, the remote entities return the error code 500 with the message: *SQLITE_ERROR: no such table* (local testing).
+
+        > Note: In this example, the projection of the remote project in SAP Business ByDesign as modeled in the PoetrySlamService is only used for *READ* access. In case you want to support *UPDATE* as well, you would need to change ```srv.on('READ', ...)``` to ```srv.on(['READ', 'UPDATE'], ...)``` in the above snippet. The *CREATE* is implemented separately as described in the previous section.
 
 2. Enhance the [poetrySlamServiceImplementation.js](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceImplementation.js) to call the ERP implementation.
 
@@ -284,7 +249,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
     2. Call the ERP forward handler.
 
         ```javascript
-        erpForwardHandler(srv); // Forward handler to the ERP systems
+        await erpForwardHandler(srv); // Forward handler to the ERP systems
         ```
 
 3. In the file [*/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js), the poetry slams entity is enriched with SAP Business ByDesign specific data. 
@@ -365,10 +330,10 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
             // Entity action: Create SAP Business ByDesign Project
             srv.on('createByDProject', async (req) => {
                 await createProject(
-                req,
-                srv,
-                ConnectorByD,
-                'ACTION_CREATE_PROJECT_NO_SAP_BUSINESS_BY_DESIGN_SYSTEM'
+                    req,
+                    srv,
+                    ConnectorByD,
+                    'ACTION_CREATE_PROJECT_NO_SAP_BUSINESS_BY_DESIGN_SYSTEM'
                 );
             });
             ```
@@ -389,22 +354,12 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
             } = require('./util/entityCalculations');
             ```
 
-    4. Extend the on-update event of the `PoetrySlams` entity with an implementation to clear all project data if the `projectID` is deleted:
+    4. Copy the implementation of the action `clearProjectData` to clear all project data:
         ```javascript
-        srv.on('UPDATE', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
-            ...
-
-            // Remove all project data if the project id is cleared
-            if (req.data.projectID === '') {
-                req.data.projectID = null;
-                req.data.projectObjectID = null;
-                req.data.projectURL = null;
-                req.data.projectSystem = null;
-                req.data.projectSystemName = null;
-            }
-
+        srv.on('clearProjectData', async (req) => {
             ...
         });
+        ```
         ```
 
 4. Copy the constant `DATE_DAYS_MULTIPLIER` and the functions `createProject` and `subtractDaysFormatRFC3339` from the file [*/srv/poetryslam/util/entityCalculations.js*](../../../tree/main-multi-tenant/srv/poetryslam/util/entityCalculations.js) into the implementation and export the functions at the end of the file.
@@ -419,6 +374,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
     ACTION_CREATE_PROJECT_NO_SAP_BUSINESS_BY_DESIGN_SYSTEM  = No SAP Business ByDesign system connected. Project cannot be created.
     ACTION_CREATE_PROJECT_FAILED                            = Project creation failed. Poetry Slam {0} was not updated.
     ACTION_READ_PROJECT_CONNECTION                          = Project cannot be retrieved.
+    ACTION_ERP_REMOVED                                      = The ERP information was removed from poetry slam {0}.
     ```
     > In the reference example, the [*/srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant/srv/i18n/messages_de.properties) file with the German texts is available too. You can take them over accordingly.
 
@@ -513,7 +469,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
         ]
         ```
 
-    4. Add a button to the identification area:
+    4. Add two buttons to the identification area:
         ```javascript
         // Create a project in the connected SAP Business ByDesign system
         {
@@ -524,23 +480,35 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
                 {$Path: 'createByDProjectEnabled'},
                 {$Path: 'IsActiveEntity'}
             ]}}}
+        },
+        // Clear the project data
+        {
+            $Type        : 'UI.DataFieldForAction',
+            Label        : '{i18n>removeProjectData}',
+            Action       : 'PoetrySlamService.clearProjectData',
+            ![@UI.Hidden]: {$edmJson: {$Or: [
+            {$Eq: [
+                {$Path: 'projectID'},
+                {$Null: null}
+            ]},
+            {$Not: {$Path: 'IsActiveEntity'}}
+            ]}}
         }
         ```
         > Note: The visibility of the *Create Project in SAP Business ByDesign* button is dynamically controlled based on the value of the *createByDProjectEnabled* transient field, which is calculated in the after read-event of the entity *PoetrySlams*.    
 
 4. In the *srv* folder, edit language-dependent labels in the file [*/srv/i18n/i18n.properties*](../../../tree/main-multi-tenant/srv/i18n/i18n.properties). Add labels for project fields and the button to create projects:
     ```
-    projectSystemName       = Project System Name
-    
     # -------------------------------------------------------------------------------------
     # Transient Service Elements
 
-    projectSystemName       = Project System Name
+    projectSystemName       = System Name
     
     # -------------------------------------------------------------------------------------
     # Service Actions
 
     createByDProject        = Create Project in SAP Business ByDesign
+    removeProjectData       = Clear Project Data
 
     # -------------------------------------------------------------------------------------
     # Remote Project Elements

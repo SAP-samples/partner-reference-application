@@ -23,7 +23,7 @@ The Poetry Slam Manager has three entities: poetry slams, visitors and visits (b
     - As *project name*, enter `partner-reference-application`.
     - Select `Node.js` as your *runtime*.
     - As *productive runtime capabilities*, select *SAP HANA Cloud* and *User Authentication via XSUAA*.
-    - For the deployment, select *Clound Foundry: MTA Deployment*. As a result, support for multi-target applications (MTA) is added. 
+    - For the deployment, select *Cloud Foundry: MTA Deployment*. As a result, support for multi-target applications (MTA) is added. 
 
     As a result, a folder called `partner-reference-application` is created, which includes a set of files to start an SAP Cloud Application Programming Model project.
 
@@ -83,7 +83,7 @@ Copy the [initial data set](../../../tree/main-single-tenant/db/data/) into your
 
 ## Define Services
 
-After you've defined the domain model with its entities, define a set of [SAP Cloud Application Programming Model services](https://cap.cloud.sap/docs/guides/providing-services) to add business logic and external APIs to the application. All service definitions must be located in the */srv* folder. You can use subfolders to structure the different services according to their usage. 
+After you've defined the domain model with its entities, define a set of [SAP Cloud Application Programming Model services](https://cap.cloud.sap/docs/guides/providing-services) to add business logic and external APIs to the application. All service definitions must be in the */srv* folder. You can use subfolders to structure the different services according to their usage. 
 
 1. Create a folder *poetryslam* in the */srv* folder. The folder should contain all the files that are required for the Poetry Slam service.
 2. Copy the service definition from [*/srv/poetryslam/poetrySlamService.cds*](../../../tree/main-single-tenant/srv/poetryslam/poetrySlamService.cds) into your project.
@@ -97,7 +97,7 @@ To practice creating service entities, go to the [Defining Services tutorial](ht
 
 ## Create Business Logic
 
-To add behavior to the domain model, you can implement a set of exits in the form of event handlers. Create a file */srv/poetryslam/poetrySlamServiceImplementation.js* as referenced from the */srv/poetryslam/poetrySlamService.cds* definition as the main file of your service implementation. Within this file, you can implement all the required event handlers. For better readability, in the Partner Reference Application, the service implementation is split into several files; the main file and one file for each entity with business logic. 
+To add behavior to the domain model, you can implement a set of exits in the form of event handlers. Create a file */srv/poetryslam/poetrySlamServiceImplementation.js* as referenced from the */srv/poetryslam/poetrySlamService.cds* definition as the main file of your service implementation. Within this file, you can implement all the required event handlers. For better readability, in the Partner Reference Application, the service implementation is split into several files: the main file and one file for each entity with business logic. 
 
 Every entity defined in the domain model definition comes with a set of generic event handlers for CRUD (create, read, update, delete) operations. Additionally, you can register one event handler per action (for example, *cancel* or *publish*). Note that for draft-enabled entities, you need to decide if the logic is required for the draft, the activated entity, or for both. 
 
@@ -134,7 +134,7 @@ Find more details in the [SAP Cloud Application Programming Model documentation 
 
 ### Calculations and Enrichments
 Data can be calculated and enriched in the service. Poetry Slam Manager includes examples of different types of calculations: calculated elements, virtual elements, and calculations of stored and read-only attributes.
-- A [calculated element](https://cap.cloud.sap/docs/cds/cdl#calculated-elements) is calculated on the basis of other elements, for example, the *bookedSeats* of the PoetrySlam entity. It's not stored in the database, but calculated when requested from the user interface.
+- A [calculated element](https://cap.cloud.sap/docs/cds/cdl#calculated-elements) is calculated on the basis of other elements, for example, the *bookedSeats* of the PoetrySlam entity. It's not stored in the database but calculated when requested from the user interface.
 - An example of a calculation of a stored entity is the attribute *freeVisitorSeats*, which is calculated based on the visits that were created and booked.
 - A [virtual element](https://cap.cloud.sap/docs/cds/cdl#virtual-elements) is shown with the *statusCriticality* attribute, which is read-only and calculated after the read event of the PoetrySlam entity.
 
@@ -148,7 +148,7 @@ Data can be calculated and enriched in the service. Poetry Slam Manager includes
   ```
 
 ### Status Handling
-A status is defined as a codelist with code, text, and a description. The values of the codelist can be added by [providing initial data](https://cap.cloud.sap/docs/guides/databases#providing-initial-data). As a reference, you can use the [PoetrySlamStatusCodes](../../../tree/main-single-tenant/db/data).
+A status is defined as a code list with code, text, and a description. The values of the code list can be added by [providing initial data](https://cap.cloud.sap/docs/guides/databases#providing-initial-data). As a reference, you can use the [PoetrySlamStatusCodes](../../../tree/main-single-tenant/db/data).
 
 To initialize the status, set a default in the [entity definition](../../../tree/main-single-tenant/db/poetrySlamManagerModel.cds). The following example shows the entity *PoetrySlamStatusCodes*:
 
@@ -267,7 +267,7 @@ You can find further details in the [documentation on the sandbox environment fo
 
 > Note: The [*manifest.json*](../../../tree/main-single-tenant/app/poetryslams/webapp/manifest.json) defines which component is loaded initially by setting `initialLoad: true` as an option of the component.
 
-To load the sandbox and SAPUI5, you need to replace the SAPUI5 bootstraping script with a script to configure an SAPUI5 shell ([*setShellConfig.js*](../../../tree/main-single-tenant/app/poetryslams/webapp/util/setShellConfig.js)). Additionally, the shell needs to be rendered and placed on the HTML body as soon as the SAPUI5 core is initialized ([*setContent.js*](../../../tree/main-single-tenant/app/poetryslams/webapp/util/setContent.js)). Add both files to folder *app/poetryslams/webapp/util*. Using separate scripts allows you to avoid inline scripts in the Content Security Policy (see the corresponding paragraph in [Prepare Your Project Configuration for Cloud Foundry Deployments](./15a-Prepare-One-Off-Deployment.md#prepare-your-project-configuration-for-cloud-foundry-deployments)).
+To load the sandbox and SAPUI5, you need to replace the SAPUI5 bootstrapping script with a script to configure an SAPUI5 shell ([*setShellConfig.js*](../../../tree/main-single-tenant/app/poetryslams/webapp/util/setShellConfig.js)). Additionally, the shell needs to be rendered and placed on the HTML body as soon as the SAPUI5 core is initialized ([*setContent.js*](../../../tree/main-single-tenant/app/poetryslams/webapp/util/setContent.js)). Add both files to folder *app/poetryslams/webapp/util*. Using separate scripts allows you to avoid inline scripts in the Content Security Policy (see the corresponding paragraph in [Prepare Your Project Configuration for Cloud Foundry Deployments](./15a-Prepare-One-Off-Deployment.md#prepare-your-project-configuration-for-cloud-foundry-deployments)).
 
 Use the different scripts in the `<head>` section of the [`app/poetryslams/webapp/index.html`](../../../tree/main-single-tenant/app/poetryslams/webapp/index.html):
 
@@ -349,14 +349,14 @@ To implement a color-coding system for specific columns on the user interface, a
 - Entries in the i18n files to set the column headers
 - An entry in the [*annotations.cds*](../../../tree/main-single-tenant/app/poetryslams/annotations.cds) to use the field on the user interface
 
-The color values, as defined in the codes constants, are fixed values that the UI interpretes automatically.
+The color values, as defined in the codes constants, are fixed values that the UI interprets automatically.
 
 > Note: *statusCriticality* is modeled as a **[virtual element](https://cap.cloud.sap/docs/cds/cdl#virtual-elements)** and must be initialized in the application code. Otherwise, the READ request will be sent again and again until the application crashes.
 
 ### Draft Concept
-The SAP Cloud Application Programming Model / SAP Fiori elements stack supports a *Draft Concept* out of the box. This enables users to store inconsistent data without having to publish them to others users. 
+The SAP Cloud Application Programming Model / SAP Fiori elements stack supports a *Draft Concept* out of the box. This enables users to store inconsistent data without having to publish them to other users.
 
-You can find more details in the [SAP Cloud Application Programming Model documentation on draft support](https://cap.cloud.sap/docs/advanced/fiori#draft-support). In the Poetry Slams application, the used *Poetry Slams* Service has the entity *PoetrySlams* draft-enabled. In the *Visitors* service, which is used by the Visitors application, the *Visitors* entity is draft-enabled. 
+You can find more details in the [SAP Cloud Application Programming Model documentation on draft support](https://cap.cloud.sap/docs/advanced/fiori#draft-support). In the Poetry Slams application, the used *Poetry Slams* Service has the entity *PoetrySlams* draft-enabled. In the *Visitors* service, which is used by the Visitors application, the *Visitors* entity is draft-enabled.
 
 > Note: SAP Fiori elements v4 only supports editable object pages for draft-enabled entities. In case an entity is not draft-enabled in the used service, the user interface does not allow changes.
 
@@ -507,7 +507,7 @@ Last but not least, in the *.cdsrc.json*, define users and their roles for local
 In this section, you learn how to add a second application *Visitors* to the business solution and how to implement the navigation between the *Poetry Slams* and *Visitors* applications. 
 
 1. Add a `visitor` service by copying the service definition from [*srv/visitor/visitorService.cds*](../../../tree/main-single-tenant/srv/visitor/visitorService.cds) to a new folder `visitor` in the `srv`-folder of your project. 
-    > Note: The poetryslam service cannot be used for the *Visitors* application as the `visitor` entity is defined as a read-only Poetry Slams service, but it should be changable in the *Visitors* application. The recommendation is to define a unique service for each application.
+    > Note: The poetryslam service cannot be used for the *Visitors* application as the `visitor` entity is defined as a read-only Poetry Slams service, but it should be changeable in the *Visitors* application. The recommendation is to define a unique service for each application.
 
     > Note: The *Visitors* application does not have a Java Script implementation as no specific logic is added.
 
@@ -584,7 +584,7 @@ In this section, you learn how to add a second application *Visitors* to the bus
 
 ## Update Project Dependencies
 
-To keep the project up-to-date, update a few dependencies on a regular basis:
+To keep the project up to date, regularly update a few dependencies:
 
 - Node Modules:
   - package.json
@@ -599,7 +599,7 @@ To keep the project up-to-date, update a few dependencies on a regular basis:
   - corresponding files in the subfolders of app/visits/
   - [@sap/ux-specification](https://www.npmjs.com/package/@sap/ux-specification?activeTab=versions): Keep the node module in sync with the currently used SAPUI5 version. For more details on mapping between the node module version and the SAPUI5 version, see this [overview](https://www.npmjs.com/package/@sap/ux-specification?activeTab=versions).
 
-> Note: You can find information on the available SAPUI5 versions and their maintenance status in this [overview](https://sapui5.hana.ondemand.com/versionoverview.html). Especially note those version which are marked as *Long-term Maintenance*.
+> Note: You can find information on the available SAPUI5 versions and their maintenance status in this [overview](https://sapui5.hana.ondemand.com/versionoverview.html). Especially note the versions marked as *Long-term Maintenance*.
 
 ## Test the App
 

@@ -10,6 +10,14 @@ It consists of several parts:
 
 The next sections describe how the components are used and configured.
 
+To explore this feature with the Poetry Slam Manager, you have two options: 
+
+1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
+
+2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch where the feature is already included. 
+
+The following describes how to enhance the **main-multi-tenant** branch (option 1).
+
 ## Enabling Printing in the Poetry Slams Application
 
 1. As you will print the guest list which you created based on chapter [Manage Forms](./44a-Multi-Tenancy-Features-Forms.md) follow all enablement steps described there first. 
@@ -21,7 +29,7 @@ The next sections describe how the components are used and configured.
     2. Copy the downloaded openAPI definition file (*PRINTAPI.json*) to the folder *external_resources*.
 
     3. Add a `prebuild` script to your [*package.json*](../../../tree/main-multi-tenant-features/package.json). This will generate the access classes out of the uploaded definition whenever you run the `npm run build` command. If you need to execute several commands in the *prebuild* step, you can concatenate them with `&&`.
-        ```
+        ```json
         "prebuild": "npm ci && npx openapi-generator --input external_resources/PRINTAPI.json --outputDir srv/external -t --overwrite && npx openapi-generator --input external_resources/FORMSAPI.json --outputDir srv/external -t --overwrite",
         ```
 
@@ -35,7 +43,9 @@ The next sections describe how the components are used and configured.
 
     6. Add `@sap-cloud-sdk/openapi-generator` to the `devDependencies` of your *package.json* by running `npm add -D @sap-cloud-sdk/openapi-generator`.
 
-    7. Run `npm install` and `npm run prebuild` to generate the access classes.
+    7. Run the command `npm install` in your project root folder to install the required npm modules for the application. 
+
+    8. Run `npm run prebuild` to generate the access classes.
 
 3. Extend your service by an action `Print Guest List`.
 
@@ -113,12 +123,12 @@ The next sections describe how the components are used and configured.
         ```
 
     6. Use the implementation in [*srv/poetryslam/poetrySlamServiceImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js)
-        ```
+        ```js
         const outputHandler = require('./poetrySlamServiceOutputImplementation');
 
         module.exports = cds.service.impl(async (srv) => {
             ...
-            outputHandler(srv); // Forward handler for output
+            await outputHandler(srv); // Forward handler for output
             ...
         });
         ```
@@ -126,7 +136,7 @@ The next sections describe how the components are used and configured.
  4. Add the action to the user interface of your application.
 
     1. Add an action to the Poetry Slam Object page by annotating `Identification` of the `UI` of `service.PoetrySlams` in *annotations.cds*:
-        ```
+        ```cds
         // Print the guest list
         {
           $Type : 'UI.DataFieldForAction',

@@ -18,7 +18,7 @@ Buckle up and let us take you on a guided tour through the sample solution:
 
 3. In the Poetry Slams app, an empty list is shown.
 
-    > Note: You see a metadata-driven UI in line with SAP style guides. Using the UI theme manager, you can choose your favorite theme. Furthermore, you can customize the table layout and adapt the filter area according to your personal preferences. The *Export to Spreadsheet* function allows you to download the poetry slam data into a spreadsheet application. All of these capabilities are provided out of the box without any development efforts.
+    > Note: You see a metadata-driven UI in line with SAP style guides. Using the UI theme manager, you can choose your favorite theme. Furthermore, you can customize the table layout and adapt the filter area according to your personal preferences. The *Export to Spreadsheet* function allows you to download the poetry slam data into a spreadsheet application. All these capabilities are provided out of the box without any development efforts.
 
     <img src="./images/17_one_off_guided_tour_list.png" width="100%">
 

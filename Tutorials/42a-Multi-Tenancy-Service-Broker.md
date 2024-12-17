@@ -4,13 +4,13 @@ In the multi-tenant setup, the OData services that the UI is based on are not di
 
 > Note: Service broker is an implementation of the Open Service Broker API.
 
-To try this feature with Poetry Slam Manager, you have two options:
+To explore this feature with the Poetry Slam Manager, you have two options: 
 
-1. Clone the repository of the Partner Reference Application. Check out the *main-multi-tenant* branch and enhance the application step-by-step.
+1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
 
-2. Alternatively, check out the *main-multi-tenant-features* branch, where the feature is already included.
+2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch where the feature is already included. 
 
-The following section describes how to enhance the *main-multi-tenant* branch (option 1).
+The following describes how to enhance the **main-multi-tenant** branch (option 1).
 
 ## Optional: Add API-Specific Authorizations
 
@@ -26,7 +26,7 @@ If you want to have different access authorizations for APIs, such as full acces
 
 2. Add the scope to the authorization annotations in [*poetrySlamsServiceAuthorizations.cds*](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceAuthorizations.cds):
    1. Add the scope to the *requires* list of the service.
-      ```
+      ```cds
       annotate PoetrySlamService with @(requires: [
         'PoetrySlamFull', // Full authorization for managers
         'PoetrySlamRestricted', // Restricted access for visitors
@@ -34,7 +34,7 @@ If you want to have different access authorizations for APIs, such as full acces
       ]);
       ```
    2. Add the scope with the correct restriction to the entities *PoetrySlams*, *Visitors* and *Visits*.
-      ```
+      ```cds
       {
         // Read-only access
         grant: ['READ'],

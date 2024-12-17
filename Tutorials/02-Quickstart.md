@@ -1,6 +1,6 @@
 # Deploy and Run the Application Including All Features
 
-The tutorial was designed to make it possible for you to follow a step-by-step description of how to develop and deploy Poetry Slam Manager, first as a one-off solution. Later on, you enhance it to multitenancy with ERP integration and additional features.
+The tutorial was designed to make it possible for you to follow a step-by-step description of how to develop and deploy Poetry Slam Manager, first as a one-off solution. Later, you enhance it to multitenancy with ERP integration and additional features.
 
 If you prefer a quick start without further explanation, but with a deployment of the application with all features, follow these steps:
 

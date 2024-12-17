@@ -4,9 +4,11 @@ Put yourself in the shoes of an administrator of a poetry slam management applic
 
 Using the SAP Audit Log service of the SAP Cloud Application Programming Model, you ensure that your application is compliant to data privacy requirements. For more information, go to the [SAP Cloud Application Programming Model documentation on managing data privacy](https://cap.cloud.sap/docs/guides/data-privacy/).
 
-To try this feature with the Poetry Slam Manager, you have two options: 
+To explore this feature with the Poetry Slam Manager, you have two options: 
+
 1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step-by-step. 
-2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch, where the feature is already included. 
+
+2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch where the feature is already included. 
 
 The following section describes how to enhance the **main-multi-tenant** branch (option 1).
 
@@ -78,7 +80,7 @@ The following section describes how to enhance the **main-multi-tenant** branch 
     
      *SAP Audit Log Service* with the *premium* plan to write audit logs.
 
-2. Run the command `npm install` in your project root folder to install the audit log npm module. 
+2. Run the command `npm install` in your project root folder to install the required npm modules for the application. 
 
 3. Build and deploy the application. As a result, an SAP Audit Log service instance named *poetry-slams-auditlog* has been created.
     > Note: For detailed instructions on how to deploy, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
