@@ -10,8 +10,6 @@ const { httpCodes } = require('../../../srv/poetryslam/util/codes');
 // Defines required CDS functions for testing
 const { expect, GET, POST, axios, test } = cds.test(__dirname + '/../../..');
 
-const { httpCodes } = require('../../../srv/poetryslam/util/codes');
-
 // ----------------------------------------------------------------------------
 // Tests authorizations for authorized user without role assignment for application
 // Authorizations of PoetrySlamService with User Peter are tested in poetrySlamService.test.js
