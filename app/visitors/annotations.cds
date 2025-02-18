@@ -20,6 +20,12 @@ annotate service.Visitors with @(
         Value: name
       }
     },
+    Identification                : [{
+      $Type         : 'UI.DataFieldForIntentBasedNavigation',
+      SemanticObject: 'poetryslams',
+      Action        : 'display',
+      Label         : '{i18n>maintainPoetrySlams}'
+    }],
     FieldGroup #GeneralData       : {
       $Type: 'UI.FieldGroupType',
       Data : [
@@ -31,6 +37,11 @@ annotate service.Visitors with @(
           $Type                  : 'UI.DataField',
           Value                  : email,
           ![@Common.FieldControl]: #Mandatory,
+        },
+        {
+          $Type: 'UI.DataField',
+          Value: ID,
+          ![@UI.Hidden],
         },
       ],
     },

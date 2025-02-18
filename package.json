@@ -1,6 +1,6 @@
 {
   "name": "partner-reference-application",
-  "version": "2.0.4",
+  "version": "2.0.59",
   "description": "SAP Partner Reference Application Version 2.0",
   "repository": "github.com/sap-samples/partner-reference-application.git",
   "author": "SAP",
@@ -11,25 +11,28 @@
     "BusinessTechnologyPlatform"
   ],
   "dependencies": {
-    "@cap-js/hana": "^1.5.0",
-    "@sap-cloud-sdk/connectivity": "^3.24.0",
-    "@sap-cloud-sdk/http-client": "^3.24.0",
-    "@sap/cds": "^8.5.0",
+    "@cap-js/hana": "^1.6.1",
+    "@sap/cds": "^8.7.1",
     "@sap/cds-common-content": "^2.1.0",
-    "@sap/cds-mtxs": "^2.4.0",
-    "@sap/xssec": "^4.2.7",
-    "express": "^4.21.1",
+    "@sap/cds-mtxs": "^2.5.1",
+    "@sap/xssec": "^4.3.0",
+    "express": "^4.21.2",
     "rimraf": "^6.0.1"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^1.7.7",
-    "@sap/cds-dk": "^8.5.0",
-    "@sap/ux-specification": "^1.124.6",
-    "axios": "^1.7.8",
+    "@cap-js/sqlite": "^1.8.0",
+    "@sap/cds-dk": "^8.7.1",
+    "@sap/cds-lsp": "^8.5.1",
+    "@sap/ux-specification": "^1.124.9",
+    "axios": "^1.7.9",
     "chai": "^4.5.0",
     "chai-as-promised": "^7.1.2",
     "chai-subset": "^1.6.0",
-    "mocha": "^11.0.1",
+    "eslint": "^9.20.1",
+    "jest": "^29.7.0",
+    "mocha": "^11.1.0",
+    "pre-commit": "^1.2.2",
+    "prettier": "^3.5.1",
     "sinon": "^19.0.2"
   },
   "scripts": {
@@ -39,8 +42,18 @@
     "undeploy": "cf undeploy poetry-slams --delete-services --delete-service-keys --delete-service-brokers",
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
     "deploy": "cf deploy mta_archives/archive.mtar -f --retries 1",
-    "test": "mocha"
+    "test": "mocha",
+    "code-coverage": "./node_modules/.bin/jest --coverage",
+    "eslint": "eslint .",
+    "prettier": "prettier . --write",
+    "prettier-check": "prettier . --check",
+    "format-cds": "node_modules/.bin/format-cds -f"
   },
+  "pre-commit": [
+    "prettier",
+    "eslint",
+    "format-cds"
+  ],
   "cds": {
     "features": {
       "assert_integrity": "db"
@@ -62,106 +75,6 @@
       },
       "[production]": {
         "multitenancy": true
-      },
-      "byd_khproject": {
-        "kind": "odata-v2",
-        "model": "srv/external/byd_khproject",
-        "csrf": true,
-        "csrfInBatch": true,
-        "[development]": {
-          "credentials": {
-            "url": "https://{{ByD-hostname}}/sap/byd/odata/cust/v1/khproject/",
-            "authentication": "BasicAuthentication",
-            "username": "{{ByD-business-user}}",
-            "password": "{{password}}"
-          }
-        },
-        "[production]": {
-          "credentials": {
-            "destination": "byd",
-            "path": "/sap/byd/odata/cust/v1/khproject"
-          }
-        }
-      },
-      "S4HC_API_ENTERPRISE_PROJECT_SRV_0002": {
-        "kind": "odata-v2",
-        "model": "srv/external/S4HC_API_ENTERPRISE_PROJECT_SRV_0002",
-        "csrf": true,
-        "csrfInBatch": true,
-        "[development]": {
-          "credentials": {
-            "url": "https://{{S4HC-hostname}}/sap/opu/odata/sap/API_ENTERPRISE_PROJECT_SRV;v=0002",
-            "authentication": "BasicAuthentication",
-            "username": "{{test-user}}",
-            "password": "{{test-password}}"
-          }
-        },
-        "[production]": {
-          "credentials": {
-            "destination": "s4hc",
-            "path": "/sap/opu/odata/sap/API_ENTERPRISE_PROJECT_SRV;v=0002"
-          }
-        }
-      },
-      "S4HC_ENTPROJECTPROCESSINGSTATUS_0001": {
-        "kind": "odata",
-        "model": "srv/external/S4HC_ENTPROJECTPROCESSINGSTATUS_0001",
-        "csrf": true,
-        "csrfInBatch": true,
-        "[development]": {
-          "credentials": {
-            "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojprocessingstat/srvd_a2x/sap/entprojectprocessingstatus/0001",
-            "authentication": "BasicAuthentication",
-            "username": "{{test-user}}",
-            "password": "{{test-password}}"
-          }
-        },
-        "[production]": {
-          "credentials": {
-            "destination": "s4hc-tech-user",
-            "path": "/sap/opu/odata4/sap/api_entprojprocessingstat/srvd_a2x/sap/entprojectprocessingstatus/0001"
-          }
-        }
-      },
-      "S4HC_ENTPROJECTPROFILECODE_0001": {
-        "kind": "odata",
-        "model": "srv/external/S4HC_ENTPROJECTPROFILECODE_0001",
-        "csrf": true,
-        "csrfInBatch": true,
-        "[development]": {
-          "credentials": {
-            "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojectprofilecode/srvd_a2x/sap/entprojectprofilecode/0001",
-            "authentication": "BasicAuthentication",
-            "username": "{{test-user}}",
-            "password": "{{test-password}}"
-          }
-        },
-        "[production]": {
-          "credentials": {
-            "destination": "s4hc-tech-user",
-            "path": "/sap/opu/odata4/sap/api_entprojectprofilecode/srvd_a2x/sap/entprojectprofilecode/0001"
-          }
-        }
-      },
-      "b1_sbs_v2": {
-        "kind": "odata",
-        "model": "srv/external/b1_sbs_v2",
-        "csrf": true,
-        "csrfInBatch": true,
-        "[development]": {
-          "credentials": {
-            "url": "https://{{b1-hostname}}/b1s/v2",
-            "authentication": "BasicAuthentication",
-            "username": "{{test-user}}",
-            "password": "{{test-password}}"
-          }
-        },
-        "[production]": {
-          "credentials": {
-            "destination": "b1",
-            "path": "/b1s/v2"
-          }
-        }
       }
     },
     "hana": {
