@@ -1,4 +1,4 @@
-# Prerequisites and Purpose of SAP S/4HANA Cloud Integration
+# Learn More About the Prerequisites and the Purpose of SAP S/4HANA Cloud Integration
 
 ## Purpose
 In the last sections, you learned how to create the Poetry Slam Manager solution and how to enable it for multitenancy. In this section, Poetry Slam Manager is connected with the customer's SAP S/4HANA Cloud system to allow additional planning steps in a project.

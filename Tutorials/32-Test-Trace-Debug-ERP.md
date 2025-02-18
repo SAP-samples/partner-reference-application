@@ -4,7 +4,7 @@
 
 You can manually test the application from SAP Business Application Studio. 
 
-1. To edit the development credentials in the [*package.json*](../../../tree/main-multi-tenant/package.json) file, replace the placeholders such as `{{b1-hostname}}`, `{{test-user}}`, `{{test-password}}`, and so on with the information of your ERP test system:
+1. To edit the development credentials in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) file, replace the placeholders such as `{{b1-hostname}}`, `{{test-user}}`, `{{test-password}}`, and so on with the information of your ERP test system:
 
     ```json
     "cds": {
@@ -41,7 +41,7 @@ There are some points to consider in regards of the connection to the ERP system
 ### Create Action
 The *Create Project* buttons are dependent on the setup of the destinations. Once the destinations are correctly configured and the application is deployed to SAP BTP Cloud Foundry runtime, the button to create projects will be active. 
 
-To test this button locally, edit a specific connector, for example, for SAP Business ByDesign [*connectorS4HC.js*](../../../tree/main-multi-tenant/srv/poetryslam/connector/connectorS4HC.js). In method _createConnectorInstance_, change the value of **connector.isConnectedIndicator** to **true** after the connector instance is created:
+To test this button locally, edit a specific connector, for example, for SAP Business ByDesign [*connectorS4HC.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connectorS4HC.js). In method _createConnectorInstance_, change the value of **connector.isConnectedIndicator** to **true** after the connector instance is created:
 
 ```javascript
 const connector = new ConnectorS4HC(data);
@@ -59,9 +59,9 @@ connector.isConnectedIndicator = true;
 ### Object Creation
 In case, the project or purchase order cannot be created in the ERP system, check the hard-coded business data in the connector classes with the configuration in the connected customer system. Therefore, search for the block comment *needs to be adopted* in the corresponding connector class.
 
-- [*/srv/poetryslam/connector/connectorS4HC.js*](../../../tree/main-multi-tenant/srv/poetryslam/connector/connectorS4HC.js)
-- [*/srv/poetryslam/connector/connectorB1.js*](../../../tree/main-multi-tenant/srv/poetryslam/connector/connectorB1.js)
-- [*/srv/poetryslam/connector/connectorByD.js*](../../../tree/main-multi-tenant/srv/poetryslam/connector/connectorByD.js)
+- [*/srv/poetryslam/connector/connectorS4HC.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connectorS4HC.js)
+- [*/srv/poetryslam/connector/connectorB1.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connectorB1.js)
+- [*/srv/poetryslam/connector/connectorByD.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connectorByD.js)
 
 
 # Additional Information

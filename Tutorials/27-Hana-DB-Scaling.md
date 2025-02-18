@@ -1,4 +1,4 @@
-# Estimating the Required Size of the SAP HANA Cloud Database
+# Estimate the Required Size of the SAP HANA Cloud Database
 
 The required size of the SAP HANA Cloud Database depends on the design and expected data volume for the entities of your data model. To estimate the size, you can start with a sample data set, determine the consumed size for this sample set and scale by the volume expected for productive usage.
 
@@ -35,7 +35,7 @@ If you want to get the schema used for a consumer subaccount, follow the steps b
 
 ### Accessing the SQL Console 
 
-The SAP Help Portal articles [Open SAP HANA Cloud Central](https://help.sap.com/docs/hana-cloud/683a53aec4fc408783bbb2dd8e47afeb/98793b872315442c906080aebcf0bb44.html) and [Open the SQL Console in SAP HANA Cloud Central](https://help.sap.com/docs/hana-cloud/683a53aec4fc408783bbb2dd8e47afeb/a2b15cf9fbe24ef8a90ffb76cd0eaa5d.html) describe how to access the *SQL console*. To log on, use the database user and the password you defined during [*Create an SAP HANA Cloud Database*](./12-Prepare-Deployment.md#create-an-sap-hana-cloud-database). This logon allows you to select data from all schemas.
+The SAP Help Portal articles [Open SAP HANA Cloud Central](https://help.sap.com/docs/hana-cloud/683a53aec4fc408783bbb2dd8e47afeb/98793b872315442c906080aebcf0bb44.html) and [Open the SQL Console in SAP HANA Cloud Central](https://help.sap.com/docs/hana-cloud/683a53aec4fc408783bbb2dd8e47afeb/a2b15cf9fbe24ef8a90ffb76cd0eaa5d.html) describe how to access the *SQL console*. To log on, use the database user and the password you defined during [*Create an SAP HANA Cloud Database*](./22-Multi-Tenancy-Prepare-Deployment.md#create-an-sap-hana-cloud-database). This logon allows you to select data from all schemas.
 
 It is also possible to get access credentials for a single subscriber instance (that is, a specific database schema). To get these credentials, go to the BTP cockpit of the provider subaccount.
 

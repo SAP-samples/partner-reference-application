@@ -1,6 +1,6 @@
-# Enhance the Core Application for Multitenancy
+# Enhance the Core Application for Deployment
 
-With this tutorial, you learn how to create a multi-tenant application based on the core application as described in the first tutorials for a one-off solution. You can either enhance the one-off solution to a multi-tenant solution following the step-by-step guide below or you can fast-forward and deploy the *main-multi-tenant* branch.   
+With this tutorial, you learn how to enhance the core application as described in the first tutorials for deployment. You can either enhance the core application to a deployable multi-tenant solution following the step-by-step guide below or you can fast-forward and deploy the *main-multi-tenant* branch.   
 
 ## Option 1: Fast-Forward 
 If you want to start right away with a working multi-tenant implementation, clone the branch [*main-multi-tenant*](../../../tree/main-multi-tenant) and start deploying it. 
@@ -15,184 +15,286 @@ To fast-forward:
 
 ## Option 2: Develop the Multi-Tenant Application
 
-In this approach, you keep the core of your single-tenant application (as contained in the branch [*main-single-tenant*](../../../tree/main-single-tenant)) and add changes to enable deployment as a multi-tenant application (as contained in the branch [*main-multi-tenant*](../../../tree/main-multi-tenant)). You can easily compare both branches using [GitHub comparison](https://github.tools.sap/erp4sme/partner-reference-application/compare/main-single-tenant..main-multi-tenant). 
+In this approach, you use the core application as developed in the previous parts of this tutorial and add changes to enable deployment as a multi-tenant application (as contained in the branch [*main-multi-tenant*](../../../tree/main-multi-tenant)). 
 
-> Note: The comparison contains both the multi-tenant enablement and the enhancement for the integration with different ERP back ends.
-
-Therefore, clone the Partner Reference Application and switch to the branch *main-single-tenant* in the SAP Business Application Studio of your development account. 
+Therefore, open the Partner Reference Application you developed before in the SAP Business Application Studio of your development account. 
 
 Follow the steps described in this section to enhance your application. Additionally, find detailed information in
 - the [CAP Multitenancy Documentation](https://cap.cloud.sap/docs/guides/multitenancy/)
 - the [SAP BTP Implemented Application Router Documentation](https://help.sap.com/docs/btp/sap-business-technology-platform/application-router).
 
-### Add the Multitenancy and App Router Features 
-In your terminal in SAP Business Application Studio, use the `cds add <feature>` command to add multitenancy and the app router.
-```console
-cds add multitenancy,approuter --for production
-```
+### Prepare Your Project Configuration for Cloud Foundry Deployments
 
-This creates the following:
- - *mtx* folder with subfolder *sidecar*, containing a [*package.json*](../../../tree/main-multi-tenant/mtx/sidecar/package.json).
- - *router* folder within the preexisting *app* folder.
- - [*package.json*](../../../tree/main-multi-tenant/app/router/package.json) within the newly created *router* folder.
-   > Note: You can remove the field „engines“ from the originally created file. It sets the node version which is not required since the available node version during runtime is defined by SAP Cloud Foundry and updated automatically on a regular basis.
- - [*xs-app.json*](../../../tree/main-multi-tenant/app/router/xs-app.json) within the newly created *router* folder.
+Make some adjustments to ensure that the application can be deployed to SAP BTP Cloud Foundry runtime as a central launchpad component.
 
-It also makes adjustments to the following:
-  - In the root [*mta.yaml*](../../../tree/main-multi-tenant/mta.yaml) file, several changes are made related to the new modules and resources.
-  - In the root [*package.json*](../../../tree/main-multi-tenant/package.json) file, changes are made related to the addition of the multitenancy feature.
- 
+1. Adopt the [*./app/poetryslams/webapp/manifest.json*](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json).
+  
+    1. Ensure that the service name is defined in the web app configuration file [*./app/poetryslams/webapp/manifest.json*](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json). 
+
+        > Note: This service name must be unique within your account and will appear in the runtime URL of the application.
+
+        ```json
+        "sap.cloud": {
+          "service": "poetryslammanager",
+          "public": true
+        }
+        ```
+
+    2. In the *dataSources* section, adopt the `uri` by removing the `/` before `odata`. The URI of the data sources is changed now to a relative path.
+
+        ```json
+        "dataSources": {
+          "mainService": {
+            "uri": "odata/v4/poetryslamservice/",
+            "type": "OData",
+            "settings": {
+              "annotations": [],
+              "odataVersion": "4.0"
+            }
+          }
+        }
+        ```
+
+2. Do the same for the [*./app/visitors/webapp/manifest.json*](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json) of the *Visitors* application accordingly.
+
+### Adjust the Multitenancy and App Router Features 
+When creating the CAP project using the wizard in the tutorial [Develop the Core of the SAP BTP Application](14-Develop-Core-Application.md), several files were created that include the configuration for modules and resources required for multi-tenancy:
+
+- The folder [*app/router*](../../../tree/main-multi-tenant/app/router) containing an implemented approuter (also called standalone approuter).
+- The file [*mtx/sidecar/package.json*](../../../tree/main-multi-tenant/mtx/sidecar/package.json) providing a module to handle [multitenancy, feature toggles and extensibility](https://cap.cloud.sap/docs/guides/multitenancy/mtxs).
+- The file [*mta.yaml*](../../../tree/main-multi-tenant/mta.yaml) in the root folder, containing required modules and resources.
+- The [*package.json*](../../../tree/main-multi-tenant/package.json) file in the root folder.
+
 Now, follow the next steps to make further required changes: 
- 1. Go to the root [*mta.yaml*](../../../tree/main-multi-tenant/mta.yaml) file.
+1. Go to the [*mta.yaml*](../../../tree/main-multi-tenant/mta.yaml) file in the root folder. Note that a correct indentation is important in this file.
 
-    1. As a prerequisite, find the string `partner-reference-application` and replace it with `poetry-slams`. This makes the names of the created service instances more consistent.
+    1. Replace all occurrences of the string `partner-reference-application` with `poetry-slams`. This makes the names of the created service instances more consistent. You can also create a meaningful description.
 
-    2. Remove the module `poetry-slams-destination-content` as it is no longer required with the implemented app router.
+    2. Enhance the build parameters to install the node modules with the CDS development kit and copy the common data model json which is required for SAP Build Work Zone before the build.
+        ```yml
+        build-parameters:
+          before-all:
+            #  Defines the build parameter
+            - builder: custom
+              commands:
+                - npm ci --omit=dev
+                # [Workzone] Create resources folder and copy cdm.json
+                - mkdir -p resources
+                - cp workzone/cdm.json resources/cdm.json
+                - npx -p @sap/cds-dk cds build --production
+        ```
 
-    3. Go to the `poetry-slams-mtx` module.
-        1. Change the `SUBSCRIPTION_URL` delimiter from (-) to (.), which allows you to use generic routes for all tenants:
+    3. Add and configure the destination content module. This is where you define destinations and service keys for the destinations that are automatically created in the provider subaccount. 
 
-            ```yaml
+        > Note that the subpath *poetryslammanager* in the attribute `URL` of the destination `poetry-slams-cdm` below must match the value in the field `service` of the object `sap.cloud` defined in the files [*./app/poetryslams/webapp/manifest.json*](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json) [*./app/visitors/webapp/manifest.json*](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json).
+
+        ```yml
+        modules:
+          # Destinations
+          # Creates destination in subaccount of type OAuth2ClientCredentials to access HTML5 repo
+          - name: poetry-slams-destinations-content
+            type: com.sap.application.content
             requires:
+              - name: poetry-slams-html5-runtime
+                parameters:
+                  service-key:
+                    name: poetry-slams-html5-runtime-key
+              - name: poetry-slams-destination
+                parameters:
+                  content-target: true
+            build-parameters:
+              no-source: true
+            parameters:
+              content:
+                subaccount:
+                  existing_destinations_policy: update
+                  destinations:
+                    - Name: poetry-slams-cdm
+                      Description: Destination for the workzone configuration of solution poetryslammanager
+                      ServiceInstanceName: poetry-slams-html5-runtime
+                      ServiceKeyName: poetry-slams-html5-runtime-key
+                      URL: https://html5-apps-repo-rt.${default-domain}/applications/cdm/poetryslammanager # Adds workzone configuration of solution poetryslammanager
+        ```
+
+    4. Go to the `poetry-slams-srv` module.
+        1. Replace the `builder` module *npm* with *npm-ci*.
+        2. Replace the name `srv-api` in "`provides`" with `poetry-slams-srv-api`.
+
+    5. Replace the `poetry-slams-app-deployer` module with the following content:
+     
+        ```yaml
+          # App UI content deployer module
+          # Uploads the static content of the HTML5 application and deploys it to the HTML5 repository
+          - name: poetry-slams-app-content
+            type: com.sap.application.content
+            path: .
+            requires:
+              - name: poetry-slams-srv-api
+              - name: poetry-slams-auth
+              - name: poetry-slams-html5-repo-host
+                parameters:
+                  content-target: true
+            parameters:
+              config:
+                destinations:
+                  - forwardAuthToken: true
+                    name: poetry-slams-srv-api
+                    url: ~{poetry-slams-srv-api/srv-url}
+            build-parameters:
+              build-result: resources
+              requires:
+                - artifacts:
+                    - poetryslams.zip
+                  name: poetryslams
+                  target-path: resources/
+                - artifacts:
+                    - visitors.zip
+                  name: visitors
+                  target-path: resources/
+        ```
+
+    6. Go to the `poetry-slams-mtx` module and replace the list with the required services by the following services. This does two things: It enables the mtx module to handle the subscription of the required services and changes the `SUBSCRIPTION_URL` delimiter from (-) to (.), which allows you to use generic routes for all tenants.
+
+        ```yaml
+            requires:
+              - name: poetry-slams-db
+              - name: poetry-slams-auth
+              - name: poetry-slams-registry
+              - name: poetry-slams-destination
+              - name: poetry-slams-html5-repo-host
               - name: app-api
                 properties:
                   SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}.~{app-uri}
-            ```
-            
-         2. Add `poetry-slams-auth`, `poetry-slams-html5-runtime`, `poetry-slams-registry` and `poetry-slams-destination-service` to the list of required services:
-            
-            ```yaml
-            requires:
-              - name: poetry-slams-auth
-              - name: poetry-slams-html5-runtime
-              - name: poetry-slams-registry
-              - name: poetry-slams-destination-service
-            ```
+        ```
 
-    4. Go to the `poetry-slams` module (app router).
+    7. Go to the `poetry-slams` module (app router).
 
         1. Add a route to support the generic tenant routing (with (.) delimiter):
 
             ```yaml
-            parameters:
-              keep-existing-routes: true
-              routes:
-                - route: '*.${default-uri}'
+                parameters:
+                  keep-existing-routes: true
+                  routes:
+                    - route: '*.${default-uri}' # generic route for all subscriptions
             ```
 
-        2. Adopt the `TENANT_HOST_PATTERN` to fit the (.) delimiter and add properties for Content-Security-Policy and Cross-Origin Resource Sharing (CORS):
+        2. Adjust the properties to adopt the `TENANT_HOST_PATTERN` to fit the (.) delimiter and add properties for Content-Security-Policy and Cross-Origin Resource Sharing (CORS):
 
             ```yaml
-            properties:
-              TENANT_HOST_PATTERN: "^(.*).${default-uri}"
-              # prettier-ignore 
-              httpHeaders: "[{ \"Content-Security-Policy\": \"default-src 'self' https://sapui5.hana.ondemand.com; frame-ancestors 'self' https://*.hana.ondemand.com; object-src 'none';\"}]"
-              CORS:
-                - uriPattern: .*
-                  allowedOrigin:
-                    - host: '*.${default-uri}'
-                      protocol: 'https'
-            ```
-        3. Add `poetry-slams-auth`, `poetry-slams-html5-runtime`, and `poetry-slams-destination-service` to the list of required services:
-            ```yaml
-            requires:
-              - name: poetry-slams-auth
-              - name: poetry-slams-html5-runtime
-              - name: poetry-slams-destination-service
-            ```
-        4. Add `redirect-uris` to the properties of the provided function `app-api`:
-            ```yaml
-            provides:
-              - name: app-api
                 properties:
-                  app-protocol: ${protocol}
-                  app-uri: ${default-uri}
-                  redirect-uris: ${protocol}://*.${default-uri}/** # Redirect URI to connect modules running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
+                  TENANT_HOST_PATTERN: '^(.*).${default-uri}'
+                  # prettier-ignore
+                  httpHeaders: "[{ \"Content-Security-Policy\": \"default-src 'self' https://sapui5.hana.ondemand.com; frame-ancestors 'self' https://*.hana.ondemand.com; object-src 'none';\"}]"
+                  CORS:
+                    - uriPattern: .*
+                      allowedOrigin:
+                        - host: '*.${default-uri}'
+                          protocol: 'https'
             ```
 
-    5. In the `poetry-slams-destination-service` resource, remove all the settings that are handled by the application router in the multi-tenant application. These were only needed for the single-tenant implementation with a managed application router using SAP Build Work Zone. Therefore, replace the service with the following definition. 
-          ```yaml
-          - name: poetry-slams-destination-service
+        3. Replace `srv-api` in the "`requires`" section with `poetry-slams-srv-api` (2 occurrences).
+
+            > Note: This name must be identical to the destination name defined in the [*./app/poetryslams/xs-app.json*](../../../tree/main-multi-tenant/app/poetryslams/xs-app.json).  
+
+        4. Add `redirect-uris` to the properties of the provided function `app-api`:
+
+            ```yaml
+                provides:
+                  - name: app-api
+                    properties:
+                      app-protocol: ${protocol}
+                      app-uri: ${default-uri}
+                      redirect-uris: ${protocol}://*.${default-uri}/** # Redirect URI to connect modules running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
+            ```
+
+    8. Adjust the destination service resource (*poetry-slams-destination*). This includes the *poetry-slams-srv-api* as defined in the *destination* for the route as defined in the web application configuration files [*./app/poetryslams/xs-app.json*](../../../tree/main-multi-tenant/app/poetryslams/xs-app.json) and [*./app/visitors/xs-app.json*](../../../tree/main-multi-tenant/app/visitors/xs-app.json) in the `requires` section.
+
+        > Note: There will be two destinations created that are required for the SAP Build Work Zone integration: the runtime destination of the launchpad and the destination to access the poetry slams service module.
+
+        ```yml
+        resources:
+          # Destination service
+          # Offers a predefined configuration that simplifies connecting to the service
+          - name: poetry-slams-destination
             type: org.cloudfoundry.managed-service
+            requires:
+              - name: poetry-slams-srv-api
+              - name: poetry-slams-auth
             parameters:
               service: destination
               service-plan: lite
-          ```
-
-    6. Go to the `poetry-slams-auth` resource.
-        1. add `app-api` to the `requires` list:
-            ```yaml
-            requires:
-              - name: app-api
-            ```
-        2. As `xsappname` needs to correspond to the config of the `poetry-slams-registry` resource, change this value to `poetry-slams-${org}-${space}`. Also, change the `tenant-mode` from `dedicated`to `shared`. In addition, the `oauth2` configuration needs to support requests from other Cloud Foundry landscapes (for example, `eu10` and `eu10-004`):
-            ```yaml
-            parameters:
               config:
-                xsappname: poetry-slams-${org}-${space}
-                tenant-mode: shared
-                oauth2-configuration:
-                  redirect-uris:
-                    - ~{app-api/redirect-uris} # Redirect to connect modules running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
-            ```
-        3. Ensure that the `service-plan` parameter is `broker` so that you can use features of the broker plan for later tutorials:
-            ```yaml
-            parameters:
-              service-plan: broker
-            ```
-
-    7. Go to the `poetry-slams-registry` resource.
-        1. Change the `displayName`, `description`, and `category` configurations. These are used by subscriber subaccounts to find the application:
-           
-           ```yaml
-           parameters:
-             config:
-               displayName: Poetry Slam Manager
-               description: Manage poetry slam events and bookings of artists and visitors.
-               category: 'Applications / Multi-Customer Partner Solutions'
-            ```
-
-    8. Add the resource `poetry-slams-html5-runtime` of the service `html5-apps-repo` to the *mta.yaml* file to replace SAP Build Work Zone and add the following to the `resources` section:
-        
-        ```yaml
-        -  name: poetry-slams-html5-runtime
-           type: org.cloudfoundry.managed-service
-           parameters:
-             service: html5-apps-repo
-             service-plan: app-runtime
+                init_data:
+                  subaccount:
+                    existing_destinations_policy: update
+                    destinations:
+                      - Name: poetry-slams-rt
+                        Description: Runtime destination of the launchpad, required for workzone
+                        Authentication: NoAuthentication
+                        ProxyType: Internet
+                        Type: HTTP
+                        URL: https://${org}.launchpad.${default-domain} # Runtime destination of launchpad, required for workzone
+                        CEP.HTML5contentprovider: true
+                      - Name: poetry-slams-srv-api
+                        Description: Destination to access the poetry slams service module, required for workzone
+                        Authentication: NoAuthentication
+                        ProxyType: Internet
+                        Type: HTTP
+                        URL: https://${org}-${space}-poetry-slams-srv.${default-domain} # Destination to access the poetry slams service module, required for workzone
+                        HTML5.DynamicDestination: true
+                        HTML5.ForwardAuthToken: true
+                HTML5Runtime_enabled: false
         ```
 
-  2. Go to the app router config file, which is located in the *app/router* folder ([*xs-app.json*](../../../tree/main-multi-tenant/app/router/xs-app.json)) and route the app router to the `poetryslams` application as the default. This will forward requests to the app router directly to the *Poetry Slams* application. Ensure that the file is as follows:
+    9. Go to the `poetry-slams-auth` resource. 
+
+        1. Change the service plan from `application` to `broker`. This will give you more flexibility when extending the application functionality later.
+
+            ```yaml
+                parameters:
+                  service-plan: broker
+            ```
+      
+        2. Add `app-api` to the `requires` list:
+            ```yaml
+                requires:
+                  - name: app-api
+            ```
+
+        3. In case the approuter and the authorization service are running in different Cloud Foundry landscapes (for example, `eu10` and `eu10-004`), the `oauth2` configuration needs to support this:
+            ```yaml
+                parameters:
+                  config:
+                    oauth2-configuration:
+                      redirect-uris:
+                        - ~{app-api/redirect-uris} # Redirect for approuter, required if xsuaa and approuter are running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
+            ```            
+
+    10. Go to the `poetry-slams-registry` resource and change the `displayName`, `description`, and `category` configurations. These are used by subscriber subaccounts to find the application:
+        ```yaml
+            parameters:
+              config:
+                displayName: Poetry Slam Manager
+                description: Manage poetry slam events and bookings of artists and visitors.
+                category: 'Applications / Multi-Customer Partner Solutions'
+        ```
+
+    11. After you've applied the changes described above in the file *mta.yml*, this is what the file will look like: [the MTA file of the sample application](../../../tree/main-multi-tenant/mta.yaml).
+        > Note: There can be differences in comments or the sequence of entries. However, be aware that a correct indentation is required.
+
+2. In the folder [*app/router*](../../../tree/main-multi-tenant/app/router):
+    1. File [*package.json*](../../../tree/main-multi-tenant/app/router/package.json): You can remove the 'engines' field from the originally created file. It sets the node version that is not required since the available node version during runtime is defined by SAP Cloud Foundry and updated automatically on a regular basis.
+    2. *default-env.json*: You can delete this file. It is intended for local testing but not required. It is ignored by the *.gitignore* file of this repository anyway.
+    3. Go to the app router config file located in the *app/router* folder ([*xs-app.json*](../../../tree/main-multi-tenant/app/router/xs-app.json)). Ensure that the file is as follows:
 
         ```json
         {
           "welcomeFile": "poetryslams/",
           "routes": [
             {
-              "source": "^(.*)$",
-              "target": "$1",
-              "service": "html5-apps-repo-rt",
-              "authenticationType": "xsuaa"
-            }
-          ]
-        }
-        ```
-
-  3. In the *Poetry Slams* application routing config file, which is located in the *app/poetryslams* folder ([xs-app.json](../../../tree/main-multi-tenant/app/poetryslams/xs-app.json)), route the default path to the `index.html` file and offer a path to the OData service. 
-  Ensure that the application [*xs-app.json*](../../../tree/main-multi-tenant/app/poetryslams/xs-app.json) config file is as follows: 
-
-        ```json
-        {
-          "welcomeFile": "/index.html",
-          "authenticationMethod": "route",
-
-          "routes": [
-            {
-              "source": "^/odata/v4/poetryslamservice/(.*)$",
-              "target": "/odata/v4/poetryslamservice/$1",
-              "destination": "srv-api",
-              "authenticationType": "xsuaa",
-              "csrfProtection": true
+              "source": "^/-/cds/.*",
+              "destination": "mtx-api",
+              "authenticationType": "none"
             },
             {
               "source": "^(.*)$",
@@ -204,93 +306,93 @@ Now, follow the next steps to make further required changes:
         }
         ```
 
-  4. Go to the *index.html* file located in the */app/poetryslams/webapp/* folder. In the project, an implemented app router is used to serve the web page now instead of the managed app router provided by the SAP Build Work Zone, so the file needs to be reverted back to the originally generated HTML file. Also, the style information is put into a separate file ([*initAppStyle.css*](../../../tree/main-multi-tenant/app/poetryslams/webapp/util/initAppStyle.css)) to avoid inline style definitions. 
+3. In the *Poetry Slams* application routing config file that is located in the *app/poetryslams* folder ([xs-app.json](../../../tree/main-multi-tenant/app/poetryslams/xs-app.json)), route the default path to the `index.html` file and offer a path to the OData service. Remove the routes that are not required. You defined the destination *poetry-slams-srv-api* before as part of the project configuration *mta.yml* file. Ensure that the application [*xs-app.json*](../../../tree/main-multi-tenant/app/poetryslams/xs-app.json) config file is as follows: 
 
-      1. Copy the file [*initAppStyle.css*](../../../tree/main-multi-tenant/app/poetryslams/webapp/util/initAppStyle.css) into the folder */app/poetryslams/webapp/util/* of your project.
-      2. Delete the files *setContent.js* and *setShellConfig.js* in the folder */app/poetryslams/webapp/util/*. They were only needed in the one-off deployment with SAP Build Work Zone.
-      3. Ensure that your [*index.html*](../../../tree/main-multi-tenant/app/poetryslams/webapp/index.html) is as follows:
+    ```json
+    {
+      "welcomeFile": "/index.html",
+      "authenticationMethod": "route",
+      "routes": [
+        {
+          "source": "^/odata/v4/poetryslamservice/(.*)$",
+          "target": "/odata/v4/poetryslamservice/$1",
+          "destination": "poetry-slams-srv-api",
+          "authenticationType": "xsuaa",
+          "csrfProtection": true
+        },
+        {
+          "source": "^(.*)$",
+          "target": "$1",
+          "service": "html5-apps-repo-rt",
+          "authenticationType": "xsuaa"
+        }
+      ]
+    }
+    ```
 
-          ```html
-          <!doctype html>
-          <html>
-            <head>
-              <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-              <meta charset="UTF-8" />
-              <meta name="viewport" content="E=edge" />
-              <title>Poetry Slam Manager</title>
-              <link type="text/css" rel="stylesheet" href="util/initAppStyle.css" />
+    > Note: The order of routes is crucial as the most specific one must come first.
 
-              <!-- Replacement for Launchpad sandbox; load UI5 library -->
-              <script
-                id="sap-ui-bootstrap"
-                src="https://sapui5.hana.ondemand.com/1.120.20/resources/sap-ui-core.js"
-                data-sap-ui-libs="sap.uxap"
-                data-sap-ui-theme="sap_horizon"
-                data-sap-ui-resourceroots='{
-                  "poetryslams": "./"
-                }'
-                data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
-                data-sap-ui-compatVersion="edge"
-                data-sap-ui-async="true"
-              ></script>
-            </head>
-            <body class="sapUiBody sapUiSizeCompact" id="content">
-              <!-- Render the app UI -->
-              <div
-                data-sap-ui-component
-                data-name="poetryslams"
-                data-id="container"
-                data-settings='{"id" : "poetryslams"}'
-                data-handle-validation="true"
-              ></div>
-            </body>
-          </html>
-          ```
+4. In this project, the implemented approuter uses the [*index.html*](../../../tree/main-multi-tenant/app/poetryslams/webapp/index.html) file located in the */app/poetryslams/webapp/* folder to serve the web page. Copy the files [*initAppStyle.css*](../../../tree/main-multi-tenant/app/poetryslams/webapp/util/initAppStyle.css) and [*index.html*](../../../tree/main-multi-tenant/app/poetryslams/webapp/index.html) into the folder */app/poetryslams/webapp/util/* of your project to avoid inline style definitions and content security policy violations: 
 
-  5. Repeat steps 3 and 4 for the *Visitors* application.
+5. Repeat steps 3 and 4 for the *Visitors* application (see [*index.html*](../../../tree/main-multi-tenant/app/visitors/webapp/index.html), [*initAppStyle.css*](../../../tree/main-multi-tenant/app/visitors/webapp/util/initAppStyle.css) and [*xs-app.json*](../../../tree/main-multi-tenant/app/visitors/xs-app.json)).
 
-  6. In the root [*package.json*](../../../tree/main-multi-tenant/package.json): With the multitenancy feature, the predefined *with-mtx-sidecar* profile is added automatically. Unit tests that are dependent on the in-memory SQLite database for development testing are affected by this profile. Add the following section to the [*package.json*](../../../tree/main-multi-tenant/package.json) to ensure that Mocha testing works:
+6. Ensure that the scope `mtcallback` is available in the [*xs-security.json*](../../../tree/main-multi-tenant/xs-security.json). Check the documentation for more details: [XSUAA](https://cap.cloud.sap/docs/java/multitenancy-classic#xsuaa-mt-configuration).:
 
-        ```json
-        "cds": {
-          "requires": {
-            "[development]":{
-              "db":{
-                "kind":"sqlite",
-                "credentials" : {"url" : ":memory:"}
-              }
+    ```json
+      "scopes": [
+        {
+          "name": "$XSAPPNAME.mtcallback",
+          "description": "Subscription via SaaS Registry",
+          "grant-as-authority-to-apps": [
+            "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
+          ]
+        }
+      ]
+    ```
+        
+7. Adjust the [*package.json*](../../../tree/main-multi-tenant/package.json) in the *root* folder.
+
+    1. Ensure that the profile *mtx-sidecar* is available. For more information, check the documentation: [SaaS Registry Dependencies](https://cap.cloud.sap/docs/guides/multitenancy/#saas-registry-dependencies):
+
+      ```json
+      "cds": {
+        "profile": "mtx-sidecar"
+      }
+      ```
+
+    2. Additionally, rename `partner-reference-application` in the *undeploy* step to `poetry-slams`.
+
+8. Adjust the [*package.json*](../../../tree/main-multi-tenant/mtx/sidecar/package.json) of the mtx module by adding the required services:
+
+    ```json
+      "cds": {
+        "profile": "mtx-sidecar",
+        "requires": {
+          "auth": "xsuaa",
+          "destinations": true,
+          "html5-host": {
+            "vcap": {
+              "label": "html5-apps-repo",
+              "plan": "app-host"
+            },
+            "subscriptionDependency": {
+              "uaa": "xsappname"
             }
           }
         }
-        ```
+      }
+    ```
 
-  7. In the [*xs-security.json*](../../../tree/main-multi-tenant/xs-security.json), add the scope `mtcallback` to [*xs-security.json*](../../../tree/main-multi-tenant/xs-security.json):
+### Adopt NPM Modules
+The CDS libraries are offered as npm modules in the *package.json*. After the creation of the SAP Cloud Application Programming Model (CAP) project using the wizard, the npm *rimraf* module is added to the [*./package.json*](../../../tree/main-multi-tenant/package.json) as a development dependency. Move this module to the *dependencies* section. This facilitates the handling of the command `npm run build`.
 
-        ```json
-        "scopes": [
-          {
-            "name": "$XSAPPNAME.mtcallback",
-            "description": "Subscription via SaaS Registry",
-            "grant-as-authority-to-apps": [
-              "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
-            ]
-          }
-        ]
-        ```
-        > Documentation: [XSUAA](https://cap.cloud.sap/docs/java/multitenancy-classic#xsuaa-mt-configuration)
+### Enhance the Application with the Common Data Model for SAP Build Work Zone
+SAP Build Work Zone is used as a central launchpad for the Partner Reference Application. To be content provider for [SAP Build Work Zone](https://help.sap.com/docs/build-work-zone-advanced-edition/sap-build-work-zone-advanced-edition/integrating-business-content), a [common data model (CDM)](https://help.sap.com/docs/cloud-portal-service/sap-cloud-portal-service-on-cloud-foundry/creating-cdm-json-file-for-multi-tenancy-html5-app) needs to be defined. The common data model defines the design-time business content of the application.
 
-  8. Adjust the newly created [*package.json*](../../../tree/main-multi-tenant/xs-security.json) of the *mtx-sidecar* by adding the following dependencies in section *requires* of the cds configuration:
+To add the CDM to your application, follow these steps:
 
-        ```json
-        "cds": {
-          "profile": "mtx-sidecar",
-          "requires": {
-            "auth": "xsuaa",
-            "destinations": true,
-            "html5-repo": true
-          }
-        }
-        ```
-      > Documentation: [SaaS Registry Dependencies](https://cap.cloud.sap/docs/guides/multitenancy/#saas-registry-dependencies)
+1. Create a folder under the root folder of your project named *workzone*.
 
+2. Copy the [*cdm.json*](../../../tree/main-multi-tenant/workzone/cdm.json) into the newly created *workzone* folder. This creates a group with the applications *poetryslams* and *visitors* and two roles during the SAP Build Work Zone configuration that is done during the provisiong of a customer subaccount. The *texts*-sections are required for translation.
+  
 Your project is now consistent with the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch. You can [deploy the multi-tenant application to the provider SAP BTP account](./24-Multi-Tenancy-Deployment.md).

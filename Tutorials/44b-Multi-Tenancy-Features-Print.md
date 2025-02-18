@@ -1,4 +1,4 @@
-# Printing
+# Print Documents
 
 Put yourself in the shoes of a poetry slam manager who uses a poetry slam management application to manage the events. Instead of creating, viewing and downloading forms, you want the guest list to be directly sent to a physical printer. Because your printer is located in your customer landscape, an SaaS cloud application like the *Poetry Slam Manager* will not have direct access to the printer. To support printing, SAP BTP offers the [SAP Print Service](https://help.sap.com/docs/SCP_PRINT_SERVICE/7615de0949ce441d8bc5df7725a6bfc6/e038be89d87c474c9af3f976e4573fc1.html).
 It consists of several parts:
@@ -8,7 +8,20 @@ It consists of several parts:
 3. The *Print Service* with service plan *receiver* is a service running in a consumer subaccount. It provides the credentials to pull documents from SAP BTP to the customer landscape.
 4. The *Print Manager* is a Windows application that runs on a customer's computer. It regularly pulls documents from print queues (using the *receiver* credentials) and sends them to a local printer.
 
-The next sections describe how the components are used and configured.
+## Bill of Materials
+
+### Entitlements
+In addition to the entitlements listed for the [multitenancy version](./20-Multi-Tenancy-BillOfMaterials.md), the list shows the entitlements that are required in the different subaccounts to add printing. 
+
+| Subaccount    |  Entitlement Name                         | Service Plan          | Type          | Quantity                  | 
+| ------------- |  ---------------------------------------- | -----------------     | ------------- | ------------------------- |
+| Provider      |                                           |                       |               |                           |
+|               | SAP Print service                         | sender                | Service       | 1                         | 
+| Consumer      |                                           |                       |               |                           |
+|               | SAP Print service                         | standard              | Application   | 1                         | 
+|               | SAP Print service                         | receiver              | Service       | 1                         | 
+
+## Guide How to Enhance the Application Step by Step
 
 To explore this feature with the Poetry Slam Manager, you have two options: 
 
@@ -18,7 +31,7 @@ To explore this feature with the Poetry Slam Manager, you have two options:
 
 The following describes how to enhance the **main-multi-tenant** branch (option 1).
 
-## Enabling Printing in the Poetry Slams Application
+### Enabling Printing in the Poetry Slams Application
 
 1. As you will print the guest list which you created based on chapter [Manage Forms](./44a-Multi-Tenancy-Features-Forms.md) follow all enablement steps described there first. 
 
@@ -155,7 +168,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         guestList               = Guest List
         ```
 
-## SAP BTP Configuration and Deployment
+### SAP BTP Configuration and Deployment
 
 1. Add the *Print Service* as a resource to your application.
 
@@ -179,14 +192,19 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
               service-plan: sender
         ```
 
-    2. Ensure subscription for multi-tenancy in *mtx/sidecar/package.json*.
+    2. Ensure subscription for multi-tenancy in [*mtx/sidecar/package.json*](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json) (see [SaaS Registry Dependencies](https://cap.cloud.sap/docs/guides/multitenancy/#saas-dependencies)):
         ```yaml
           "cds": {
             ...
             "requires": {
               ...  
               "poetry-slams-print-service": {
-                "subscriptionDependency": { "uaa": "xsappname" }
+                "vcap": {
+                  "label": "print"
+                },
+                "subscriptionDependency": {
+                  "uaa": "xsappname"
+                }
               }
             }
           }
@@ -198,7 +216,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
     > Note: If the application was already deployed in a previous step, you need to update the subscriptions of the application. For more information on the subscription manager, refer to [Test and Troubleshoot Multitenancy](./26-Test-Trace-Debug-Multi-Tenancy.md).
 
-## Configuring Printing in Consumer Subaccounts
+### Configuring Printing in Consumer Subaccounts
 
 To use the print functionality, you have to maintain a print queue which is the cloud storage for documents to be printed.
 
@@ -225,9 +243,9 @@ To use the print functionality, you have to maintain a print queue which is the 
 
 Next, you and/or your customer need to install the *SAP Print Manager for Pull Integration* to regularly read the print queue and send the documents to a printer. Follow the documentation about [Establishing the Connection Between SAP Print Service and SAP Cloud Print Manager for Pull Integration](https://help.sap.com/docs/SCP_PRINT_SERVICE/7615de0949ce441d8bc5df7725a6bfc6/2a1a47535a5948aabf4225e1f7d24a16.html).
 
-## Testing
+### Testing
 
-### Local Testing
+#### Local Testing
 
 To test locally (from within SAP Business Application Studio), you can connect the "local" application (started with `cds watch`) with a deployed print service and a subscription. 
 
@@ -258,7 +276,7 @@ To test locally (from within SAP Business Application Studio), you can connect t
 
 6. Run the application using `cds watch` from a terminal within SAP Business Application Studio. You can use a terminal of type `JavaScript Debug Terminal` for easy debugging.
 
-### Unit Tests for Printing
+#### Unit Tests for Printing
 
 To support automatic testing of the print feature, a sample unit test implementation is provided in [*print.test.js*](../../../tree/main-multi-tenant-features/test/srv/poetryslam/util/print.test.js). The test uses *stubs* to decouple from the external services.
 
@@ -276,7 +294,7 @@ Now, take a tour through the print feature of *Poetry Slam Manager*:
 
 2. Open the Poetry Slams application of the Poetry Slam Manager. 
 
-3. If the list of poetry slams is empty, click the button *Generate Sample Data* and choose *Go* to refresh the list. As a result, a list with several poetry slams is shown.
+3. To create sample data for mutable data, such as poetry slams, visitors, and visits, choose *Generate Sample Data*. As a result, a list with several poetry slams is shown.
 
 4. Open a poetry slam and click the button *Print Guest List* in the menu of the object page. On the popup, select a print queue and choose *Print Guest List*. A popup confirms that the guest list was sent to the selected print queue.
     > Note: If no print queue is available from the drop down list box, go back to the paragraph [Configuring Printing in Consumer Subaccounts](./44b-Multi-Tenancy-Features-Print.md#configuring-printing-in-consumer-subaccounts) and maintain a print queue as described there.

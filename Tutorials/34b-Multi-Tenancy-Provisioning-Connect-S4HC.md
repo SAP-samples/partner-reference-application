@@ -113,7 +113,7 @@ Configure SAP S/4HANA Cloud for OAuth 2.0 SAML Bearer authentications.
 
     1.  In SAP S/4HANA Cloud, to configure an OAuth 2.0 identity provider, open the *Partner Applications - Poetry Slam Manager Tenant 2* *Communication System* you created in the previous step.
     2.  Activate *OAuth 2.0 Identity Provider*.
-    3.  Upload the **SAP BTP Subaccount Signing Certificate** via *Upload Signing Certificate*.
+    3.  Upload the **SAP BTP Subaccount Signing Certificate** with *Upload Signing Certificate*.
     4.  Copy the *CN* property of the *Signing Certificate Issuer* into *OAuth 2.0 SAML Issuer* field.
     5.  Keep the *User ID Mapping Mode* = *User Name*.
 
@@ -213,8 +213,8 @@ As a last step, Poetry Slam Manager and SAP BTP admin applications are added to 
 			
     | Field       | Value                                                                           |
     | :----------- | :----------------------------------------------------------------------------- |
-    | *Title*:     | `Poetry Slams`                                                          |
-    | *ID*:        | `POETRYSLAMS`                                                            |
+    | *Title*:     | `Poetry Slams`                                                                 |
+    | *ID*:        | `POETRYSLAMS`                                                                  |
     | *Subtitle*:  | `Manage poetry slams`                                                          |
     | *URL*:       | Enter the **SAP BTP Application Poetry Slams Tenant URL**, you noted down in a previous step.    |
     | *Icon*:      | Choose an icon, for example, *sap-icon://microphone*                           |
@@ -235,7 +235,7 @@ Now you find the Poetry Slams and Visitors applications on the SAP S/4HANA Cloud
 
 Repeat the same steps with suitable business catalogs to create custom tiles for the Identity Authentication service admin application.
 
-> Note: Typically, customers have SAP S/4HANA Cloud tenants for customizing, test, and productive use. In such a setup, the custom tile is created in the customizing tenant and transported to the test and productive tenants via software collections. 
+> Note: Typically, customers have SAP S/4HANA Cloud tenants for customizing, test, and productive use. In such a setup, the custom tile is created in the customizing tenant and transported to the test and productive tenants using the software collections. 
 
 ## Create Users and Assign Authorizations
 
@@ -249,11 +249,11 @@ To create a user in  SAP S/4HANA Cloud, follow the documentation [Identity and A
 ## Test
 
 1. To test the integration and single sign-on authentication, open the SAP S/4HANA Cloud launchpad and log on using your SAP S/4HANA Cloud user. 
-2. Launch Poetry Slams application via the custom tile on the SAP S/4HANA Cloud launchpad. 
+2. Launch Poetry Slams application using the the custom tile on the SAP S/4HANA Cloud launchpad. 
 3. The Poetry Slams application opens in a new browser tab without any additional authentication prompt.
     1. Open a poetry slam that is *published* or *fully booked* and create a project in SAP S/4HANA Cloud.        
     2. Check that the navigation to the project in SAP S/4HANA Cloud works.
-4. Launch the Visitors application via the custom tile on the SAP S/4HANA Cloud launchpad. 
+4. Launch the Visitors application using the the custom tile on the SAP S/4HANA Cloud launchpad. 
 5. The Visitors application opens in a new browser tab without any additional authentication prompt.
 
 <img src="./images/34_mt_s4hc_launchpad.png">

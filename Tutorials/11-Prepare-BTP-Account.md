@@ -1,4 +1,4 @@
-# Prepare Your SAP Business Technology Platform Account for Development
+# Prepare Your SAP BTP Account for Development
 
 ## Prerequisites 
 
@@ -8,8 +8,8 @@ To start with this tutorial, you need an SAP Business Technology Platform (SAP B
 
 ### Create Your Subaccount
 
-1. Go to your SAP BTP global account.
-2. Create a new *Multi-Environment* subaccount with the name `PoetrySlams` and enter *Amazon Web Services (AWS)* as provider.
+1. Go to your SAP BTP global account cockpit.
+2. Create a new *Multi-Environment* subaccount with the name `PoetrySlams` and choose a Region with *Amazon Web Services (AWS)* as provider.
 
    > The subdomain must be unique across the whole region. Therefore, include an abbreviation that uniquely identifies your company. Don't use special characters or capital letters. In addition, keep it short to avoid length restriction issues.
 
@@ -19,7 +19,7 @@ After you've created a new SAP BTP subaccount, only the standard services appear
 
 1. Go to the SAP BTP global account.
 2. Go to *Entitlements* and *Entity Assignments*. 
-3. Open the value help under *Select Entities* and select the corresponding SAP BTP subaccount, for example, *PoetrySlams*.
+3. Open the value help under *Subaccount/Directories* and select the corresponding SAP BTP subaccount, for example, *PoetrySlams*.
 4. Choose *Edit* and *Add Service Plans*. 
 5. Select the *SAP Business Application Studio* entitlement and choose an available plan.
 
@@ -38,7 +38,7 @@ After you've created a new SAP BTP subaccount, only the standard services appear
 
 11. When you first start it, access is denied because the user roles have not yet been assigned to this service instance. To assign them, go to *Security* and *Users*. 
 12. Select your user and go to the assigned *Role Collections*. 
-13. Select all the roles of *SAP Business Application Studio* and confirm the assignment.
+13. Select all the role collections of *SAP Business Application Studio* and confirm the assignment.
 
     <img src="./images/11_enableBAS5.png" width="30%">
 
@@ -59,4 +59,4 @@ After you've created a new SAP BTP subaccount, only the standard services appear
 1. Create a new GitHub repository in a GitHub organization of your choice as a code repository of your own project. 
 2. Link it with your *Dev Space*.
 
-In the [next section](./12-Prepare-Deployment.md), you prepare your subaccount for deployment of the application. Afterward, you can directly clone this repository into your *Dev Space* to deploy and run the sample application as provided in this repository. Alternatively, you can create the application manually from scratch, which is also described in this tutorial.
+In the [next section](./14-Develop-Core-Application.md), you create the application manually from scratch.

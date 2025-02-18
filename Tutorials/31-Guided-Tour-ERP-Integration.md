@@ -27,8 +27,8 @@ Let us take you on a guided tour through the integrated sample solution after th
 
 3. In the Poetry Slams application, an empty list is displayed.
 
-4. To create sample data for mutable data, such as poetry slams, visitors, and visits, click the button *Generate Sample Data* and refresh the list. As a result, multiple poetry slams are listed: Some are still in preparation and have not been released yet while others are already published. 
-    > Note: If you click the *Generate Sample Data* button again, the sample data is set to the default values.
+4. To create sample data for mutable data, such as poetry slams, visitors, and visits, choose *Generate Sample Data*. As a result, multiple poetry slams are listed: Some are still in preparation and have not been released yet while others are already published. 
+    > Note: If you choose *Generate Sample Data* again, the sample data is set to the default values.
 
 5. To view the details of a poetry slam, choose one that is neither canceled nor in draft mode. 
 

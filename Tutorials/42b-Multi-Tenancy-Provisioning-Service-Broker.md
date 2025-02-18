@@ -169,7 +169,7 @@ With these details, you're ready to explore and test the OData services.
 
 ## Consume the Application APIs
 
-There are two ways to consume the application APIs with a configured service broker: via a technical user or a named user.
+There are two ways to consume the application APIs with a configured service broker: With a technical user or a named user.
 However, the technical user is preferred when using the OData services within an automatic (background) process where the login cannot be forwarded to the IdP logon and, hence, no "named" user can be authenticated.
 
 ### Consume the Application APIs as a Technical User
