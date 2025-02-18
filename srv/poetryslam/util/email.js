@@ -3,8 +3,6 @@
 const mailClient = require('@sap-cloud-sdk/mail-client');
 const connectivity = require('@sap-cloud-sdk/connectivity');
 const Logo = require('./logo');
-const TextBundle = require('@sap/textbundle').TextBundle;
-const path = require('path');
 // For security reasons: To prevent injections
 const escape = require('escape-html');
 
@@ -15,7 +13,6 @@ class EMail {
   // It is possible to add the sender to the destination instead.
   static sender = 'noreply+poetryslams-pra-ondemand@sap.corp';
   mailConfig;
-
   constructor(receiver, subject, text) {
     this.mailConfig = {
       from: EMail.sender,
@@ -89,35 +86,28 @@ class EMail {
   }
 
   // Get the title in the user's locale
-  // See https://www.npmjs.com/package/@sap/textbundle
   static getMailTitleForPoetrySlam() {
-    const bundle = new TextBundle(
-      path.resolve(__dirname, '../../i18n/email.properties'),
-      cds.context.locale
-    );
-    return bundle.getText('POETRYSLAM_EMAIL_TITLE');
+    return cds.i18n.labels.at('POETRYSLAM_EMAIL_TITLE', cds.context.locale);
   }
 
   // Get the message content in the user's locale
-  // See https://www.npmjs.com/package/@sap/textbundle
   static getMailContentForPoetrySlam(
     title,
     description,
     eventDateTime,
     visitorName
   ) {
-    const bundle = new TextBundle(
-      path.resolve(__dirname, '../../i18n/email.properties'),
-      cds.context.locale
-    );
     const dateTime = new Date(eventDateTime);
-    return bundle.getText('POETRYSLAM_EMAIL_CONTENT', [
-      visitorName,
-      title,
-      dateTime.toLocaleDateString(),
-      dateTime.toLocaleTimeString(),
-      description
-    ]);
+    const text = cds.i18n.labels
+      .at('POETRYSLAM_EMAIL_CONTENT', cds.context.locale, [
+        visitorName,
+        title,
+        dateTime.toLocaleDateString(),
+        dateTime.toLocaleTimeString(),
+        description
+      ])
+      .replace(/\\\n/g, ''); //Replaces \\\n as otherwise \ will be shown in the email
+    return text;
   }
 }
 

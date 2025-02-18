@@ -6,9 +6,10 @@
 
 // Adds cds module
 const cds = require('@sap/cds');
-const { httpCodes } = require('../../../srv/poetryslam/util/codes');
 // Defines required CDS functions for testing
 const { expect, GET, POST, axios, test } = cds.test(__dirname + '/../../..');
+
+const { httpCodes } = require('../../../srv/poetryslam/util/codes');
 
 // ----------------------------------------------------------------------------
 // Tests authorizations for authorized user without role assignment for application
@@ -28,6 +29,7 @@ describe('Authorizations of PoetrySlamService with User Denise (authenticated us
   });
 
   it('should reject the reading of the poetry slams', async () => {
+    // Read all poetry slams; shall be rejected
     await expect(
       GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
         params: { $select: `ID,status_code,statusCriticality` }

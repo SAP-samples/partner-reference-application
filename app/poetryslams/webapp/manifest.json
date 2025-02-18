@@ -24,7 +24,7 @@
         "poetryslams-display": {
           "signature": {
             "parameters": {},
-            "additionalParameters": "allowed"
+            "additionalParameters": "ignored"
           },
           "semanticObject": "poetryslams",
           "action": "display",
@@ -162,12 +162,6 @@
                       "visible": "{= ${ui>/editMode} !== 'Editable'}",
                       "enabled": "{= ${ui>/editMode} !== 'Editable'}",
                       "text": "{i18n>createGuestList}"
-                    },
-                    "MaintainVisitors": {
-                      "press": "poetryslams.ext.customActions.navigateVisitorList",
-                      "visible": true,
-                      "enabled": true,
-                      "text": "{i18n>maintainVisitors}"
                     }
                   }
                 }
@@ -200,19 +194,7 @@
             "settings": {
               "editableHeaderContent": false,
               "contextPath": "/PoetrySlams/visits",
-              "navigation": {},
-              "content": {
-                "header": {
-                  "actions": {
-                    "MaintainVisitor": {
-                      "press": "poetryslams.ext.customActions.navigateVisitorObject",
-                      "visible": true,
-                      "enabled": true,
-                      "text": "{i18n>navigateVisitor}"
-                    }
-                  }
-                }
-              }
+              "navigation": {}
             }
           }
         }
@@ -227,5 +209,8 @@
   "sap.fiori": {
     "registrationIds": [],
     "archeType": "transactional"
+  },
+  "sap.platform.cf": {
+    "ui5VersionNumber": "1.130.5"
   }
 }

@@ -448,17 +448,25 @@ annotate service.PoetrySlams with @(
           ]},
           {$Not: {$Path: 'IsActiveEntity'}}
         ]}}
+      },
+      {
+        $Type         : 'UI.DataFieldForIntentBasedNavigation',
+        SemanticObject: 'visitors',
+        Action        : 'display',
+        Label         : '{i18n>maintainVisitors}'
       }
     ],
     // Definition of fields shown on the list page / table
     LineItem                      : [
       {
         $Type : 'UI.DataFieldForAction',
-        Action: 'PoetrySlamService.cancel'
+        Action: 'PoetrySlamService.cancel',
+        Label : '{i18n>cancel}'
       },
       {
         $Type : 'UI.DataFieldForAction',
-        Action: 'PoetrySlamService.publish'
+        Action: 'PoetrySlamService.publish',
+        Label : '{i18n>publish}'
       },
       {
         $Type: 'UI.DataField',
@@ -577,8 +585,19 @@ annotate service.Visits with @(
       Title         : {
         $Type: 'UI.DataField',
         Value: parent.title,
-      }
+      },
     },
+    Identification                : [{
+      $Type         : 'UI.DataFieldForIntentBasedNavigation',
+      SemanticObject: 'visitors',
+      Action        : 'display',
+      Label         : '{i18n>maintainVisitor}',
+      Mapping       : [{
+        $Type                 : 'Common.SemanticObjectMappingType',
+        LocalProperty         : visitor.ID,
+        SemanticObjectProperty: 'ID'
+      }],
+    }],
     LineItem #VisitorData         : [
       {
         $Type: 'UI.DataField',

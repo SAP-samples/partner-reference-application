@@ -99,13 +99,19 @@ describe('Util GenAI', () => {
       sinon.assert.calledOnceWithMatch(stubConsoleInfo, expectedConsoleLog);
 
       expect(paramToTest.messages[1].role).eql('system');
-      expect(paramToTest.messages[1].content.length).eql(524);
+      expect(paramToTest.messages[1].content.startsWith('You work')).to.be.true;
+      expect(paramToTest.messages[1].content).contains('rhyme');
+      expect(paramToTest.messages[1].content).contains('languageTest');
 
       await genAIInstance.callAI('tagsTest', 'languageTest', false);
-      expect(paramToTest.messages[1].content.length).eql(480);
+      expect(paramToTest.messages[1].content.startsWith('You work')).to.be.true;
+      expect(paramToTest.messages[1].content).does.not.contain('rhyme');
+      expect(paramToTest.messages[1].content).contains('languageTest');
 
       await genAIInstance.callAI('tagsTest', 'EN', false);
-      expect(paramToTest.messages[1].content.length).eql(470);
+      expect(paramToTest.messages[1].content.startsWith('You work')).to.be.true;
+      expect(paramToTest.messages[1].content).does.not.contain('rhyme');
+      expect(paramToTest.messages[1].content).contains('EN');
     });
 
     it('should throw error when AI result does not have a JSON format', async () => {

@@ -1,0 +1,130 @@
+[
+  {
+    "_version": "3.0",
+    "identification": {
+      "id": "poetrySlamManagerGroupId",
+      "title": "{{title}}",
+      "entityType": "group"
+    },
+    "payload": {
+      "viz": [
+        {
+          "id": "poetryslams",
+          "appId": "poetryslams",
+          "vizId": "poetryslams-display"
+        },
+        {
+          "id": "visitors",
+          "appId": "visitors",
+          "vizId": "visitors-display"
+        }
+      ]
+    },
+    "texts": [
+      {
+        "locale": "",
+        "textDictionary": {
+          "title": "Poetry Slam Manager"
+        }
+      },
+      {
+        "locale": "en",
+        "textDictionary": {
+          "title": "Poetry Slam Manager"
+        }
+      },
+      {
+        "locale": "de",
+        "textDictionary": {
+          "title": "Poetry Slam Manager"
+        }
+      }
+    ]
+  },
+  {
+    "_version": "3.0",
+    "identification": {
+      "id": "poetrySlamManagerRole",
+      "entityType": "role",
+      "title": "{{title}}"
+    },
+    "payload": {
+      "apps": [
+        {
+          "id": "poetryslams"
+        },
+        {
+          "id": "visitors"
+        }
+      ],
+      "groups": [
+        {
+          "id": "poetrySlamManagerGroupId"
+        }
+      ]
+    },
+    "texts": [
+      {
+        "locale": "",
+        "textDictionary": {
+          "title": "Poetry Slam Manager Role"
+        }
+      },
+      {
+        "locale": "en",
+        "textDictionary": {
+          "title": "Poetry Slam Manager Role"
+        }
+      },
+      {
+        "locale": "de",
+        "textDictionary": {
+          "title": "Poetry Slam Manager Rolle"
+        }
+      }
+    ]
+  },
+  {
+    "_version": "3.0",
+    "identification": {
+      "id": "poetrySlamVisitorRole",
+      "entityType": "role",
+      "title": "{{title}}"
+    },
+    "payload": {
+      "apps": [
+        {
+          "id": "poetryslams"
+        },
+        {
+          "id": "visitors"
+        }
+      ],
+      "groups": [
+        {
+          "id": "poetrySlamManagerGroupId"
+        }
+      ]
+    },
+    "texts": [
+      {
+        "locale": "",
+        "textDictionary": {
+          "title": "Poetry Slam Visitor Role"
+        }
+      },
+      {
+        "locale": "en",
+        "textDictionary": {
+          "title": "Poetry Slam Visitor Role"
+        }
+      },
+      {
+        "locale": "de",
+        "textDictionary": {
+          "title": "Poetry Slam Besucher Rolle"
+        }
+      }
+    ]
+  }
+]

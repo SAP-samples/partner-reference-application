@@ -10,9 +10,27 @@ const ACTION = (url, name, parameters = {}) =>
 // Adds cds module
 const cds = require('@sap/cds');
 // Defines required CDS functions for testing
-const { expect, GET, POST, PATCH, axios, test } = cds.test(
-  __dirname + '/../../..'
-);
+const {
+  expect,
+  GET: _GET,
+  POST: _POST,
+  PATCH: _PATCH,
+  axios,
+  test,
+  sleep
+} = cds.test(__dirname + '/../../..');
+
+// As the log is only updated with delay, the requests need to be slowed down (only required for jest test execution)
+const _slowify =
+  (fn) =>
+  async (...args) => {
+    const res = await fn(...args);
+    await sleep(42);
+    return res;
+  };
+const GET = _slowify(_GET);
+const POST = _slowify(_POST);
+const PATCH = _slowify(_PATCH);
 
 // Authentication for tests; role PoetrySlamManager
 axios.defaults.auth = { username: 'peter', password: 'welcome' };

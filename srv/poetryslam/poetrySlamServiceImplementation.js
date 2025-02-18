@@ -24,7 +24,7 @@ module.exports = cds.service.impl(async (srv) => {
   // ----------------------------------------------------------------------------
 
   // Function "userInfo": Return logged-in user
-  srv.on('userInfo', async () => {
+  srv.on('userInfo', () => {
     let { user, locale } = cds.context;
     let results = {};
     results.id = user.id;
