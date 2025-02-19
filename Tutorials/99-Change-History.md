@@ -16,7 +16,7 @@ The current version includes:
 
 ## Older Versions
 
-## December 2024
+### December 2024
 
 Includes
 - [Example](45-Multi-Tenancy-Features-GenAI.md) for using generative artificial intelligence using large language models (genAI using LLMs)
@@ -29,7 +29,7 @@ Corresponding Tags
 - Multitenancy/ERP: [release-multi-tenant-2412](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-2412)
 - Features: [release-multi-tenant-features-2412](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-features-2412)
 
-## October 2024
+### October 2024
 
 Includes
 - Output management: [forms](44a-Multi-Tenancy-Features-Forms.md), [print](44b-Multi-Tenancy-Features-Print.md), [email](44c-Multi-Tenancy-Features-EMail.md)
