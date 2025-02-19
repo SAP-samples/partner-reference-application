@@ -1,4 +1,4 @@
-# Prerequisites and Purpose of SAP Business ByDesign Integration
+# Learn More About the Prerequisites and the Purpose of SAP Business ByDesign Integration
 
 ## Purpose
 

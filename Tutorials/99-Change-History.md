@@ -1,21 +1,35 @@
 # Changes
 
-## Current Version - December 2024
+## Current Version - February 2025
 
-The current version is available in four branches:
+The current version is available in three branches:
 - Tutorials: [*main*](../../../)
-- One-off deployment: [*main-single-tenant*](../../../tree/main-single-tenant)
-- Multi-tenant deployment and ERP integration: [*main-multi-tenant*](../../../tree/main-multi-tenant)
-- Additional features based on the multi-tenant version: [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features)
+- Multi-tenant deployment: [*main-multi-tenant*](../../../tree/main-multi-tenant)
+- Additional features and ERP integration (based on the multi-tenant version): [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features)
 
-The current version includes
+The current version includes:
+- The one-off deployment has been removed from the tutorial and the ERP integration is now part of the feature-branch. This removes some detours and simplifies the learning journey.
+- Work Zone integration: Provide launchpad and shell header for the multi-tenant application.
+- [Extensibility enablement](50-Multi-Tenancy-Features-Tenant-Extensibility.md): Enable consumer-specific extensions to meet the unique needs of individual customers without impacting others.
+- [Cloud Foundry scaling](28-CF-Environment-Scaling.md): Detailed tutorial on estimating the required Cloud Foundry environment configuration for your multi-tenant application.
+- Smaller corrections, improvements, and updates
+
+## Older Versions
+
+### December 2024
+
+Includes
 - [Example](45-Multi-Tenancy-Features-GenAI.md) for using generative artificial intelligence using large language models (genAI using LLMs)
 - Changes in the ERP integration to avoid issues with extended data validations introduced with CDS 8
 - Smaller corrections, improvements and updates
 
-## Older Versions
+Corresponding Tags
+- Tutorials: [release-tutorial-2412](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-tutorial-2412)
+- One-off deployment: [release-single-tenant-2412](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-single-tenant-2412)
+- Multitenancy/ERP: [release-multi-tenant-2412](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-2412)
+- Features: [release-multi-tenant-features-2412](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-features-2412)
 
-## October 2024
+### October 2024
 
 Includes
 - Output management: [forms](44a-Multi-Tenancy-Features-Forms.md), [print](44b-Multi-Tenancy-Features-Print.md), [email](44c-Multi-Tenancy-Features-EMail.md)

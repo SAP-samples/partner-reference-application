@@ -1,7 +1,7 @@
 # Learn about Multitenancy and Get an Overview of the Bill of Materials
 Multitenancy is the ability to serve multiple tenants from a single deployment while strictly isolating the tenants' data. This significantly reduces costs and efforts.
 
-In the version of Poetry Slam Manager with multitenancy and SAP ERP integration, the Partner Reference Application uses a single deployment to a provider subaccount and subscription to this deployment in subscriber or consumer subaccounts. While the actual runtime of the application resides in the provider account, the subscriber accounts are used for the tenant-specific configuration, such as desinations or authorization and authentication. Find an overview of the accounts in the section below.
+In the version of Poetry Slam Manager with multitenancy, the Partner Reference Application uses a single deployment to a provider subaccount and subscription to this deployment in subscriber or consumer subaccounts. While the actual runtime of the application resides in the provider account, the subscriber accounts are used for the tenant-specific configuration, such as desinations or authorization and authentication. Find an overview of the accounts in the section below.
 
 ## Subaccounts
 The example setup serves four sample customers: 
@@ -10,22 +10,23 @@ The example setup serves four sample customers:
 -	*Almika Events Cleveland*: An event agency that plans events using SAP Business ByDesign as their ERP solution.
 -	*Invictus Live Events*: A small poet startup without any ERP solution yet (but a promising ERP prospect if they stay on their exciting growth journey). 
 
+> Note: The ERP integration will be done in a later step.
+
 To develop and run the application for these consumers, the following directory and subaccount structure is proposed.
 
 | Directory Name                   | Subaccount Name                      | Usage                                                                                                       |
 | --------------------             | --------------------                 | ----------------------------                                                                                |
 | Development                      |                                      |                                                                                                             |
-|                                  | Development                          | SAP Business Application Studio                                                                                 |
+|                                  | Development                          | SAP Business Application Studio                                                                             |
 | Partner Reference Application    |                                      |                                                                                                             |
 |                                  | Provider: Poetry Slam Manager        | Application runtime, the database, other SAP BTP services used to run the application                       |
-|                                  | Consumer 1: Andina Publications      | Subscription to customer Andina Publications connected to their SAP S/4HANA Cloud tenant          |
-|                                  | Consumer 2: OEC Computers            | Subscription to customer OEC Computers connected to their SAP Business One system                 |
-|                                  | Consumer 3: Almika Events Cleveland  | Subscription to customer Almika Events Cleveland connected to their SAP Business ByDesign tenant  |
-|                                  | Consumer 4: Invictus Live Events     | Subscription to customer Invictus Live Events who uses the application as a stand-alone solution                      |
-
+|                                  | Consumer 1: Andina Publications      | Subscription to customer Andina Publications (to be connected to their SAP S/4HANA Cloud tenant)            |
+|                                  | Consumer 2: OEC Computers            | Subscription to customer OEC Computers (to be connected to their SAP Business One system)                   |
+|                                  | Consumer 3: Almika Events Cleveland  | Subscription to customer Almika Events Cleveland (to be connected to their SAP Business ByDesign tenant)    |
+|                                  | Consumer 4: Invictus Live Events     | Subscription to customer Invictus Live Events who uses the application as a stand-alone solution            |
 
 ## Entitlements
-The list shows the entitlements that are required in the different subaccounts to develop and run the Poetry Slam Manager application with a multi-tenant deployment and additional features. 
+The list shows the entitlements that are required in the different subaccounts to develop and run the Poetry Slam Manager application with a multi-tenant deployment and additional features. While some entitlements are included by default, you'll learn which ones to add manually.
 
 | Subaccount    |  Entitlement Name                                    | Service Plan              | Type          | Quantity                          | 
 | -----------   |  -------------------                                 | ---------                 | ---------     | ---------                         |
@@ -44,7 +45,7 @@ The list shows the entitlements that are required in the different subaccounts t
 |               | SAP HANA Schemas & HDI Containers                    | hdi-shared                | Service       | 1                                 | 
 |               | SAP Service Manager service                          | container                 | Service       | 1                                 | 
 | Consumer      |                                                      |                           |               |                                   |
-|               | (optional) SAP Build Work Zone, standard edition     | standard                  | Application   | 1                                 |
+|               | SAP Build Work Zone, standard edition                | standard (Application)    | Application   | 1                                 |
 
 
 ## Services Without Entitlements

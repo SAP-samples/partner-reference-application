@@ -1,26 +1,37 @@
-# Deploy the Multi-Tenant Application to the Provider SAP BTP Account
+# Deploy Your SAP BTP Multi-Tenant Application
 
 This tutorial guides you through the steps to deploy and configure the multi-tenant sample application (Poetry Slam Manager) in a dedicated SAP BTP provider subaccount.
 
-## Build and Deploy the Multi-Tenant Application
+## Build and Deploy to Cloud Foundry
 
-1. In SAP Business Application Studio, open a new terminal and log on to SAP BTP Cloud Foundry runtime: 
-    1. Run the command `cf login`.
-    2. Enter your development user and password, and select the SAP BTP Cloud Foundry *org* and *space* for the application.
+1. Open a new terminal and log on to SAP BTP Cloud Foundry runtime: 
+	1. Run the command `cf login`. 
+	2. Enter the SAP BTP Cloud Foundry runtime API of your environment, for example, `https://api.cf.eu10.hana.ondemand.com`.
+	3. Enter your development user and password.
+	4. Select the org of the SAP BTP provider subaccount for the application. 
+	5. Select the SAP BTP Cloud Foundry runtime space (*app*).
 
 2. Navigate to the root folder of the project.
 
 3. Run the command `npm install` on the root folder to install the npm packages. 
 
-4. Run the command `npm install` for the app/router subfolder.
+4. Run the command `npm install` for the app/poetryslams subfolder.
 
-5. Run the command `npm install` for the mtx/sidecar subfolder.
+5. Run the command `npm install` for the app/router subfolder.
 
-5. Run the command `npm run build` to build the project.
+6. Run the command `npm install` for the app/visitors subfolder.
 
-6. To deploy the application, run the command `npm run deploy`. 
+7. Run the command `npm install` for the mtx/sidecar subfolder.
+
+8. Run the command `npm run build` to build the project. The *archive.mtar* is added to the folder *mta_archives*. 
+
+9. To deploy the application, run the command `npm run deploy`. 
 
 > Note: The first deployment of the application creates instances of SAP BTP services in the provider subaccount. Navigate to the SAP BTP provider subaccount and view the created services.
+
+> Note: The first deployment of the application creates destinations in the provider subaccount that are required for SAP Build Work Zone. Navigate to the SAP BTP provider subaccount and view the created destinations.
+
+Looking for more details? Go to the [SAP Cloud Application Programming Model documentation on how to deploy to SAP BTP Cloud Foundry runtime](https://cap.cloud.sap/docs/guides/deployment/to-cf)
 
 ## Configure the Application Subdomain (Custom Domain)
 
@@ -53,7 +64,7 @@ Below is a condensed version using the SAP default domain.
         3. Select the default landscape in the *Landscape Info* step and go to the next step.
         4. Select the default reserved domain proposed by the system and go to the next step.
         5. Enter the subdomain name as `<cloud-foundry-org-name>-<cloud-foundry-space-name>-<approuter-module-name>` and choose *Finish*.
-            > Note: The system creates a custom domain with the name `<cloud-foundry-org-name>-<cloud-foundry-space-name>-<approuter-module-name>.<reserved domain name>`, e.g. `sap-psm-mt-app-poetry-slams.cfapps.eu10-004.hana.ondemand.com`. 
+            > Note: The system creates a custom domain with the name `<cloud-foundry-org-name>-<cloud-foundry-space-name>-<approuter-module-name>.<reserved domain name>`, for example, `sap-psm-mt-app-poetry-slams.cfapps.eu10-004.hana.ondemand.com`. 
 
             > Note: By default, the *_approuter-module-name_* is `poetry-slams`.
 

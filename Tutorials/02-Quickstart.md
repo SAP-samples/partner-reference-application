@@ -1,6 +1,6 @@
 # Deploy and Run the Application Including All Features
 
-The tutorial was designed to make it possible for you to follow a step-by-step description of how to develop and deploy Poetry Slam Manager, first as a one-off solution. Later, you enhance it to multitenancy with ERP integration and additional features.
+The tutorial was designed to make it possible for you to follow a step-by-step description of how to develop and deploy Poetry Slam Manager, first as a multitenancy solution. Later, you enhance it with ERP integration and additional features.
 
 If you prefer a quick start without further explanation, but with a deployment of the application with all features, follow these steps:
 
@@ -8,7 +8,7 @@ If you prefer a quick start without further explanation, but with a deployment o
 
 2. [Prepare your provider subaccount for multitenancy deployment](./22-Multi-Tenancy-Prepare-Deployment.md).
 
-3. Enable the entitlements mentioned in the [bill of materials of the multi-tenant application with ERP integration and all features](./40-Multi-Tenancy-Features-BillOfMaterials.md). 
+3. Enable the entitlements mentioned in the [bill of materials of the multi-tenant application with ERP integration and all features](./01-BillOfMaterials.md). 
 
 4. [Deploy the cloned application to your provider subaccount](./24-Multi-Tenancy-Deployment.md).
 

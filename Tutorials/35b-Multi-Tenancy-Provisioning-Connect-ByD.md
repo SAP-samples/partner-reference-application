@@ -132,20 +132,20 @@ In your SAP BTP consumer subaccount, create the destination *byd* to connect to 
 1. Open the *Connectivity* menu item on the SAP BTP consumer subaccount, choose *Destinations*, and create a new destination with the following field values:
 
 
-    | Parameter Name           | Value                                                                                 |
+    | Parameter Name           | Value                                                                                   |
     | :------------------------ | :------------------------------------------------------------------------------------- |
     | *Name*:                   | *byd*                                                                                  |
     | *Type*:                   | *HTTP*                                                                                 |
     | *Description*:            | Enter a destination description, for example, ``SAP Business ByDesign 123456 with principal propagation``. |
-    | *URL*:                    | *https://{{ByD-hostname}}*, for example, ``https://my123456.sapbydesign.com``            |
+    | *URL*:                    | *https://{{ByD-hostname}}*, for example, ``https://my123456.sapbydesign.com``          |
     | *Proxy Type*:             | *Internet*                                                                             |
     | *Authentication*:         | *OAuth2SAMLBearerAssertion*                                                            |
-    | *Audience*:               | Enter the **SAP Business ByDesign service provider name**.                                                |
+    | *Audience*:               | Enter the **SAP Business ByDesign service provider name**.                             |
     | *AuthnContextClassRef*:   | *urn:none*                                                                             |
-    | *Client Key*:             | Enter the **SAP Business ByDesign OAuth Client ID**.                                                      |
+    | *Client Key*:             | Enter the **SAP Business ByDesign OAuth Client ID**.                                   |
     | *Token Service URL*:      | *https://{{ByD-hostname}}/sap/bc/sec/oauth2/token*                                     |
-    | *Token Service User*:     | Enter the **SAP Business ByDesign OAuth Client ID**.                                                      |
-    | *Token Service Password*: | Enter the **SAP Business ByDesign OAuth Client Secret**.                                                  |
+    | *Token Service User*:     | Enter the **SAP Business ByDesign OAuth Client ID**.                                   |
+    | *Token Service Password*: | Enter the **SAP Business ByDesign OAuth Client Secret**.                               |
 
 2. Enter the *Additional Properties*:
     
@@ -218,7 +218,7 @@ As a last step, Poetry Slams and Visitors and SAP BTP admin applications are add
     4. Pin the tiles referring to the mashups created above from the *Mashup* gallery to the launchpad. 
     4. Save your changes and leave the personalization mode.
 
-6. To test the front-end single sign-on, use the single-sign-on URL (following the pattern ``https://myXXXXXX-sso.sapbydesign.com/``) and log on using your Identity Authentication service user to open SAP Business ByDesign. Launch the *Poetry Slams* application via the SAP Business ByDesign launchpad. No additional authentication is required.
+6. To test the front-end single sign-on, use the single-sign-on URL (following the pattern ``https://myXXXXXX-sso.sapbydesign.com/``) and log on using your Identity Authentication service user to open SAP Business ByDesign. Launch the *Poetry Slams* application through the SAP Business ByDesign launchpad. No additional authentication is required.
 
     1. Open a poetry slam that is *published* or *fully booked* and create a project in SAP Business ByDesign. 
         

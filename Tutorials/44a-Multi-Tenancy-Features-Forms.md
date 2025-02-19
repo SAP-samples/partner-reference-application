@@ -4,13 +4,19 @@ Put yourself in the shoes of a poetry slam manager who uses a poetry slam manage
 
 Use the SAP Forms service by Adobe to manage print and interactive forms. For more information, refer to [SAP Help for SAP Forms Service by Adobe](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/sap-forms-service-by-adobe?q=xsd).
 
-To explore this feature with the Poetry Slam Manager, you have two options: 
+## Bill of Materials
 
-1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
+### Entitlements
+In addition to the entitlements listed for the [multitenancy version](./20-Multi-Tenancy-BillOfMaterials.md), the list shows the entitlements that are required in the different subaccounts to add forms. 
 
-2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch where the feature is already included. 
+| Subaccount    |  Entitlement Name                         | Service Plan          | Type          | Quantity                  | 
+| ------------- |  ---------------------------------------- | -----------------     | ------------- | ------------------------- |
+| Provider      |                                           |                       |               |                           |
+|               | SAP Forms service by Adobe                | default (Application) | Application   | 1                         | 
+|               | SAP Forms service by Adobe API            | standard              | Service       | 1                         | 
 
-The following describes how to enhance the **main-multi-tenant** branch (option 1).
+### Applications
+To enable the feature the _Adobe LiveCycle Designer_ application, which is provided by SAP, needs to be downloaded and installed on the local machine.
 
 ## Architecture
 You can use the SAP Forms service by Adobe REST API to call the service from a cloud application, and the SAP Forms service configuration UI to customize rendering behaviour. Use the Adobe LiveCycle Designer to create a form.
@@ -24,7 +30,6 @@ You can use the SAP Forms service by Adobe REST API to call the service from a c
     1. Template Store: Use the SAP Forms service template store to save and organize forms, template files, and schema files, and the SAP Forms service template store UI to create forms and assign templates and schemas to them. 
         For more information, refer to the [Template Store API Endpoints](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/template-store-api-endpoints) and the [Template Store UI](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/template-store-ui).
 
-
     2. Configuration UI: Use the configuration tool to manage your SAP Forms service settings, custom fonts, job profiles, and support files. For more information, refer to the [SAP Help Configuration Tool](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/configuration-tool).
 
 
@@ -34,7 +39,17 @@ You can use the SAP Forms service by Adobe REST API to call the service from a c
     <img src="./images/44_Forms_ADS_Service.png" width="40%">
 </p>
 
-## Application Enablement 
+## How to Enhance the Application Step by Step
+
+To explore this feature with the Poetry Slam Manager, you have two options: 
+
+1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
+
+2. Alternatively, check out the [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features) branch where the feature is already included. 
+
+The following describes how to enhance the **main-multi-tenant** branch (option 1).
+
+### Application Enablement 
 
 1. Add the API to access the SAP Forms service by Adobe. 
 
@@ -86,7 +101,7 @@ You can use the SAP Forms service by Adobe REST API to call the service from a c
         guestList               = Guest List
         ```
 
-        > Note: The function *getFileName* in the file *forms.js* provides an example of how to access the texts (in the user's language) using the package `@sap/textbundle`.
+        > Note: The function *getFileName* in the file *forms.js* provides an example of how to access the texts (in the user's language) using the cds i18n module [cds.i18n.labels](https://cap.cloud.sap/docs/node.js/cds-i18n#at-key).
 
     4. Copy the logo util class [*logo.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/logo.js) to your project. The logo class offers functionality that is required by other services, for example email, too.
 
@@ -165,12 +180,10 @@ You can use the SAP Forms service by Adobe REST API to call the service from a c
     5. Run the command `npm add fast-xml-parser`. The package converts a java script object to an XML string. 
 
     6. Run the command `npm add stream`. The package supports streaming objects to the browser. 
-
-    7. Run the command `npm add @sap/textbundle`. This package allows you to access language-dependent texts from your i18n-files.
     
-    8. Run the command `npm install` in your project root folder to install the required npm modules for the application. 
+    7. Run the command `npm install` in your project root folder to install the required npm modules for the application. 
 
-## SAP BTP Configuration and Deployment
+### SAP BTP Configuration and Deployment
 
 1. Open the SAP BTP cockpit of the provider subaccount and add the required entitlements:
     
@@ -214,7 +227,7 @@ You can use the SAP Forms service by Adobe REST API to call the service from a c
     3. Add the *ADSAdmin* and *TemplateStoreAdmin* roles to access the template store UI and the configuration tool of Adobe Document Services (ADS).
     4. Add the users who should be allowed to upload and configure the forms.
 
-## Form Creation and Upload
+### Form Creation and Upload
 After you have deployed your application with the SAP Forms service by Adobe, you need to upload the form to the template store:
 
 > Note: The usage of the template store UI is described in the SAP help [Manage Forms, Templates and Schemas (UI)](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/manage-forms-templates-and-schemas-ui)
@@ -251,11 +264,11 @@ After you have deployed your application with the SAP Forms service by Adobe, yo
 
 > Note:  If you want to create your own form, you can use the [Adobe LiveCycle Designer](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/using-adobe-livecycle-designer?locale=en-US). You can download the latest version of the Adobe LiveCycle Designer from [SAP for Me](https://me.sap.com/softwarecenter). This service is only available for the operating system Microsoft Windows.
 
-## Testing
+### Testing
 
 To ensure good quality it is crucial to test the new functionality.
 
-### Local Testing
+#### Local Testing
 
 For more efficient development, test your changes locally before deploying them to the SAP BTP provider subaccount. To set up the SAP Business Application Studio for local testing of the forms feature, follow these steps:
 
@@ -291,7 +304,7 @@ For more efficient development, test your changes locally before deploying them 
 
 9. Once you are ready, you can test the feature as implemented.
 
-### Unit Tests
+#### Unit Tests
 
 Unit tests are available to test the forms feature:
 
@@ -313,8 +326,8 @@ Now it is time to take you on a guided tour through the forms feature of Poetry 
 
 2. Open the Poetry Slams application. 
 
-3. If the list is empty, choose the button *Generate Sample Data* and refresh the list to create sample data for mutable data such as poetry slams, visitors, and visits. As a result, a list with several poetry slams is shown.
-    > Note: If you choose the *Generate Sample Data* button again, the sample data is set to the default values.
+3. To create sample data for mutable data, such as poetry slams, visitors, and visits, choose *Generate Sample Data*. As a result, a list with several poetry slams is shown.
+    > Note: If you choose *Generate Sample Data* again, the sample data is set to the default values.
 
 4. Open a poetry slam that has the status *Fully Booked*.
 

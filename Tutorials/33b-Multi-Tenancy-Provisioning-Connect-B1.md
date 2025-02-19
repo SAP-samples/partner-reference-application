@@ -124,7 +124,7 @@ Therefore, you need to ensure that the same e-mail addresses are entered for use
 
 ## Get SAP Business One OData Services Metadata
 In general, SAP Business One exposes OData services through the SAP Business One service layer. The Poetry Slam Manager side-by-side SAP BTP application uses SAP Business One
-*Purchse Order* data. It reads and writes purchase orders using OData services exposed via the SAP Business One service layer.
+*Purchase Order* data. It reads and writes purchase orders using OData services exposed through the SAP Business One service layer.
 > Note: To get the OData metadata, exposed by the SAP Business One service layer, run the $metadata URL of the OData service in a browser window: _https://\<service-layer server\>/b1s/v2/$metadata_
  
 

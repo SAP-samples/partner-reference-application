@@ -55,7 +55,7 @@ The list shows the entitlements that are required in the different subaccounts t
 |               | SAP Audit Log Viewer service for SAP BTP             | default                   | Application   | 1                                 |
 |               | SAP Print service                                    | standard                  | Application   | 1                                 | 
 |               | SAP Print service                                    | receiver                  | Service       | 1                                 | 
-|               | (optional) SAP Build Work Zone, standard edition     | standard                  | Application   | 1                                 |
+|               | SAP Build Work Zone, standard edition                | standard (Application)    | Application   | 1                                 |
 
 
 ## Services Without Entitlements
@@ -105,19 +105,20 @@ Let's assume a typical data volume of two poetry slams per week (or 125 slams pe
  - 750,000 visitors and artists
  - 1,500,000 bookings
 
-> Note: The required quantities of most services are calculated based on memory, storage, or usage counts. The SAP HANA Cloud database is based on capacity units (CU), which consider several factors like memory, CPUs, and storage. You can use the [SAP HANA Cloud Capacity Unit Estimator](https://hcsizingestimator.cfapps.eu10.hana.ondemand.com/) to calculate the capacity units required. The chapter [Estimating the Required Size of the SAP HANA Cloud Database](./27-Hana-DB-Scaling.md) explains how to calculate the required CUs based on the above business volume. However, this requires measurements in a deployed and running (test) version of the application.
+> Note: The required quantities of most services are calculated based on memory, storage, or usage counts. The SAP HANA Cloud database is based on capacity units (CU), which consider several factors like memory, CPUs, and storage. You can use the [SAP HANA Cloud Capacity Unit Estimator](https://hcsizingestimator.cfapps.eu10.hana.ondemand.com/) to calculate the capacity units required. The chapter [Estimating the Required Size of the SAP HANA Cloud Database](./27-Hana-DB-Scaling.md) explains how to calculate the required CUs based on the above business volume. Next to the SAP HANA Cloud database, resources for the SAP BTP Cloud Foundry runtime need to be acquired. The chapter [Estimating the Required Cloud Foundry Environment Configuration](./28-CF-Environment-Scaling.md) provides guidance on determining the necessary GB of memory for your application. However, this requires measurements in a deployed and running (test) version of the application.
 
 The table below shows how the required quantities scale with typical numbers of customers. The scaling is less than linear which is the benefit of resource sharing in multi-tenant application. This means the costs per customer significantly decrease the more customers you serve.
 
 | Service Name                    | Service Plan              | 5 Customers                     | 20 Customers                     | 100 Customers                     | 
 | -------------------             | ---------                 | ---------                       | ---------                        | ---------                         |
-| SAP BTP Cloud Foundry runtime   | standard                  | 3 GB                            | 6 GB                             | 20 GB                             |
+| SAP BTP Cloud Foundry runtime   | standard                  | 2 GB                            | 2 GB                             | 6 GB                             |
 | SAP HANA Cloud                  | hana-td                   | 900 CU                          | 900 CU                           | 1000 CU                           |
 | SAP Custom Domain service       | standard                  | 1 Domain                        | 1 Domain                         | 1 Domain                          |
-| SAP Audit Log service           | premium                   | 1 GB Storage, 1 GB Writing​      | 1 GB Storage, 1 GB Writing​       | 1 GB Storage, 1 GB Writing        ​|
+| SAP Audit Log service           | premium                   | 1 GB Storage, 1 GB Writing      | 1 GB Storage, 1 GB Writing       | 1 GB Storage, 1 GB Writing        ​|
 | SAP Cloud Logging service       | standard                  | 538 CU                          | 538 CU                           | 538 CU                            |
 | SAP AI Core service             | extended                  | 1 CU                            | 1 CU                             | 1 CU                              |
-| SAP Business Application Studio | standard-edition          | 2 User                          | 2 User                           | 2 User                            |
+| SAP Business Application Studio | standard-edition          | 2 Users                         | 2 Users                          | 2 Users                            |
+| SAP Build Work Zone, Standard Edition | standard (Application)            | 100 Active Users                | 100 Active Users                 | 500 Active Users                   |
 
 # Information on Versions and What's New
 

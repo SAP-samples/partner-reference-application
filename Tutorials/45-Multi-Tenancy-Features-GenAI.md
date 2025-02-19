@@ -3,6 +3,22 @@
 Put yourself in the shoes of a poetry slam manager who uses a poetry slam management application to manage the events. You want to easily create events with creative titles and descriptions. 
 For the title and description proposal, the Partner Reference Application uses [generative artificial intelligence (generative AI or genAI)](https://www.sap.com/products/artificial-intelligence/what-is-generative-ai.html) based on [large language models (LLM)](https://www.sap.com/resources/what-is-large-language-model). The [SAP AI Core service of the SAP BTP](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/what-is-sap-ai-core) and the [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) offer easy consumption of generative AI features.
 
+## AI Ethics
+
+SAP has introduced a [certification program](https://community.sap.com/t5/technology-blogs-by-sap/certification-for-partner-ai-apps-on-sap-btp-ensuring-reliability/ba-p/13751165) for partner applications developed on SAP Business Technology Platform (BTP) using [SAP Generative AI Hub](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/generative-ai-hub-in-sap-ai-core-7db524ee75e74bf8b50c167951fe34a5) that includes checks for Responsible AI compliance. The certification program enables partners to offer trusted, compliant, and enterprise-ready applications powered by AI services, leveraging SAP’s expertise in business data insights.
+
+## Bill of Materials
+
+### Entitlements
+In addition to the entitlements listed for the [multitenancy version](./20-Multi-Tenancy-BillOfMaterials.md), the list shows the entitlements that are required in the different subaccounts to add generative artificial intelligence. 
+
+| Subaccount    |  Entitlement Name                         | Service Plan          | Type          | Quantity                  | 
+| ------------- |  ---------------------------------------- | -----------------     | ------------- | ------------------------- |
+| Provider      |                                           |                       |               |                           |
+|               | SAP AI Core                               | extended              | Service       | 1                         | 
+
+## Guide How to Enhance the Application Step by Step
+
 To explore this feature with the Poetry Slam Manager, you have two options: 
 
 1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
@@ -11,11 +27,7 @@ To explore this feature with the Poetry Slam Manager, you have two options:
 
 The following describes how to enhance the **main-multi-tenant** branch (option 1).
 
-## AI Ethics
-
-SAP has introduced a [certification program](https://community.sap.com/t5/technology-blogs-by-sap/certification-for-partner-ai-apps-on-sap-btp-ensuring-reliability/ba-p/13751165) for partner applications developed on SAP Business Technology Platform (BTP) using [SAP Generative AI Hub](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/generative-ai-hub-in-sap-ai-core-7db524ee75e74bf8b50c167951fe34a5) that includes checks for Responsible AI compliance. The certification program enables partners to offer trusted, compliant, and enterprise-ready applications powered by AI services, leveraging SAP’s expertise in business data insights.
-
-## Application Enablement 
+### Application Enablement 
 
 1. Enhance the poetry slam service.
 
@@ -159,7 +171,7 @@ SAP has introduced a [certification program](https://community.sap.com/t5/techno
 
     3. Run the command `npm add @sap-ai-sdk/foundation-models`. The package incorporates generative AI foundation models into your AI activities in SAP AI Core. 
 
-## SAP BTP Configuration and Deployment
+### SAP BTP Configuration and Deployment
 
 1. Open the SAP BTP cockpit of the provider subaccount and add the required entitlements:
     
@@ -192,7 +204,7 @@ SAP has introduced a [certification program](https://community.sap.com/t5/techno
 2. Build and deploy the application.
     > Note: For detailed instructions on how to deploy, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
 
-## Unit Tests
+### Unit Tests
 
 Unit tests are available to test the artificial intelligence feature:
 

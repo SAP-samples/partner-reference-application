@@ -4,6 +4,27 @@ In the multi-tenant setup, the OData services that the UI is based on are not di
 
 > Note: Service broker is an implementation of the Open Service Broker API.
 
+## Bill of Materials
+
+### Entitlements
+In addition to the entitlements listed for the [multitenancy version](./20-Multi-Tenancy-BillOfMaterials.md), the list shows the entitlements that are required in the different subaccounts to add the service broker. 
+
+Check if the SAP BTP Cloud Foundry runtime entitlement includes 4 units to account for the additional runtime required for the service broker module.
+
+### Services Without Entitlements
+The list shows services that don't require entitlements.
+
+| Subaccount    |  Entitlement Name                         | Service Plan      | Type          | Quantity                  | 
+| ------------- |  ---------------------------------------- | ----------------- | ------------- | ------------------------- |
+| Consumer      |                                           |                   |               |                           |
+|               | Poetry Slam Service Broker                | fullaccess        | Instance      | 1 (partner application)   |
+|               | Poetry Slam Service Broker                | readonlyaccess    | Instance      | 1 (partner application)   |
+
+### Modules
+The feature comes with the _Service Broker_ module that is provided by SAP. It is deployed into the SAP BTP Cloud Foundry runtime of the provider subaccount. 
+         
+## Guide How to Enhance the Application Step by Step
+
 To explore this feature with the Poetry Slam Manager, you have two options: 
 
 1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
@@ -12,7 +33,7 @@ To explore this feature with the Poetry Slam Manager, you have two options:
 
 The following describes how to enhance the **main-multi-tenant** branch (option 1).
 
-## Optional: Add API-Specific Authorizations
+### Optional: Add API-Specific Authorizations
 
 If you want to have different access authorizations for APIs, such as full access with all authorizations like *PoetrySlamManagerRoleCollection* and read-only access for other integrations, introduce a new scope: 
 
@@ -42,7 +63,7 @@ If you want to have different access authorizations for APIs, such as full acces
       }
       ```
 
-## Add a Service Broker to Your SAP BTP Applications
+### Add a Service Broker to Your SAP BTP Applications
 
 1. Ensure that the line below is available in the [*xs-security.json*](../../../blob/main-multi-tenant-features/xs-security.json).
     > Note: This line prevents technical internal scopes from being exposed through the service broker.
@@ -109,7 +130,7 @@ If you want to have different access authorizations for APIs, such as full acces
 
 7. Reuse the SAP Authorization and Trust Management service instance previously created (nothing to do here).
    - The service broker can use different services to generate and store credentials that are needed later on by applications to access your reusable service. In this example, the existing SAP Authorization and Trust Management service (_XSUAA service_) is used as a credentials provider.
-   - An SAP Authorization and Trust Management service (_XSUAA service_) instance with _service-plan: broker_ is already configured to be created via configuration in the project deployment descriptor file [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml).
+   - An SAP Authorization and Trust Management service (_XSUAA service_) instance with _service-plan: broker_ is already configured to be created using the configuration in the project deployment descriptor file [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml).
 
 8. Reuse the instance of the SAP Audit Log service (see [Manage Data Privacy](./41-Multi-Tenancy-Features-Data-Privacy.md)).
    - The service broker is configured by default to audit log every operation.

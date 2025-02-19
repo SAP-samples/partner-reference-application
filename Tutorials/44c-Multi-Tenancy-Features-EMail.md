@@ -3,6 +3,7 @@
 Put yourself in the shoes of a poetry slam manager who uses a poetry slam management application to manage the events. You want to send an email reminder to your artists and guests before the event. The Partner Reference Application uses the [SAP Cloud SDK Mail Client](https://sap.github.io/cloud-sdk/docs/js/features/mail-client) to send e-mails to your e-mail servers. 
 A detailed [API reference](https://sap.github.io/cloud-sdk/api/v3/modules/sap_cloud_sdk_mail_client.html) is available, too.
 
+## Guide How to Enhance the Application Step by Step
 To explore this feature with the Poetry Slam Manager, you have two options: 
 
 1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step by step. 
@@ -11,7 +12,7 @@ To explore this feature with the Poetry Slam Manager, you have two options:
 
 The following describes how to enhance the **main-multi-tenant** branch (option 1).
 
-## Application Enablement 
+### Application Enablement 
 
 1. Enhance the poetry slam service.
 
@@ -91,9 +92,29 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
         > Note: In the reference example, the [*srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages_de.properties) file with the German texts is available, too. You can adopt them accordingly.
 
-    7. Copy the properties files that handle the email specific texts, such as title and content of the generated mail [*srv/i18n/email.properties* file](../../../tree/main-multi-tenant-features/srv/i18n/email.properties).
+    7. Add the newly created email specific texts, such as title and content of the generated mail to the [*srv/i18n/i18n.properties* file](../../../tree/main-multi-tenant-features/srv/i18n/i18n.properties).
+
+        ```
+        # -------------------------------------------------------------------------------------
+        # Texts email functionality
+
+        POETRYSLAM_EMAIL_TITLE                                  = Your Rhymes Are Reserved! 🖋️✨
+
+        POETRYSLAM_EMAIL_CONTENT                                = Dear {0}, <br> \
+            <br> \
+            Congratulations! You’ve just booked your spot at the most *verse-tile* event of the year — {1}! 🎤🔥 <br> \
+            <br> \
+            Date: {2} <br> \
+            Time: When the mics get lit (aka {3}) <br> \
+            Description: {4} <br> \
+            <br> \
+            Prepare your soul (and your snaps) for an evening of alliteration and lines so deep they’ll make you reconsider every text you’ve ever sent. <br> \
+            <br> \
+            Yours in rhymes and rhythm, <br> \
+            The Team {1}
+        ```
     
-        > Note: In the reference example, the [*srv/i18n/email_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/email_de.properties) file with the German texts is available, too. You can adopt them accordingly.
+        > Note: In the reference example, the [*srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n_de.properties) file with the German texts is available, too. You can adopt them accordingly.    
 
 2. Add the logo [srv/poetryslam/sample_data/poetrySlamLogo.jpg](../../../tree/main-multi-tenant-features/srv/poetryslam/sample_data/poetrySlamLogo.jpg) for your email to path *srv/poetryslam/sample_data/* . This can be replaced with a customer-specific logo. The logo is shown in the generated email as an example for how to embed images. 
 
@@ -123,18 +144,16 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     
     2. Run the command `npm add @sap-cloud-sdk/mail-client`. The package handles the sending of the email.  
 
-    3. Run the command `npm add @sap/textbundle`. The package retrieves text bundles from i18n-files. 
+    3. Run the command `npm add escape-html`. This handles the html escaping of the poetry slam data when creating the email. 
 
-    4. Run the command `npm add escape-html`. This handles the html escaping of the poetry slam data when creating the email. 
-
-## SAP BTP Deployment
+### SAP BTP Deployment
 
 1. Run the command `npm install` in your project root folder to install the required npm modules for the application. 
 
 2. Build and deploy the application.
     > Note: For detailed instructions on how to deploy, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
 
-## SAP BTP Configuration of the Consumer Subaccount
+### SAP BTP Configuration of the Consumer Subaccount
 To send the email, a destination needs to be set up in the consumer account.
 
 1. Open the SAP BTP cockpit of the consumer subaccount.
@@ -162,11 +181,11 @@ To send the email, a destination needs to be set up in the consumer account.
     | *mail.smtp.host*: | Enter the *SMTP* host URL                                                     |
     | *mail.smtp.port*: | Enter the *SMTP* host port                                                    |
 
-## Testing
+### Testing
 
 For quality assurance, it is important to test the new functionality.
 
-### Unit Tests
+#### Unit Tests
 
 Unit tests are available to test the email feature:
 

@@ -4,6 +4,20 @@ Put yourself in the shoes of an administrator of a poetry slam management applic
 
 Using the SAP Audit Log service of the SAP Cloud Application Programming Model, you ensure that your application is compliant to data privacy requirements. For more information, go to the [SAP Cloud Application Programming Model documentation on managing data privacy](https://cap.cloud.sap/docs/guides/data-privacy/).
 
+## Bill of Materials
+
+### Entitlements
+In addition to the entitlements listed for the [multitenancy version](./20-Multi-Tenancy-BillOfMaterials.md), the list shows the entitlements that are required in the different subaccounts to add data privacy. 
+
+| Subaccount    |  Entitlement Name                         | Service Plan          | Type          | Quantity                  | 
+| ------------- |  ---------------------------------------- | -----------------     | ------------- | ------------------------- |
+| Provider      |                                           |                       |               |                           |
+|               | SAP Audit Log service                     | premium               | Service       | 1                         |
+| Consumer      |                                           |                       |               |                           |
+|               | SAP Audit Log Viewer service for SAP BTP  | default               | Application   | 1                         |
+
+## Guide How to Enhance the Application Step by Step
+
 To explore this feature with the Poetry Slam Manager, you have two options: 
 
 1. Clone the repository of the Partner Reference Application. Check out the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch and enhance the application step-by-step. 
@@ -12,7 +26,7 @@ To explore this feature with the Poetry Slam Manager, you have two options:
 
 The following section describes how to enhance the **main-multi-tenant** branch (option 1).
 
-## Application Enablement 
+### Application Enablement 
 
 1. First, decide which entities and which attributes contain sensitive or personal data. 
 2. Create a new file *./srv/poetrySlam/poetrySlamServiceDataPrivacy.cds*.
@@ -46,13 +60,11 @@ The following section describes how to enhance the **main-multi-tenant** branch 
     using from './visitor/visitorServiceDataPrivacy';
     ```
 
-4. Open a terminal and run the command `npm add @cap-js/audit-logging`. As a result, a dependency to the latest version of the SAP Cloud Application Programming Model (CAP) audit-logging plug-in is added to the *package.json* of your project. 
+6. Open a terminal and run the command `npm add @cap-js/audit-logging`. As a result, a dependency to the latest version of the SAP Cloud Application Programming Model (CAP) audit-logging plug-in is added to the *package.json* of your project. 
 
     Refer to the file [package.json](../../../tree/main-multi-tenant-features/package.json) of the sample application.
-    
-    You can follow the instructions described above in both one-off and multi-tenant solutions.
 
-5. Open the *./mta.yaml* file and add the audit log resource and the module dependencies to the service module. 
+7. Open the *./mta.yaml* file and add the audit log resource and the module dependencies to the service module. 
 
     Refer to the [mta file of the sample application](../../../tree/main-multi-tenant-features/mta.yaml).
     ```yaml
@@ -74,7 +86,7 @@ The following section describes how to enhance the **main-multi-tenant** branch 
         service-plan: premium
     ```
 
-## SAP BTP Configuration and Deployment
+### SAP BTP Configuration and Deployment
 
 1. Open the SAP BTP cockpit of the provider subaccount and add the required entitlement:
     
@@ -97,7 +109,7 @@ The following section describes how to enhance the **main-multi-tenant** branch 
     1. Open the *Role Collections* menu item and create a new role collection called `AuditLog`.
     2. Edit the role collection. 
     3. Add the *Auditlog_Auditor* roles for the Audit Log Management and Audit Log Viewer application.
-    4. Add the *Poetry_Slam_Manager* user group of the previously configured [identity provider](./15b-One-Off-Deployment.md#configure-authentication-and-authorization).
+    4. Add the *Poetry_Slam_Manager* user group of the previously configured [identity provider](25-Multi-Tenancy-Provisioning.md#configure-authentication-and-authorization).
 
 ## A Guided Tour to Explore the Data Privacy Feature
 
@@ -109,8 +121,8 @@ Now, let us take you on a guided tour through the data privacy feature of Poetry
 
 2. Open the Poetry Slams application. 
 
-3. If the list is empty, you can create sample data for mutable data, such as poetry slams, visitors, and visits, by clicking the button *Generate Sample Data* and refreshing the list. As a result, a list with several poetry slams is shown.
-    > Note: If you click the *Generate Sample Data* button again, the sample data is set to the default values.
+3. To create sample data for mutable data, such as poetry slams, visitors, and visits, choose *Generate Sample Data*. As a result, a list with several poetry slams is shown.
+    > Note: If you choose *Generate Sample Data* again, the sample data is set to the default values.
  
 4. Open a poetry slam that has the status *Fully Booked*.
 
