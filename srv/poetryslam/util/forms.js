@@ -8,8 +8,6 @@ const { Readable } = require('stream');
 
 const { httpCodes } = require('./codes');
 
-const path = require('path');
-const { TextBundle } = require('@sap/textbundle');
 const Logo = require('./logo');
 
 // Generated OpenAPI interfaces
@@ -178,15 +176,10 @@ class Forms {
       await this.readPoetrySlamData();
     }
 
-    // Get a the text "Poetry Slam" in the user's locale with fallbacks
-    // See https://www.npmjs.com/package/@sap/textbundle
     let stringPoetrySlam;
     try {
-      const bundle = new TextBundle(
-        path.resolve(__dirname, '../../i18n/i18n.properties'),
-        cds.context?.locale || ''
-      );
-      stringPoetrySlam = bundle.getText(textId).replace(/\s/g, '');
+      // Get a the text "Poetry Slam" in the user's locale with fallbacks
+      stringPoetrySlam = cds.i18n.labels.at(textId).replace(/\s/g, '');
     } catch (e) {
       console.error(
         'Function getFileName: error accessing texbundle',
@@ -194,6 +187,7 @@ class Forms {
       );
       stringPoetrySlam = 'PoetrySlam';
     }
+
     const stringPoetrySlamNumber = this.poetrySlam.number || this.poetrySlamId;
 
     return stringPoetrySlam + '_' + stringPoetrySlamNumber;

@@ -18,6 +18,10 @@
       "grant-as-authority-to-apps": [
         "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
       ]
+    },
+    {
+      "name": "$XSAPPNAME.cds.ExtensionDeveloper",
+      "description": "Access to develop extensions for Poetry Slam Manager"
     }
   ],
   "attributes": [],
@@ -33,19 +37,23 @@
       "description": "Restricted Access to PoetrySlams for Visitors",
       "scope-references": ["$XSAPPNAME.PoetrySlamRestricted"],
       "attribute-references": []
+    },
+    {
+      "name": "PoetrySlamExtensionDeveloperRole",
+      "description": "Access to develop extensions for Poetry Slam Manager",
+      "scope-references": ["$XSAPPNAME.cds.ExtensionDeveloper"],
+      "attribute-references": []
     }
   ],
   "role-collections": [
     {
-      "name": "PoetrySlamManagerRoleCollection",
-      "description": "Poetry Slam Manager",
-      "role-template-references": ["$XSAPPNAME.PoetrySlamManagerRole"]
-    },
-    {
-      "name": "PoetrySlamVisitorRoleCollection",
-      "description": "Poetry Slam Visitor",
-      "role-template-references": ["$XSAPPNAME.PoetrySlamVisitorRole"]
+      "name": "PoetrySlamExtensionDeveloperRoleCollection",
+      "description": "Poetry Slam Manager Extension Developer",
+      "role-template-references": [
+        "$XSAPPNAME.PoetrySlamExtensionDeveloperRole"
+      ]
     }
   ],
+  "authorities": ["$XSAPPNAME.cds.ExtensionDeveloper"],
   "authorities-inheritance": false
 }

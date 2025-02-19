@@ -74,7 +74,7 @@ describe('Util EMail - Reuse', () => {
 
   it('should generate email content for a poetry slam including translation German', function () {
     cds.context = {
-      locale: 'DE'
+      locale: 'de'
     };
     const currentDate = new Date();
     const content = EMail.generateMailContentForPoetrySlam(
@@ -134,7 +134,7 @@ describe('Util EMail - Reuse', () => {
 
   it('should generate email title for a poetry slam in German', function () {
     cds.context = {
-      locale: 'DE'
+      locale: 'de'
     };
     const content = EMail.getMailTitleForPoetrySlam();
     expect(content).to.equal('Deine Reime sind reserviert! 🖋️✨');

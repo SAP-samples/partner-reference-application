@@ -30,7 +30,7 @@ module.exports = async (srv) => {
   // Initialize status of drafts
   // Default the freeVisitorSeats to the maximumVisitorsNumber
   // Default number of poetry slam (human readable identifier)
-  srv.before('CREATE', 'PoetrySlams.drafts', async (req) =>
+  srv.before('CREATE', 'PoetrySlams.drafts', (req) =>
     initializePoetrySlam(req)
   );
 

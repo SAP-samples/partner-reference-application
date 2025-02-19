@@ -127,6 +127,7 @@ service PoetrySlamService @(
                           @(
                             title:'{i18n>languageInput}',
                             mandatory:true,
+                            UI.ParameterDefaultValue:'EN',
                             Common:{
                               ValueListWithFixedValues: false,
                               ValueList               : {
