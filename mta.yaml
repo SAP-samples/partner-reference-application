@@ -345,7 +345,7 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: auditlog
-      service-plan: premium 
+      service-plan: premium
 
   # Cloud Logging Service
   - name: poetry-slams-cloud-logging
