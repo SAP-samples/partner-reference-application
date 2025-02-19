@@ -345,7 +345,7 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: auditlog
-      service-plan: oauth2 # For productive system: service plan premium needs to be used
+      service-plan: premium 
 
   # Cloud Logging Service
   - name: poetry-slams-cloud-logging

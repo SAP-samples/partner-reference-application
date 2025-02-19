@@ -37,17 +37,12 @@
     "@cap-js/sqlite": "^1.8.0",
     "@sap-cloud-sdk/openapi-generator": "^3.26.0",
     "@sap/cds-dk": "^8.7.1",
-    "@sap/cds-lsp": "^8.5.1",
     "@sap/ux-specification": "^1.124.9",
     "axios": "^1.7.9",
     "chai": "^4.5.0",
     "chai-as-promised": "^7.1.2",
     "chai-subset": "^1.6.0",
-    "eslint": "^9.20.1",
-    "jest": "^29.7.0",
     "mocha": "^11.1.0",
-    "pre-commit": "^1.2.2",
-    "prettier": "^3.5.1",
     "sinon": "^19.0.2"
   },
   "scripts": {
@@ -58,18 +53,8 @@
     "prebuild": "npm ci && npx openapi-generator --input external_resources/PRINTAPI.json --outputDir srv/external --transpile true --overwrite && npx openapi-generator --input external_resources/FORMSAPI.json --outputDir srv/external --transpile true --overwrite",
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
     "deploy": "cf deploy mta_archives/archive.mtar -f --retries 1",
-    "test": "mocha",
-    "code-coverage": "NO_TELEMETRY=true node --experimental-vm-modules ./node_modules/.bin/jest --coverage",
-    "eslint": "eslint .",
-    "prettier": "prettier . --write",
-    "prettier-check": "prettier . --check",
-    "format-cds": "node_modules/.bin/format-cds -f"
+    "test": "mocha"
   },
-  "pre-commit": [
-    "prettier",
-    "eslint",
-    "format-cds"
-  ],
   "cds": {
     "features": {
       "assert_integrity": "db"
