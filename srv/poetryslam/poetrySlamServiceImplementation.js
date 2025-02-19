@@ -3,7 +3,6 @@
 // Include cds libraries and utility files
 const cds = require('@sap/cds');
 
-const erpForwardHandler = require('./poetrySlamServiceERPImplementation');
 // Access file system
 const fs = require('fs');
 const path = require('path');
@@ -15,14 +14,13 @@ module.exports = cds.service.impl(async (srv) => {
   // For better readability, outsource implementation files
   await poetrySlamsHandler(srv); // Forward handler to the Poetry Slam entity
   await visitsHandler(srv); // Forward handler to the Visits entity
-  await erpForwardHandler(srv); // Forward handler to the ERP systems
 
   // ----------------------------------------------------------------------------
   // Implementation of oData function
   // ----------------------------------------------------------------------------
 
   // Function "userInfo": Return logged-in user
-  srv.on('userInfo', async () => {
+  srv.on('userInfo', () => {
     let { user, locale } = cds.context;
     let results = {};
     results.id = user.id;

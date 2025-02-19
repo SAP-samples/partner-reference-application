@@ -6,8 +6,6 @@ const { httpCodes, visitStatusCode, poetrySlamStatusCode } = require('./codes');
 // Implementation of reuse functions
 // ----------------------------------------------------------------------------
 
-const DATE_DAYS_MULTIPLIER = 24 * 60 * 60 * 1000;
-
 // Default the freeVisitorSeats to the maximumVisitorsNumber
 async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
   const tableExtension = req.target.name.endsWith('drafts') ? '.drafts' : '';
@@ -123,7 +121,6 @@ async function updatePoetrySlam(
   return true;
 }
 
-// Helper function to convert an object to an array
 function convertToArray(x) {
   if (!x) {
     return [];
@@ -131,183 +128,9 @@ function convertToArray(x) {
   return Array.isArray(x) ? x : [x];
 }
 
-function subtractDaysFormatRFC3339(date, days = 0) {
-  const generatedDate = new Date(date);
-  generatedDate.setTime(generatedDate.getTime() - DATE_DAYS_MULTIPLIER * days); //40 days
-  return generatedDate.toISOString().substring(0, 10) + 'T00:00:00.0000000Z';
-}
-
-// Create a project in a ERP system
-async function createProject(req, srv, ConnectorClass, errorText) {
-  const connector = await ConnectorClass.createConnectorInstance(req);
-
-  if (!connector.isConnected()) {
-    req.warn(httpCodes.internal_server_error, errorText);
-    return;
-  }
-
-  const poetrySlamID = req.params[req.params.length - 1].ID;
-  const poetrySlam = await SELECT.one
-    .from('PoetrySlamService.PoetrySlams')
-    .where({ ID: poetrySlamID });
-  // Allow action for active entity instances only
-  if (!poetrySlam) {
-    req.error(httpCodes.bad_request, 'ACTION_CREATE_PROJECT_DRAFT');
-    return;
-  }
-
-  if (
-    poetrySlam.projectSystem &&
-    poetrySlam.projectSystem !== ConnectorClass.PROJECT_SYSTEM
-  ) {
-    req.warn(httpCodes.internal_server_error, errorText);
-    return;
-  }
-
-  const poetrySlamIdentifier = poetrySlam.number;
-  const poetrySlamTitle = poetrySlam.title;
-  const poetrySlamDate = poetrySlam.dateTime;
-
-  try {
-    connector.projectDataRecord(
-      poetrySlamIdentifier,
-      poetrySlamTitle,
-      poetrySlamDate
-    );
-
-    // Check and create the project instance
-    // If the project already exist, then read and update the local project elements in entity poetrySlams
-
-    let remoteProject = await connector.getRemoteProjectData(srv);
-
-    if (!remoteProject?.projectID) {
-      remoteProject = await connector.insertRemoteProjectData();
-    }
-
-    if (!remoteProject?.projectID) {
-      console.info(
-        'Remote Project ID is not available. PoetrySlam could not be updated.'
-      );
-      req.warn(
-        httpCodes.internal_server_error,
-        'ACTION_CREATE_PROJECT_FAILED',
-        [poetrySlamIdentifier]
-      );
-      return;
-    }
-
-    // Generate remote Project URL and update the URL
-    // Update project elements in entity poetrySlams
-    await UPDATE.entity('PoetrySlamService.PoetrySlams')
-      .set({
-        projectID: remoteProject.projectID,
-        projectObjectID: remoteProject.projectObjectID,
-        projectURL: connector.determineDestinationURL(),
-        projectSystem: ConnectorClass.PROJECT_SYSTEM
-      })
-      .where({ ID: poetrySlamID });
-  } catch (error) {
-    // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
-    console.error(`ACTION_CREATE_PROJECT_FAILED; ${error}`);
-    req.warn(httpCodes.internal_server_error, 'ACTION_CREATE_PROJECT_FAILED', [
-      poetrySlamIdentifier
-    ]);
-  }
-}
-
-// Create a purchase order in a ERP system
-async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
-  const connector = await ConnectorClass.createConnectorInstance(req);
-
-  if (!connector.isConnected()) {
-    req.warn(httpCodes.internal_server_error, errorText);
-    return;
-  }
-
-  const poetrySlamID = req.params[req.params.length - 1].ID;
-  const poetrySlam = await SELECT.one
-    .from('PoetrySlamService.PoetrySlams')
-    .where({ ID: poetrySlamID });
-  // Allow action for active entity instances only
-  if (!poetrySlam) {
-    req.error(httpCodes.bad_request, 'ACTION_CREATE_PURCHASE_ORDER_DRAFT');
-    return;
-  }
-
-  if (
-    poetrySlam.purchaseOrderSystem &&
-    poetrySlam.purchaseOrderSystem !== ConnectorClass.PURCHASE_ORDER_SYSTEM
-  ) {
-    req.warn(httpCodes.internal_server_error, errorText);
-    return;
-  }
-
-  // With purchase order the read is not possible. It is always a create. Remove the purchase order first
-  if (poetrySlam.purchaseOrderID) {
-    req.error(httpCodes.internal_server_error, errorText);
-    return;
-  }
-
-  const poetrySlamIdentifier = poetrySlam.number;
-  const poetrySlamDescription = poetrySlam.description;
-  const poetrySlamTitle = poetrySlam.title;
-  const poetrySlamDate = poetrySlam.dateTime;
-  const poetrySlamMaxVisitorsNumber = poetrySlam.maxVisitorsNumber;
-  const poetrySlamsVisitorsFeeAmount = poetrySlam.visitorsFeeAmount;
-
-  try {
-    connector.purchaseOrderDataRecord(
-      poetrySlamIdentifier,
-      poetrySlamTitle,
-      poetrySlamDescription,
-      poetrySlamDate,
-      poetrySlamMaxVisitorsNumber,
-      poetrySlamsVisitorsFeeAmount
-    );
-
-    // Create the purchase Order instance
-    const remotePurchaseOrder = await connector.insertRemotePurchaseOrderData();
-
-    if (!remotePurchaseOrder?.purchaseOrderID) {
-      console.info(
-        'Remote Purchase Order ID is not available. PoetrySlam could not be updated.'
-      );
-      req.warn(
-        httpCodes.internal_server_error,
-        'ACTION_CREATE_PURCHASE_ORDER_FAILED',
-        [poetrySlamIdentifier]
-      );
-      return;
-    }
-
-    // Update purchase order elements in entity poetrySlams
-    await UPDATE.entity('PoetrySlamService.PoetrySlams')
-      .set({
-        purchaseOrderID: remotePurchaseOrder.purchaseOrderID,
-        purchaseOrderObjectID: remotePurchaseOrder.purchaseOrderObjectID,
-        purchaseOrderURL: connector.determineDestinationURL(
-          remotePurchaseOrder.purchaseOrderObjectID
-        ), // Generate remote purchase order URL and update the URL
-        purchaseOrderSystem: ConnectorClass.PURCHASE_ORDER_SYSTEM
-      })
-      .where({ ID: poetrySlamID });
-  } catch (error) {
-    // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
-    console.log(`ACTION_CREATE_PURCHASE_ORDER_FAILED; ${error}`);
-    req.warn(
-      httpCodes.internal_server_error,
-      'ACTION_CREATE_PURCHASE_ORDER_FAILED',
-      [poetrySlamIdentifier]
-    );
-  }
-}
-
 // Publish constants and functions
 module.exports = {
   calculatePoetrySlamData,
   updatePoetrySlam,
-  convertToArray,
-  subtractDaysFormatRFC3339,
-  createProject,
-  createPurchaseOrder
+  convertToArray
 };

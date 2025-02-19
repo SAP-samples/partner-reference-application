@@ -30,17 +30,5 @@
       "scope-references": ["$XSAPPNAME.PoetrySlamRestricted"],
       "attribute-references": []
     }
-  ],
-  "role-collections": [
-    {
-      "name": "PoetrySlamManagerRoleCollection",
-      "description": "Poetry Slam Manager",
-      "role-template-references": ["$XSAPPNAME.PoetrySlamManagerRole"]
-    },
-    {
-      "name": "PoetrySlamVisitorRoleCollection",
-      "description": "Poetry Slam Visitor",
-      "role-template-references": ["$XSAPPNAME.PoetrySlamVisitorRole"]
-    }
   ]
 }

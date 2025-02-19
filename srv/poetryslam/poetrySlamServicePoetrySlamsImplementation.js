@@ -5,17 +5,10 @@ const { color, poetrySlamStatusCode, httpCodes } = require('./util/codes');
 const {
   calculatePoetrySlamData,
   updatePoetrySlam,
-  convertToArray,
-  createProject,
-  createPurchaseOrder
+  convertToArray
 } = require('./util/entityCalculations');
 
 const uniqueNumberGenerator = require('./util/uniqueNumberGenerator');
-
-// Add connector for project management systems
-const ConnectorByD = require('./connector/connectorByD');
-const ConnectorS4HC = require('./connector/connectorS4HC');
-const ConnectorB1 = require('./connector/connectorB1');
 
 module.exports = async (srv) => {
   const db = await cds.connect.to('db');
@@ -27,7 +20,7 @@ module.exports = async (srv) => {
   // Initialize status of drafts
   // Default the freeVisitorSeats to the maximumVisitorsNumber
   // Default number of poetry slam (human readable identifier)
-  srv.before('CREATE', 'PoetrySlams.drafts', async (req) =>
+  srv.before('CREATE', 'PoetrySlams.drafts', (req) =>
     initializePoetrySlam(req)
   );
 
@@ -79,110 +72,6 @@ module.exports = async (srv) => {
         poetrySlam.number
       ]);
     }
-  });
-
-  // Expand poetry slams
-  srv.on('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
-    // Read the PoetrySlams instances
-    let poetrySlams = await next();
-
-    // In this method we enrich the data from the database by external data and calculated fields
-    // In case none of these enriched fields are requested, we do not need to read from the external services
-    // So we first check if the requested columns contain any of the enriched columns and return if not
-    const requestedColumns = req.query.SELECT.columns?.map((item) =>
-      Array.isArray(item.ref) ? item.ref[0] : item.as
-    );
-    const enrichedFields = [
-      'projectSystemName',
-      'purchaseOrderSystemName',
-      'processingStatusText',
-      'projectProfileCodeText',
-      'createByDProjectEnabled',
-      'createS4HCProjectEnabled',
-      'createB1PurchaseOrderEnabled',
-      'isByD',
-      'isS4HC',
-      'isB1',
-      'toByDProject',
-      'toS4HCProject',
-      'toB1PurchaseOrder'
-    ];
-
-    if (
-      requestedColumns &&
-      !enrichedFields.some((item) => requestedColumns?.includes(item))
-    ) {
-      return poetrySlams;
-    }
-
-    // The requested columns include some of the enriched fields so we do add the corresponding data
-
-    // SAP Business ByDesign
-    // Check and read SAP Business ByDesign project related data
-    const connectorByD = await ConnectorByD.createConnectorInstance(req);
-    if (connectorByD?.isConnected()) {
-      poetrySlams = await connectorByD.readProject(poetrySlams);
-    }
-
-    // SAP S/4HANA Cloud
-    // Check and read SAP S/4HANA Cloud project related data
-    const connectorS4HC = await ConnectorS4HC.createConnectorInstance(req);
-    if (connectorS4HC?.isConnected()) {
-      poetrySlams = await connectorS4HC.readProject(poetrySlams);
-    }
-
-    // SAP Business One
-    // Check and read SAP Business One purchase order data
-    const connectorB1 = await ConnectorB1.createConnectorInstance(req);
-    if (connectorB1?.isConnected()) {
-      poetrySlams = await connectorB1.readPurchaseOrder(poetrySlams);
-    }
-
-    for (const poetrySlam of convertToArray(poetrySlams)) {
-      [
-        'projectSystemName',
-        'processingStatusText',
-        'projectProfileCodeText',
-        'purchaseOrderSystemName'
-      ].forEach((item) => {
-        poetrySlam[item] = poetrySlam[item] || '';
-      });
-
-      // Update project system name and visibility of the "Create Project"-buttons
-      if (poetrySlam.projectID) {
-        const systemNames = {
-          ByD: connectorByD.getSystemName(),
-          S4HC: connectorS4HC.getSystemName()
-        };
-        poetrySlam.createByDProjectEnabled = false;
-        poetrySlam.createS4HCProjectEnabled = false;
-        poetrySlam.projectSystemName = systemNames[poetrySlam.projectSystem];
-      } else {
-        poetrySlam.createByDProjectEnabled = connectorByD.isConnected();
-        poetrySlam.createS4HCProjectEnabled = connectorS4HC.isConnected();
-      }
-
-      // Update PO system name and visibility of the "Create Purchase Order"-button
-      if (poetrySlam.purchaseOrderID) {
-        poetrySlam.createB1PurchaseOrderEnabled = false;
-        poetrySlam.purchaseOrderSystemName = connectorB1.getSystemName();
-      } else {
-        poetrySlam.createB1PurchaseOrderEnabled = connectorB1.isConnected();
-      }
-
-      // Update the backend system connected indicator used in UI for controlling visibility of UI elements
-      poetrySlam.isByD = connectorByD.isConnected();
-      poetrySlam.isS4HC = connectorS4HC.isConnected();
-      poetrySlam.isB1 = connectorB1.isConnected();
-
-      // Initialize the associations
-      poetrySlam.toByDProject = poetrySlam.toByDProject || null;
-      poetrySlam.toB1PurchaseOrder = poetrySlam.toB1PurchaseOrder || null;
-      poetrySlam.toS4HCProject = poetrySlam.toS4HCProject || null;
-    }
-
-    // Return remote data
-    return poetrySlams;
   });
 
   // Apply a colour code based on the poetry slam status
@@ -293,125 +182,6 @@ module.exports = async (srv) => {
     );
 
     return success ? poetrySlam : {}; // Return the changed poetry slam
-  });
-
-  // Entity action: Clear project data
-  srv.on('clearProjectData', async (req) => {
-    const poetrySlamID = req.params[req.params.length - 1].ID;
-
-    // Allow action for active entity instances only
-    const poetrySlam = await SELECT.one
-      .from('PoetrySlamService.PoetrySlams')
-      .columns('ID', 'number')
-      .where({ ID: poetrySlamID });
-
-    // If poetry slam was not found, throw an error
-    if (!poetrySlam) {
-      req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [poetrySlamID]);
-      return;
-    }
-
-    // Remove all project data
-    const updateValues = {
-      projectID: null,
-      projectObjectID: null,
-      projectURL: null,
-      projectSystem: null
-    };
-
-    const result = await UPDATE(`PoetrySlamService.PoetrySlams`)
-      .set(updateValues)
-      .where({ ID: poetrySlamID });
-
-    if (result !== 1) {
-      req.error(
-        httpCodes.internal_server_error,
-        'POETRYSLAM_COULD_NOT_BE_UPDATED',
-        [poetrySlam.number]
-      );
-    }
-  });
-
-  // Entity action: clear purchase order data
-  srv.on('clearPurchaseOrderData', async (req) => {
-    const poetrySlamID = req.params[req.params.length - 1].ID;
-
-    // Allow action for active entity instances only
-    const poetrySlam = await SELECT.one
-      .from('PoetrySlamService.PoetrySlams')
-      .columns('ID', 'number')
-      .where({ ID: poetrySlamID });
-
-    // If poetry slam was not found, throw an error
-    if (!poetrySlam) {
-      req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [poetrySlamID]);
-      return;
-    }
-
-    // Remove all purchase order data
-    const updateValues = {
-      purchaseOrderID: null,
-      purchaseOrderObjectID: null,
-      purchaseOrderURL: null,
-      purchaseOrderSystem: null
-    };
-
-    const result = await UPDATE(`PoetrySlamService.PoetrySlams`)
-      .set(updateValues)
-      .where({ ID: poetrySlamID });
-
-    if (result !== 1) {
-      req.error(
-        httpCodes.internal_server_error,
-        'POETRYSLAM_COULD_NOT_BE_UPDATED',
-        [poetrySlam.number]
-      );
-    }
-  });
-
-  // ----------------------------------------------------------------------------
-  // Implementation of entity events (entity PoetrySlams)
-  // with impact on remote services of SAP Business ByDesign
-  // ----------------------------------------------------------------------------
-
-  // Entity action: Create SAP Business ByDesign Project
-  srv.on('createByDProject', async (req) => {
-    await createProject(
-      req,
-      srv,
-      ConnectorByD,
-      'ACTION_CREATE_PROJECT_NO_SAP_BUSINESS_BY_DESIGN_SYSTEM'
-    );
-  });
-
-  // ----------------------------------------------------------------------------
-  // Implementation of entity events (entity PoetrySlams)
-  // with impact on remote services of SAP S/4HANA Cloud
-  // ----------------------------------------------------------------------------
-
-  // Entity action: Create SAP S/4HANA Cloud Enterprise Project
-  srv.on('createS4HCProject', async (req) => {
-    await createProject(
-      req,
-      srv,
-      ConnectorS4HC,
-      'ACTION_CREATE_PROJECT_NO_S4_HANA_CLOUD_SYSTEM'
-    );
-  });
-
-  // ----------------------------------------------------------------------------
-  // Implementation of entity events (entity PoetrySlams)
-  // with impact on remote services of SAP Business One
-  // ----------------------------------------------------------------------------
-
-  // Entity action: Create SAP Business One Purchase Order
-  srv.on('createB1PurchaseOrder', async (req) => {
-    await createPurchaseOrder(
-      req,
-      srv,
-      ConnectorB1,
-      'ACTION_CREATE_PURCHASE_ORDER_NO_B1_SYSTEM'
-    );
   });
 
   // ----------------------------------------------------------------------------

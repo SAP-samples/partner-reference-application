@@ -38,7 +38,7 @@
           "subTitle": "{{flpSubtitle}}",
           "signature": {
             "parameters": {},
-            "additionalParameters": "allowed"
+            "additionalParameters": "ignored"
           }
         }
       }
@@ -148,19 +148,7 @@
           "options": {
             "settings": {
               "editableHeaderContent": false,
-              "contextPath": "/Visitors",
-              "content": {
-                "header": {
-                  "actions": {
-                    "MaintainPoetrySlam": {
-                      "press": "visitors.ext.customActions.navigatePoetrySlamList",
-                      "visible": true,
-                      "enabled": true,
-                      "text": "{i18n>maintainPoetrySlams}"
-                    }
-                  }
-                }
-              }
+              "contextPath": "/Visitors"
             }
           }
         }
@@ -170,5 +158,8 @@
   "sap.fiori": {
     "registrationIds": [],
     "archeType": "transactional"
+  },
+  "sap.platform.cf": {
+    "ui5VersionNumber": "1.130.5"
   }
 }

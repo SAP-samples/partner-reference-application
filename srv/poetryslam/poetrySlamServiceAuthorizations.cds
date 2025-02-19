@@ -50,21 +50,3 @@ annotate PoetrySlamService.Visits with @(restrict: [
     where: 'createdBy = $user or artistIndicator=true'
   }
 ]);
-
-// SAP Business ByDesign projects: Managers can read remote projects (create is done using the remote service, not the projection in the PoetrySlamService)
-annotate PoetrySlamService.ByDProjects with @(restrict: [{
-  grant: ['READ'],
-  to   : 'PoetrySlamFull'
-}]);
-
-// S/4 projects: Managers can read remote projects (create is done using the remote service, not the projection in the PoetrySlamService)
-annotate PoetrySlamService.S4HCProjects with @(restrict: [{
-  grant: ['READ'],
-  to   : 'PoetrySlamFull'
-}]);
-
-// SAP Business One purchase orders: Managers can read remote purchase orders (create is done using the remote service, not the projection in the PoetrySlamService)
-annotate PoetrySlamService.B1PurchaseOrder with @(restrict: [{
-  grant: ['READ'],
-  to   : 'PoetrySlamFull'
-}]);

@@ -16,6 +16,9 @@ build-parameters:
     - builder: custom
       commands:
         - npm ci --omit=dev
+        # [Workzone] Create resources folder and copy cdm.json
+        - mkdir -p resources
+        - cp workzone/cdm.json resources/cdm.json
         - npx -p @sap/cds-dk cds build --production
 
 # -------------------------------------------------------------------------
@@ -31,9 +34,9 @@ modules:
     requires:
       - name: poetry-slams-auth
       - name: poetry-slams-db
-      - name: poetry-slams-destination-service
+      - name: poetry-slams-destination
     provides:
-      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+      - name: poetry-slams-srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
           srv-url: ${default-url}
     parameters:
@@ -73,9 +76,17 @@ modules:
     type: com.sap.application.content
     path: .
     requires:
-      - name: poetry-slams-repo-host
+      - name: poetry-slams-srv-api
+      - name: poetry-slams-auth
+      - name: poetry-slams-html5-repo-host
         parameters:
           content-target: true
+    parameters:
+      config:
+        destinations:
+          - forwardAuthToken: true
+            name: poetry-slams-srv-api
+            url: ~{poetry-slams-srv-api/srv-url}
     build-parameters:
       build-result: resources
       requires:
@@ -88,29 +99,30 @@ modules:
           name: visitors
           target-path: resources/
 
-  # MTX module
-  # Handles multitenancy
-  - name: poetry-slams-mtx
-    type: nodejs
-    path: gen/mtx/sidecar
-    build-parameters:
-      builder: npm-ci
-    parameters:
-      memory: 256M
-      disk-quota: 512M
-    provides:
-      - name: mtx-api
-        properties:
-          mtx-url: ${default-url}
+  # Destinations
+  # Creates destination in subaccount of type OAuth2ClientCredentials to access HTML5 repo
+  - name: poetry-slams-destinations-content
+    type: com.sap.application.content
     requires:
-      - name: poetry-slams-db
-      - name: poetry-slams-auth
-      - name: poetry-slams-registry
-      - name: poetry-slams-destination-service
       - name: poetry-slams-html5-runtime
-      - name: app-api
-        properties:
-          SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}.~{app-uri}
+        parameters:
+          service-key:
+            name: poetry-slams-html5-runtime-key
+      - name: poetry-slams-destination
+        parameters:
+          content-target: true
+    build-parameters:
+      no-source: true
+    parameters:
+      content:
+        subaccount:
+          existing_destinations_policy: update
+          destinations:
+            - Name: poetry-slams-cdm
+              Description: Destination for the workzone configuration of solution poetryslammanager
+              ServiceInstanceName: poetry-slams-html5-runtime
+              ServiceKeyName: poetry-slams-html5-runtime-key
+              URL: https://html5-apps-repo-rt.${default-domain}/applications/cdm/poetryslammanager # Adds workzone configuration of solution poetryslammanager
 
   # Approuter
   # Main entry point, routes subscription(i.e. tenant)-specific URLs and is used to deliver the getDependencies information
@@ -133,20 +145,20 @@ modules:
             - host: '*.${default-uri}'
               protocol: 'https'
     requires:
-      - name: srv-api
+      - name: poetry-slams-srv-api
         group: destinations
         properties:
-          name: srv-api # must be used in xs-app.json as well
+          name: poetry-slams-srv-api # must be used in xs-app.json as well
           url: ~{srv-url}
           forwardAuthToken: true
       - name: mtx-api
         group: destinations
         properties:
-          name: mtx-api # must be used in xs-app.json as well
+          name: mtx-api
           url: ~{mtx-url}
       - name: poetry-slams-auth
       - name: poetry-slams-html5-runtime
-      - name: poetry-slams-destination-service
+      - name: poetry-slams-destination
     provides:
       - name: app-api
         properties:
@@ -154,26 +166,73 @@ modules:
           app-uri: ${default-uri}
           redirect-uris: ${protocol}://*.${default-uri}/** # Redirect URI to connect modules running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
 
+  # MTX module
+  # Handles multitenancy
+  - name: poetry-slams-mtx
+    type: nodejs
+    path: gen/mtx/sidecar
+    build-parameters:
+      builder: npm-ci
+    parameters:
+      memory: 256M
+      disk-quota: 512M
+    provides:
+      - name: mtx-api
+        properties:
+          mtx-url: ${default-url}
+    requires:
+      - name: poetry-slams-db
+      - name: poetry-slams-auth
+      - name: poetry-slams-registry
+      - name: poetry-slams-destination
+      - name: poetry-slams-html5-repo-host
+      - name: app-api
+        properties:
+          SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}.~{app-uri}
+
 # -------------------------------------------------------------------------
 # Resources/Services that are required to run the deployed application
 # -------------------------------------------------------------------------
 resources:
   # HTML5 app repository
   # Hosts and serves the HTML5 application so that it is accessible via internet browsers
-  - name: poetry-slams-repo-host
+  - name: poetry-slams-html5-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
       service: html5-apps-repo
-      service-name: poetry-slams-html5-srv
       service-plan: app-host
 
   # Destination service
   # Offers a predefined configuration that simplifies connecting to the service
-  - name: poetry-slams-destination-service
+  - name: poetry-slams-destination
     type: org.cloudfoundry.managed-service
+    requires:
+      - name: poetry-slams-srv-api
+      - name: poetry-slams-auth
     parameters:
       service: destination
       service-plan: lite
+      config:
+        init_data:
+          subaccount:
+            existing_destinations_policy: update
+            destinations:
+              - Name: poetry-slams-rt
+                Description: Runtime destination of the launchpad, required for workzone
+                Authentication: NoAuthentication
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://${org}.launchpad.${default-domain} # Runtime destination of launchpad, required for workzone
+                CEP.HTML5contentprovider: true
+              - Name: poetry-slams-srv-api
+                Description: Destination to access the poetry slams service module, required for workzone
+                Authentication: NoAuthentication
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://${org}-${space}-poetry-slams-srv.${default-domain} # Destination to access the poetry slams service module, required for workzone
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+        HTML5Runtime_enabled: false
 
   # Authorization XSUAA service
   # Manages authentication, single sign-on (SSO), user management, and provides a way to manage authorizations based on scopes and role collections
@@ -187,7 +246,7 @@ resources:
         xsappname: poetry-slams-${org}-${space}
         oauth2-configuration:
           redirect-uris:
-            - ~{app-api/redirect-uris} # Redirect to connect modules running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
+            - ~{app-api/redirect-uris} # Redirect for approuter, required if xsuaa and approuter are running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
       path: ./xs-security.json
       service: xsuaa
       service-plan: broker

@@ -29,6 +29,7 @@ describe('Authorizations of PoetrySlamService with User Denise (authenticated us
   });
 
   it('should reject the reading of the poetry slams', async () => {
+    // Read all poetry slams; shall be rejected
     await expect(
       GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
         params: { $select: `ID,status_code,statusCriticality` }
