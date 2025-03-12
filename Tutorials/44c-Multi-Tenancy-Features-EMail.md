@@ -1,7 +1,8 @@
-# Send E-Mails
+# Send Emails
 
-Put yourself in the shoes of a poetry slam manager who uses a poetry slam management application to manage the events. You want to send an email reminder to your artists and guests before the event. The Partner Reference Application uses the [SAP Cloud SDK Mail Client](https://sap.github.io/cloud-sdk/docs/js/features/mail-client) to send e-mails to your e-mail servers. 
-A detailed [API reference](https://sap.github.io/cloud-sdk/api/v3/modules/sap_cloud_sdk_mail_client.html) is available, too.
+Imagine you're a poetry slam manager using a poetry slam management app to organize events. You need to send email reminders to your artists and guests before the event. The Partner Reference Application uses the [SAP Cloud SDK Mail Client](https://www.npmjs.com/package/@sap-cloud-sdk/mail-client) to send emails to your email servers.
+
+> Note: The SAP Cloud SDK Mail Package is deprecated (refer to [SAP Cloud SDK Upgrade to Version 4](https://sap.github.io/cloud-sdk/docs/js/guides/upgrade-to-version-4#remove-deprecated-content)). While the approach below still works, it is scheduled for updates.
 
 ## Guide How to Enhance the Application Step by Step
 To explore this feature with the Poetry Slam Manager, you have two options: 
