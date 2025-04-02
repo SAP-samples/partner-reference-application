@@ -41,15 +41,20 @@ In the consumer subaccount, [destinations](https://help.sap.com/docs/cloud-porta
 Therefore, export the required subaccount destinations from the provider subaccount and import them to the consumer subaccount.
 
 1. Export the destinations from the provider subaccount.
+
 	1. Open the SAP BTP cockpit of the provider.
-	1. Navigate to the *Destinations*.
-	2. Select the *poetry-slams-cdm* destination and export it. A file *poetry-slams-cdm* is stored on your computer.
-	3. Select the *poetry-slams-rt* destination and export it. A file *poetry-slams-rt* is stored on your computer.
-	4. Do not close the provider cockit as you still need it in the next steps.
+	2. Navigate to the *Destinations* view.
+	3. (Optional) Adapt the destinations in landscape eu10. This step is necessary because the HTML5 repository and SAP Build Work Zone services are hosted in eu10, while the application runs in eu10-00x.
+		1. If your application runs in landscape eu10 and the service URL includes *eu10-00x.hana.ondemand.com*, where x stands for any number, adapt the destinations before exporting them.
+		2. In the *poetry-slams-rt* destination, remove *-00x* from the *URL*. The last part of the URL should be: *launchpad.cfapps.eu10.hana.ondemand.com*.
+		3. In the *poetry-slams-cdm* destination, remove *-00x* from the *URL*, the *Token Service URL*, and the additional property *uri*. It should be: *cfapps.eu10.hana.ondemand.com*.
+	4. Select the *poetry-slams-cdm* destination and export it. A *poetry-slams-cdm* file is stored on your computer.
+	5. Select the *poetry-slams-rt* destination and export it. A *poetry-slams-rt* file is stored on your computer.
+	6. Do not close the provider cockpit, as you'll need it for the next steps.
 
 2. Import the destinations in the consumer subaccount.
 	1. Open the SAP BTP cockpit of the consumer.
-	2. Navigate to the *Destinations*.
+	2. Navigate to the *Destinations* view.
 	3. Import the *poetry-slams-cdm* destination using the downloaded file. The values of the destination are taken over. The value of the Client Secret property can't be exported but you can get it as follows:
 
 		1. Navigate to *Instances and Subscriptions* of the provider subaccount.
