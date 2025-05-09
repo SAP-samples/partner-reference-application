@@ -33,12 +33,15 @@ The list shows the entitlements that are required in the different subaccounts t
 | -----------   |  -------------------                                 | ---------                 | ---------     | ---------                         |
 | Development   |                                                      |                           |               |                                   |
 |               | SAP Business Application Studio                      | standard-edition          | Application   | 1 (per developer)                 |
+|               | SAP Continuous Integration and Delivery service      | default                   | Service       | 1                                 |
+|               | SAP Alert Notification service                       | standard                  | Service       | 1                                 | 
 | Provider      |                                                      |                           |               |                                   |
 |               | SAP BTP Cloud Foundry runtime                        | standard                  | Environment   | 4 units                           |
 |               | SAP Custom Domain service                            | standard                  | Application   | 1                                 |
 |               | SAP Audit Log service                                | premium                   | Service       | 1                                 |
 |               | SAP Authorization and Trust Management service       | broker                    | Service       | 1                                 | 
 |               | SAP Destination service                              | lite                      | Service       | 1                                 | 
+|               | SAP Connectivity service                             | lite                      | Service       | 1                                 | 
 |               | SAP HTML5 Application Repository service for SAP BTP | app-host                  | Service       | 1                                 | 
 |               | SAP HTML5 Application Repository service for SAP BTP | app-runtime               | Service       | 1                                 | 
 |               | SAP Software-as-a-Service Provisioning service       | application               | Service       | 1                                 | 
@@ -49,7 +52,7 @@ The list shows the entitlements that are required in the different subaccounts t
 |               | SAP Cloud Logging service                            | standard                  | Service       | 1                                 | 
 |               | SAP Forms service by Adobe                           | default (Application)     | Application   | 1                                 | 
 |               | SAP Forms service by Adobe API                       | standard                  | Service       | 1                                 | 
-|               | SAP Print service                                    | sender                    | Service       | 1                                 | 
+|               | SAP Print service                                    | sender                    | Service       | 1                                 |
 |               | SAP AI Core                                          | extended                  | Service       | 1                                 | 
 | Consumer      |                                                      |                           |               |                                   |
 |               | SAP Audit Log Viewer service for SAP BTP             | default                   | Application   | 1                                 |

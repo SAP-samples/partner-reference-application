@@ -82,14 +82,14 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
             entity Language    as projection on sap.common.Languages;
             ```
 
-    2. Copy the file [*srv/poetryslam/util/genAI.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/genAI.js) with the genAI util class to your project. The genAI class uses [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) to leverage the generative AI hub features.
+    2. Copy the file [*srv/lib/genAI.js*](../../../tree/main-multi-tenant-features/srv/lib/genAI.js) with the genAI class to your project. The genAI class uses [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) to leverage the generative AI hub features.
 
     3. Extend the service implementation file [*srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) with the implementation of the action.
 
         1. Import the genAI class.
 
             ```js
-            const GenAI = require('./util/genAI');
+            const GenAI = require('../lib/genAI');
             ```
 
         2. Add the action implementation.
@@ -222,7 +222,7 @@ Unit tests are available to test the artificial intelligence feature:
     });
     ```
 
-2. Copy the file [*test/srv/poetryslam/util/genAI.test.js*](../../../tree/main-multi-tenant-features/test/srv/poetryslam/util/genAI.test.js) to your project. This file tests the genAI util class.
+2. Copy the file [*test/srv/lib/genAI.test.js*](../../../tree/main-multi-tenant-features/test/srv/lib/genAI.test.js) to your project. This file tests the genAI class.
 
 3. To run the automated SAP Cloud Application Programming Model tests:
 

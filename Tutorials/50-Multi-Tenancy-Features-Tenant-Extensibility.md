@@ -1,5 +1,5 @@
 # Enable Consumer-Specific Extensions
-Imagine you're one of your customers, like Gourmet Pages, a renowned food magazine known for its exquisite taste and celebration of culinary arts. Besides publishing their magazine, Gourmet Pages hosts exclusive poetry slam events that blend the art of spoken word with gourmet food experiences. To manage the complexities of coordinating caterers with their poetry slam events, Gourmet Pages needs the Poetry Slam Manager application to be extended for their specific requirements. Based on the [CAPire Documentation - Extending SaaS Applications](https://cap.cloud.sap/docs/guides/extensibility/customization), you can extend the Partner Reference Application for a specific consumer while keeping the core application unchanged for others.
+Imagine you're one of your customers, like Gourmet Pages, a renowned food magazine known for its exquisite taste and celebration of culinary arts. Besides publishing their magazine, Gourmet Pages hosts exclusive poetry slam events that blend the art of spoken word with gourmet food experiences. To manage the complexities of coordinating caterers with their poetry slam events, Gourmet Pages needs the Poetry Slam Manager application to be extended for their specific requirements. Based on the capire documentation [Extending SaaS Applications](https://cap.cloud.sap/docs/guides/extensibility/customization), you can extend the Partner Reference Application for a specific consumer while keeping the core application unchanged for others.
 
 ## Step-by-Step Guide to Enhance the Application 
 
@@ -13,16 +13,15 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 ### Application Enablement 
 
-To enable tenant-specific extensions as a SaaS provider follow these steps. For more details, refer to [CAPire Documentation - Extending SaaS Applications → As a SaaS Provider](https://cap.cloud.sap/docs/guides/extensibility/customization#prep-as-provider).
+To enable tenant-specific extensions as a SaaS provider follow these steps. For more details, refer to capire documentation [Extending SaaS Applications → As a SaaS Provider](https://cap.cloud.sap/docs/guides/extensibility/customization#prep-as-provider).
 
 1. Run the command `cds add extensibility`. This enhances the following files:
     - The extensibility flag is set to true in [package.json](../../../tree/main-multi-tenant-features/package.json).
     - An MTX route is added to the approuter in [app/router/xs-app.json](../../../tree/main-multi-tenant-features/app/router/xs-app.json). This ensures that tenant-specific information needed for the extensions is provided to the MTX module.
     - The [mta.yaml](../../../tree/main-multi-tenant-features/mta.yaml) is enhanced with a subscription URL.
-        > Note: In the section of the MTX module *poetry-slams-mtx* in the [./mta.yaml](../../../tree/main-multi-tenant-features/mta.yaml) file, the subscription URL is already included. Therefore, it is duplicated and must be removed.
-2. Add restriction points to the [MTX sidecar package.json](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json).
+2. Add restriction points to the [MTX sidecar package.json](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json) to restrict which database and service entities can be extended. Besides this, it defines which annotations are allowed to be used for an extension.
 
-    ```package.json
+    ```json
     {
         "cds": {
             "requires": {
@@ -34,19 +33,23 @@ To enable tenant-specific extensions as a SaaS provider follow these steps. For 
                     "extension-allowlist": [
                         {
                             "for": [
-                            "sap.samples.poetryslams.PoetrySlams"
+                                "sap.samples.poetryslams.PoetrySlams",
+                                "PoetrySlamService.PoetrySlams"
+                            ],
+                            "kind": "entity",
+                            "annotations": [
+                                "@assert.integrity"
+                            ]
+                        },
+                        {
+                            "for": [
+                                "sap.samples.poetryslams.Visitors"
                             ],
                             "kind": "entity"
                         },
                         {
                             "for": [
-                            "sap.samples.poetryslams.Visitors"
-                            ],
-                            "kind": "entity"
-                        },
-                        {
-                            "for": [
-                            "PoetrySlamService"
+                                "PoetrySlamService"
                             ],
                             "kind": "service"
                         }
@@ -56,9 +59,22 @@ To enable tenant-specific extensions as a SaaS provider follow these steps. For 
         }
     }
     ```
-3. Add the following roles to the [xs-security.json](../../../tree/main-multi-tenant-features/xs-security.json) file:
 
-    ```package.json
+3. Furthermore enhance the [MTX sidecar package.json](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json) with the assert_integrity configuration as described in the capire documentation [Database Constraints](https://cap.cloud.sap/docs/guides/databases#database-constraints). This checks the integrity of the database schema. When set to "db", it ensures that the database schema matches the model definitions provided in the application.
+
+    ```json
+    {
+        "cds": {
+            "features": {
+                "assert_integrity": "db"
+            }
+        }
+    }
+    ```
+
+4. Add the following roles to the [xs-security.json](../../../tree/main-multi-tenant-features/xs-security.json) file:
+
+    ```json
     {
         "scopes": [
             ...

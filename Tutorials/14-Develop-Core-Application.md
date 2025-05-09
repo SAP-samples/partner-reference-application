@@ -51,7 +51,17 @@ To open the CDS graphical modeler, open the context menu in the created CDS file
 
 To add additional metadata to the entities, annotate them by using the *annotate* keyword. To make it as easy as possible to read the code, use different files to separate the entity definition and additional metadata. If you want to read up on adding annotations, go to the [SAP Cloud Application Programming Model documentation on data annotations](https://cap.cloud.sap/docs/advanced/odata#annotations).
 
-Copy [Tutorial Domain Model Entity Definitions](../../../tree/main-multi-tenant/db/poetrySlamManagerModel.cds) into your project.
+1. Copy [Tutorial Domain Model Entity Definitions](../../../tree/main-multi-tenant/db/poetrySlamManagerModel.cds) into your project.
+
+2. As foreign key constraints are enabled by the annotation *@assert.integrity*, add the parameter also to the [root package.json](../../../tree/main-multi-tenant-features/package.json) to generate foreign-key constraints on the database layer as described in the capire documentation [Database Constraints](https://cap.cloud.sap/docs/guides/databases#db-constraints). 
+
+```json
+  "cds": {
+    "features": {
+      "assert_integrity": "db"
+    }
+  }
+```
 
 ## Reuse Common Content
 The modeled entities contain attributes, such as currencies, which are common for typical business applications. For this purpose, SAP provides the node module [@sap/cds-common-content](https://www.npmjs.com/package/@sap/cds-common-content), which includes code lists based on the ISO specification of the following CDS common definitions:
@@ -104,18 +114,18 @@ Every entity defined in the domain model definition comes with a set of generic 
 
 Note that some code functions have been defined in separate utility files such as specific calculations for the entities and the constants for code list values.
 
-Copy the main file of the [Poetry Slams service implementation](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceImplementation.js), the service implementation of the [poetry slams entity](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) and the service implementation of the [visits entity](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceVisitsImplementation.js) into the *srv/poetryslam* folder and the [code definitions](../../../tree/main-multi-tenant/srv/poetryslam/util/codes.js) and [entity calculation functions](../../../tree/main-multi-tenant/srv/poetryslam/util/entityCalculations.js) into the *srv/poetryslam/util* folder of your project.
+Copy the main file of the [Poetry Slams service implementation](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceImplementation.js), the service implementation of the [poetry slams entity](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) and the service implementation of the [visits entity](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceVisitsImplementation.js) into the *srv/poetryslam* folder and the [code definitions](../../../tree/main-multi-tenant/srv/lib/codes.js) and [entity calculation functions](../../../tree/main-multi-tenant/srv/lib/entityCalculations.js) into the *srv/lib* folder of your project.
 
 The Poetry Slams service definition and implementation define and handle the `createTestData` action which is used to create and reset sample entries of mutable data, such as poetry slams, visitors, and visits, after the application is deployed and running. This function is available for demo purpose only. The implementation of the action reads the files [*srv/poetryslam/sample_data/poetrySlams.json*](../../../tree/main-multi-tenant/srv/poetryslam/sample_data/poetrySlams.json), [*srv/poetryslam/sample_data/visitors.json*](../../../tree/main-multi-tenant/srv/poetryslam/sample_data/visitors.json), and [*srv/poetryslam/sample_data/visits.json*](../../../tree/main-multi-tenant/srv/poetryslam/sample_data/visits.json) containing sample data, and adds the data to the corresponding database tables using [`UPSERT`](https://cap.cloud.sap/docs/node.js/cds-ql#upsert). Copy these files into your project.
 
 ### Readable IDs
 In addition to technical UUIDs, this solution generates readable IDs that end users can use to uniquely identify poetry slam documents. Compared to randomly generated UUIDs, these readable IDs are easier to remember. One common approach for generating readable IDs is to use a combination of meaningful words and numbers. In this example, the poetry slam number is a combination of a prefix and a generated number, for example, *PS-10*.
 
-The number generation depends on the database that you use. For local testing purposes, use an SQLite database and, for deployed solutions, SAP HANA Cloud. In SQLite, use the AUTOINCREMENT feature. In SAP HANA Cloud, use an SAP HANA sequence. This distinction is implemented in the function [getNextNumber of class uniqueNumberGenerator](../../../tree/main-multi-tenant/srv/poetryslam/util/uniqueNumberGenerator.js) which is called in the [Poetry Slams service implementation](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) when the poetry slam is created (meaning the first time a draft is saved).
+The number generation depends on the database that you use. For local testing purposes, use an SQLite database and, for deployed solutions, SAP HANA Cloud. In SQLite, use the AUTOINCREMENT feature. In SAP HANA Cloud, use an SAP HANA sequence. This distinction is implemented in the function [getNextNumber of class uniqueNumberGenerator](../../../tree/main-multi-tenant/srv/lib/uniqueNumberGenerator.js) which is called in the [Poetry Slams service implementation](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) when the poetry slam is created (meaning the first time a draft is saved).
 
 The sequence used by SAP HANA Cloud is defined in the [poetrySlamNumber.hdbsequence](../../../tree/main-multi-tenant/db/src/poetrySlamNumber.hdbsequence). Note that, for SAP HANA Cloud sequences, the generated numbers can't be rolled back. So, if a transaction is not committed, a number is lost from the sequence.
 
-Copy the [poetrySlamNumber.hdbsequence](../../../tree/main-multi-tenant/db/src/poetrySlamNumber.hdbsequence) and the [class uniqueNumberGenerator](../../../tree/main-multi-tenant/srv/poetryslam/util/uniqueNumberGenerator.js) into your project.
+Copy the [poetrySlamNumber.hdbsequence](../../../tree/main-multi-tenant/db/src/poetrySlamNumber.hdbsequence) and the [class uniqueNumberGenerator](../../../tree/main-multi-tenant/srv/lib/uniqueNumberGenerator.js) into your project.
 
 ### Input Validation
 Input validation ensures that the entered data is correct. Input validations can either be achieved through annotations in the entity definition or by implementation in the service handler. 
@@ -347,7 +357,7 @@ To implement a color-coding system for specific columns on the user interface, a
         }
     }
     ```
-- Helper function `convertToArray` to convert an object or array to an array in [*entityCalculations.js*](../../../tree/main-multi-tenant/srv/poetryslam/util/entityCalculations.js).
+- Helper function `convertToArray` to convert an object or array to an array in [*entityCalculations.js*](../../../tree/main-multi-tenant/srv/lib/entityCalculations.js).
 - Entries in the i18n files to set the column headers.
 - An entry in the [*annotations.cds*](../../../tree/main-multi-tenant/app/poetryslams/annotations.cds) to use the field on the user interface.
 
@@ -426,9 +436,7 @@ The wizard created all runtime-relevant security settings of our application. It
 }
 ```
 
-Additionally, replace the CDS section in the *package.json*. It tells the CDS framework that you use the cloud security services integration library service of SAP Business Technology Platform. Additionally, it adds *assert integrity* on the database layer, which generates foreign-key constraints. 
-
-For details, refer to the [SAP Cloud Application Programming Model documentation on database constraints](https://cap.cloud.sap/docs/guides/databases#db-constraints).
+Additionally, replace the CDS section in the [*package.json*](../../../tree/main-multi-tenant/package.json). It tells the CDS framework that you use the cloud security services integration library service of SAP Business Technology Platform.
 
 ```json
   "cds": {

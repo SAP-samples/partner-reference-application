@@ -3,10 +3,14 @@
 Put yourself in the shoes of a poetry slam manager who uses a poetry slam management application to manage the events. Instead of creating, viewing and downloading forms, you want the guest list to be directly sent to a physical printer. Because your printer is located in your customer landscape, an SaaS cloud application like the *Poetry Slam Manager* will not have direct access to the printer. To support printing, SAP BTP offers the [SAP Print Service](https://help.sap.com/docs/SCP_PRINT_SERVICE/7615de0949ce441d8bc5df7725a6bfc6/e038be89d87c474c9af3f976e4573fc1.html).
 It consists of several parts:
 
-1. The *Print Service* with service plan *sender* is a service that runs in the provider subaccount and allows you to assign documents to print queues. Print queues are the consumer-subaccount-specific storage of documents waiting to be printed.
-2. The *Print Service* with service plan *standard* is an application that runs in a consumer subaccount and allows you to create and manage the print queues. 
-3. The *Print Service* with service plan *receiver* is a service running in a consumer subaccount. It provides the credentials to pull documents from SAP BTP to the customer landscape.
-4. The *Print Manager* is a Windows application that runs on a customer's computer. It regularly pulls documents from print queues (using the *receiver* credentials) and sends them to a local printer.
+1. The *SAP Print Service* with service plan *sender* is a service that runs in the provider subaccount and allows you to assign documents to print queues. Print queues are the consumer-subaccount-specific storage of documents waiting to be printed.
+2. The *SAP Print Service* with service plan *standard* is an application that runs in a consumer subaccount and allows you to create and manage the print queues. 
+3. The *SAP Print Service* with service plan *receiver* is a service running in a consumer subaccount. It provides the credentials to pull documents from SAP BTP to the customer landscape.
+4. The *SAP Print Manager* is a Windows application that runs on a customer's computer. It regularly pulls documents from print queues (using the *receiver* credentials) and sends them to a local printer.
+
+<p align="center">
+    <img src="./images/44b_Print_Service.png" width="50%">
+</p>
 
 ## Bill of Materials
 
@@ -107,11 +111,11 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
     3. Provide an implementation for the action in [*srv/poetryslam/poetrySlamServiceOutputImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceOutputImplementation.js)
         ```javascript
-        const { getPrintQueues, print } = require('./util/print');
+        const { getPrintQueues, print } = require('../lib/print');
         ...
         module.exports = async (srv) => {
             ...
-            // Entity action "printGuestList": Create a Form (PDF) and send it to the Print Service
+            // Entity action "printGuestList": Create a Form (PDF) and send it to the SAP Print Service
             srv.on('printGuestList', async (req) => {
                 ...
             });
@@ -122,7 +126,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         };
         ```
 
-    4. Copy the implementation of [srv/poetryslam/util/print.js](../../../tree/main-multi-tenant-features/srv/poetryslam/util/print.js). This file contains the logic to call the Print Service APIs (read print queues, create documents, create print tasks).
+    4. Copy the implementation of [srv/lib/print.js](../../../tree/main-multi-tenant-features/srv/lib/print.js). This file contains the logic to call the SAP Print Service APIs (read print queues, create documents, create print tasks).
 
     5. Provide translatable messages for your implementation in [*srv/i18n/messages.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages.properties). Add the corresponding translation to the language-specific file [*srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages_de.properties).
         ```
@@ -184,7 +188,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
             - name: poetry-slams-print-service
 
         resources:
-          # Print Service
+          # SAP Print Service
           - name: poetry-slams-print-service
             type: org.cloudfoundry.managed-service
             parameters:
@@ -192,7 +196,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
               service-plan: sender
         ```
 
-    2. Ensure subscription for multi-tenancy in [*mtx/sidecar/package.json*](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json) (see [SaaS Registry Dependencies](https://cap.cloud.sap/docs/guides/multitenancy/#saas-dependencies)):
+    2. Register the service in the multi-tenant environment [*mtx/sidecar/package.json*](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json) (see [SaaS Registry Dependencies](https://cap.cloud.sap/docs/guides/multitenancy/#saas-dependencies)):
         ```yaml
           "cds": {
             ...
@@ -278,7 +282,7 @@ To test locally (from within SAP Business Application Studio), you can connect t
 
 #### Unit Tests for Printing
 
-To support automatic testing of the print feature, a sample unit test implementation is provided in [*print.test.js*](../../../tree/main-multi-tenant-features/test/srv/poetryslam/util/print.test.js). The test uses *stubs* to decouple from the external services.
+To support automatic testing of the print feature, a sample unit test implementation is provided in [*print.test.js*](../../../tree/main-multi-tenant-features/test/srv/lib/print.test.js). The test uses *stubs* to decouple from the external services.
 
 To run the automated SAP Cloud Application Programming Model tests:
 

@@ -16,6 +16,13 @@ To start the provisioning procedure, create an SAP BTP consumer subaccount for a
 2. Create a new *Multi-Environment* subaccount with the name `PoetrySlamsMTSubscriber1` (you can use any naming pattern for additional subaccounts to serve additional customers). 
 3. As a provider, choose *Amazon Web Services (AWS)*. 
 
+### Subscribe to and Launch the SAP BTP Multi-Tenant Application
+
+To provision the application on an SAP BTP consumer subaccount for a specific customer, subscribe to the application:
+1. In the SAP BTP cockpit of the consumer subaccount, navigate to *Instances and Subscriptions*.
+2. Create a subscription to *Poetry Slam Manager* with service plan *default*. This is your own multi-tenant SAP BTP application that you've just created.
+3. To launch the *Poetry Slam Manager* application, choose *Go to Application* once the application status is *Subscribed*. 
+
 ### Entitle and Subscribe to SAP Build Work Zone Application
 
 1. In the newly created SAP BTP cockpit consumer subaccount, open *Entitlements* and assign *SAP Build Work Zone* with 
@@ -73,6 +80,8 @@ Therefore, export the required subaccount destinations from the provider subacco
 Since the web application and the destinations for the provided content are available, it's ready to be added to SAP Build Work Zone.
 
 This is done in the *Site Manager* that is launched when you go to the application *SAP Build Work Zone, standard edition* under *Instances and Subscriptions* in the consumer subaccount.
+
+SAP Build Work Zone offers additional features besides navigation and theming support. For more details, check out [Enable Key User Flexibility Using SAP Build Work Zone](./51-Multi-Tenancy-Features-Tenant-Key-User-Flexibility.md).
 
 ### Configure the Content Channel of Your Web Application
 
