@@ -1,14 +1,14 @@
 'strict';
 
 // Include utility files
-const { color, poetrySlamStatusCode, httpCodes } = require('./util/codes');
+const { color, poetrySlamStatusCode, httpCodes } = require('../lib/codes');
 const {
   calculatePoetrySlamData,
   updatePoetrySlam,
   convertToArray
-} = require('./util/entityCalculations');
+} = require('../lib/entityCalculations');
 
-const uniqueNumberGenerator = require('./util/uniqueNumberGenerator');
+const uniqueNumberGenerator = require('../lib/uniqueNumberGenerator');
 
 module.exports = async (srv) => {
   const db = await cds.connect.to('db');

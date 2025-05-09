@@ -12,8 +12,9 @@ dist/
 resources/
 .vscode/
 coverage/
-srv/external/*
+srv/external/
 cli/
+.env
 
 # Web IDE, App Studio
 .che/
@@ -33,4 +34,3 @@ Makefile*.mta
 
 *.iml
 *.flattened-pom.xml
-

@@ -199,6 +199,6 @@
     "archeType": "transactional"
   },
   "sap.platform.cf": {
-    "ui5VersionNumber": "1.130.5"
+    "ui5VersionNumber": "1.134.1"
   }
 }

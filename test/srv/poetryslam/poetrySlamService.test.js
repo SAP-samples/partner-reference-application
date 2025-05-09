@@ -9,7 +9,7 @@ const cds = require('@sap/cds');
 // Defines required CDS functions for testing
 const { expect, GET, axios, POST, test } = cds.test(__dirname + '/../../..');
 
-const { httpCodes } = require('../../../srv/poetryslam/util/codes');
+const { httpCodes } = require('../../../srv/lib/codes');
 
 // ----------------------------------------------------------------------------
 // OData Function Tests
@@ -39,7 +39,7 @@ describe('OData userInfo function in PoetrySlamService', () => {
 
     await expect(
       GET(`/odata/v4/poetryslamservice/userInfo()`, {})
-    ).to.rejectedWith(403);
+    ).to.rejectedWith(httpCodes.forbidden.toString());
   });
 });
 
@@ -96,6 +96,6 @@ describe('OData createTestData action in PoetrySlamService', () => {
 
     await expect(
       POST(`/odata/v4/poetryslamservice/createTestData`)
-    ).to.rejectedWith(403);
+    ).to.rejectedWith(httpCodes.forbidden.toString());
   });
 });
