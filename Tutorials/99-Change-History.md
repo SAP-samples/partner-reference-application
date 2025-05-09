@@ -12,7 +12,7 @@ The current version includes:
 - [Enable Key User Flexibility Using SAP Build Work Zone](51-Multi-Tenancy-Features-Tenant-Key-User-Flexibility.md): Add UI adaptation to an application using the capabilities of SAP Build Work Zone.
 - [Upgrading Multi-Tenant SaaS Applications](61-Operations-SubscriptionUpgrade.md): Describe key considerations to ensure seamless upgrades of a multi-tenant SaaS application.
 - [Schedule Jobs and Add Background Execution](46-Multi-Tenancy-Features-Job-Scheduling.md): Provide an example on how to use the SAP Job Scheduling service.
-- [Capabilities of BTP Continuous Integration and Delivery Service](46-Multi-Tenancy-Features-Job-Scheduling.md): Configure and run predefined continous integration and delivery (CI/CD) pipelines.
+- [Capabilities of SAP Continuous Integration and Delivery Service](62-Multi-Tenancy-Features-CICD.md): Configure and run predefined continous integration and delivery (CI/CD) pipelines.
 - Smaller corrections, improvements, and updates
 
 ## Older Versions
