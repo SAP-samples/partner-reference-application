@@ -9,7 +9,7 @@ const cds = require('@sap/cds');
 // Defines required CDS functions for testing
 const { expect, GET, POST, axios, test } = cds.test(__dirname + '/../../..');
 
-const { httpCodes } = require('../../../srv/poetryslam/util/codes');
+const { httpCodes } = require('../../../srv/lib/codes');
 
 // ----------------------------------------------------------------------------
 // Tests authorizations for authorized user without role assignment for application
@@ -34,7 +34,7 @@ describe('Authorizations of PoetrySlamService with User Denise (authenticated us
       GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
         params: { $select: `ID,status_code,statusCriticality` }
       })
-    ).to.rejectedWith('403');
+    ).to.rejectedWith(httpCodes.forbidden.toString());
   });
 
   it('should reject the creation of a poetry slam', async () => {
@@ -50,7 +50,7 @@ describe('Authorizations of PoetrySlamService with User Denise (authenticated us
     // Create a new poetry slam; shall be rejected
     await expect(
       POST(`/odata/v4/poetryslamservice/PoetrySlams`, poetrySlamToBeCreated)
-    ).to.rejectedWith('403');
+    ).to.rejectedWith(httpCodes.forbidden.toString());
   });
 
   it('should reject the reading of visitors', async () => {
@@ -59,7 +59,7 @@ describe('Authorizations of PoetrySlamService with User Denise (authenticated us
       GET(`/odata/v4/poetryslamservice/Visitors`, {
         params: { $select: `ID,name` }
       })
-    ).to.rejectedWith('403');
+    ).to.rejectedWith(httpCodes.forbidden.toString());
   });
 
   it('should reject the creation of a visitor', async () => {
@@ -71,7 +71,7 @@ describe('Authorizations of PoetrySlamService with User Denise (authenticated us
     // Create a new poetry slam; shall be rejected
     await expect(
       POST(`/odata/v4/poetryslamservice/Visitors`, entryToBeCreated)
-    ).to.rejectedWith('403');
+    ).to.rejectedWith(httpCodes.forbidden.toString());
   });
 
   it('should reject the reading of visits', async () => {
@@ -80,7 +80,7 @@ describe('Authorizations of PoetrySlamService with User Denise (authenticated us
       GET(`/odata/v4/poetryslamservice/Visits`, {
         params: { $select: `ID,artists` }
       })
-    ).to.rejectedWith('403');
+    ).to.rejectedWith(httpCodes.forbidden.toString());
   });
 
   it('should reject the creation of a visits', async () => {
@@ -92,7 +92,7 @@ describe('Authorizations of PoetrySlamService with User Denise (authenticated us
     // Create a new poetry slam; shall be rejected as read-only
     await expect(
       POST(`/odata/v4/poetryslamservice/Visits`, entryToBeCreated)
-    ).to.rejectedWith('403');
+    ).to.rejectedWith(httpCodes.forbidden.toString());
   });
 });
 
@@ -147,7 +147,7 @@ describe('Authorizations of PoetrySlamService with User Julie (role PoetrySlamVi
     // Create a new poetry slam; shall be rejected
     await expect(
       POST(`/odata/v4/poetryslamservice/PoetrySlams`, poetrySlamToBeCreated)
-    ).to.rejectedWith('403');
+    ).to.rejectedWith(httpCodes.forbidden.toString());
   });
 
   it('should allow the reading of visitors', async () => {
@@ -168,7 +168,7 @@ describe('Authorizations of PoetrySlamService with User Julie (role PoetrySlamVi
 
     await expect(
       POST(`/odata/v4/poetryslamservice/Visitors`, entryToBeCreated)
-    ).to.rejectedWith('405');
+    ).to.rejectedWith(httpCodes.method_not_allowed.toString());
   });
 
   it('should allow reading of visits', async () => {
@@ -198,6 +198,6 @@ describe('Authorizations of PoetrySlamService with User Julie (role PoetrySlamVi
 
     await expect(
       POST(`/odata/v4/poetryslamservice/Visits`, entryToBeCreated)
-    ).to.rejectedWith('403');
+    ).to.rejectedWith(httpCodes.forbidden.toString());
   });
 });

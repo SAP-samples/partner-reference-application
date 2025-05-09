@@ -6,13 +6,13 @@ const {
   visitStatusCode,
   poetrySlamStatusCode,
   color
-} = require('./util/codes');
+} = require('../lib/codes');
 
 const {
   calculatePoetrySlamData,
   updatePoetrySlam,
   convertToArray
-} = require('./util/entityCalculations');
+} = require('../lib/entityCalculations');
 
 module.exports = async (srv) => {
   // ----------------------------------------------------------------------------

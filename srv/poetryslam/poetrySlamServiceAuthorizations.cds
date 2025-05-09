@@ -3,8 +3,10 @@ using {PoetrySlamService} from './poetrySlamService';
 // ----------------------------------------------------------------------------
 // Required authorization roles
 annotate PoetrySlamService with @(requires: [
-  'PoetrySlamFull', // Full authorization for managers
-  'PoetrySlamRestricted' // Restricted access for visitors
+  // Full authorization for managers
+  'PoetrySlamFull',
+  // Restricted access for visitors
+  'PoetrySlamRestricted'
 ]);
 
 // ----------------------------------------------------------------------------
