@@ -37,6 +37,7 @@ The list shows the entitlements that are required in the different subaccounts t
 |               | SAP Custom Domain service                            | standard                  | Application   | 1                                 |
 |               | SAP Authorization and Trust Management service       | broker                    | Service       | 1                                 | 
 |               | SAP Destination service                              | lite                      | Service       | 1                                 | 
+|               | SAP Connectivity service                             | lite                      | Service       | 1                                 | 
 |               | SAP HTML5 Application Repository service for SAP BTP | app-host                  | Service       | 1                                 | 
 |               | SAP HTML5 Application Repository service for SAP BTP | app-runtime               | Service       | 1                                 | 
 |               | SAP Software-as-a-Service Provisioning service       | application               | Service       | 1                                 | 

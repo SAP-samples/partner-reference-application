@@ -1,6 +1,6 @@
 # Changes
 
-## Current Version - February 2025
+## Current Version - May 2025
 
 The current version is available in three branches:
 - Tutorials: [*main*](../../../)
@@ -8,13 +8,28 @@ The current version is available in three branches:
 - Additional features and ERP integration (based on the multi-tenant version): [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features)
 
 The current version includes:
+- [SAP Business One Integration Using a Cloud Connector](33c-B1-Integration-With-Cloud-Connector.md): Use a Cloud Connector to establish a secure connection between an application deployed to SAP Business Technology Platform and SAP Business One.
+- [Enable Key User Flexibility Using SAP Build Work Zone](51-Multi-Tenancy-Features-Tenant-Key-User-Flexibility.md): Add UI adaptation to an application using the capabilities of SAP Build Work Zone.
+- [Upgrading Multi-Tenant SaaS Applications](61-Operations-SubscriptionUpgrade.md): Describe key considerations to ensure seamless upgrades of a multi-tenant SaaS application.
+- [Schedule Jobs and Add Background Execution](46-Multi-Tenancy-Features-Job-Scheduling.md): Provide an example on how to use the SAP Job Scheduling service.
+- [Capabilities of BTP Continuous Integration and Delivery Service](46-Multi-Tenancy-Features-Job-Scheduling.md): Configure and run predefined continous integration and delivery (CI/CD) pipelines.
+- Smaller corrections, improvements, and updates
+
+## Older Versions
+
+### February 2025
+
+Includes
 - The one-off deployment has been removed from the tutorial and the ERP integration is now part of the feature-branch. This removes some detours and simplifies the learning journey.
 - Work Zone integration: Provide launchpad and shell header for the multi-tenant application.
 - [Extensibility enablement](50-Multi-Tenancy-Features-Tenant-Extensibility.md): Enable consumer-specific extensions to meet the unique needs of individual customers without impacting others.
 - [Cloud Foundry scaling](28-CF-Environment-Scaling.md): Detailed tutorial on estimating the required Cloud Foundry environment configuration for your multi-tenant application.
 - Smaller corrections, improvements, and updates
 
-## Older Versions
+Corresponding Tags
+- Tutorials: [release-tutorial-2502](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-tutorial-2502)
+- Multitenancy: [release-multi-tenant-2502](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-2502)
+- ERP/Features: [release-multi-tenant-features-2502](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-features-2502)
 
 ### December 2024
 

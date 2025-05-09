@@ -173,8 +173,8 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 You can define reuse functions that handle the connection for the different Enterprise Resource Planning (ERP) systems in separate files. 
 
-1. Create a file to check and get the destinations in path */srv/poetryslam/util/destination.js*. 
-2. Add the functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* from the file [*/srv/poetryslam/util/destination.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/destination.js).
+1. Create a file to check and get the destinations in path */srv/lib/destination.js*. 
+2. Add the functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* from the file [*/srv/lib/destination.js*](../../../tree/main-multi-tenant-features/srv/lib/destination.js).
 
     > Note: The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* read the destination from the subscriber subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information.
 
@@ -350,7 +350,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
                 updatePoetrySlam,
                 convertToArray,
                 createPurchaseOrder
-            } = require('./util/entityCalculations');
+            } = require('../lib/entityCalculations');
             ```
 
         4. Copy the implementation of the action `clearPurchaseOrderData` to clear all project data:
@@ -360,7 +360,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
         });
         ```
 
-4. Copy the function `createPurchaseOrder` from the file [*/srv/poetryslam/util/entityCalculations.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/entityCalculations.js) into the implementation and export the function at the end of the file.
+4. Copy the function `createPurchaseOrder` from the file [*/srv/lib/entityCalculations.js*](../../../tree/main-multi-tenant-features/srv/lib/entityCalculations.js) into the implementation and export the function at the end of the file.
 
 5. Add the system messages to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages.properties).    
 
@@ -539,6 +539,10 @@ Enhance the file [*package.json*](../../../tree/main-multi-tenant-features/packa
 > Note: The *package.json* refers to the destinations *b1* that needs to be created in the consumer SAP BTP subaccount. The destination *b1* refers to business users with principal propagation.
 
 > Note: For local testing, replace `{{b1-hostname}}`, `{{test-user}}`, and `{{test-password}}` with a system, user, and password from SAP Business One. The test-user is an object with company and username, for example, User name = {"UserName": "{{user}}", "CompanyDB": "{{company}}"}. Don't push this information to your GitHub repository.
+
+### Enhance the Integration with SAP Business One by Incorporating a Cloud Connector
+
+In some cases, directly exposing system ports to the open internet may not be possible or desired due to security risks, vulnerabilities, or compliance requirements. To address this challenge and ensure secure data transmission, a secure tunnel can be established by integrating an instance of a Cloud Connector as a communication channel. Refer to the following guide for more information: [Business One Integration with Cloud Connector](./33c-B1-Integration-With-Cloud-Connector.md)
 
 ### Test Locally
 

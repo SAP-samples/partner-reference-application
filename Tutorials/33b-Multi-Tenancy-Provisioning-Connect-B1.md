@@ -158,6 +158,8 @@ In general, SAP Business One exposes OData services through the SAP Business One
     | *Proxy Type*:     | *Internet*                                                                                |
     | *Authentication*: | *NoAuthentication*                                                                        |
 
+To prevent exposing system ports to the internet while connecting to SAP Business One, it is recommended to use a Cloud Connector. For further details, please refer to this guide: [Business One integration with Cloud Connector](./33c-B1-Integration-With-Cloud-Connector.md)
+
 ## Add SAP BTP Applications to the SAP Business One Launchpad
 
 As a last step, you add Poetry Slam Manager to the SAP Business One launchpad to make it possible for poetry slam managers to launch it from SAP Business One.

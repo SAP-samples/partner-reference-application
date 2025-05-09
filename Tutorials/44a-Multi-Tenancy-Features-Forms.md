@@ -94,7 +94,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         }
         ```
 
-    2. Copy the forms util class [*forms.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/forms.js) to your project. The forms class handles the usage of the SAP Forms service by Adobe API. 
+    2. Copy the forms class [*forms.js*](../../../tree/main-multi-tenant-features/srv/lib/forms.js) to your project. The forms class handles the usage of the SAP Forms service by Adobe API. 
 
     3. Provide a translatable text for the file name in [*srv/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n.properties). Add the corresponding translation to the language-specific file [*srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n_de.properties).
         ```
@@ -103,13 +103,15 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
         > Note: The function *getFileName* in the file *forms.js* provides an example of how to access the texts (in the user's language) using the cds i18n module [cds.i18n.labels](https://cap.cloud.sap/docs/node.js/cds-i18n#at-key).
 
-    4. Copy the logo util class [*logo.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/logo.js) to your project. The logo class offers functionality that is required by other services, for example email, too.
+    4. Copy the logo class [*logo.js*](../../../tree/main-multi-tenant-features/srv/lib/logo.js) to your project. The logo class offers functionality that is required by other services, for example email, too.
 
-    5. Copy the service credentials util class [*serviceCredentials.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/serviceCredentials.js) to your project. This class offers functionality to get the required logon to bound services (like the SAP Forms Service by Adobe API).
+    5. Copy the service credentials class [*serviceCredentials.js*](../../../tree/main-multi-tenant-features/srv/lib/serviceCredentials.js) to your project. This class offers functionality to get the required logon to bound services (like the SAP Forms Service by Adobe API).
+
+    > Note: The `getAppUrl`-function is not required for the forms feature and can be removed.
 
     6. Copy the [poetry slam service output management implementation](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceOutputImplementation.js) with an on-READ event of the *PDFDocument* entity to your project. The implementation reads the poetry slam data including artists and visitors. Furthermore, it creates the form with the data and returns a media streaming object that includes the rendered PDF, a valid content type, and a file name for the guest list which is to be downloaded as PDF.
         ```javascript
-        const Forms = require('./util/forms');
+        const Forms = require('../lib/forms');
         ...
         module.exports = async (srv) => {
             ...
@@ -258,7 +260,7 @@ After you have deployed your application with the SAP Forms service by Adobe, yo
 
     3. Choose the downloaded schema and upload it.
 
-6. Make sure to adjust the form and schema variable in the [forms util class *forms.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/forms.js) according to the name of the uploaded form and schema file given in the template store.
+6. Make sure to adjust the form and schema variable in the [forms class *forms.js*](../../../tree/main-multi-tenant-features/srv/lib/forms.js) according to the name of the uploaded form and schema file given in the template store.
 
 7. If the provided template and schema was used, the SAP custom font `72` needs to be uploaded to the configuration UI. To enable the SAP Forms service by Adobe to render the PDF correctly, the font needs to be provided since it was used for the template creation. Font 72, desktop version, can be downloaded [here](https://experience.sap.com/fiori-design-web/downloads/). How to upload a custom font to the SAP Forms service by Adobe, is described in [SAP Help - Upload a Font](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/upload-fonts?version=Cloud).
 
@@ -310,7 +312,7 @@ Unit tests are available to test the forms feature:
 
 1. Copy the [test/srv/poetryslam/poetrySlamServiceOutputImplemention.test.js](../../../tree/main-multi-tenant-features/test/srv/poetryslam/poetrySlamServiceOutputImplemention.test.js) to your project. This file checks the enhancements of the poetry slam service.
 
-2. Copy the [test/srv/poetryslam/util/forms.test.js](../../../tree/main-multi-tenant-features/test/srv/poetryslam/util/forms.test.js) to your project. This file checks the forms util class.
+2. Copy the [test/srv/lib/forms.test.js](../../../tree/main-multi-tenant-features/test/srv/lib/forms.test.js) to your project. This file checks the forms class.
 
 3. To run the automated SAP Cloud Application Programming Model tests:
 
