@@ -8,12 +8,12 @@
 const cds = require('@sap/cds');
 
 // Defines required CDS functions for testing
-const { expect } = cds.test(__dirname + '/../../../..');
+const { expect } = cds.test(__dirname + '/../../..');
 
 // Import EMail Service
-const EMail = require('./../../../../srv/poetryslam/util/email');
+const EMail = require('../../../srv/lib/email');
 
-const { httpCodes } = require('./../../../../srv/poetryslam/util/codes');
+const { httpCodes } = require('../../../srv/lib/codes');
 
 describe('Util EMail - Reuse', () => {
   let cdsTestLog = cds.test.log();

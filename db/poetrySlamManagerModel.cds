@@ -32,6 +32,7 @@ entity PoetrySlams : cuid, managed {
   purchaseOrderObjectID : String;
   purchaseOrderURL      : String;
   purchaseOrderSystem   : String;
+  jobStatusText         : String(255) default 'Job not triggered yet';
 }
 
 //Enforces uniqueness checks on all CREATE and UPDATE operations for the specified fields
@@ -93,6 +94,7 @@ annotate PoetrySlams with @fiori.draft.enabled {
   purchaseOrderObjectID  @title: '{i18n>purchaseOrderObjectID}'  @readonly;
   purchaseOrderURL       @title: '{i18n>purchaseOrderURL}'       @readonly;
   purchaseOrderSystem    @title: '{i18n>purchaseOrderSystem}'    @readonly;
+  jobStatusText          @title: '{i18n>jobStatusText}'          @readonly;
 }
 
 annotate Visits with {

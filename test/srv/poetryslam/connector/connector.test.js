@@ -6,7 +6,7 @@
 const cds = require('@sap/cds');
 
 const Connector = require('../../../../srv/poetryslam/connector/connector');
-const destination = require('../../../../srv/poetryslam/util/destination');
+const destination = require('../../../../srv/lib/destination');
 const { expect } = cds.test(__dirname + '/../../../..');
 const sinon = require('sinon');
 

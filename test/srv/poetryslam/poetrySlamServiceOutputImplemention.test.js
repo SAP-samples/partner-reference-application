@@ -7,10 +7,7 @@
 const cds = require('@sap/cds');
 // Defines required CDS functions for testing
 const { expect, GET, axios, test, POST } = cds.test(__dirname + '/../../..');
-const {
-  visitStatusCode,
-  httpCodes
-} = require('../../../srv/poetryslam/util/codes');
+const { visitStatusCode, httpCodes } = require('../../../srv/lib/codes');
 
 // Executes an action, like 'sendEmail'
 const ACTION = (url, name, parameters = {}) =>
@@ -34,7 +31,7 @@ describe('PoetrySlamService - Output', () => {
         GET(
           `/odata/v4/poetryslamservice/PDFDocument(ID=${poetrySlamId})/content`
         )
-      ).to.rejectedWith(httpCodes.bad_request);
+      ).to.rejectedWith(httpCodes.bad_request.toString());
     });
   });
 
@@ -57,7 +54,7 @@ describe('PoetrySlamService - Output', () => {
           `/odata/v4/poetryslamservice/PoetrySlams(ID=${visit.parent_ID},IsActiveEntity=true)/visits(ID=${visit.ID},IsActiveEntity=true)`,
           'sendEMail'
         )
-      ).to.rejectedWith(httpCodes.bad_request);
+      ).to.rejectedWith(httpCodes.bad_request.toString());
     });
   });
 
@@ -74,7 +71,7 @@ describe('PoetrySlamService - Output', () => {
           'printGuestList',
           { printQueue: 'dummyPrintQueue' }
         )
-      ).to.rejectedWith(httpCodes.bad_request);
+      ).to.rejectedWith(httpCodes.bad_request.toString());
     });
 
     it('GET PrintQueues should return nothing in test environment', async () => {

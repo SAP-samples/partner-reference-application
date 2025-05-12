@@ -1,7 +1,7 @@
 'strict';
 
 const cds = require('@sap/cds');
-const { expect } = cds.test(__dirname + '/../../../..');
+const { expect } = cds.test(__dirname + '/../../..');
 
 // Mocking
 const sinon = require('sinon');
@@ -9,13 +9,13 @@ const {
   QueuesApi,
   DocumentsApi,
   PrintTasksApi
-} = require('../../../../srv/external/PRINTAPI');
-const serviceCredentials = require('../../../../srv/poetryslam/util/serviceCredentials');
+} = require('../../../srv/external/PRINTAPI');
+const serviceCredentials = require('../../../srv/lib/serviceCredentials');
 
 // Code to test
-const printUtil = require('../../../../srv/poetryslam/util/print');
+const printUtil = require('../../../srv/lib/print');
 
-const { httpCodes } = require('./../../../../srv/poetryslam/util/codes');
+const { httpCodes } = require('../../../srv/lib/codes');
 
 describe('Util print', () => {
   let serviceCredentialsStub;

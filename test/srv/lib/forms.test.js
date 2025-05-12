@@ -3,7 +3,7 @@
 // Adds cds module
 const cds = require('@sap/cds');
 // Defines required CDS functions for testing
-const { expect, POST, axios, test } = cds.test(__dirname + '/../../../..');
+const { expect, POST, axios, test } = cds.test(__dirname + '/../../..');
 
 // Add modules to allow mocking
 const sinon = require('sinon');
@@ -12,10 +12,10 @@ const { Readable } = require('stream');
 const {
   StoreFormTemplatesApi,
   ADSRenderRequestApi
-} = require('./../../../../srv/external/FORMSAPI');
-const Forms = require('./../../../../srv/poetryslam/util/forms');
-const Logo = require('../../../../srv/poetryslam/util/logo');
-const serviceCredentials = require('./../../../../srv/poetryslam/util/serviceCredentials');
+} = require('../../../srv/external/FORMSAPI');
+const Forms = require('../../../srv/lib/forms');
+const Logo = require('../../../srv/lib/logo');
+const serviceCredentials = require('../../../srv/lib/serviceCredentials');
 
 // Authentication for tests; role PoetrySlamManager
 axios.defaults.auth = { username: 'peter', password: 'welcome' };

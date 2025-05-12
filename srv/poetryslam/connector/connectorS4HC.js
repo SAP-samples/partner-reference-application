@@ -9,7 +9,7 @@ const cds = require('@sap/cds');
 const {
   convertToArray,
   subtractDaysFormatRFC3339
-} = require('../util/entityCalculations');
+} = require('../../lib/entityCalculations');
 
 class ConnectorS4HC extends Connector {
   projectRecord;

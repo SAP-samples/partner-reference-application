@@ -1,9 +1,6 @@
-/* checksum : 75bfd0aab06c500ca8f445d460b420fb */
+/* checksum : 1dc914d5fe56b514d7ce774ab8f38076 */
 @cds.external : true
-@Aggregation.ApplySupported : {
-  Transformations: [ 'aggregate', 'groupby', 'filter' ],
-  Rollup: #None
-}
+@Aggregation.ApplySupported : { Transformations: [ 'aggregate', 'groupby', 'filter' ], Rollup: #None }
 @Common.ApplyMultiUnitBehaviorForSortingAndFiltering : true
 @Capabilities.FilterFunctions : [
   'eq',

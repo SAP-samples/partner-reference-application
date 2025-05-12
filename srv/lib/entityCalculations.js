@@ -1,6 +1,7 @@
 'use strict';
 
 const { httpCodes, poetrySlamStatusCode, visitStatusCode } = require('./codes');
+
 // ----------------------------------------------------------------------------
 // Implementation of reuse functions
 // ----------------------------------------------------------------------------
@@ -130,9 +131,15 @@ function convertToArray(x) {
   return Array.isArray(x) ? x : [x];
 }
 
+// Timezone offset is used to use function toISOString() without changing the returned date value
 function subtractDaysFormatRFC3339(date, days = 0) {
   const generatedDate = new Date(date);
   generatedDate.setTime(generatedDate.getTime() - DATE_DAYS_MULTIPLIER * days); //40 days
+  generatedDate.setMinutes(
+    generatedDate.getTimezoneOffset() > 0
+      ? generatedDate.getMinutes() + generatedDate.getTimezoneOffset()
+      : generatedDate.getMinutes() - generatedDate.getTimezoneOffset()
+  );
   return generatedDate.toISOString().substring(0, 10) + 'T00:00:00.0000000Z';
 }
 

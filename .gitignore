@@ -12,13 +12,13 @@ dist/
 resources/
 .vscode/
 coverage/
-srv/external/*
+srv/external/
 cli/
+.env
 
 # Web IDE, App Studio
 .che/
 .gen/
-cli/
 
 # MTA
 *_mta_build_tmp
@@ -34,4 +34,3 @@ Makefile*.mta
 
 *.iml
 *.flattened-pom.xml
-

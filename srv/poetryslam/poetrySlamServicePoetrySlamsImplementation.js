@@ -1,7 +1,7 @@
 'strict';
 
 // Include utility files
-const { color, poetrySlamStatusCode, httpCodes } = require('./util/codes');
+const { color, poetrySlamStatusCode, httpCodes } = require('../lib/codes');
 
 const {
   calculatePoetrySlamData,
@@ -9,11 +9,11 @@ const {
   convertToArray,
   createProject,
   createPurchaseOrder
-} = require('./util/entityCalculations');
+} = require('../lib/entityCalculations');
 
-const uniqueNumberGenerator = require('./util/uniqueNumberGenerator');
+const uniqueNumberGenerator = require('../lib/uniqueNumberGenerator');
 
-const GenAI = require('./util/genAI');
+const GenAI = require('../lib/genAI');
 
 // Add connector for project management systems
 const ConnectorByD = require('./connector/connectorByD');
@@ -108,7 +108,8 @@ module.exports = async (srv) => {
       'isB1',
       'toByDProject',
       'toS4HCProject',
-      'toB1PurchaseOrder'
+      'toB1PurchaseOrder',
+      'isJobStatusShown'
     ];
 
     if (
@@ -182,6 +183,13 @@ module.exports = async (srv) => {
       poetrySlam.toByDProject = poetrySlam.toByDProject || null;
       poetrySlam.toB1PurchaseOrder = poetrySlam.toB1PurchaseOrder || null;
       poetrySlam.toS4HCProject = poetrySlam.toS4HCProject || null;
+
+      // Display information about background execution
+      if (poetrySlam.jobStatusText !== 'Job not triggered yet') {
+        poetrySlam.isJobStatusShown = true;
+      } else {
+        poetrySlam.isJobStatusShown = false;
+      }
     }
 
     // Return remote data

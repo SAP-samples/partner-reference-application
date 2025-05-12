@@ -5,7 +5,7 @@ const {
   QueuesApi,
   DocumentsApi,
   PrintTasksApi
-} = require('../../external/PRINTAPI');
+} = require('../external/PRINTAPI');
 
 const { httpCodes } = require('./codes');
 

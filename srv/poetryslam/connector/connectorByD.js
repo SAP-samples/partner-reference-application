@@ -6,7 +6,7 @@ const Connector = require('./connector');
 const {
   convertToArray,
   subtractDaysFormatRFC3339
-} = require('../util/entityCalculations');
+} = require('../../lib/entityCalculations');
 
 // Include cds libraries and reuse files
 const cds = require('@sap/cds');
