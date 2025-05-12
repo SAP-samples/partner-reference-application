@@ -1,6 +1,6 @@
 'use strict';
 
-const { httpCodes, visitStatusCode, poetrySlamStatusCode } = require('./codes');
+const { httpCodes, poetrySlamStatusCode, visitStatusCode } = require('./codes');
 
 // ----------------------------------------------------------------------------
 // Implementation of reuse functions
@@ -121,6 +121,7 @@ async function updatePoetrySlam(
   return true;
 }
 
+// Helper function to convert an object to an array
 function convertToArray(x) {
   if (!x) {
     return [];

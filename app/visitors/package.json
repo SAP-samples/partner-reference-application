@@ -1,6 +1,6 @@
 {
   "name": "visitors",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Application to create and manage visitors",
   "keywords": [
     "ui5",
@@ -14,9 +14,9 @@
   },
   "devDependencies": {
     "@sap/ui5-builder-webide-extension": "^1.1.9",
-    "ui5-task-zipper": "^3.4.0",
+    "ui5-task-zipper": "^3.4.1",
     "mbt": "^1.2.34",
-    "@ui5/cli": "^4.0.13"
+    "@ui5/cli": "^4.0.14"
   },
   "ui5": {
     "dependencies": [
