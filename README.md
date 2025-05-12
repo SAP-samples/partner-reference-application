@@ -127,8 +127,6 @@ Updates to this repository are documented in the [change history](./Tutorials/99
     5. [Provision your multi-tenant application to consumer subaccounts](./Tutorials/25-Multi-Tenancy-Provisioning.md)
     6. [Go on a guided tour to explore the capabilities of the deployed sample application](./Tutorials/25a-Guided-Tour-Deployed.md)
     7. [Test and troubleshoot multitenancy](./Tutorials/26-Test-Trace-Debug-Multi-Tenancy.md)
-    8. [Estimate the required size of the SAP HANA Cloud database](./Tutorials/27-Hana-DB-Scaling.md)
-    9. [Estimate the required Cloud Foundry Environment configuration](./Tutorials/28-CF-Environment-Scaling.md)
     
 3. Integrate the application with **SAP ERP solutions**:   
     1. SAP Business One:
@@ -154,12 +152,20 @@ Updates to this repository are documented in the [change history](./Tutorials/99
         2. [Print documents](./Tutorials/44b-Multi-Tenancy-Features-Print.md)
         3. [Send emails](./Tutorials/44c-Multi-Tenancy-Features-EMail.md)
     4. [Add capabilities for generative artificial intelligence (GenAI)](./Tutorials/45-Multi-Tenancy-Features-GenAI.md)
+    5. [Schedule jobs and add background execution](./Tutorials/46-Multi-Tenancy-Features-Job-Scheduling.md)
 
 5. Enable the application for **third-party integrations and extensibility**:
     1. Open the APIs of the SAP BTP application for third-party integrations:
         1. [Enable API access to SAP BTP applications using service broker](./Tutorials/42a-Multi-Tenancy-Service-Broker.md)
         2. [Configure and consume the APIs of the SAP BTP application](./Tutorials/42b-Multi-Tenancy-Provisioning-Service-Broker.md) 
     2. [Enable consumer-specific extensions](./Tutorials/50-Multi-Tenancy-Features-Tenant-Extensibility.md)
+    3. [Enable key user flexibility using SAP Build Work Zone](./Tutorials/51-Multi-Tenancy-Features-Tenant-Key-User-Flexibility.md)
+
+6. **Operational aspects** of multi-tenant SaaS applications
+    1. [Upgrading multi-tenant SaaS applications](./Tutorials/61-Operations-SubscriptionUpgrade.md)
+    2. [Estimate the required size of the SAP HANA Cloud database](./Tutorials/27-Hana-DB-Scaling.md)
+    3. [Estimate the required Cloud Foundry environment configuration](./Tutorials/28-CF-Environment-Scaling.md)
+    4. [Capabilities of SAP Continuous Integration and Delivery Service](./Tutorials/62-Multi-Tenancy-Features-CICD.md)
 
 ## More Information
 - [SAP BTP Developer’s Guide](https://help.sap.com/docs/btp/btp-developers-guide/what-is-btp-developers-guide)

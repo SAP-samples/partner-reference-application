@@ -41,3 +41,4 @@ Makefile*.mta
 
 default-*.json
 package-lock.json
+.env

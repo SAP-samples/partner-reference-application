@@ -4,7 +4,7 @@ In [Test and Troubleshoot](26-Test-Trace-Debug-Multi-Tenancy.md#check-applicatio
 
 The [SAP Cloud Logging service](https://help.sap.com/docs/cloud-logging/cloud-logging/what-is-sap-cloud-logging?version=Cloud) provides the big picture of the behavior and health of your application, since it offers more features by collecting logs, traces, and metrics in a central place with a longer storage time. In this way, it helps you ensure and improve efficiency, scalability, resilience, and availability.
 
-> Note: This service is not intended for the users of the app, but rather the app provider.
+> Note: This service is not intended for the users of the application, but rather the application provider.
 
 ## Bill of Materials
 

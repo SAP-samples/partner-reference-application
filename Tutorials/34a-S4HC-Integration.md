@@ -253,8 +253,8 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 You can define reuse functions that handle the connection for the different Enterprise Resource Planning (ERP) systems in separate files. 
 
-1. Create a file to check and get the destinations in path */srv/poetryslam/util/destination.js*. 
-2. Add the functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* from the file [*/srv/poetryslam/util/destination.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/destination.js).
+1. Create a file to check and get the destinations in path */srv/lib/destination.js*. 
+2. Add the functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* from the file [*/srv/lib/destination.js*](../../../tree/main-multi-tenant-features/srv/lib/destination.js).
 
     > Note: The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* read the destination from the subscriber subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information.
 
@@ -437,7 +437,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
                 updatePoetrySlam,
                 convertToArray,
                 createProject
-            } = require('./util/entityCalculations');
+            } = require('../lib/entityCalculations');
             ```   
 
     3. Copy the implementation of the action `clearProjectData` to clear all project data:
@@ -447,7 +447,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
         });
         ```
 
-4. Copy the constant `DATE_DAYS_MULTIPLIER` and the functions `createProject` and `subtractDaysFormatRFC3339` from the file [*/srv/poetryslam/util/entityCalculations.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/entityCalculations.js) into the implementation and export the functions at the end of the file.
+4. Copy the constant `DATE_DAYS_MULTIPLIER` and the functions `createProject` and `subtractDaysFormatRFC3339` from the file [*/srv/lib/entityCalculations.js*](../../../tree/main-multi-tenant-features/srv/lib/entityCalculations.js) into the implementation and export the functions at the end of the file.
 
 5. Add the system message to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages.properties).
 

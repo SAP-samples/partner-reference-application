@@ -23,16 +23,16 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         action sendEMail();
         ```
 
-    2. Copy the email util class [*email.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/email.js) to your project. The email class handles the creation and sending of the emails. The example implementation shows how to generate an email in the user`s language.
+    2. Copy the email class [*email.js*](../../../tree/main-multi-tenant-features/srv/lib/email.js) to your project. The email class handles the creation and sending of the emails. The example implementation shows how to generate an email in the user`s language.
 
-    3. Copy the logo util class [*logo.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/util/logo.js) to your project. The logo class encodes an image in base64 format. The encoding is required by other output services, for instance forms, too. 
+    3. Copy the logo class [*logo.js*](../../../tree/main-multi-tenant-features/srv/lib/logo.js) to your project. The logo class encodes an image in base64 format. The encoding is required by other output services, for instance forms, too. 
 
     4. Extend the [poetry slam service output implementation](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceOutputImplementation.js) with the action implementation.
 
         1. Import the email class.
 
             ```js
-            const EMail = require('./util/email');
+            const EMail = require('../lib/email');
             ```
 
         2. Add the action implementation.
@@ -145,7 +145,9 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     
     2. Run the command `npm add @sap-cloud-sdk/mail-client`. The package handles the sending of the email.  
 
-    3. Run the command `npm add escape-html`. This handles the html escaping of the poetry slam data when creating the email. 
+    3. Run the command `npm add @sap-cloud-sdk/connectivity`. The package handles the access to the connectivity service.
+
+    4. Run the command `npm add escape-html`. This handles the html escaping of the poetry slam data when creating the email. 
 
 ### SAP BTP Deployment
 
@@ -192,9 +194,9 @@ Unit tests are available to test the email feature:
 
 1. Copy the [test/srv/poetryslam/poetrySlamServiceOutputImplemention.test.js](../../../tree/main-multi-tenant-features/test/srv/poetryslam/poetrySlamServiceOutputImplemention.test.js) to your project. This file tests the enhancements of the poetry slam service.
 
-2. Copy the [test/srv/poetryslam/util/email.test.js](../../../tree/main-multi-tenant-features/test/srv/poetryslam/util/email.test.js) to your project. This file tests the email util class.
+2. Copy the [test/srv/lib/email.test.js](../../../tree/main-multi-tenant-features/test/srv/lib/email.test.js) to your project. This file tests the email class.
 
-3. Copy the [test/srv/poetryslam/util/logo.test.js](../../../tree/main-multi-tenant-features/test/srv/poetryslam/util/logo.test.js) to your project. This file tests the logo util class.
+3. Copy the [test/srv/lib/logo.test.js](../../../tree/main-multi-tenant-features/test/srv/lib/logo.test.js) to your project. This file tests the logo class.
 
 4. To run the automated SAP Cloud Application Programming Model tests:
 
