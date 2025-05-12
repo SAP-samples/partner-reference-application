@@ -14,7 +14,7 @@ const Logo = require('./logo');
 const {
   StoreFormTemplatesApi,
   ADSRenderRequestApi
-} = require('../../external/FORMSAPI');
+} = require('../external/FORMSAPI');
 
 // Reuse functions to access service credentials
 const serviceCredentials = require('./serviceCredentials');

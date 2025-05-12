@@ -21,23 +21,28 @@ service PoetrySlamService @(
       maxVisitorsNumber - freeVisitorSeats as bookedSeats                  : Integer @title     : '{i18n>bookedSeats}',
       // Relevant for coloring of status in UI to show criticality
       virtual null                         as statusCriticality            : Integer @title     : '{i18n>statusCriticality}',
-      virtual null                         as projectSystemName            : String  @title     : '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
+      virtual null                         as projectSystemName            : String  @title: '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
       // SAP Business ByDesign projects: visibility of button "Create Project in SAP Business ByDesign"
       virtual null                         as createByDProjectEnabled      : Boolean @odata.Type: 'Edm.Boolean',
       virtual null                         as isByD                        : Boolean @odata.Type: 'Edm.Boolean',
       // SAP S/4HANA Cloud projects: visibility of button "Create Project in SAP S/4HANA Cloud", code texts
       virtual null                         as createS4HCProjectEnabled     : Boolean @odata.Type: 'Edm.Boolean',
-      virtual null                         as projectProfileCodeText       : String  @title     : '{i18n>projectProfile}'           @odata.Type: 'Edm.String',
-      virtual null                         as processingStatusText         : String  @title     : '{i18n>processingStatus}'         @odata.Type: 'Edm.String',
+      virtual null                         as projectProfileCodeText       : String  @title: '{i18n>projectProfile}'           @odata.Type: 'Edm.String',
+      virtual null                         as processingStatusText         : String  @title: '{i18n>processingStatus}'         @odata.Type: 'Edm.String',
       virtual null                         as isS4HC                       : Boolean @odata.Type: 'Edm.Boolean',
       // SAP Business One purchase order: visibility of button "Create Purchase Order in SAP Business One"
       virtual null                         as createB1PurchaseOrderEnabled : Boolean @odata.Type: 'Edm.Boolean',
-      virtual null                         as purchaseOrderSystemName      : String  @title     : '{i18n>purchaseOrderSystemName}'  @odata.Type: 'Edm.String',
+      virtual null                         as purchaseOrderSystemName      : String  @title: '{i18n>purchaseOrderSystemName}'  @odata.Type: 'Edm.String',
       virtual null                         as isB1                         : Boolean @odata.Type: 'Edm.Boolean',
+      virtual null                         as isJobStatusShown             : Boolean @odata.Type: 'Edm.Boolean',
+
       // Projection of remote service data as required by the UI
-      toByDProject                                                         : Association to PoetrySlamService.ByDProjects on toByDProject.projectID = $self.projectID,
-      toS4HCProject                                                        : Association to PoetrySlamService.S4HCProjects on toS4HCProject.project = $self.projectID,
-      toB1PurchaseOrder                                                    : Association to PoetrySlamService.B1PurchaseOrder on toB1PurchaseOrder.docNum = $self.purchaseOrderID
+      toByDProject                                                         : Association to PoetrySlamService.ByDProjects
+                                                                               on toByDProject.projectID = $self.projectID,
+      toS4HCProject                                                        : Association to PoetrySlamService.S4HCProjects
+                                                                               on toS4HCProject.project = $self.projectID,
+      toB1PurchaseOrder                                                    : Association to PoetrySlamService.B1PurchaseOrder
+                                                                               on toB1PurchaseOrder.docNum = $self.purchaseOrderID
     }
     actions {
       // Action: Cancel
@@ -50,7 +55,7 @@ service PoetrySlamService @(
         // Determines that poetryslam entity is used when the action is performed
         cds.odata.bindingparameter.name: 'poetryslam'
       )
-      action cancel()                      returns PoetrySlams;
+      action cancel()                     returns PoetrySlams;
 
       // Action: Publish
       @(
@@ -62,7 +67,19 @@ service PoetrySlamService @(
         // Determines that poetryslam entity is used when the action is performed
         cds.odata.bindingparameter.name: 'poetryslam'
       )
-      action publish()                     returns PoetrySlams;
+      action publish()                    returns PoetrySlams;
+
+      // Action: Schedule to once send E-Mail Reminder to all visitors for a specific poetry slam event
+      @(
+        // Determines that poetryslam entity is used when the action is performed
+        cds.odata.bindingparameter.name: 'poetryslam',
+        // Defines that poetryslam entity is affected and targeted by the action
+        Common.SideEffects             : {TargetProperties: [
+          'poetryslam/isJobStatusShown',
+          'poetryslam/jobStatusText'
+        ]}
+      )
+      action sendReminderForPoetrySlam()  returns PoetrySlams;
 
       // SAP Business ByDesign projects: action to create a project in SAP Business ByDesign
       @(
@@ -74,7 +91,7 @@ service PoetrySlamService @(
         // Determines that poetryslam entity is used when the action is performed
         cds.odata.bindingparameter.name: '_poetryslam'
       )
-      action createByDProject()            returns PoetrySlams;
+      action createByDProject()           returns PoetrySlams;
 
       // SAP S/4HANA Cloud projects: action to create a project in SAP S/4HANA Cloud
       @(
@@ -84,7 +101,7 @@ service PoetrySlamService @(
         ]},
         cds.odata.bindingparameter.name: '_poetryslam'
       )
-      action createS4HCProject()           returns PoetrySlams;
+      action createS4HCProject()          returns PoetrySlams;
 
       // SAP Business One purchase order: action to create a purchase order in SAP Business One
       @(
@@ -94,78 +111,78 @@ service PoetrySlamService @(
         ]},
         cds.odata.bindingparameter.name: '_poetryslam'
       )
-      action createB1PurchaseOrder()       returns PoetrySlams;
+      action createB1PurchaseOrder()      returns PoetrySlams;
 
       // Action: print guest list
       action printGuestList(
-                            @(
-                              title:'{i18n>selectPrintQueue}',
-                              mandatory:true,
-                              Common:{
-                                ValueListWithFixedValues: true,
-                                ValueList               : {
-                                  $Type         : 'Common.ValueListType',
-                                  CollectionPath: 'PrintQueues',
-                                  Parameters    : [
-                                    {
-                                      $Type            : 'Common.ValueListParameterInOut',
-                                      ValueListProperty: 'name',
-                                      LocalDataProperty: printQueue
-                                    },
-                                    {
-                                      $Type            : 'Common.ValueListParameterDisplayOnly',
-                                      ValueListProperty: 'descr'
-                                    }
-                                  ]
-                                },
-                              }
-                            )
-                            printQueue : String);
+        @(
+          title: '{i18n>selectPrintQueue}',
+          mandatory: true,
+          Common: {
+            ValueListWithFixedValues: true,
+            ValueList               : {
+              $Type         : 'Common.ValueListType',
+              CollectionPath: 'PrintQueues',
+              Parameters    : [
+                {
+                  $Type            : 'Common.ValueListParameterInOut',
+                  ValueListProperty: 'name',
+                  LocalDataProperty: printQueue
+                },
+                {
+                  $Type            : 'Common.ValueListParameterDisplayOnly',
+                  ValueListProperty: 'descr'
+                }
+              ]
+            },
+          }
+        )
+        printQueue : String
+      );
 
       @(cds.odata.bindingparameter.collection)
       action createWithAI(
-                          @(
-                            title:'{i18n>languageInput}',
-                            mandatory:true,
-                            UI.ParameterDefaultValue:'EN',
-                            Common:{
-                              ValueListWithFixedValues: false,
-                              ValueList               : {
-                                $Type         : 'Common.ValueListType',
-                                CollectionPath: 'Language',
-                                Parameters    : [
-                                  {
-                                    $Type            : 'Common.ValueListParameterInOut',
-                                    ValueListProperty: 'name',
-                                    LocalDataProperty: language,
+        @(
+          title: '{i18n>languageInput}',
+          mandatory: true,
+          UI.ParameterDefaultValue: 'EN',
+          Common: {
+            ValueListWithFixedValues: false,
+            ValueList               : {
+              $Type         : 'Common.ValueListType',
+              CollectionPath: 'Language',
+              Parameters    : [
+                {
+                  $Type            : 'Common.ValueListParameterInOut',
+                  ValueListProperty: 'name',
+                  LocalDataProperty: language,
 
-                                  },
-                                  {
-                                    $Type            : 'Common.ValueListParameterDisplayOnly',
-                                    ValueListProperty: 'code'
-                                  },
-                                  {
-                                    $Type            : 'Common.ValueListParameterDisplayOnly',
-                                    ValueListProperty: 'descr'
-                                  }
-                                ]
-                              },
-                            }
-                          )
-                          language : String,
-                          @(
-                            title:'{i18n>tagsInput}',
-                            UI.Placeholder:'{i18n>placeholder}',
-                            mandatory:true
-
-                          )
-                          tags : String,
-                          @(
-                            title:'{i18n>rhymeInput}',
-                            UI.ParameterDefaultValue:true,
-                          )
-                          rhyme : Boolean) returns PoetrySlams;
-
+                },
+                {
+                  $Type            : 'Common.ValueListParameterDisplayOnly',
+                  ValueListProperty: 'code'
+                },
+                {
+                  $Type            : 'Common.ValueListParameterDisplayOnly',
+                  ValueListProperty: 'descr'
+                }
+              ]
+            },
+          }
+        )
+        language : String,
+        @(
+          title: '{i18n>tagsInput}',
+          UI.Placeholder: '{i18n>placeholder}',
+          mandatory: true
+        )
+        tags : String,
+        @(
+          title: '{i18n>rhymeInput}',
+          UI.ParameterDefaultValue: true,
+        )
+        rhyme : Boolean
+      )                                   returns PoetrySlams;
       // ERP systems: action to clear the project data
       @(
         Common.SideEffects             : {TargetEntities: [
@@ -242,24 +259,22 @@ service PoetrySlamService @(
       )
       action confirmVisit() returns Visits;
 
-      // Action: Inform the visitor about the event
+      // Action: Inform a specific visitor about the event
       action sendEMail();
     };
 
   // Generated PDF document with SAP Forms Service by Adobe
-  @readonly  @cds.persistence.skip
+  @readonly
+  @cds.persistence.skip
   entity PDFDocument {
     key ID        : UUID;
-
-        @Core.MediaType  : mediaType
-        content   : LargeBinary;
-
-        @Core.IsMediaType: true
-        mediaType : String;
+        content   : LargeBinary @Core.MediaType  : mediaType;
+        mediaType : String      @Core.IsMediaType: true;
   }
 
   // Currencies
   entity Currencies  as projection on sap.common.Currencies;
+  
   // Languages
   entity Language    as projection on sap.common.Languages;
 

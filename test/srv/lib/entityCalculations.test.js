@@ -7,14 +7,14 @@
 // Adds cds module
 const cds = require('@sap/cds');
 // Offers entity calculations
-const entityCalculations = require('./../../../../srv/poetryslam/util/entityCalculations');
-const { httpCodes } = require('./../../../../srv/poetryslam/util/codes');
+const entityCalculations = require('../../../srv/lib/entityCalculations');
+const { httpCodes } = require('../../../srv/lib/codes');
 
-const ConnectorByD = require('./../../../../srv/poetryslam/connector/connectorByD');
-const ConnectorB1 = require('./../../../../srv/poetryslam/connector/connectorB1');
+const ConnectorByD = require('../../../srv/poetryslam/connector/connectorByD');
+const ConnectorB1 = require('../../../srv/poetryslam/connector/connectorB1');
 
 // Defines required CDS functions for testing
-const { expect } = cds.test(__dirname + '/../../../..');
+const { expect } = cds.test(__dirname + '/../../..');
 const sinon = require('sinon');
 
 describe('Util Entity Calculations - Project', () => {

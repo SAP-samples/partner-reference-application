@@ -8,6 +8,11 @@ const escape = require('escape-html');
 
 const { httpCodes } = require('./codes');
 
+const EmailSendStatus = {
+  SUCCESS: 0, // Successful send
+  FAILED: 1 // Failed send
+};
+
 class EMail {
   // The sender needs to be adopted to an email address of the customer.
   // It is possible to add the sender to the destination instead.
@@ -32,7 +37,7 @@ class EMail {
       req.error(httpCodes.bad_request, 'ACTION_EMAIL_SEND_FAIL', [
         this.mailConfig.to
       ]);
-      return;
+      return EmailSendStatus.FAILED;
     }
 
     try {
@@ -53,13 +58,16 @@ class EMail {
         req.error(httpCodes.bad_request, 'ACTION_EMAIL_SEND_FAIL', [
           this.mailConfig.to
         ]);
+        return EmailSendStatus.FAILED;
       }
     } catch (error) {
       console.error(`ACTION send email: Error sending email: ${error.message}`);
       req.error(httpCodes.bad_request, 'ACTION_EMAIL_SEND_FAIL', [
         this.mailConfig.to
       ]);
+      return EmailSendStatus.FAILED;
     }
+    return EmailSendStatus.SUCCESS;
   }
 
   // Generate the HTML mail content

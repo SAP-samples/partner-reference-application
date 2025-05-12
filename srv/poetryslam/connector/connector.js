@@ -1,6 +1,6 @@
 'use strict';
 
-const destinationUtil = require('../util/destination');
+const destinationUtil = require('../../lib/destination');
 
 class Connector {
   destination;

@@ -20,6 +20,13 @@
       ]
     },
     {
+      "name": "$XSAPPNAME.JobScheduler",
+      "description": "SAP Job Scheduling Scope",
+      "grant-as-authority-to-apps": [
+        "$XSSERVICENAME(poetry-slams-jobscheduler)"
+      ]
+    },
+    {
       "name": "$XSAPPNAME.cds.ExtensionDeveloper",
       "description": "Access to develop extensions for Poetry Slam Manager"
     }
@@ -29,7 +36,10 @@
     {
       "name": "PoetrySlamManagerRole",
       "description": "Full Access to PoetrySlams",
-      "scope-references": ["$XSAPPNAME.PoetrySlamFull"],
+      "scope-references": [
+        "$XSAPPNAME.PoetrySlamFull",
+        "$XSAPPNAME.JobScheduler"
+      ],
       "attribute-references": []
     },
     {

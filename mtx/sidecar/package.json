@@ -1,23 +1,27 @@
 {
   "name": "partner-reference-application-mtx",
   "dependencies": {
-    "@cap-js/hana": "^1.6.1",
-    "@sap/cds": "^8.7.1",
-    "@sap/cds-mtxs": "^2.5.1",
-    "@sap/xssec": "^4.3.0",
+    "@cap-js/hana": "^1.9.0",
+    "@sap/cds": "^8.9.2",
+    "@sap/cds-mtxs": "^2.7.2",
+    "@sap/xssec": "^4.6.0",
     "express": "^4.21.2"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^1.8.0"
+    "@cap-js/sqlite": "^1.11.0"
   },
   "scripts": {
     "start": "cds-serve"
   },
   "cds": {
+    "features": {
+      "assert_integrity": "db"
+    },
     "profile": "mtx-sidecar",
     "requires": {
       "auth": "xsuaa",
       "destinations": true,
+      "connectivity": true,
       "audit-log": true,
       "html5-host": {
         "vcap": {
@@ -36,6 +40,14 @@
           "uaa": "xsappname"
         }
       },
+      "poetry-slams-jobscheduler": {
+        "vcap": {
+          "label": "jobscheduler"
+        },
+        "subscriptionDependency": {
+          "uaa": "xsappname"
+        }
+      },
       "cds.xt.ExtensibilityService": {
         "element-prefix": [
           "x_"
@@ -44,9 +56,13 @@
         "extension-allowlist": [
           {
             "for": [
-              "sap.samples.poetryslams.PoetrySlams"
+              "sap.samples.poetryslams.PoetrySlams",
+              "PoetrySlamService.PoetrySlams"
             ],
-            "kind": "entity"
+            "kind": "entity",
+            "annotations": [
+              "@assert.integrity"
+            ]
           },
           {
             "for": [

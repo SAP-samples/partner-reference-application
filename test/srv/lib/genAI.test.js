@@ -3,10 +3,10 @@
 const sinon = require('sinon');
 
 const cds = require('@sap/cds');
-const { expect } = cds.test(__dirname + '/../../../..');
+const { expect } = cds.test(__dirname + '/../../..');
 
 // Code to test
-const GenAI = require('../../../../srv/poetryslam/util/genAI');
+const GenAI = require('../../../srv/lib/genAI');
 
 describe('Util GenAI', () => {
   let genAIInstance;

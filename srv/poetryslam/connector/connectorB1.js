@@ -3,7 +3,7 @@
 // Include super class
 const Connector = require('./connector');
 
-const { convertToArray } = require('../util/entityCalculations');
+const { convertToArray } = require('../../lib/entityCalculations');
 
 // Include cds libraries and reuse files
 const cds = require('@sap/cds');

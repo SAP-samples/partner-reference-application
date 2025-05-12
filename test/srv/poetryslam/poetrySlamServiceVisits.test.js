@@ -10,7 +10,7 @@ const {
   poetrySlamStatusCode,
   color,
   visitStatusCode
-} = require('../../../srv/poetryslam/util/codes');
+} = require('../../../srv/lib/codes');
 // Defines required CDS functions for testing
 const { expect, GET, POST, PATCH, axios, test, DELETE } = cds.test(
   __dirname + '/../../..'

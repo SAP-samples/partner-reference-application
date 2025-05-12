@@ -10,7 +10,7 @@ const {
   poetrySlamStatusCode,
   color,
   httpCodes
-} = require('../../../srv/poetryslam/util/codes');
+} = require('../../../srv/lib/codes');
 
 // Defines required CDS functions for testing
 const { expect, GET, POST, PATCH, axios, test, DELETE } = cds.test(
@@ -486,6 +486,6 @@ describe('Poetryslams in PoetrySlamService', () => {
         tags: 'funny',
         rhyme: false
       })
-    ).to.rejectedWith();
+    ).to.rejectedWith(httpCodes.internal_server_error.toString());
   });
 });

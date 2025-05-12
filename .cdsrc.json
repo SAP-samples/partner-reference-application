@@ -19,6 +19,11 @@
             "id": "denise",
             "roles": ["authenticated-user"]
           },
+          "TechnicalJobSchedulerUser": {
+            "password": "welcome",
+            "id": "jobservice",
+            "roles": ["JobScheduler", "authenticated-user"]
+          },
           "*": true
         }
       }

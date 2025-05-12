@@ -8,10 +8,10 @@
 const cds = require('@sap/cds');
 
 // Defines required CDS functions for testing
-const { expect } = cds.test(__dirname + '/../../../..');
+const { expect } = cds.test(__dirname + '/../../..');
 
 // Import Logo Reuse Class
-const Logo = require('../../../../srv/poetryslam/util/logo');
+const Logo = require('../../../srv/lib/logo');
 
 describe('Util Logo - Reuse', () => {
   it('should read a file and encode Base64', function () {
@@ -19,7 +19,7 @@ describe('Util Logo - Reuse', () => {
     expect(encodedDefault).to.not.null;
 
     const encodedLogo = Logo.encodeFileBase64(
-      '../sample_data/poetrySlamLogo.jpg'
+      '../poetryslam/sample_data/poetrySlamLogo.jpg'
     );
     expect(encodedLogo).to.equal(encodedDefault);
   });

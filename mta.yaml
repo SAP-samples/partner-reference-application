@@ -15,6 +15,7 @@ build-parameters:
     #  Defines the build parameter
     - builder: custom
       commands:
+        - npm run prebuild
         - npm ci --omit=dev
         # [Workzone] Create resources folder and copy cdm.json
         - mkdir -p resources
@@ -38,8 +39,10 @@ modules:
       - name: poetry-slams-db
       - name: poetry-slams-adsrestapi
       - name: poetry-slams-destination
+      - name: poetry-slams-connectivity-service
       - name: poetry-slams-print-service
       - name: poetry-slams-aicore
+      - name: poetry-slams-jobscheduler
     provides:
       - name: poetry-slams-srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
@@ -63,8 +66,6 @@ modules:
         - npm install
         - npm run build:cf
       supported-platforms: []
-    requires:
-      - name: poetry-slams-auth
 
   - name: visitors
     type: html5
@@ -131,35 +132,6 @@ modules:
               ServiceKeyName: poetry-slams-html5-runtime-key
               URL: https://html5-apps-repo-rt.${default-domain}/applications/cdm/poetryslammanager # Adds workzone configuration of solution poetryslammanager
 
-  # MTX module
-  # Handles multitenancy
-  - name: poetry-slams-mtx
-    type: nodejs
-    path: gen/mtx/sidecar
-    build-parameters:
-      builder: npm-ci
-    parameters:
-      memory: 256M
-      disk-quota: 512M
-    provides:
-      - name: mtx-api
-        properties:
-          mtx-url: ${default-url}
-    requires:
-      - name: poetry-slams-db
-      - name: poetry-slams-auth
-      - name: poetry-slams-auditlog
-      - name: poetry-slams-cloud-logging
-      - name: poetry-slams-registry
-      - name: poetry-slams-destination
-      - name: poetry-slams-html5-repo-host
-      - name: poetry-slams-print-service
-      - name: poetry-slams-adsrestapi
-      - name: poetry-slams-aicore
-      - name: app-api
-        properties:
-          SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}.~{app-uri}
-
   # Approuter
   # Main entry point, routes subscription(i.e. tenant)-specific URLs and is used to deliver the getDependencies information
   - name: poetry-slams
@@ -195,6 +167,7 @@ modules:
       - name: poetry-slams-auth
       - name: poetry-slams-cloud-logging
       - name: poetry-slams-html5-runtime
+      - name: poetry-slams-jobscheduler
       - name: poetry-slams-destination
     provides:
       - name: app-api
@@ -202,6 +175,37 @@ modules:
           app-protocol: ${protocol}
           app-uri: ${default-uri}
           redirect-uris: ${protocol}://*.${default-uri}/** # Redirect URI to connect modules running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
+
+  # MTX module
+  # Handles multitenancy
+  - name: poetry-slams-mtx
+    type: nodejs
+    path: gen/mtx/sidecar
+    build-parameters:
+      builder: npm-ci
+    parameters:
+      memory: 256M
+      disk-quota: 512M
+    provides:
+      - name: mtx-api
+        properties:
+          mtx-url: ${default-url}
+    requires:
+      - name: poetry-slams-db
+      - name: poetry-slams-auth
+      - name: poetry-slams-auditlog
+      - name: poetry-slams-cloud-logging
+      - name: poetry-slams-registry
+      - name: poetry-slams-destination
+      - name: poetry-slams-connectivity-service
+      - name: poetry-slams-html5-repo-host
+      - name: poetry-slams-print-service
+      - name: poetry-slams-adsrestapi
+      - name: poetry-slams-aicore
+      - name: poetry-slams-jobscheduler
+      - name: app-api
+        properties:
+          SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}.~{app-uri}
 
   # The service broker for the poetry slam manager
   # Directly exposes the author reading service
@@ -221,7 +225,7 @@ modules:
     properties:
       SBF_CATALOG_SUFFIX: ${space} # Make the service broker unique in the deployed space
       SBF_ENABLE_AUDITLOG: true
-      SBF_BROKER_CREDENTIALS: '{ "${generated-user}": "${generated-password}" }' # use a random password that is generated during deployment (not that this will change the password with every deplyoment)
+      SBF_BROKER_CREDENTIALS: '{ "${generated-user}": "${generated-password}" }' # use a random password that is generated during deployment (note that this will change the password with every deplyoment)
       SBF_SERVICE_CONFIG:
         psm-servicebroker:
           extend_xssecurity:
@@ -283,6 +287,14 @@ resources:
                 HTML5.ForwardAuthToken: true
         HTML5Runtime_enabled: false
 
+  # Connectivity service
+  # Offers a predefined configuration that allows connection to endpoints using the SAP Cloud Connector
+  - name: poetry-slams-connectivity-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: connectivity
+      service-plan: lite
+
   # Authorization XSUAA service
   # Manages authentication, single sign-on (SSO), user management, and provides a way to manage authorizations based on scopes and role collections
   - name: poetry-slams-auth
@@ -310,6 +322,8 @@ resources:
     parameters:
       service: saas-registry
       service-plan: application
+      service-keys:
+        - name: poetry-slams-registry-key
       config:
         xsappname: poetry-slams-${org}-${space}
         appName: poetry-slams-${org}-${space}
@@ -379,3 +393,12 @@ resources:
     parameters:
       service: aicore
       service-plan: extended
+
+  # Job scheduler Service
+  - name: poetry-slams-jobscheduler
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: jobscheduler
+      service-plan: standard
+      config:
+        enable-xsuaa-support: true

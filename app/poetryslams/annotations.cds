@@ -17,6 +17,7 @@ annotate service.PoetrySlams with {
   purchaseOrderObjectID        @UI.Hidden;
   createB1PurchaseOrderEnabled @UI.Hidden;
   isB1                         @UI.Hidden;
+  isJobStatusShown             @UI.Hidden;
 };
 
 annotate service.PoetrySlams with @(
@@ -55,30 +56,30 @@ annotate service.PoetrySlams with @(
   },
   UI                             : {
     // Fields with special visualization or fields shown in the header of the object page
-    DataPoint #bookedSeats        : {
+    DataPoint #bookedSeats         : {
       Title        : '{i18n>bookedSeatsTitle}',
       Value        : bookedSeats,
       Visualization: #Progress,
       TargetValue  : maxVisitorsNumber
     },
-    DataPoint #dateTime           : {
+    DataPoint #dateTime            : {
       $Type: 'UI.DataPointType',
       Value: dateTime,
       Title: '{i18n>dateTime}'
     },
-    DataPoint #status_code        : {
+    DataPoint #status_code         : {
       $Type      : 'UI.DataPointType',
       Value      : status_code,
       Title      : '{i18n>status}',
       Criticality: statusCriticality
     },
-    DataPoint #visitorsFeeAmount  : {
+    DataPoint #visitorsFeeAmount   : {
       $Type: 'UI.DataPointType',
       Value: visitorsFeeAmount,
       Title: '{i18n>visitorsFeeAmount}'
     },
     // Collection of facets shown on the Object Page
-    Facets                        : [
+    Facets                         : [
       {
         $Type : 'UI.ReferenceFacet',
         ID    : 'GeneralData',
@@ -118,10 +119,17 @@ annotate service.PoetrySlams with @(
         Label : '{i18n>administrativeData}',
         ID    : 'AdministrativeData',
         Target: '@UI.FieldGroup#AdministrativeData'
+      },
+      {
+        $Type        : 'UI.ReferenceFacet',
+        Label        : '{i18n>backgroundExecution}',
+        ID           : 'BackgroundExecution',
+        Target       : '@UI.FieldGroup#BackgroundExecution',
+        ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'isJobStatusShown'}}} // Display Job Status if SendEmailReminder tiggered
       }
     ],
     // Bundle multiple fields into a group
-    FieldGroup #CreatedByAndOn    : {
+    FieldGroup #CreatedByAndOn     : {
       $Type: 'UI.FieldGroupType',
       Data : [
         {
@@ -134,7 +142,7 @@ annotate service.PoetrySlams with @(
         }
       ]
     },
-    FieldGroup #AdministrativeData: {
+    FieldGroup #AdministrativeData : {
       $Type: 'UI.FieldGroupType',
       Data : [
         {
@@ -155,7 +163,14 @@ annotate service.PoetrySlams with @(
         }
       ]
     },
-    FieldGroup #GeneralData       : {
+    FieldGroup #BackgroundExecution: {
+      $Type: 'UI.FieldGroupType',
+      Data : [{
+        $Type: 'UI.DataField',
+        Value: jobStatusText
+      }]
+    },
+    FieldGroup #GeneralData        : {
       $Type: 'UI.FieldGroupType',
       Data : [
         {
@@ -196,7 +211,7 @@ annotate service.PoetrySlams with @(
         }
       ]
     },
-    FieldGroup #ProjectData       : {Data: [
+    FieldGroup #ProjectData        : {Data: [
       // Project system independend fields:
       {
         $Type: 'UI.DataFieldWithUrl',
@@ -291,7 +306,7 @@ annotate service.PoetrySlams with @(
         ![@Common.FieldControl]: #ReadOnly
       },
     ]},
-    FieldGroup #PurchaseOrderData : {Data: [
+    FieldGroup #PurchaseOrderData  : {Data: [
       // SAP Business One specific fields
       {
         $Type: 'UI.DataFieldWithUrl',
@@ -330,7 +345,7 @@ annotate service.PoetrySlams with @(
       },
     ]},
     // Facets shown in the header of an object page
-    HeaderFacets                  : [
+    HeaderFacets                   : [
       {
         $Type : 'UI.ReferenceFacet',
         ID    : 'dateTime',
@@ -358,7 +373,7 @@ annotate service.PoetrySlams with @(
       }
     ],
     // Mandatory (and optional) data for the main entity type of the model
-    HeaderInfo                    : {
+    HeaderInfo                     : {
       $Type         : 'UI.HeaderInfoType',
       TypeName      : '{i18n>poetrySlam}',
       TypeNamePlural: '{i18n>poetrySlam-plural}',
@@ -372,7 +387,7 @@ annotate service.PoetrySlams with @(
       }
     },
     // Addition of custom actions to the list page & object page
-    Identification                : [
+    Identification                 : [
       {
         $Type        : 'UI.DataFieldForAction',
         Action       : 'PoetrySlamService.publish',
@@ -414,6 +429,13 @@ annotate service.PoetrySlams with @(
           {$Path: 'createB1PurchaseOrderEnabled'},
           {$Path: 'IsActiveEntity'}
         ]}}}
+      },
+      // Send reminder email
+      {
+        $Type        : 'UI.DataFieldForAction',
+        Action       : 'PoetrySlamService.sendReminderForPoetrySlam',
+        Label        : '{i18n>sendReminderForEvent}',
+        ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
       },
       // Print the guest list
       {
@@ -457,7 +479,7 @@ annotate service.PoetrySlams with @(
       }
     ],
     // Definition of fields shown on the list page / table
-    LineItem                      : [
+    LineItem                       : [
       {
         $Type : 'UI.DataFieldForAction',
         Action: 'PoetrySlamService.cancel',
@@ -515,7 +537,7 @@ annotate service.PoetrySlams with @(
       }
     ],
     // Default filters on the list page
-    SelectionFields               : [
+    SelectionFields                : [
       number,
       title,
       description,
@@ -630,8 +652,8 @@ annotate service.Visits with @(
       {
         $Type : 'UI.DataFieldForAction',
         Action: 'PoetrySlamService.sendEMail',
-        Label : '{i18n>sendEMail}',
-      },
+        Label : '{i18n>sendEMail}'
+      }
     ],
     Facets                        : [
       {

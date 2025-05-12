@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 class Logo {
-  static defaultLogo = '../sample_data/poetrySlamLogo.jpg';
+  static defaultLogo = '../poetryslam/sample_data/poetrySlamLogo.jpg';
 
   static encodeFileBase64(filePath = Logo.defaultLogo) {
     // Read logo image to be used in the form from the file system

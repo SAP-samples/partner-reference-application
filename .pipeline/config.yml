@@ -1,0 +1,62 @@
+---
+general:
+  buildTool: 'mta'
+service:
+  buildToolVersion: 'MBTJ21N20'
+  stages:
+    Build:
+      runFirst:
+        command: 'cp ./test/cicd/* cloudcitransfer'
+    Acceptance:
+      runLast:
+        command: './cloudcitransfer/cicd_all_tests.sh'
+      credentialVariables:
+        # Credentials for integration test
+        - name: 'service_broker_endpoint'
+          credentialId: 'release-service-broker-endpoint'
+        - name: 'service_broker_auth_server'
+          credentialId: 'release-service-broker-auth-server'
+        - name: 'service_broker_client_id'
+          credentialId: 'release-service-broker-client-id'
+        - name: 'service_broker_client_secret'
+          credentialId: 'release-service-broker-client-secret'
+        # Credentials for subscription updates
+        - name: 'registry_clientid'
+          credentialId: 'release-registry-clientid'
+        - name: 'registry_clientsecret'
+          credentialId: 'release-registry-clientsecret'
+        - name: 'registry_uaa_url'
+          credentialId: 'release-registry-uaa-url'
+        - name: 'registry_saasreg_url'
+          credentialId: 'release-registry-saasreg-url'
+      cfCredentialsId: 'cloudfoundrydeploy'
+stages:
+  Build:
+    mavenExecuteStaticCodeChecks: false
+    npmExecuteLint: false
+  Acceptance:
+    cfApiEndpoint: 'https://api.cf.eu10-004.hana.ondemand.com'
+    cfOrg: 'mecs_psm_cicd'
+    cfSpace: 'cicd'
+    deployType: 'standard'
+    cloudFoundryDeploy: true
+    npmExecuteEndToEndTests: false
+  Malware Scan:
+    malwareExecuteScan: true
+  Release:
+    tmsExport: false
+    tmsUpload: false
+    cloudFoundryDeploy: false
+  Additional Unit Tests:
+    npmExecuteScripts: true
+  Compliance:
+    sonarExecuteScan: false
+steps:
+  cloudFoundryDeploy:
+    mtaDeployParameters: '-f --version-rule ALL'
+  npmExecuteScripts:
+    runScripts:
+      - 'prebuild'
+      - 'test'
+  artifactPrepareVersion:
+    versioningType: 'cloud_noTag'
