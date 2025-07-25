@@ -1,7 +1,10 @@
 using VisitorService as service from '../../srv/visitor/visitorService';
 
-annotate service.Visitors with @(
+annotate service.Visitors with {
+  ID @UI.Hidden;
+}
 
+annotate service.Visitors with @(
   // Enable Create Button
   Capabilities.InsertRestrictions: {Insertable: true},
   // Enable Edit Button
@@ -36,13 +39,8 @@ annotate service.Visitors with @(
         {
           $Type                  : 'UI.DataField',
           Value                  : email,
-          ![@Common.FieldControl]: #Mandatory,
-        },
-        {
-          $Type: 'UI.DataField',
-          Value: ID,
-          ![@UI.Hidden],
-        },
+          ![@Common.FieldControl]: #Mandatory
+        }
       ],
     },
     FieldGroup #AdministrativeData: {
@@ -105,9 +103,13 @@ annotate service.Visitors with @(
   }
 );
 
-annotate service.Visits with @(
+annotate service.Visits with {
+  ID      @UI.Hidden;
+  parent  @UI.Hidden;
+  visitor @UI.Hidden;
+};
 
-UI: {
+annotate service.Visits with @(UI: {
   HeaderInfo              : {
     TypeName      : '{i18n>booking}',
     TypeNamePlural: '{i18n>booking-plural}'

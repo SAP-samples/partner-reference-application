@@ -24,6 +24,7 @@ module.exports = class uniqueNumberGenerator {
 
         // First, check if sequencename pattern is correct
         if (!sequenceName.match(/^[A-Za-z0-9_-]*$/)) {
+          console.error(`Invalid Sequencename: ${sequenceName}`);
           throw new Error(`Invalid Sequencename: ${sequenceName}`);
         }
         try {
@@ -52,6 +53,7 @@ module.exports = class uniqueNumberGenerator {
         return result.number.toString();
 
       default:
+        console.error(`Invalid Database type: ${dbKind}`);
         throw new Error(`Invalid Database type: ${dbKind}`);
     }
   }

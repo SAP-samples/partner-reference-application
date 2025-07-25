@@ -40,6 +40,9 @@ module.exports = async (srv) => {
           req.data.ID
         ));
     } catch (error) {
+      console.error(
+        `Readable ID for Poetry Slam document could not be generated (error: ${error})`
+      );
       req.error(httpCodes.internal_server_error, 'NO_POETRYSLAM_NUMBER', [
         error.message
       ]);
@@ -68,7 +71,8 @@ module.exports = async (srv) => {
       poetrySlam.status_code !== poetrySlamStatusCode.inPreparation &&
       poetrySlam.status_code !== poetrySlamStatusCode.canceled
     ) {
-      req.error(httpCodes.bad_request, 'POETRYSLAM_COULD_NOT_BE_DELETED', [
+      console.error('Poetry Slam could not be deleted due to status');
+      req.error(httpCodes.bad_request, 'DELETE_POETRYSLAM_NOT_POSSIBLE', [
         poetrySlam.number
       ]);
     }
@@ -114,6 +118,7 @@ module.exports = async (srv) => {
 
     // If poetry slam was not found, throw an error
     if (!poetrySlam) {
+      console.error('Poetry Slam not found');
       req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [id]);
       return;
     }
@@ -152,6 +157,7 @@ module.exports = async (srv) => {
 
     // If poetry slam was not found, throw an error
     if (!poetrySlam) {
+      console.error('Poetry Slam not found');
       req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [id]);
       return;
     }
