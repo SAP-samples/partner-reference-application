@@ -1,6 +1,6 @@
 {
   "name": "partner-reference-application",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "SAP Partner Reference Application Version 2.0",
   "repository": "github.com/sap-samples/partner-reference-application.git",
   "author": "SAP",
@@ -10,25 +10,25 @@
     "Partner",
     "BusinessTechnologyPlatform"
   ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "dependencies": {
-    "@cap-js/hana": "^1.9.0",
-    "@sap/cds": "^8.9.2",
-    "@sap/cds-common-content": "^2.1.0",
-    "@sap/cds-mtxs": "^2.7.2",
-    "@sap/xssec": "^4.6.0",
+    "@cap-js/hana": "^2.1.1",
+    "@sap/cds": "^9.1.0",
+    "@sap/cds-common-content": "^3.0.1",
+    "@sap/cds-mtxs": "^3.1.0",
+    "@sap/xssec": "^4.9.0",
     "express": "^4.21.2",
     "rimraf": "^6.0.1"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^1.11.0",
-    "@sap/cds-dk": "^8.9.2",
-    "@sap/ux-specification": "^1.124.14",
-    "axios": "^1.8.4",
-    "chai": "^4.5.0",
-    "chai-as-promised": "^7.1.2",
-    "chai-subset": "^1.6.0",
-    "mocha": "^11.1.0",
-    "sinon": "^20.0.0"
+    "@cap-js/cds-test": "^0.4.0",
+    "@cap-js/sqlite": "^2.0.2",
+    "@sap/cds-dk": "^9.1.1",
+    "@sap/ux-specification": "^1.136.2",
+    "mocha": "^11.7.1",
+    "sinon": "^21.0.0"
   },
   "scripts": {
     "start": "cds-serve",

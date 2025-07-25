@@ -1,10 +1,10 @@
 using PoetrySlamService as service from '../../srv/poetryslam/poetrySlamService';
 
 annotate service.PoetrySlams with {
-  status              @Common.Text: {
-    $value                : status.name,
-    ![@UI.TextArrangement]: #TextOnly
-  };
+  status              @(Common: {
+    Text           : status.name,
+    TextArrangement: #TextOnly
+  });
   description         @UI.MultiLineText;
   ID                  @UI.Hidden;
   statusCriticality   @UI.Hidden;
@@ -47,30 +47,30 @@ annotate service.PoetrySlams with @(
   },
   UI                             : {
     // Fields with special visualization or fields shown in the header of the object page
-    DataPoint #bookedSeats        : {
+    DataPoint #bookedSeats         : {
       Title        : '{i18n>bookedSeatsTitle}',
       Value        : bookedSeats,
       Visualization: #Progress,
       TargetValue  : maxVisitorsNumber
     },
-    DataPoint #dateTime           : {
+    DataPoint #dateTime            : {
       $Type: 'UI.DataPointType',
       Value: dateTime,
       Title: '{i18n>dateTime}'
     },
-    DataPoint #status_code        : {
+    DataPoint #status_code         : {
       $Type      : 'UI.DataPointType',
       Value      : status_code,
       Title      : '{i18n>status}',
       Criticality: statusCriticality
     },
-    DataPoint #visitorsFeeAmount  : {
+    DataPoint #visitorsFeeAmount   : {
       $Type: 'UI.DataPointType',
       Value: visitorsFeeAmount,
       Title: '{i18n>visitorsFeeAmount}'
     },
     // Collection of facets shown on the Object Page
-    Facets                        : [
+    Facets                         : [
       {
         $Type : 'UI.ReferenceFacet',
         ID    : 'GeneralData',
@@ -96,7 +96,7 @@ annotate service.PoetrySlams with @(
       }
     ],
     // Bundle multiple fields into a group
-    FieldGroup #CreatedByAndOn    : {
+    FieldGroup #CreatedByAndOn     : {
       $Type: 'UI.FieldGroupType',
       Data : [
         {
@@ -109,7 +109,7 @@ annotate service.PoetrySlams with @(
         }
       ]
     },
-    FieldGroup #AdministrativeData: {
+    FieldGroup #AdministrativeData : {
       $Type: 'UI.FieldGroupType',
       Data : [
         {
@@ -172,7 +172,7 @@ annotate service.PoetrySlams with @(
       ]
     },
     // Facets shown in the header of an object page
-    HeaderFacets                  : [
+    HeaderFacets                   : [
       {
         $Type : 'UI.ReferenceFacet',
         ID    : 'dateTime',
@@ -200,7 +200,7 @@ annotate service.PoetrySlams with @(
       }
     ],
     // Mandatory (and optional) data for the main entity type of the model
-    HeaderInfo                    : {
+    HeaderInfo                     : {
       $Type         : 'UI.HeaderInfoType',
       TypeName      : '{i18n>poetrySlam}',
       TypeNamePlural: '{i18n>poetrySlam-plural}',
@@ -214,7 +214,7 @@ annotate service.PoetrySlams with @(
       }
     },
     // Addition of custom actions to the list page & object page
-    Identification                : [
+    Identification                 : [
       {
         $Type        : 'UI.DataFieldForAction',
         Action       : 'PoetrySlamService.publish',
@@ -235,7 +235,7 @@ annotate service.PoetrySlams with @(
       }
     ],
     // Definition of fields shown on the list page / table
-    LineItem                      : [
+    LineItem                       : [
       {
         $Type : 'UI.DataFieldForAction',
         Action: 'PoetrySlamService.cancel',
@@ -278,7 +278,7 @@ annotate service.PoetrySlams with @(
       }
     ],
     // Default filters on the list page
-    SelectionFields               : [
+    SelectionFields                : [
       number,
       title,
       description,
@@ -289,7 +289,17 @@ annotate service.PoetrySlams with @(
 );
 
 annotate service.Visits with {
-  visitor @(Common: {
+  ID                @UI.Hidden;
+  parent            @UI.Hidden;
+  statusCriticality @UI.Hidden;
+  status            @(
+    Common  : {
+      Text           : status.name,
+      TextArrangement: #TextOnly
+    },
+    readonly: true
+  );
+  visitor           @(Common: {
     // Visualization of a value list
     // Shows name and email in the value list
     // Returns corresponding visitor ID
@@ -316,10 +326,6 @@ annotate service.Visits with {
     TextArrangement: #TextOnly,
     Label          : '{i18n>name}'
   });
-  status  @readonly  @Common.Text: {
-    $value                : status.name,
-    ![@UI.TextArrangement]: #TextOnly
-  };
 };
 
 annotate service.Visits with @(
@@ -452,10 +458,13 @@ annotate service.Visits with @(
 );
 
 annotate service.Visitors with {
-  ID   @(Common: {
-    Text           : email,
-    TextArrangement: #TextOnly,
-    Label          : '{i18n>email}'
-  });
+  ID   @(
+    Common: {
+      Text           : email,
+      TextArrangement: #TextOnly,
+      Label          : '{i18n>email}'
+    },
+    UI    : {Hidden: true}
+  );
   name @readonly;
 };

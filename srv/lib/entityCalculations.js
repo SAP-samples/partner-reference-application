@@ -11,6 +11,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
   const tableExtension = req.target.name.endsWith('drafts') ? '.drafts' : '';
   const changedData = {};
   if (!id) {
+    console.error('Poetry Slam ID not found');
     req.error(httpCodes.internal_server_error, 'POETRYSLAM_NOT_FOUND', [id]);
     return;
   }
@@ -23,6 +24,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
 
   // If poetry slam was not found, throw an error
   if (!poetrySlam) {
+    console.error('Poetry Slam not found');
     req.error(httpCodes.internal_server_error, 'POETRYSLAM_NOT_FOUND', [id]);
     return;
   }
@@ -109,6 +111,7 @@ async function updatePoetrySlam(
     .where({ ID: poetrySlamID });
 
   if (result !== 1) {
+    console.error('Update Poetry Slam failed');
     req.error(httpCodes.internal_server_error, errorMessage.text, [
       errorMessage.param
     ]);
@@ -124,6 +127,7 @@ async function updatePoetrySlam(
 // Helper function to convert an object to an array
 function convertToArray(x) {
   if (!x) {
+    console.error('Input not defined - Cannot convert to array');
     return [];
   }
   return Array.isArray(x) ? x : [x];
