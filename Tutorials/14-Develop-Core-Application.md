@@ -96,7 +96,7 @@ Copy the [initial data sets](../../../tree/main-multi-tenant/db/data/) into your
 
 After you've defined the domain model with its entities, define a set of [SAP Cloud Application Programming Model services](https://cap.cloud.sap/docs/guides/providing-services) to add business logic and external APIs to the application. All service definitions must be in the */srv* folder. You can use subfolders to structure the different services according to their usage. 
 
-1. Create a folder *poetryslam* in the */srv* folder. The folder should contain all the files that are required for the Poetry Slam service.
+1. Create a folder *poetryslam* in the */srv* folder. It will contain all the files that are required for the Poetry Slam service.
 2. Copy the service definition from [*/srv/poetryslam/poetrySlamService.cds*](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamService.cds) into your project.
 3. Create a file *services.cds* in the */srv* folder, which will reference all the service definitions (cds-files of the services). Add the reference to the Poetry Slam Service:
 

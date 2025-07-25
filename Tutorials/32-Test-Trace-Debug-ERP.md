@@ -6,7 +6,7 @@ To test and troubleshoot the ERP Integration of your application, it's beneficia
 
 The goal of local tests is to connect to integrated ERP systems without using destinations. Therefore, you need to adjust the code slightly, as shown below:
 
-1. To edit the development credentials in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) file, replace the placeholders such as `{{b1-hostname}}`, `{{test-user}}`, `{{test-password}}`, and so on with the information of your ERP test system:
+1. To edit the development credentials in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) file, replace the placeholders `{{b1-hostname}}`, `{{test-user}}`, `{{test-password}}` with the information of your ERP test system:
 
     ```json
     "cds": {
@@ -37,10 +37,10 @@ The goal of local tests is to connect to integrated ERP systems without using de
 
 2. The *Create Project* or *Create Purchase Order* buttons depend on the setup of the destinations. Once you configure the destinations correctly and deploy the application to the SAP BTP Cloud Foundry runtime, the button for creating projects becomes active.
 
-    To test this button locally, edit the ERP-specific connector, for example, for SAP S/4HANA Cloud [*connectorS4HC.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connectorS4HC.js). In method _createConnectorInstance_, change the value of **connector.isConnectedIndicator** to **true** after the connector instance is created:
+    To test this button locally, edit the ERP-specific connector, for example, for SAP S/4HANA Cloud [*connectorB1.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connectorB1.js). In method _createConnectorInstance_, change the value of **connector.isConnectedIndicator** to **true** after the connector instance is created:
 
     ```javascript
-    const connector = new ConnectorS4HC(data);
+    const connector = new ConnectorB1(data);
     connector.isConnectedIndicator = true;
     ```
 

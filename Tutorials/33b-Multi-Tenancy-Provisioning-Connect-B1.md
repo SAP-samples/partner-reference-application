@@ -11,7 +11,7 @@ In this section, you integrate Poetry Slam Manager, your SAP Business Technology
         - SAP Business One, Web client, 
         - SAP Business One Control Center, 
         - and SAP Business One Extension Manager.
-2. Back-channel integration: Create SAP Business One purchase orders in Poetry Slam Manager using OData APIs with basic authentication.
+2. Back-channel integration: Create SAP Business One purchase orders in Poetry Slam Manager using OData APIs with basic authentication or principal propagation.
 
 <p align="center">
   <img src="./images/33_B1_integration_overview.png" width="70%">
@@ -80,7 +80,7 @@ Therefore, you need to ensure that the same e-mail addresses are entered for use
     8. In the *Post Logout Redirect URIs* section, choose *Add* and enter `\<Redirect URI\>/logout_response`.
     9. Choose *Save*. 
     10. In the *Application APIs* properties of the newly created application, select *Client Authentication*.
-    11. In the *Secrets*section, choose *Add*.
+    11. In the *Secrets* section, choose *Add*.
     12. In the *Add Secret* window, enter a `Description` and use the default values for the rest of the fields.
     13. Choose *Save*, which will prompt the *Client ID* and *Client Secret* of the application.
         > Note: Make sure that you save *Client ID* and *Client Secret* for later usage since they cannot be retrieved from the system anymore.
@@ -120,53 +120,100 @@ Therefore, you need to ensure that the same e-mail addresses are entered for use
 9. Use your e-mail and the Identity Authentication service password. If the login to SAP Business One is processed successfully, you will be logged in with the SAP Business One user that has the same e-mail address configured as you entered.
     > Note: Test the control center with single sign-on by opening the SAP Business One *System Landscape Directory* using the URL _https://\<sap-business-one-server:port\>/ControlCenter_.
 
-> Note: For more details, refer to [Identity and Authentication Management in SAP Business One](https://help.sap.com/docs/SAP_BUSINESS_ONE_IAM/548d6202b2b6491b824a488cfc447343/7f94c5836fad44e6a02322d39e229cc3.html?locale=en-US). 
+> Note: For more details, refer to [Identity and Authentication Management in SAP Business One](https://help.sap.com/docs/SAP_BUSINESS_ONE_IAM/548d6202b2b6491b824a488cfc447343/7f94c5836fad44e6a02322d39e229cc3.html?locale=en-US).
+
+
+## (Optional) Register the Identity Provider of the SAP BTP Application in the SAP Business One SSO Extension Manager
+
+> Note: This section is only relevant in case the connection is configured using principle propagation.
+To establish a trust relationship between SAP Business One and the Poetry Slam Manager application, the identity provider used for the Poetry Slam Manager application needs to be registered in the SAP Business One Extension SSO Manager.
+
+First, register the identity provider of the Poetry Slam Manager application:
+1. Access the Extension SSO Manager: *https://<sap-business-one-server:port>/ExtensionSSOManager/*.
+2. Navigate to **Principal Propagation > Identity Providers**.
+3. Register a new identity provider at the **Registered Identity Providers** table:
+    - Protocol: OpenID Connect (OIDC)
+    - Name: *<name>* (for example: *Your Subaccount Subdomain*)
+    - Discovery Endpoint: *https://<SAP_BTP_consumer_subaccount_subdomain>.authentication.\<region>.hana.ondemand.com/.well-known/openid-configuration*
+    - Identity Claim Name: *email*
+
+Second, bind the identity provider to a SAP Business One tenant:
+1. Navigate to **Principal Propagation > Tenants**.
+2. In the *Tenant Binding List* table, choose **Bind**.
+3. In the *Tenant Binding* dialog, select the previously registered identity provider and the target tenant of SAP Business One.
+
+> Note: To enforce authorization checks for external access, set the following authorization in the user authorization settings of the SAP Business One application. For all users accessing SAP Business One data using DI API or the service layer, ensure **Disable DI API Permission Check** is set to **No Authorization**.
 
 ## Get SAP Business One OData Services Metadata
 In general, SAP Business One exposes OData services through the SAP Business One service layer. The Poetry Slam Manager side-by-side SAP BTP application uses SAP Business One
-*Purchase Order* data. It reads and writes purchase orders using OData services exposed through the SAP Business One service layer.
-> Note: To get the OData metadata, exposed by the SAP Business One service layer, run the $metadata URL of the OData service in a browser window: _https://\<service-layer server\>/b1s/v2/$metadata_
- 
+*Purchase Order* data. It reads and writes purchase orders using OData services exposed through the SAP Business One service layer. It must be reachable with a public URL, such as *https://{{B1-hostname}}:{{Port}}*.
 
-## Set Up Destinations to Connect the SAP BTP App to SAP Business One 
+To check the availability of the exposed SAP Business One service layer, you can get the OData metadata by calling the $metadata URL of the OData service in a browser window: *https://<sap-business-one-service-layer:port>/b1s/v2/$metadata*.
 
-1. In your SAP BTP consumer subaccount, create the destination *b1* to connect to SAP Business One with basic authentication. Open the *Connectivity* menu item on the SAP BTP consumer subaccount, choose *Destinations*, and create a new destination with the following field values. For more details, refer to [Setting Up SAP BTP Destination for Service Layer](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/bfeaccb8b53348318970f8bbbc3d5f0a.html?locale=en-US&q=Business%20One%20extension).
+To prevent exposing system ports to the public while connecting to SAP Business One, a Cloud Connector can be used instead.  
+For further details about the installation and usage of a Cloud Connector, please refer to the guide [Business One integration with Cloud Connector](./33c-B1-Integration-With-Cloud-Connector.md).  
 
-    | Parameter Name           | Value                                                                                                  |
-    | :------------------------ | :-------------------------------------------------------------------------------------                |
-    | *Name*:                   | *b1*                                                                                                  |
-    | *Type*:                   | *HTTP*                                                                                                |
-    | *Description*:            | Enter a destination description, for example, ``SAP Business One 123456 with basic authentication``.  |
-    | *URL*:                    | *https://{{B1-hostname}}:{{Port}}*, for example, ``https://my123456.sapOne.com:55000``                |
-    | *Proxy Type*:             | *Internet*                                                                                            |
-    | *Authentication*:         | *BasicAuthentication*                                                                                 |
-    | *User*:                   | Enter the username.                                                                                   |
-    | *Password*:               | Enter the password.                                                                                   |
-    
-    > Note: To check if everything's correctly configured, choose *Check Connection*. If the configuration is correct, the response is *200: OK*.
-    
-    > Note: As a **prerequisite** for the configuration of the destinations, an SAP Business One system must be availabe that is hosted by a provider or a partner. It must be reachable with a public URL, such as *https://{{B1-hostname}}:{{Port}}*.
+In case you don't need a Cloud Connector for your integration scenario, you can continue with the other sections below.
 
-2. Create another destination with the following field values:
+## Set Up Destinations to Connect the SAP BTP Application to SAP Business One
 
-    | Parameter Name   | Value                                                                                      |
-    | :---------------- | :--------------------------------------------------------------------------------------   |
-    | *Name*:           | *b1-url*                                                                                  |
-    | *Type*:           | *HTTP*                                                                                    |
-    | *Description*:    | Enter a destination description, for example, ``SAP Business One 123456 URL``.            |
-    | *URL*:            | *https://{{B1-hostname}}* for example, ``https://my123456sapOne.com``                     |
-    | *Proxy Type*:     | *Internet*                                                                                |
-    | *Authentication*: | *NoAuthentication*                                                                        |
+[HTTP Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/http-destinations) can be configured in the subaccounts of SAP Business Technology Platform. They can be used to connect your application to the internet, as well as to an on-premise system. To set up a destination, follow these steps:
+1. Open your SAP BTP consumer subaccount.
+2. Go to *Connectivity* and choose *Destinations*.
+3. Create the following destinations:
 
-To prevent exposing system ports to the internet while connecting to SAP Business One, it is recommended to use a Cloud Connector. For further details, please refer to this guide: [Business One integration with Cloud Connector](./33c-B1-Integration-With-Cloud-Connector.md)
+    - **b1-url**: Link to the SAP Business One UI.
+
+        | Parameter Name    | Value                                                                                     |
+        | :---------------- | :--------------------------------------------------------------------------------------   |
+        | *Name*:           | *b1-url*                                                                                  |
+        | *Type*:           | *HTTP*                                                                                    |
+        | *Description*:    | Enter a destination description, for example, ``SAP Business One 123456 URL``.            |
+        | *URL*:            | *https://{{B1-hostname}}* for example, ``https://my123456sapOne.com``.                     |
+        | *Proxy Type*:     | *Internet*                                                                                |
+        | *Authentication*: | *NoAuthentication*                                                                        |
+
+    - **b1**: Connect to the SAP Business One API using the service layer.
+
+        > Note: For more details, refer to [Setting Up SAP BTP Destination for Service Layer](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/bfeaccb8b53348318970f8bbbc3d5f0a.html?locale=en-US&q=Business%20One%20extension).
+
+        - Option 1 (Basic Authentication):
+            | Parameter Name           | Value                                                                                                  |
+            | :------------------------ | :-------------------------------------------------------------------------------------                |
+            | *Name*:                   | *b1*                                                                                                  |
+            | *Type*:                   | *HTTP*                                                                                                |
+            | *Description*:            | Enter a destination description, for example, ``SAP Business One 123456``.                             |
+            | *URL*:                    | *https://{{B1-hostname}}:{{Port}}*, for example, ``https://my123456.sapOne.com:55000``.                |
+            | *Proxy Type*:             | *Internet*                                                                                            |
+            | *Authentication*:         | *BasicAuthentication*                                                                                 |
+            | *User*:                   | Enter the username.                                                                                   |
+            | *Password*:               | Enter the password.                                                                                   |
+            
+        - Option 2 (Principal Propagation):
+            | Parameter Name           | Value                                                                                                  |
+            | :------------------------ | :-------------------------------------------------------------------------------------                |
+            | *Name*:                   | *b1*                                                                                                  |
+            | *Type*:                   | *HTTP*                                                                                                |
+            | *Description*:            | Enter a destination description, for example, ``SAP Business One 123456``.                             |
+            | *URL*:                    | *https://{{B1-hostname}}:{{Port}}*, for example, ``https://my123456.sapOne.com:55000``.                |
+            | *Proxy Type*:             | *Internet*                                                                                            |
+            | *Authentication*:         | *NoAuthentication*                                                                                    |
+
+            Additional Properties:
+            | Property Name                 | Value            |
+            | :---------------------------- | :--------------- |
+            | *forwardAuthToken*:           | *true*           |
+            | *URL.headers.X-b1-companyid*: | *{{Company ID}}* |
+
+            > Note: You can see the `{{Company ID}}` in the SAP Business One Extension SSO Manager in the *Tenant Binding List*.
 
 ## Add SAP BTP Applications to the SAP Business One Launchpad
 
-As a last step, you add Poetry Slam Manager to the SAP Business One launchpad to make it possible for poetry slam managers to launch it from SAP Business One.
+As a final step, add Poetry Slam Manager to the SAP Business One launchpad. This makes it possible for poetry slam managers to launch it directly from SAP Business One.
 
-1. Create an SAP Business One, Web client extension in Visual Studio Code.
+1. Create an SAP Business One Web Client extension in Visual Studio Code.
 
-    The Visual Studio Code Wizard for SAP BusinessOne, Web client extensions is based on [yeoman-ui](https://github.com/SAP/yeoman-ui), which is a graphical user interface for running Yeoman generators, and runs as a Visual Studio Code extension, with the aim of providing a template wizard for customers and partners to create or package the extensions for SAP BusinessOne, Web client. 
+    The Visual Studio Code Wizard for SAP Business One Web Client Extensions is based on [yeoman-ui](https://github.com/SAP/yeoman-ui), which is a graphical user interface for running Yeoman generators, and runs as a Visual Studio Code extension, aiming to provide a template wizard for customers and partners to create or package the extensions for SAP Business One Web Client. 
     
     > Note: Consider the prerequisites: [Development Environment Setup](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/b121ab221f4044baaf6051bba14cc160.html?locale=en-US) with the setup steps of your operating system.
 
@@ -176,20 +223,20 @@ As a last step, you add Poetry Slam Manager to the SAP Business One launchpad to
     2. Search for the `Application Wizard` *Extension* from SAP OS, published and verified by sap.com.
     4. Choose *Command Palette* under the *View* section.
     5. Enter *Open Template Wizard*.
-    6. Choose the *SAP Business One Web Client Extensions* generator, which enables users to create and package extensions for SAP Business One, Web Client.
+    6. Choose the *SAP Business One Web Client Extensions* generator, which enables users to create and package extensions for SAP Business One Web Client.
     7. Choose *Start*. 
-    8. Provide application Information such as *ID*, *version*, *provider details* and choose *Next*.
+    8. Provide application information such as *ID*, *version*, *provider details*, and choose *Next*.
     9. As *Module Type*, choose *URL Mashup App* and choose *Next*.
-    10. Provide *module name* and *tile number*.
+    10. Provide a *module name* and *tile number*.
     11. Provide tile settings information, such as *title*, *subtitle*, *dimension*, *tile link method*, *link for the tile*, *decoration type* as *icon*, and the icon for tile as *sap-icon://microphone*. 
-        > Note: The link for the tile is the URL of the SAP BTP application to be launched from the SAP Business One launchpad, for example, the **SAP BTP Application Poetry Slams Tenant URL**, you noted down in a previous step.
+        > Note: The link for the tile is the URL of the SAP BTP application to be launched from the SAP Business One launchpad, for example, the **SAP BTP Application Poetry Slams Tenant URL** you noted down in a previous step.
 
-        > Note: Refer to SAP Help Documentation [Creating a URL Mashup App](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/28461b436583429b9d17c2db43567323.html?q=Business%20One%20extension) for more information.
+        > Note: Refer to SAP Help documentation [Creating a URL Mashup App](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/28461b436583429b9d17c2db43567323.html?q=Business%20One%20extension) for more information.
     12. Choose package the application as *Yes* in the *Application Summary* section and choose *Finish*.
     13. An npm application is generated. In the folder *mta_archives*, a package of the type *mtar* is generated.
     14. Repeat the steps to add the Visitors application, too. Use the **SAP BTP Application Visitors Tenant URL** as link for the tile.
 
-2. Set up the SAP Business One, Web client in the SAP Business One Extension Manager.
+2. Set up the SAP Business One Web client in the SAP Business One Extension Manager.
 
 	1. Open *SAP Business One Extension Manager* using the URL _https://\<sap-business-one-server:port\>/ExtensionManager_.
     2. Open the *Extensions* tab. 
@@ -205,8 +252,8 @@ As a last step, you add Poetry Slam Manager to the SAP Business One launchpad to
 
     > Note: For more details, refer to [Creating a URL Mashup App](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/28461b436583429b9d17c2db43567323.html?locale=en-US&q=Business%20One%20extension).
 
-3. Make the SAP Business One, Web client extension visible on the SAP Business One, Web client UI:
-    1. Open *SAP Business One, Web Client* using the URL _https://\<sap-business-one-server:port\>_.
+3. Make the SAP Business One Web Client extension visible on the SAP Business One Web Client UI:
+    1. Open *SAP Business One Web Client* using the URL _https://\<sap-business-one-server:port\>_.
     2. Choose the *Extensions* menu.
     3. Choose the imported *SAP Business One Web Client Extension*.
     4. Click on the *SAP Business One Web Client Extension*. The SAP BTP application is launched in new browser window.

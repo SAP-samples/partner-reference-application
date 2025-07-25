@@ -1,6 +1,6 @@
 # Changes
 
-## Current Version - May 2025
+## Current Version - July 2025
 
 The current version is available in three branches:
 - Tutorials: [*main*](../../../)
@@ -8,6 +8,17 @@ The current version is available in three branches:
 - Additional features and ERP integration (based on the multi-tenant version): [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features)
 
 The current version includes:
+- [API Service for Remote Integrations](42c-Multi-Tenancy-Features-API-Service.md): Create an API service for remote integrations without draft handling.
+- [SAP S/4HANA Cloud Developer Extensibility Scenario](52a-Multi-Tenancy-Features-API-Service-S4HC.md): Embed the application in an extensibility scenario with SAP S/4HANA Cloud Public Edition. 
+- [SAP Business One Integration Using Principal Propagation](33c-B1-Integration-With-Cloud-Connector.md#set-up-destinations-to-connect-the-sap-btp-application-to-sap-business-one): Use principal propagation to connect a SAP Business One system.
+- [Shared SAP Cloud Logging Instance for Observability](43-Multi-Tenancy-Features-Observability.md#option-2-use-a-shared-sap-cloud-logging-instance): Share a SAP Cloud Logging Instance across applications and subaccounts.
+- Smaller corrections, improvements, and updates
+
+## Older Versions
+
+### May 2025
+
+Includes
 - [SAP Business One Integration Using a Cloud Connector](33c-B1-Integration-With-Cloud-Connector.md): Use a Cloud Connector to establish a secure connection between an application deployed to SAP Business Technology Platform and SAP Business One.
 - [Enable Key User Flexibility Using SAP Build Work Zone](51-Multi-Tenancy-Features-Tenant-Key-User-Flexibility.md): Add UI adaptation to an application using the capabilities of SAP Build Work Zone.
 - [Upgrading Multi-Tenant SaaS Applications](61-Operations-SubscriptionUpgrade.md): Describe key considerations to ensure seamless upgrades of a multi-tenant SaaS application.
@@ -15,7 +26,10 @@ The current version includes:
 - [Capabilities of SAP Continuous Integration and Delivery Service](62-Multi-Tenancy-Features-CICD.md): Configure and run predefined continous integration and delivery (CI/CD) pipelines.
 - Smaller corrections, improvements, and updates
 
-## Older Versions
+Corresponding Tags
+- Tutorials: [release-tutorial-2505](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-tutorial-2505)
+- Multitenancy: [release-multi-tenant-2505](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-2505)
+- ERP/Features: [release-multi-tenant-features-2505](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-features-2505)
 
 ### February 2025
 

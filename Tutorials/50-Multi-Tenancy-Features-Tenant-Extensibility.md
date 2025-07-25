@@ -106,7 +106,7 @@ To enable tenant-specific extensions as a SaaS provider follow these steps. For 
     }
     ```
 
-    > Note: The line `"authorities": ["$XSAPPNAME.cds.ExtensionDeveloper"],` allows you to request authorization tokens that include the `cds.ExtensionDeveloper` scope with the credentials (client ID and client secret) of the service binding of the SAP Authorization and Trust Management service (_XSUAA service_). This is necessary if you want to create extensions with technical users, such as from automated processes that cannot use single-sign-on of named users. We will provide specific examples of how to use this soon. If you don't need this, you can omit this line.
+    > Note: The line `"authorities": ["$XSAPPNAME.cds.ExtensionDeveloper"],` allows you to request authorization tokens that include the `cds.ExtensionDeveloper` scope with the credentials (client ID and client secret) of the service binding of the SAP Authorization and Trust Management service (_XSUAA service_). This is necessary if you want to create extensions with technical users, such as from automated processes that cannot use single sign-on of named users. We will provide specific examples of how to use this soon. If you don't need this, you can omit this line.
 
 ### SAP BTP Configuration and Deployment
 1. Run the command `npm install` in your project root folder to install the required npm modules. 

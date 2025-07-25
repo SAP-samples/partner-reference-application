@@ -416,6 +416,8 @@ For the "Job scheduling by the partner" use case, the job that is regularly sche
     | *Description*:          | *Immediately*             |
     | *Pattern*:              | *One Time*                |    
     | *Value*:                | *now*                     |
+    | *Data (JSON)*:          | *{}*                      |
+
 
     > Note: Besides one-time schedules, recurring schedules are supported. A one-time schedule executes the job once at a specific time. Recurring schedules allow the job to run multiple times with a defined recurrence. For more details on these schedule types, refer to the SAP Help document [Schedule Types](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/schedule-types). The job remains available regardless of the scheduling type.
 

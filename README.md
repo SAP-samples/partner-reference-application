@@ -158,8 +158,12 @@ Updates to this repository are documented in the [change history](./Tutorials/99
     1. Open the APIs of the SAP BTP application for third-party integrations:
         1. [Enable API access to SAP BTP applications using service broker](./Tutorials/42a-Multi-Tenancy-Service-Broker.md)
         2. [Configure and consume the APIs of the SAP BTP application](./Tutorials/42b-Multi-Tenancy-Provisioning-Service-Broker.md) 
-    2. [Enable consumer-specific extensions](./Tutorials/50-Multi-Tenancy-Features-Tenant-Extensibility.md)
-    3. [Enable key user flexibility using SAP Build Work Zone](./Tutorials/51-Multi-Tenancy-Features-Tenant-Key-User-Flexibility.md)
+        3. [Create an API service for remote integrations without draft handling](./Tutorials/42c-Multi-Tenancy-Features-API-Service.md)
+    2. Embed the application in a SAP S/4HANA Cloud developer extensibility scenario:
+        1. [Enhance the application to lookup the latest sales order information](./Tutorials/52a-Multi-Tenancy-Features-API-Service-S4HC.md)
+        2. [Configure the connection with SAP S/4HANA Cloud Public Edition](./Tutorials/52b-Multi-Tenancy-Features-API-Service-S4HC-Provisioning.md)
+    3. [Enable consumer-specific extensions](./Tutorials/50-Multi-Tenancy-Features-Tenant-Extensibility.md)
+    4. [Enable key user flexibility using SAP Build Work Zone](./Tutorials/51-Multi-Tenancy-Features-Tenant-Key-User-Flexibility.md)
 
 6. **Operational aspects** of multi-tenant SaaS applications
     1. [Upgrading multi-tenant SaaS applications](./Tutorials/61-Operations-SubscriptionUpgrade.md)

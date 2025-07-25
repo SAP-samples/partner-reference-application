@@ -98,7 +98,8 @@ Provided by SAP:
 SAP offers several applications to build the solution. These applications need to be downloaded and installed on the local machine.
 
 Provided by SAP:
-- Adobe LiveCycle Designer                                                 
+- Adobe LiveCycle Designer
+- SAP Print Manager                                         
 
 # Scaling
 To get an overview of how the services scale and how many entitlements you require for an application, here's an example based on the projected use of the Partner Reference Application.

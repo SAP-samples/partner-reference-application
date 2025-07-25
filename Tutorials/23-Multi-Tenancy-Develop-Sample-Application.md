@@ -283,9 +283,8 @@ Now, follow the next steps to make further required changes:
         > Note: There can be differences in comments or the sequence of entries. However, be aware that a correct indentation is required.
 
 2. In the folder [*app/router*](../../../tree/main-multi-tenant/app/router):
-    1. File [*package.json*](../../../tree/main-multi-tenant/app/router/package.json): You can remove the 'engines' field from the originally created file. It sets the node version that is not required since the available node version during runtime is defined by SAP Cloud Foundry and updated automatically on a regular basis.
-    2. *default-env.json*: You can delete this file. It is intended for local testing but not required. It is ignored by the *.gitignore* file of this repository anyway.
-    3. Go to the app router config file located in the *app/router* folder ([*xs-app.json*](../../../tree/main-multi-tenant/app/router/xs-app.json)). Ensure that the file is as follows:
+    1. *default-env.json*: You can delete this file. It is intended for local testing but not required. It is ignored by the *.gitignore* file of this repository anyway.
+    2. Go to the app router config file located in the *app/router* folder ([*xs-app.json*](../../../tree/main-multi-tenant/app/router/xs-app.json)). Ensure that the file is as follows:
 
         ```json
         {

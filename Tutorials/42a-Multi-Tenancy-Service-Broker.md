@@ -160,7 +160,7 @@ If you want to have different access authorizations for APIs, such as full acces
         requires:
           - name: poetry-slams-auth
           - name: poetry-slams-auditlog
-          - name: srv-api
+          - name: poetry-slams-srv-api
         build-parameters:
           builder: npm
         properties:
@@ -182,7 +182,7 @@ If you want to have different access authorizations for APIs, such as full acces
               extend_credentials:
                 shared:
                   endpoints:
-                    psm-servicebroker: "~{srv-api/srv-url}" # Tenant-specific OData endpoint for remote integrations
+                    psm-servicebroker: "~{poetry-slams-srv-api/srv-url}" # Tenant-specific OData endpoint for remote integrations
       ```
 
     - The additional service configuration (SBF_SERVICE_CONFIG) is a JSON object that provides additional deploy-time configuration. Usually, this is used for configurations which are not known in advance such as URLs. 

@@ -35,6 +35,16 @@ To provision the application on an SAP BTP consumer subaccount for a specific cu
     - *Service*: *SAP Build Work Zone, standard edition*
     - *Plan*: *standard (Application)*.
 
+	> Note: In case the subscription fails, check the error message by clicking on the red status icon. If the following error message is shown, the error is caused as an OpenID Connect (OIDC) trust configuration is required: *'To subscribe this application link an Identity Authentication tenant to the subaccount with the "Establish Trust" option. For more information: https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/161f8f0cfac64c4fa2d973bc5f08a894.html'*. As a prerequisite for the trust, the SAP BTP subaccount and the Identity Authentication service tenant must be assigned to the same customer ID. In the partner use case, they are assigned to different customer IDs. Therefore, in this tutorial SAML 2.0 is used for single sign-on in this tutorial.
+	
+	> Currently, SAP Build Work Zone requires a configured OpenID Connect (OIDC) trust to be subscribed. Nevertheless, there is a proposed workaround to subscribe SAP Build Work Zone. 
+	
+	> The required steps are as follows::
+	> 1. Establish a trust connection in the consumer subaccount with your IdP (partner owned IdP). 
+	> 2. Create the *SAP Build Work Zone, standard edition* subscription.
+	> 3. Deactivate the trust connection with the partner IdP again.
+	> 4. Follow the SAP Note [3311634 - Switching user login back from Identity Authentication (IAS) to Authorization and Trust Management (XSUAA)](https://me.sap.com/notes/3311634/E) to switch SAP Build Work Zone from Identity Authentication (IAS) to Authorization and Trust Management (XSUAA).
+
 4. In the left navigation pane, open *Security > Users* and add the role collection *Launchpad_Admin* to your user.
 
 > Note: SAP Build Work Zone provides a managed application router that is used to manage application authentication and tokens. 
@@ -71,7 +81,7 @@ Therefore, export the required subaccount destinations from the provider subacco
 		5. Navigate back to your design-time destination and add the value you just copied to the Client Secret property.
 
 	4. Import the *poetry-slams-rt* destination using the downloaded file.
-	5. Replace the URL with `https://<consumer account subdomain>.launchpad.cfapps.eu12.hana.ondemand.com`.
+	5. Replace the URL with `https://<consumer account subdomain>.launchpad.cfapps.eu10.hana.ondemand.com`.
 
 	> Note: In case you undeploy the solution in the provider subaccount and deploy it again, the *poetry-slams-cdm* destination needs to be updated. The *clientid*, *clientsecret* and *xsappname* need to be copied from the *poetry-slams-html5-runtime* credentials.
 
@@ -170,12 +180,12 @@ Set up the trust relationship between the SAP BTP subaccount to the Identity Aut
 4. Open the menu item *Applications* and search for the application that refers to your SAP BTP subaccount.
    > Note that the name typically follows the pattern: *XSUAA_[subaccount-name]*.
 5. Edit the application and change the following fields:
-    - The display name appears on the user log-on screen and the login applies to all applications linked to the Identity Authentication service tenant (following the single-sign-on principle). Change the *Display Name* to something meaningful from an end-user perspective representing the scope of the Identity Authentication service.
+    - The display name appears on the user log-on screen and the login applies to all applications linked to the Identity Authentication service tenant (following the single sign-on principle). Change the *Display Name* to something meaningful from an end-user perspective representing the scope of the Identity Authentication service.
     - Enter the *Home URL*, for example, the link to the SAP Build Work Zone launchpad or the application.
 	
 #### Configure Trust Using SAML 2.0
 
-Set up the trust relationship between the SAP BTP subaccount to the Identity Authentication service using SAML 2.0. For more information, refer to the [SAP help about SAP Cloud Identity Services](https://help.sap.com/docs/identity-authentication/identity-authentication/saml-2-0). The SAML2 usage applies only if the OpenID Connect configuration is not possible. That is the case when the SAP BTP subscriber subaccount and the Identity Authentication service tenant are not assigned to the same customer ID. This setup comes with limitations regarding remote access to the OData services of the SAP BTP app with principal propagation.
+Set up the trust relationship between the SAP BTP subaccount to the Identity Authentication service using SAML 2.0. For more information, refer to the [SAP help about SAP Cloud Identity Services](https://help.sap.com/docs/identity-authentication/identity-authentication/saml-2-0). The SAML2 usage applies only if the OpenID Connect configuration is not possible. That is the case when the SAP BTP subscriber subaccount and the Identity Authentication service tenant are not assigned to the same customer ID. This setup comes with limitations regarding remote access to the OData services of the SAP BTP application with principal propagation.
 
 1. In the SAP BTP consumer subaccount, download the **SAML metadata file of the subaccount**.
 	1. Open *Security* in the menu and go to *Trust Configuration*.

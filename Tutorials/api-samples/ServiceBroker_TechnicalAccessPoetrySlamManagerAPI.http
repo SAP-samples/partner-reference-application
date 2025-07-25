@@ -1,0 +1,60 @@
+# This file contains sample calls to explain the usage of the service broker to access tenant-specific endpoints with a "technical user"
+# It can be used with the SAP Business Application Studio extension "Rest Client" which is preinstalled with Dev Spaces of type "Full Stack Cloud Application"
+# Please follow the tutorial "Enabling API access of SAP BTP applications using Service Broker" to configure the service broker
+
+# Start with the service binding you created for the service broker instance in the consumer account, the name in the service tutorial was binding_full
+# From that service binding take the fields
+#  "endpoints-psm-servicebroker" (Service Key API-Endpoint),
+#  "uaa-clientid" (Service Key UAA Client-ID), 
+#  "uaa-clientsecret" (Service Key UAA Client-Secret), 
+#  "uaa-url" (Service Key UAA-URL)
+# and copy them into the below fields
+# Afterwards you can send the requests listed below. Start by getting an access token. The requests use the API service "poetryslammanagerapi" to get the data.
+
+@endpoint = <endpoints-psm-servicebroker>
+@client_id = <uaa-clientid>
+@client_secret = <uaa-clientsecret>
+@uaa_url = <uaa-url>
+
+### Get access token from uaa-url providing client-id and client-secret as user/pw for Basic authentication
+# @name tokenrequest
+GET {{uaa_url}}/oauth/token?grant_type=client_credentials&response_type=token HTTP/1.1
+Authorization: Basic {{client_id}}:{{client_secret}}
+
+### Store Token
+@token = {{tokenrequest.response.body.access_token}}
+@newid =79ceab87-300d-4b66-8cc3-f82c679b77a4
+
+### Get all PoetrySlams
+GET {{endpoint}}/odata/v4/poetryslammanagerapi/PoetrySlams
+Authorization: Bearer {{token}}
+
+### Get a single PoetrySlam
+GET {{endpoint}}/odata/v4/poetryslammanagerapi/PoetrySlams(ID={{newid}})
+Authorization: Bearer {{token}}
+
+### Update PoetrySlam
+PATCH {{endpoint}}/odata/v4/poetryslammanagerapi/PoetrySlams(ID={{newid}})
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "title" : "Sonnet Symphony Hamburg Volume Two"
+}
+
+### Update the Sales Order ID of a PoetrySlam
+PATCH {{endpoint}}/odata/v4/poetryslammanagerapi/PoetrySlams(ID={{newid}})
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "salesOrderID" : "3"
+}
+
+### Get all Visits
+GET {{endpoint}}/odata/v4/poetryslammanagerapi/Visits
+Authorization: Bearer {{token}}
+
+### Get all Visitors
+GET {{endpoint}}/odata/v4/poetryslammanagerapi/Visitors
+Authorization: Bearer {{token}}
