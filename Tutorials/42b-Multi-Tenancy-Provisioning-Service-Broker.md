@@ -19,13 +19,13 @@ This section describes how to use the SAP BTP CLI. For more details, go to the [
      1. Download the CLI automatically accepting the licence agreement.
 
         ```
-        curl -LJO https://tools.hana.ondemand.com/additional/btp-cli-linux-amd64-2.54.0.tar.gz --cookie eula_3_2_agreed=tools.hana.ondemand.com/developer-license-3_2.txt
+        curl -LJO https://tools.hana.ondemand.com/additional/btp-cli-linux-amd64-latest.tar.gz --cookie eula_3_2_agreed=tools.hana.ondemand.com/developer-license-3_2.txt
         ```
 
      2. Decompress the downloaded file. 
 
         ```
-        tar -xvzf btp-cli-linux-amd64-2.54.0.tar.gz
+        tar -xvzf btp-cli-linux-amd64-latest.tar.gz
         ```
 
      3. Create a new folder called *cli*.
@@ -43,7 +43,7 @@ This section describes how to use the SAP BTP CLI. For more details, go to the [
      5. Clean up.
 
         ```
-        rm -rf btp-cli-linux-amd64-2.54.0.tar.gz linux-amd64
+        rm -rf btp-cli-linux-amd64-latest.tar.gz linux-amd64
         ```
 
      6. Add the *cli* folder to the search path.
@@ -174,7 +174,7 @@ However, the technical user is preferred when using the OData services within an
 
 ### Consume the Application APIs as a Technical User
 
-Technical users to consume APIs are required when the APIs of the Poetry Slams application are consumed from a background process. In this case, you can get an access token with the values from the service binding noted down previously.
+Technical users are required to consume APIs of the Poetry Slams application from a background process. In this case, you can get an access token with the values from the service binding noted down previously.
 
 To do so, execute the following HTTP requests using the `curl` command:
 
@@ -193,8 +193,7 @@ More samples are provided within [ServiceBroker_TechnicalAccess.http](./api-samp
 
 ### Consume the Application APIs as a Named User (Principal Propagation)
 
-In other use cases, you want to consume the services with principal propagation:
-You use a regular user that logs on to the IdP, for example, an SAP Build application that has its own UI, but needs to consume the APIs of the Poetry Slams application. In this case, you don't want to use a technical user, but use the logon of a regular user with user-specific authorizations.
+A regular user can consume the APIs of the Poetry Slams application with principal propagation. In this case, you use the logon of a regular user through your IdP with user-specific authorizations.
 
 You can test this scenario using Postman. In the folder [*api-samples*](./api-samples/), you find a Postman collection and a Postman environment with some examples. Check the documentation of the Postman collection for further details about how to run the examples.
 
@@ -238,3 +237,5 @@ With the steps below, you can unsubscribe the service broker again. Following th
    ```
    btp unregister services/broker --name <name of subscribed service broker> --subaccount <consumer subaccount id> --confirm
    ```
+
+You have now successfully registered the service broker and you can consume the draft-enabled services designed to access the user interface. The next chapter [Create an API Service for Remote Integrations without Draft Handling](./42c-Multi-Tenancy-Features-API-Service.md) describes how an API service without draft-handling can be created and how the service can be accessed using the service broker. 

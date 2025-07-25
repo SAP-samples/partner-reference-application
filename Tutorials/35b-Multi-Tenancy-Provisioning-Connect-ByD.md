@@ -53,10 +53,10 @@ Therefore, you need to ensure that the same e-mail addresses are entered for use
 
 1. Configure the trust in the SAP Business ByDesign customer system.
     1. Log on to your Identity Authentication service Admin UI (URL: [IAS]/admin/).
-    2. Open the *Tenant Settings* in menu item *Applications & Resources*. Go to *SAML 2.0 Configuration* and choose *Download Metadata File* (**IDP SAML metadata file**).
+    2. Open the *Tenant Settings* in menu item *Applications & Resources*. Go to *SAML 2.0 Configuration* and choose *Download Metadata File* (**IdP SAML metadata file**).
     3. In SAP Business ByDesign, open the *Application and User Management* work center and navigate to *Common Tasks*. Go to *Configure Single Sign-On*.
     4. Go to the *Identity Provider* sheet. In the *Trusted Identity Provider* list, choose *New Identity Provider*. 
-    5. Upload the **IDP SAML metadata file** that you downloaded from the Identity Authentication service tenant. 
+    5. Upload the **IdP SAML metadata file** that you downloaded from the Identity Authentication service tenant. 
     6. Enter a suitable name for the IdP as *Alias*. 
         > Note: The alias is displayed in the selection screen when you choose an IdP if you configure multiple identity providers in SAP Business ByDesign.   
     7. In the list under *Supported Name ID Formats*, add *E-Mail Address* as additional *Name ID Format*. Use the action *Set to Default* of the *Actions* group to set the e-mail address as default name ID. 
@@ -125,7 +125,7 @@ This section describes how to configure SAP Business ByDesign for OAuth 2.0 SAML
 
 > Note: Keep your notes and the SAP Business ByDesign server certificate file as you will need them when configuring the destinations in the SAP BTP provider subaccount after completing the code enhancements of your SAP BTP application.
 
-## Set Up Destinations to Connect the SAP BTP App to SAP Business ByDesign 
+## Set Up Destinations to Connect the SAP BTP Application to SAP Business ByDesign 
 
 In your SAP BTP consumer subaccount, create the destination *byd* to connect to SAP Business ByDesign with principal propagation:
 
@@ -218,7 +218,7 @@ As a last step, Poetry Slams and Visitors and SAP BTP admin applications are add
     4. Pin the tiles referring to the mashups created above from the *Mashup* gallery to the launchpad. 
     4. Save your changes and leave the personalization mode.
 
-6. To test the front-end single sign-on, use the single-sign-on URL (following the pattern ``https://myXXXXXX-sso.sapbydesign.com/``) and log on using your Identity Authentication service user to open SAP Business ByDesign. Launch the *Poetry Slams* application through the SAP Business ByDesign launchpad. No additional authentication is required.
+6. To test the front-end single sign-on, use the single sign-on URL (following the pattern ``https://myXXXXXX-sso.sapbydesign.com/``) and log on using your Identity Authentication service user to open SAP Business ByDesign. Launch the *Poetry Slams* application through the SAP Business ByDesign launchpad. No additional authentication is required.
 
     1. Open a poetry slam that is *published* or *fully booked* and create a project in SAP Business ByDesign. 
         

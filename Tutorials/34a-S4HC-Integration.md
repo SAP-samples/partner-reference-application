@@ -23,10 +23,6 @@ The following section describes how to enhance the **main-multi-tenant** branch 
 
 In this section, you learn how to import the SAP S/4HANA Cloud Public Edition OData service as a "remote service" into the SAP Cloud Application Programming Model project and how to use the OData service to create SAP S/4HANA Cloud Public Edition enterprise projects to plan and run poetry slam events.
 
-You keep the core of your multi-tenant application, which you developed in the previous tutorials, and add changes for the ERP integration. 
-
-> Note: Your solution is now in a good state to save a version of your implementation in your version control system, which enables you to go back to the multi-tenant application without ERP integration at any time.
-
 ### Import SAP S/4HANA Cloud Public Edition OData Services
 
 You use the SAP S/4HANA Cloud Public Edition OData services for enterprise projects to read and write SAP S/4HANA Cloud Public Edition projects in the context of a user interaction. The SAP S/4HANA Cloud Public Edition OData services are available on SAP API Business Hub.
@@ -45,19 +41,21 @@ You use the SAP S/4HANA Cloud Public Edition OData services for enterprise proje
 
 4. Open the context menu of the *external_resources* folder and upload the *.edmx* file with the OData services as remote services.
 
-5. Open a terminal. Navigate to the root folder of the application, and import the remote service using the command:  
+5. Open a terminal. Navigate to the root folder of the application, and import the remote services using the command:  
 
-    `cds import ./external_resources/S4HC_API_ENTERPRISE_PROJECT_SRV_0002.edmx --as cds` 
+    1. `cds import ./external_resources/S4HC_API_ENTERPRISE_PROJECT_SRV_0002.edmx --as cds` 
+    2. `cds import ./external_resources/S4HC_ENTPROJECTPROCESSINGSTATUS_0001.edmx --as cds` 
+    3. `cds import ./external_resources/S4HC_ENTPROJECTPROFILECODE_0001.edmx --as cds` 
 
-    Repeat the `cds import` command for the other two services:
-    - `cds import ./external_resources/S4HC_ENTPROJECTPROCESSINGSTATUS_0001.edmx --as cds` 
-    - `cds import ./external_resources/S4HC_ENTPROJECTPROFILECODE_0001.edmx --as cds` 
+    As a result, the system creates CDS files in the folder *./srv/external* for all remote services and enhanced the file *package.json* with CDS configurations referring to the remote services. Additionally, this command also adds the following node modules to your project:
 
-    As a result, the system creates CDS files in the folder *./srv/external* for all remote services and enhanced the file *package.json* with CDS configurations referring to the remote services.
+    - @sap-cloud-sdk/connectivity
+    - @sap-cloud-sdk/http-client
+    - @sap-cloud-sdk/resilience
 
     > Note: Don't use the CDS import command parameter `--keep-namespace` because it would lead to service name clashes if you import multiple SAP S/4HANA Cloud Public Edition OData services.
 
-6. Enhance the file [*package.json*](../../../tree/main-multi-tenant-features/package.json) with development configurations for local testing and productive configurations. Ensure that the flag *csrf* and *csrfInBatch* is set in the file *package.json* to enable the management of cross-site request forgery tokens (required for POST requests at runtime) using destinations of the type:
+6. Enhance the file [*package.json*](../../../tree/main-multi-tenant-features/package.json) with development configurations for local testing and productive configurations. Ensure that the flag *csrf* and *csrfInBatch* is set in the file *package.json* to enable the management of cross-site request forgery tokens (required for POST requests at runtime) using destinations.
 
     ```json
     "cds": {
@@ -136,7 +134,6 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     ```javascript
     projectID       : String;
     projectObjectID : String;
-    projectURL      : String;
     projectSystem   : String;  
     ```  
 
@@ -144,7 +141,6 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     ```javascript
     projectID           @title: '{i18n>projectID}';         @readonly;
     projectObjectID     @title: '{i18n>projectObjectID}'    @readonly;
-    projectURL          @title: '{i18n>projectURL}'         @readonly;
     projectSystem       @title: '{i18n>projectSystem}'      @readonly;
     ```  
 
@@ -152,7 +148,6 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     ```javascript
     projectID               = Project
     projectObjectID         = Project UUID
-    projectURL              = Project URL
     projectSystem           = System Type
     ```
      > In the reference example, the [*/db/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/db/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
@@ -203,6 +198,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
             virtual null                         as createS4HCProjectEnabled     : Boolean @odata.Type: 'Edm.Boolean',
             virtual null                         as projectProfileCodeText       : String  @title     : '{i18n>projectProfile}'           @odata.Type: 'Edm.String',
             virtual null                         as processingStatusText         : String  @title     : '{i18n>processingStatus}'         @odata.Type: 'Edm.String',
+            virtual null                         as projectURL                   : String  @title     : '{i18n>projectURL}'               @odata.Type: 'Edm.String',
             virtual null                         as isS4HC                       : Boolean @odata.Type: 'Edm.Boolean',
             // Projection of remote service data as required by the UI
             toS4HCProject                                                        : Association to PoetrySlamService.S4HCProjects on toS4HCProject.project = $self.projectID
@@ -240,7 +236,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 1. In SAP Business Application Studio, to extend the authorization annotation of the SAP Cloud Application Programming Model service model by restrictions referring to the remote services, open the file [*srv/poetryslam/poetrySlamServiceAuthorizations.cds*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceAuthorizations.cds) with the authorization annotations.
 
-2. Enhance the authorization model for the service entities *S4HCProjects*, *S4HCEnterpriseProjectElement*, *S4HCEntProjTeamMember*, *S4HCEntProjEntitlement*, *S4HCProjectsProjectProfileCode*, *S4HCProjectsProcessingStatus*:
+2. Enhance the authorization model for the service entities *S4HCProjects*:
     ```javascript
     // SAP S/4HANA Cloud projects: Managers can read remote projects (creation is done using the remote service, not the projection in the PoetrySlamService)
     annotate PoetrySlamService.S4HCProjects with @(restrict: [{
@@ -277,7 +273,7 @@ You can define reuse functions that handle the connection for the different Ente
 Reuse functions specific to SAP S/4HANA Cloud Public Edition are defined in a separate file. 
 
 1. Create a file with the path */srv/poetryslam/connector/connectorS4HC.js*. 
-2. Copy the SAP S/4HANA Cloud Public Edition related functions in the file [*connectorS4HC.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connectorS4HC.js) into your project. The file contains functions to delegate OData requests to SAP S/4HANA Cloud Public Edition, to read SAP S/4HANA Cloud Public Edition project data, and to assemble an OData payload to create SAP S/4HANA Cloud Public Edition projects.
+2. Copy the project related functions of the file [*connectorS4HC.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connectorS4HC.js) into the newly created file. The file contains functions to delegate OData requests to SAP S/4HANA Cloud Public Edition, to read SAP S/4HANA Cloud Public Edition project data, and to assemble an OData payload to create SAP S/4HANA Cloud Public Edition projects.
 
     > Note: This file contains a function ```insertRemoteProjectData()```. This function creates a project purchase order in SAP S/4HANA Cloud Public Edition by creating an entity directly using the external imported service and the external entity model. It does *not* use the projection as modeled in the *PoetrySlamService*. This is intentional: The projection is used for fields shown in the Fiori Elements UI (read-only) or updates of individual fields. More complex write scenarios, including create scenarios, should directly call the external imported services. This avoids data type validations by CAP, leaving the validations to the external service. It also avoids a remodeling of all fields and compositions required for creation in the projection.
 
@@ -352,6 +348,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
                 'projectSystemName',
                 'processingStatusText',
                 'projectProfileCodeText',
+                'projectURL',
                 'createS4HCProjectEnabled',
                 'isS4HC',
                 'toS4HCProject'
@@ -387,6 +384,17 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
                     };
                     poetrySlam.createS4HCProjectEnabled = false;
                     poetrySlam.projectSystemName = systemNames[poetrySlam.projectSystem];
+
+                    let connector;
+                    if (poetrySlam.projectSystem === ConnectorS4HC.ERP_SYSTEM) {
+                        connector = connectorS4HC;
+                    } else if (connectorS4HC?.isConnected()) {
+                        connector = connectorS4HC;
+                    }
+
+                    poetrySlam.projectURL = connector.determineDestinationURL(
+                        poetrySlam.projectID
+                    );
                 } else {
                     poetrySlam.createS4HCProjectEnabled = connectorS4HC.isConnected();
                 }
@@ -449,7 +457,37 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 
 4. Copy the constant `DATE_DAYS_MULTIPLIER` and the functions `createProject` and `subtractDaysFormatRFC3339` from the file [*/srv/lib/entityCalculations.js*](../../../tree/main-multi-tenant-features/srv/lib/entityCalculations.js) into the implementation and export the functions at the end of the file.
 
-5. Add the system message to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages.properties).
+5. In the *srv* folder, edit language-dependent labels in the file [*/srv/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n.properties). Add labels for project fields and the button to create projects:
+    ```
+    # -------------------------------------------------------------------------------------
+    # Transient Service Elements
+
+    projectSystemName       = System Name
+    projectURL              = Project URL
+
+    # -------------------------------------------------------------------------------------
+    # Service Actions
+
+    createS4HCProject       = Create Project in SAP S/4HANA Cloud
+    removeProjectData       = Clear Project Data
+
+    # -------------------------------------------------------------------------------------
+    # Remote Project Elements
+
+    projectTypeCodeText     = Project Type
+    projectStatusCodeText   = Project Status
+    projectCostCenter       = Cost Center
+    projectStartDateTime    = Start Date
+    projectEndDateTime      = End Date
+    projectDescription      = Project Description
+    projectProfile          = Project Profile
+    responsibleCostCenter   = Responsible Cost Center
+    processingStatus        = Processing Status
+    ```        
+
+    > In the reference example, the [*/srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
+
+6. Add the system message to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages.properties).
 
     > In the reference example, the [*/srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages_de.properties) file with the German texts is available too. You can take them over accordingly.
 
@@ -589,36 +627,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
         ```
         > Note: You dynamically control the visibility of the *Create Project in SAP S/4HANA Cloud* button based on the value of the *createS4HCProjectEnabled* transient field.    
 
-4. In the *srv* folder, edit language-dependent labels in the file [*/srv/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n.properties). Add labels for project fields and the button to create projects:
-    ```
-    # -------------------------------------------------------------------------------------
-    # Transient Service Elements
-
-    projectSystemName       = System Name
-
-    # -------------------------------------------------------------------------------------
-    # Service Actions
-
-    createS4HCProject       = Create Project in SAP S/4HANA Cloud
-    removeProjectData       = Clear Project Data
-
-    # -------------------------------------------------------------------------------------
-    # Remote Project Elements
-
-    projectTypeCodeText     = Project Type
-    projectStatusCodeText   = Project Status
-    projectCostCenter       = Cost Center
-    projectStartDateTime    = Start Date
-    projectEndDateTime      = End Date
-    projectDescription      = Project Description
-    projectProfile          = Project Profile
-    responsibleCostCenter   = Responsible Cost Center
-    processingStatus        = Processing Status
-    ```        
-
-    > In the reference example, the [*/srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
-
-5. In the web app folder, edit language-dependent labels in the file [*app/poetryslams/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n.properties). Add a label for facet project data:
+2. In the web app folder, edit language-dependent labels in the file [*app/poetryslams/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n.properties). Add a label for facet project data:
 
     ```
     projectData             = Project Data
@@ -628,31 +637,38 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 
 ### Test Locally
 
-1. The *Create Project in SAP S/4HANA Cloud* button is dependent on the setup of the destinations. Once the destinations are correctly configured and the application is deployed to SAP BTP Cloud Foundry runtime, the *Create Project in SAP S/4HANA Cloud* button will be active. To test this button locally, in _connectorS4HC.js_, method _createConnectorInstance_, change the value of **connector.isConnectedIndicator** to **true** after the connector instance is created:
+The goal of local tests is to connect to integrated ERP systems without using destinations. Therefore, you need to adjust the code slightly, as shown below:
+
+1. To edit the development credentials in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) file, replace the placeholders `{{S4HC-hostname}}`, `{{test-user}}`, `{{test-password}}` with the information of your ERP test system.
+
+> Note: In case, you do not have a user, in the next chapter it is decribed how to provide one.
+
+2. The *Create Project in SAP S/4HANA Cloud* button is dependent on the setup of the destinations in the consumer subaccount. During local testing, the destinations are not available.
+In order to test this button locally, the value of **connector.isConnectedIndicator** in [_connectorS4HC.js_._createConnectorInstance_](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connectorS4HC.js) needs to be changed to **true** after the connector instance is created:
 
     ```javascript
     const connector = new ConnectorS4HC(data);
     connector.isConnectedIndicator = true;
     ```
 
-    > Note: This change is required as the *isConnectedIndicator* value is dependent on the setup of destinations. Destinations only work on a deployed application and cannot be tested locally.
+    > Note: Once the destinations are correctly configured and the application is deployed to SAP BTP Cloud Foundry runtime, the *Create Project in SAP S/4HANA Cloud* button will be active without this code change.
 
-2. Open a terminal and start the app with the development profile using the run command `cds watch --profile development`. 
+3. Open a terminal and start the app with the development profile using the run command `cds watch --profile development`. 
 
-3. Use the test users as listed in the file [*.cdsrc.json*](../../../tree/main-multi-tenant-features/.cdsrc.json). 
+4. Use the test users as listed in the file [*.cdsrc.json*](../../../tree/main-multi-tenant-features/.cdsrc.json). 
 
-4. Test the service endpoints *S4HCProjects*, *S4HCEnterpriseProjectElement*, *S4HCEntProjTeamMember*, *S4HCEntProjEntitlement*, *S4HCProjectsProcessingStatus*, and *S4HCProjectsProjectProfileCode* to SAP S/4HANA Cloud Public Edition. The system returns the respective data from SAP S/4HANA Cloud Public Edition.
+5. Test the service endpoints *S4HCProjects* to SAP S/4HANA Cloud Public Edition. The system returns the respective data from SAP S/4HANA Cloud Public Edition.
     
-5. Open the */poetryslams/webapp* web application and open one of the poetry slams. 
+6. Open the */poetryslams/webapp* web application and open one of the poetry slams. 
 
-6. Choose *Create Project in SAP S/4HANA Cloud*. The system creates a project in SAP S/4HANA Cloud Public Edition and displays the details in the *Project Details* section.
+7. Choose *Create Project in SAP S/4HANA Cloud*. The system creates a project in SAP S/4HANA Cloud Public Edition and displays the details in the *Project Details* section.
     > Note: The link to the project won't work in a local application. To test the full integration, including navigation to the SAP S/4HANA Cloud system, you will have to test with the deployed application.
 
-7. Test the *Service Endpoints* for *PoetrySlams* and note down the ID of the poetry slam for which you created the SAP S/4HANA Cloud Public Edition project in step 2 as **poetry-slam-ID**.
+8. Test the *Service Endpoints* for *PoetrySlams* and note down the ID of the poetry slam for which you created the SAP S/4HANA Cloud Public Edition project in step 2 as **poetry-slam-ID**.
 
-8. Append `(ID={{poetry-slam-ID}},IsActiveEntity=true)` to the service endpoint URL, replace the place holder *{{poetry-slam-ID}}* with the **poetry-slam-ID**, and run it again.
+9. Append `(ID={{poetry-slam-ID}},IsActiveEntity=true)` to the service endpoint URL, replace the place holder *{{poetry-slam-ID}}* with the **poetry-slam-ID**, and run it again.
 
-9. The system returns the record with the project ID and the SAP S/4HANA Cloud Public Edition project details as sub-node.
+10. The system returns the record with the project ID and the SAP S/4HANA Cloud Public Edition project details as sub-node.
 
 > Note: If you would like to use a different user, clear the browser cache first.
 

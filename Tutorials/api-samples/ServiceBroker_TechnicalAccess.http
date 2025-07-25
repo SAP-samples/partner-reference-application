@@ -9,7 +9,7 @@
 #  "uaa-clientsecret" (Service Key UAA Client-Secret), 
 #  "uaa-url" (Service Key UAA-URL)
 # and copy them into the below fields
-# Afterwards you can send the requests listed below. Start by getting an access token
+# Afterwards you can send the requests listed below. Start by getting an access token. The requests use the user interface service "poetryslamservice" to get the data.
 
 @endpoint = <put the Service Key API-Endpoint without quotation marks here>
 @client_id = <put the Service Key UAA Client-ID without quotation marks here>

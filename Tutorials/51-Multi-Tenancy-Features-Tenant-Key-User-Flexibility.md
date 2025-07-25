@@ -6,7 +6,7 @@ In SAP Build Work Zone, the [SAP BTP service UI5 flexibility for key users](http
 Make sure you've completed the steps described in chapter [Provision Your Multi-Tenant Application to Consumer Subaccounts](./25-Multi-Tenancy-Provisioning.md), including the SAP Build Work Zone setup. 
 
 ## Configure the SAP Build Work Zone Site 
-To enable key user adaptation in SAP Build Work Zone, follow these steps:
+Ensure that the key user adaptation is enabled in the SAP Build Work Zone site by following these steps:
 
 1. Open the SAP BTP cockpit of the consumer.
 2. Navigate to the *Instances and Subscriptions* view.

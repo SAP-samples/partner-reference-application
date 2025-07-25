@@ -16,7 +16,7 @@ For quality assurance to check if the application still works as expected, it's 
 
 ### SAP Cloud Application Programming Model Unit Tests
 
-The data model and services can be tested with the SAP Cloud Application Programming Model unit test framework. The framework uses standard JavaScript libraries such as Chai and Mocha. A reference test implementation can be found in the folder */test/*. There are tests available for the entity model (folder */db/*) and for the service (folder */srv/*).
+The data model and services can be tested with the SAP Cloud Application Programming Model unit test framework. The framework uses standard JavaScript library Mocha. The [@cap-js/cds-test](https://www.npmjs.com/package/@cap-js/cds-test) module complements this by offering specific tools for testing Core Data Services within CAP applications. A reference test implementation can be found in the folder */test/*. There are tests available for the entity model (folder */db/*) and for the service (folder */srv/*).
 
 There are two ways to test the services in SAP Cloud Application Programming Model, either through service APIs or through HTTP APIs. For more details, go to the [SAP Cloud Application Programming Model documentation on testing with cds.test](https://cap.cloud.sap/docs/node.js/cds-test). 
 
@@ -94,13 +94,10 @@ To take over the unit tests and the configuration from the example implementatio
 
 1. Copy the [entity unit tests](../../../tree/main-multi-tenant/test/db) to your project.
 2. Copy the [service unit tests](../../../tree/main-multi-tenant/test/srv) to your project.
-3. Add the Mocha, Chai, and Axios devDependencies to your *package.json*:
+3. Add *mocha* and *@cap-js/cds-test* as devDependencies to your *package.json*:
   
     1. Run command `npm add mocha -D`.
-    2. Run command `npm add chai -D`.
-    3. Run command `npm add chai-as-promised -D`.
-    4. Run command `npm add chai-subset -D`.
-    5. Run command `npm add axios -D`.
+    2. Run command `npm add -D @cap-js/cds-test`.
   
     > Note: You can compare this with the [*package.json* of the example implementation](../../../tree/main-multi-tenant/package.json). 
 

@@ -23,10 +23,6 @@ The following section describes how to enhance the **main-multi-tenant** branch 
 
 In this section, you learn how to import the SAP Business One OData service as a "remote service" into your SAP Cloud Application Programming Model (CAP) project and how to use the OData service to create SAP Business One purchase orders to allow the procurement of anything required for the organization or staging of your poetry slams.
 
-You keep the core of your multi-tenant application, which you developed in the previous tutorials, and add changes for the ERP integration. 
-
-> Note: Your solution is now in a good state to save a version of your implementation in your version control system, which enables you to go back to the multi-tenant application without ERP integration at any time.
-
 ### Import SAP Business One OData Service
 
 The SAP Business One OData service is consumed by using a destination. SAP Cloud Application Programming Model uses a one-to-one binding of remote services and destinations. To propagate the logged-in business user to SAP Business One, an OAuth 2.0 SAML Bearer authentication is used. This way, the SAP Business One OData service for purchase orders considers the user authorizations.
@@ -60,7 +56,6 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     ```javascript
     purchaseOrderID       : String;
     purchaseOrderObjectID : String;
-    purchaseOrderURL      : String;
     purchaseOrderSystem   : String;
     ```  
 
@@ -68,7 +63,6 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     ```javascript
     purchaseOrderID       @title: '{i18n>purchaseOrderID}';      @readonly;
     purchaseOrderObjectID @title: '{i18n>purchaseOrderObjectID}' @readonly;
-    purchaseOrderURL      @title: '{i18n>purchaseOrderURL}'      @readonly;
     purchaseOrderSystem   @title: '{i18n>purchaseOrderSystem}'   @readonly;
     ```
 
@@ -76,7 +70,6 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
     ```javascript
     purchaseOrderID       = Purchase Order
     purchaseOrderObjectID = Purchase Order Internal ID
-    purchaseOrderURL      = Purchase Order URL
     purchaseOrderSystem   = Purchase Order System Type
     ```
      > In the reference example, the [*/db/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/db/i18n/i18n_de.properties) file with the German texts is available, too. You can take them over accordingly.
@@ -122,6 +115,7 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
             // SAP Business One purchase order: visibility of button "Create Purchase Order in SAP Business One"
             virtual null                         as createB1PurchaseOrderEnabled : Boolean @odata.Type: 'Edm.Boolean',
             virtual null                         as purchaseOrderSystemName      : String  @title     : '{i18n>purchaseOrderSystemName}'  @odata.Type: 'Edm.String',
+            virtual null                         as purchaseOrderURL             : String  @title     : '{i18n>purchaseOrderURL}'         @odata.Type: 'Edm.String',
             virtual null                         as isB1                         : Boolean @odata.Type: 'Edm.Boolean',
             // Projection of remote service data as required by the UI
             toB1PurchaseOrder                                                    : Association to PoetrySlamService.B1PurchaseOrder on toB1PurchaseOrder.docNum = $self.purchaseOrderID
@@ -269,6 +263,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
             const enrichedFields = [
                 'purchaseOrderSystemName',
                 'createB1PurchaseOrderEnabled',
+                'purchaseOrderURL',
                 'isB1',
                 'toB1PurchaseOrder'
             ];
@@ -300,6 +295,9 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
                 if (poetrySlam.purchaseOrderID) {
                     poetrySlam.createB1PurchaseOrderEnabled = false;
                     poetrySlam.purchaseOrderSystemName = connectorB1.getSystemName();
+                    poetrySlam.purchaseOrderURL = connectorB1.determineDestinationURL(
+                        poetrySlam.purchaseOrderID
+                    );
                 } else {
                     poetrySlam.createB1PurchaseOrderEnabled = connectorB1.isConnected();
                 }
@@ -362,7 +360,24 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
 
 4. Copy the function `createPurchaseOrder` from the file [*/srv/lib/entityCalculations.js*](../../../tree/main-multi-tenant-features/srv/lib/entityCalculations.js) into the implementation and export the function at the end of the file.
 
-5. Add the system messages to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages.properties).    
+5. In the *srv* folder, edit language-dependent labels in the file [*i18n.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n.properties). Add labels for purchase order fields and the button to create purchase orders:
+    ```
+    # -------------------------------------------------------------------------------------
+    # Transient Service Elements
+
+    purchaseOrderSystemName = System Name
+    purchaseOrderURL        = Purchase Order URL
+
+    # -------------------------------------------------------------------------------------
+    # Service Actions
+
+    createB1PurchaseOrder   = Create Purchase Order in SAP Business One
+    removePurchaseOrderData = Clear Purchase Order Data
+    ```        
+
+    > In the reference example, the [*/srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
+
+6. Add the system messages to the file [*/srv/i18n/messages.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages.properties).    
 
     > In the reference example, the [*/srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages_de.properties) file with the German texts is available too. You can take them over accordingly.
 
@@ -481,23 +496,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
         ```
         > Note: The visibility of the *Create Purchase Order in SAP Business One* button is dynamically controlled based on the value of the transient field *createB1PurchaseOrderEnabled*, which is calculated in the after read-event of the entity *PoetrySlam*.     
 
-2. In the *srv* folder, edit language-dependent labels in the file [*i18n.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n.properties). Add labels for purchase order fields and the button to create purchase orders:
-    ```
-    # -------------------------------------------------------------------------------------
-    # Transient Service Elements
-
-    purchaseOrderSystemName = System Name
-
-    # -------------------------------------------------------------------------------------
-    # Service Actions
-
-    createB1PurchaseOrder   = Create Purchase Order in SAP Business One
-    removePurchaseOrderData = Clear Purchase Order Data
-    ```        
-
-    > In the reference example, the [*/srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
-
-3. Edit the language-dependent labels of the poetryslams app in the file [*app/poetryslams/i18n.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n.properties). Add a label for the facet and the added fields:
+2. Edit the language-dependent labels of the poetryslams app in the file [*app/poetryslams/i18n.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n.properties). Add a label for the facet and the added fields:
 
     ```
     purchaseOrderData       = Purchase Order Data
@@ -512,7 +511,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
 
 ### Enhance the Configuration of the SAP Cloud Application Programming Model Project
 
-Enhance the file [*package.json*](../../../tree/main-multi-tenant-features/package.json) with development configurations for local testing and productive configurations. Ensure that the flag *csrf* and *csrfInBatch* is set in the file *package.json* to enable the management of cross-site request forgery tokens (required for POST requests at runtime) using destinations of the type:
+Enhance the file [*package.json*](../../../tree/main-multi-tenant-features/package.json) with development configurations for local testing and productive configurations. Ensure that the flag *csrf* and *csrfInBatch* is set in the file *package.json* to enable the management of cross-site request forgery tokens (required for POST requests at runtime) using destinations.
 
 ```json
 "b1_sbs_v2": {
@@ -546,27 +545,32 @@ In some cases, directly exposing system ports to the open internet may not be po
 
 ### Test Locally
 
-1. Open a terminal and start the app with the development profile using the run command `cds watch --profile development`. 
+The goal of local tests is to connect to integrated ERP systems without using destinations. Therefore, you need to adjust the code, as shown below:
 
-2. Use the test users as listed in the file [*.cdsrc.json*](../../../tree/main-multi-tenant-features/.cdsrc.json).
+1. To edit the development credentials in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) file, replace the placeholders `{{b1-hostname}}`, `{{test-user}}`, `{{test-password}}` with the information of your ERP test system. 
+
+> Note: In case, you do not have a user, in the next chapter it is decribed how to provide one.
+
+2. The *Create Purchase Order in SAP Business One* button is dependent on the setup of the destinations in the consumer subaccount. During local testing, the destinations are not available.
+In order to test this button locally, the value of **connector.isConnectedIndicator** in [_connectorB1.js_._createConnectorInstance_](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connectorB1.js) needs to be changed to **true** after the connector instance is created:
+
+    ```javascript
+    const connector = new ConnectorB1(data);
+    connector.isConnectedIndicator = true;
+    ```
+
+    > Note: Once the destinations are correctly configured and the application is deployed to SAP BTP Cloud Foundry runtime, the *Create Purchase Order in SAP Business One* button will be active without this code change.
+
+3. Open a terminal and start the app with the development profile using the run command `cds watch --profile development`. 
+
+4. Use the test users as listed in the file [*.cdsrc.json*](../../../tree/main-multi-tenant-features/.cdsrc.json).
    > Note: If you would like to test with different users, clear the browser cache first.
 
-3. Test the critical connection points to SAP Business One: 
+5. Test the critical connection points to SAP Business One, test the *Service Endpoint* for *B1PurchaseOrder*: The system returns the respective data of SAP Business One (without filtering).
 
-    1. Test the *Service Endpoint* for *B1PurchaseOrder*: The system returns the respective data of SAP Business One (without filtering).
+6. Open the */poetryslams/webapp/index.html* web application and open one of the poetry slams. 
 
-    2. The *Create Purchase Order in SAP Business One* button is dependent on the setup of the destinations. Once the destinations are correctly configured and the application is deployed to SAP BTP Cloud Foundry runtime, the *Create Purchase Order in SAP Business One* button will be active.
-    To test this button locally, in _connectorB1.js_, method _createConnectorInstance_, change the value of **connector.isConnectedIndicator** to **true** after the connector instance is created:
-
-        ```javascript
-        const connector = new ConnectorB1(data);
-        connector.isConnectedIndicator = true;
-        ```
-        > Note: This change is required as the *isConnectedIndicator* value is dependent on the setup of destinations. Destinations only work on a deployed application and cannot be tested locally.
-
-4. Open the */poetryslams/webapp/index.html* web application and open one of the poetry slams. 
-
-5. Choose *Create Purchase Order in SAP Business One*. The system creates a purchase order in SAP Business One and displays the details in the *Purchase Order Data* section.
+7. Choose *Create Purchase Order in SAP Business One*. The system creates a purchase order in SAP Business One and displays the details in the *Purchase Order Data* section.
    > Note: The link to the purchase order won't work in a local application. To test the full integration including navigation to the SAP Business One system, you will have to test with the deployed application.
 
 ## Deploy the Application
