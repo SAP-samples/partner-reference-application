@@ -10,15 +10,64 @@ const ConnectorS4HC = require('../../../../srv/poetryslam/connector/connectorS4H
 const sinon = require('sinon');
 const { expect } = cds.test(__dirname + '/../../../..');
 
-describe('ConnectorS4HC', () => {
-  let stubErrorLog,
-    stubLog,
-    stubCreateConnectorData,
-    connector,
-    stubINSERT,
-    stubSELECTOne,
-    stubSELECT,
-    stubCDS;
+describe('ConnectorS4HC - General', () => {
+  let stubLog, stubCreateConnectorData, connector;
+
+  const connectorData = {
+    destination: 'testDestination',
+    destinationURL: 'testDestinationURL',
+    systemURL: 'testSystemURL',
+    systemName: 'testSystemName',
+    isConnectedIndicator: true
+  };
+
+  beforeEach(() => {
+    connector = new ConnectorS4HC(connectorData);
+
+    stubLog = sinon.stub(console, 'log');
+
+    stubCreateConnectorData = sinon
+      .stub(Connector, 'createConnectorData')
+      .resolves(connectorData);
+  });
+
+  afterEach(() => {
+    stubLog.restore();
+    stubCreateConnectorData.restore();
+  });
+
+  it('should create an instance with data given in parameter', async () => {
+    expect(connector.destination).to.eql('testDestination');
+    expect(connector.destinationURL).to.eql('testDestinationURL');
+    expect(connector.systemURL).to.eql('testSystemURL');
+    expect(connector.systemName).to.eql('testSystemName');
+    expect(connector.getSystemName()).to.eql('testSystemName');
+    expect(connector.isConnectedIndicator).to.eql(true);
+    expect(connector.isConnected()).to.eql(true);
+  });
+
+  it('should create an instance of connector', async () => {
+    const connectorLocal = await ConnectorS4HC.createConnectorInstance();
+
+    sinon.assert.calledOnce(stubCreateConnectorData);
+
+    sinon.assert.calledWith(
+      stubLog,
+      `SAP S/4HANA Cloud connector created - connected: true`
+    );
+
+    expect(connectorLocal.destination).to.eql('testDestination');
+    expect(connectorLocal.destinationURL).to.eql('testDestinationURL');
+    expect(connectorLocal.systemURL).to.eql('testSystemURL');
+    expect(connectorLocal.systemName).to.eql('testSystemName');
+    expect(connectorLocal.getSystemName()).to.eql('testSystemName');
+    expect(connectorLocal.isConnectedIndicator).to.eql(true);
+    expect(connectorLocal.isConnected()).to.eql(true);
+  });
+});
+
+describe('ConnectorS4HC - Project Handling', () => {
+  let stubErrorLog, connector, stubINSERT, stubSELECTOne, stubSELECT, stubCDS;
 
   const connectorData = {
     destination: 'testDestination',
@@ -32,10 +81,6 @@ describe('ConnectorS4HC', () => {
     connector = new ConnectorS4HC(connectorData);
 
     stubErrorLog = sinon.stub(console, 'error');
-    stubLog = sinon.stub(console, 'log');
-    stubCreateConnectorData = sinon
-      .stub(Connector, 'createConnectorData')
-      .resolves(connectorData);
 
     stubINSERT = sinon.stub(INSERT, 'into').returns({
       entries: (projectRecord) => {
@@ -95,22 +140,10 @@ describe('ConnectorS4HC', () => {
 
   afterEach(() => {
     stubErrorLog.restore();
-    stubLog.restore();
-    stubCreateConnectorData.restore();
     stubINSERT.restore();
     stubSELECTOne.restore();
     stubCDS.restore();
     stubSELECT.restore();
-  });
-
-  it('should create an instance with data given in parameter', async () => {
-    expect(connector.destination).to.eql('testDestination');
-    expect(connector.destinationURL).to.eql('testDestinationURL');
-    expect(connector.systemURL).to.eql('testSystemURL');
-    expect(connector.systemName).to.eql('testSystemName');
-    expect(connector.getSystemName()).to.eql('testSystemName');
-    expect(connector.isConnectedIndicator).to.eql(true);
-    expect(connector.isConnected()).to.eql(true);
   });
 
   it('should create a project record with SAP S/4HANA Cloud specific data', async () => {
@@ -146,24 +179,30 @@ describe('ConnectorS4HC', () => {
   });
 
   it('should determine the destination URL to navigate to the project in SAP S/4HANA Cloud', async () => {
-    connector.projectRecord = { Project: 'testProject' };
     connector.systemURL = 'testSystemURL';
 
-    const url = connector.determineDestinationURL();
+    const url = connector.determineDestinationURL('testProject');
     expect(url).to.eql(
       'testSystemURL/ui#EnterpriseProject-planProject?EnterpriseProject=testProject'
     );
   });
 
-  it('should read remote project data of the poetry slam entitiy', async () => {
+  it('should return an empty string when determing the destination URL and the systemURL is empty', async () => {
+    connector.systemURL = '';
+
+    const url = connector.determineDestinationURL('testProject');
+    expect(url).to.eql('');
+  });
+
+  it('should read remote project data of the poetry slam entity', async () => {
     const poetrySlams = {
-      projectSystem: ConnectorS4HC.PROJECT_SYSTEM,
+      projectSystem: ConnectorS4HC.ERP_SYSTEM,
       projectID: 1
     };
 
     const expectedResult = {
       projectID: 1,
-      projectSystem: ConnectorS4HC.PROJECT_SYSTEM,
+      projectSystem: ConnectorS4HC.ERP_SYSTEM,
       projectProfileCodeText: 'profileCodeTextTest',
       processingStatusText: 'processingStatusTextTest',
       toS4HCProject: {
@@ -187,7 +226,7 @@ describe('ConnectorS4HC', () => {
     });
 
     const poetrySlams = {
-      projectSystem: ConnectorS4HC.PROJECT_SYSTEM,
+      projectSystem: ConnectorS4HC.ERP_SYSTEM,
       projectID: 999
     };
 
@@ -217,7 +256,7 @@ describe('ConnectorS4HC', () => {
     });
 
     const poetrySlams = {
-      projectSystem: ConnectorS4HC.PROJECT_SYSTEM,
+      projectSystem: ConnectorS4HC.ERP_SYSTEM,
       projectID: 1
     };
 
@@ -234,17 +273,17 @@ describe('ConnectorS4HC', () => {
     );
   });
 
-  it('should return poetry slam data when reading remote project data of a poetry slam entitiy without project ID', async () => {
+  it('should return poetry slam data when reading remote project data of a poetry slam entity without project ID', async () => {
     const poetrySlams = {
       ID: 'testID',
-      projectSystem: ConnectorS4HC.PROJECT_SYSTEM
+      projectSystem: ConnectorS4HC.ERP_SYSTEM
     };
 
     const objectData = await connector.readProject(poetrySlams);
     expect(objectData).to.eql(poetrySlams);
   });
 
-  it('should get remote project data from database of poetry slam entitiy', async () => {
+  it('should get remote project data from database of poetry slam entity', async () => {
     const srv = {
       run: async (data) => {
         return data;
@@ -261,30 +300,98 @@ describe('ConnectorS4HC', () => {
     expect(objectData.projectObjectID).to.eql(3);
   });
 
-  it('should insert remote project data to database of poetry slam entitiy', async () => {
+  it('should insert remote project data to database of poetry slam entity', async () => {
     connector.projectRecord = { project: 1, projectUUID: 2 };
 
     const objectData = await connector.insertRemoteProjectData();
     expect(objectData.projectID).to.eql(1);
     expect(objectData.projectObjectID).to.eql(2);
   });
+});
 
-  it('should create an instance of connector', async () => {
-    const connectorLocal = await ConnectorS4HC.createConnectorInstance();
+describe('ConnectorS4HC - Sales Order Handling', () => {
+  let connector, stubSELECT, stubSELECTOne, stubCDS;
 
-    sinon.assert.calledOnce(stubCreateConnectorData);
+  const connectorData = {
+    destination: 'testDestination',
+    destinationURL: 'testDestinationURL',
+    systemURL: 'testSystemURL',
+    systemName: 'testSystemName',
+    isConnectedIndicator: true
+  };
 
-    sinon.assert.calledWith(
-      stubLog,
-      `SAP S/4HANA Cloud connector created - connected: true`
+  beforeEach(() => {
+    connector = new ConnectorS4HC(connectorData);
+
+    stubSELECT = sinon.stub(SELECT, 'from').returns({
+      where: (whereClause) => {
+        return [
+          {
+            salesOrderUUID: whereClause.salesOrderUUID[0],
+            customer: '1'
+          }
+        ];
+      }
+    });
+
+    stubSELECTOne = sinon.stub(SELECT.one, 'from').returns({
+      where: (whereClause) => {
+        if (whereClause.Customer) {
+          return {
+            Customer: whereClause.Customer,
+            BusinessPartnerFullName: 'CustomerFullName'
+          };
+        }
+      }
+    });
+
+    stubCDS = sinon.stub(cds.connect, 'to').resolves({
+      run: (data) => {
+        return data;
+      },
+      entities: {
+        A_BusinessPartner: 'testBusinessPartner'
+      }
+    });
+  });
+
+  afterEach(() => {
+    stubCDS.restore();
+    stubSELECT.restore();
+    stubSELECTOne.restore();
+  });
+
+  it('should read remote sales order data of the poetry slam entity', async () => {
+    const poetrySlams = {
+      salesOrderID: 'salesOrderID'
+    };
+
+    const expectedResult = {
+      salesOrderID: 'salesOrderID',
+      customerFullName: 'CustomerFullName',
+      toS4HCSalesOrderPartner: {
+        salesOrderUUID: 'salesOrderID',
+        customer: '1'
+      }
+    };
+
+    const objectData = await connector.readSalesOrder(poetrySlams);
+    expect(objectData).to.eql(expectedResult);
+  });
+
+  it('should determine the destination URL to navigate to the sales order in SAP S/4HANA Cloud', async () => {
+    connector.systemURL = 'testSystemURL';
+
+    const url = connector.determineSalesOrderURL('testSalesOrder');
+    expect(url).to.eql(
+      "testSystemURL/ui#SalesOrder-manageV2&/SalesOrderManage('testSalesOrder')"
     );
+  });
 
-    expect(connectorLocal.destination).to.eql('testDestination');
-    expect(connectorLocal.destinationURL).to.eql('testDestinationURL');
-    expect(connectorLocal.systemURL).to.eql('testSystemURL');
-    expect(connectorLocal.systemName).to.eql('testSystemName');
-    expect(connectorLocal.getSystemName()).to.eql('testSystemName');
-    expect(connectorLocal.isConnectedIndicator).to.eql(true);
-    expect(connectorLocal.isConnected()).to.eql(true);
+  it('should return an empty string when determing the destination URL and the systemURL is empty', async () => {
+    connector.systemURL = '';
+
+    const url = connector.determineSalesOrderURL('testSalesOrder');
+    expect(url).to.eql('');
   });
 });

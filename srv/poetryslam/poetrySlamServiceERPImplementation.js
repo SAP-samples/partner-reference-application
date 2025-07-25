@@ -32,6 +32,15 @@ module.exports = async (srv) => {
     );
   });
 
+  // Delegate OData requests to SAP S/4HANA Cloud remote sales order entities
+  srv.on('READ', 'S4HCSalesOrderPartner', async (req) => {
+    const connector = await ConnectorS4HC.createConnectorInstance(req);
+    return await connector.delegateODataRequests(
+      req,
+      ConnectorS4HC.SALES_ORDER_SERVICE
+    );
+  });
+
   // -------------------------------------------------------------------------------------------------
   // Implementation of remote OData services (back-channel integration with SAP Business One)
   // -------------------------------------------------------------------------------------------------

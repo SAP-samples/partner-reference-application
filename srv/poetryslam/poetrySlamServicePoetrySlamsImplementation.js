@@ -50,6 +50,9 @@ module.exports = async (srv) => {
           req.data.ID
         ));
     } catch (error) {
+      console.error(
+        `Readable ID for Poetry Slam document could not be generated (error: ${error})`
+      );
       req.error(httpCodes.internal_server_error, 'NO_POETRYSLAM_NUMBER', [
         error.message
       ]);
@@ -78,7 +81,8 @@ module.exports = async (srv) => {
       poetrySlam.status_code !== poetrySlamStatusCode.inPreparation &&
       poetrySlam.status_code !== poetrySlamStatusCode.canceled
     ) {
-      req.error(httpCodes.bad_request, 'POETRYSLAM_COULD_NOT_BE_DELETED', [
+      console.error('Poetry Slam could not be deleted due to status');
+      req.error(httpCodes.bad_request, 'DELETE_POETRYSLAM_NOT_POSSIBLE', [
         poetrySlam.number
       ]);
     }
@@ -89,9 +93,8 @@ module.exports = async (srv) => {
     // Read the PoetrySlams instances
     let poetrySlams = await next();
 
-    // In this method we enrich the data from the database by external data and calculated fields
-    // In case none of these enriched fields are requested, we do not need to read from the external services
-    // So we first check if the requested columns contain any of the enriched columns and return if not
+    // In this method, the data from the database is enriched by external data and calculated fields.
+    // In case none of these enriched fields are requested, it is not required to read data from the external services.
     const requestedColumns = req.query.SELECT.columns?.map((item) =>
       Array.isArray(item.ref) ? item.ref[0] : item.as
     );
@@ -100,6 +103,8 @@ module.exports = async (srv) => {
       'purchaseOrderSystemName',
       'processingStatusText',
       'projectProfileCodeText',
+      'projectURL',
+      'purchaseOrderURL',
       'createByDProjectEnabled',
       'createS4HCProjectEnabled',
       'createB1PurchaseOrderEnabled',
@@ -108,8 +113,10 @@ module.exports = async (srv) => {
       'isB1',
       'toByDProject',
       'toS4HCProject',
+      'toS4HCSalesOrderPartner',
       'toB1PurchaseOrder',
-      'isJobStatusShown'
+      'isJobStatusShown',
+      'salesOrderURL'
     ];
 
     if (
@@ -119,7 +126,7 @@ module.exports = async (srv) => {
       return poetrySlams;
     }
 
-    // The requested columns include some of the enriched fields so we do add the corresponding data
+    // The requested columns include some of the enriched fields so add the corresponding data
 
     // SAP Business ByDesign
     // Check and read SAP Business ByDesign project related data
@@ -133,6 +140,7 @@ module.exports = async (srv) => {
     const connectorS4HC = await ConnectorS4HC.createConnectorInstance(req);
     if (connectorS4HC?.isConnected()) {
       poetrySlams = await connectorS4HC.readProject(poetrySlams);
+      poetrySlams = await connectorS4HC.readSalesOrder(poetrySlams);
     }
 
     // SAP Business One
@@ -147,29 +155,29 @@ module.exports = async (srv) => {
         'projectSystemName',
         'processingStatusText',
         'projectProfileCodeText',
-        'purchaseOrderSystemName'
+        'projectURL',
+        'purchaseOrderSystemName',
+        'purchaseOrderURL'
       ].forEach((item) => {
         poetrySlam[item] = poetrySlam[item] || '';
       });
 
       // Update project system name and visibility of the "Create Project"-buttons
-      if (poetrySlam.projectID) {
-        const systemNames = {
-          ByD: connectorByD.getSystemName(),
-          S4HC: connectorS4HC.getSystemName()
-        };
-        poetrySlam.createByDProjectEnabled = false;
-        poetrySlam.createS4HCProjectEnabled = false;
-        poetrySlam.projectSystemName = systemNames[poetrySlam.projectSystem];
-      } else {
-        poetrySlam.createByDProjectEnabled = connectorByD.isConnected();
-        poetrySlam.createS4HCProjectEnabled = connectorS4HC.isConnected();
+      updatePoetrySlamWithProject(poetrySlam, connectorByD, connectorS4HC);
+
+      if (poetrySlam.salesOrderID) {
+        poetrySlam.salesOrderURL = connectorS4HC.determineSalesOrderURL(
+          poetrySlam.salesOrderID
+        );
       }
 
       // Update PO system name and visibility of the "Create Purchase Order"-button
       if (poetrySlam.purchaseOrderID) {
         poetrySlam.createB1PurchaseOrderEnabled = false;
         poetrySlam.purchaseOrderSystemName = connectorB1.getSystemName();
+        poetrySlam.purchaseOrderURL = connectorB1.determineDestinationURL(
+          poetrySlam.purchaseOrderID
+        );
       } else {
         poetrySlam.createB1PurchaseOrderEnabled = connectorB1.isConnected();
       }
@@ -236,12 +244,16 @@ module.exports = async (srv) => {
 
     // If poetry slam was not found, throw an error
     if (!poetrySlam) {
+      console.error('Poetry Slam not found');
       req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [id]);
       return;
     }
 
     if (poetrySlam.status_code === poetrySlamStatusCode.inPreparation) {
       // Poetry slams that are in preperation shall be deleted
+      console.info(
+        `Poetry Slam can't be canceled as it's being prepared. Deletion possible.`
+      );
       req.info(httpCodes.ok, 'ACTION_CANCEL_IN_PREPARATION', [
         poetrySlam.number
       ]);
@@ -274,6 +286,7 @@ module.exports = async (srv) => {
 
     // If poetry slam was not found, throw an error
     if (!poetrySlam) {
+      console.error('Poetry Slam not found');
       req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [id]);
       return;
     }
@@ -282,6 +295,7 @@ module.exports = async (srv) => {
       poetrySlam.status_code === poetrySlamStatusCode.booked ||
       poetrySlam.status_code === poetrySlamStatusCode.published
     ) {
+      console.info('Poetry Slam already published.');
       req.info(httpCodes.ok, 'ACTION_PUBLISHED_ALREADY', [poetrySlam.number]);
       return poetrySlam;
     }
@@ -318,6 +332,7 @@ module.exports = async (srv) => {
 
     // If poetry slam was not found, throw an error
     if (!poetrySlam) {
+      console.error('Poetry Slam not found');
       req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [poetrySlamID]);
       return;
     }
@@ -326,7 +341,6 @@ module.exports = async (srv) => {
     const updateValues = {
       projectID: null,
       projectObjectID: null,
-      projectURL: null,
       projectSystem: null
     };
 
@@ -335,6 +349,7 @@ module.exports = async (srv) => {
       .where({ ID: poetrySlamID });
 
     if (result !== 1) {
+      console.error('PoetrySlam could not be updated.');
       req.error(
         httpCodes.internal_server_error,
         'POETRYSLAM_COULD_NOT_BE_UPDATED',
@@ -355,6 +370,7 @@ module.exports = async (srv) => {
 
     // If poetry slam was not found, throw an error
     if (!poetrySlam) {
+      console.error('Poetry Slam not found');
       req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [poetrySlamID]);
       return;
     }
@@ -363,7 +379,6 @@ module.exports = async (srv) => {
     const updateValues = {
       purchaseOrderID: null,
       purchaseOrderObjectID: null,
-      purchaseOrderURL: null,
       purchaseOrderSystem: null
     };
 
@@ -372,6 +387,7 @@ module.exports = async (srv) => {
       .where({ ID: poetrySlamID });
 
     if (result !== 1) {
+      console.error('PoetrySlam could not be updated.');
       req.error(
         httpCodes.internal_server_error,
         'POETRYSLAM_COULD_NOT_BE_UPDATED',
@@ -463,5 +479,42 @@ module.exports = async (srv) => {
     req.data.freeVisitorSeats = req.data.maxVisitorsNumber =
       req.data.maxVisitorsNumber ?? 0;
     req.data.bookedSeats = 0;
+  }
+
+  // Update poetry slam with project information
+  function updatePoetrySlamWithProject(
+    poetrySlam,
+    connectorByD,
+    connectorS4HC
+  ) {
+    if (poetrySlam.projectID) {
+      const systemNames = {
+        ByD: connectorByD.getSystemName(),
+        S4HC: connectorS4HC.getSystemName()
+      };
+      poetrySlam.createByDProjectEnabled = false;
+      poetrySlam.createS4HCProjectEnabled = false;
+      poetrySlam.projectSystemName = systemNames[poetrySlam.projectSystem];
+
+      let connector;
+      if (poetrySlam.projectSystem === ConnectorS4HC.ERP_SYSTEM) {
+        connector = connectorS4HC;
+      } else if (poetrySlam.projectSystem === ConnectorByD.ERP_SYSTEM) {
+        connector = connectorByD;
+      } else {
+        if (connectorS4HC?.isConnected()) {
+          connector = connectorS4HC;
+        } else if (connectorByD?.isConnected()) {
+          connector = connectorByD;
+        }
+      }
+
+      poetrySlam.projectURL = connector.determineDestinationURL(
+        poetrySlam.projectID
+      );
+    } else {
+      poetrySlam.createByDProjectEnabled = connectorByD.isConnected();
+      poetrySlam.createS4HCProjectEnabled = connectorS4HC.isConnected();
+    }
   }
 };

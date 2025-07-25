@@ -9,7 +9,6 @@ service PoetrySlamService @(
 
   // ----------------------------------------------------------------------------
   // Entity inclusions
-
   // Poetry Slams (draft enabled)
   @odata.draft.enabled
   @Common.SemanticObject: 'poetryslams'
@@ -29,10 +28,14 @@ service PoetrySlamService @(
       virtual null                         as createS4HCProjectEnabled     : Boolean @odata.Type: 'Edm.Boolean',
       virtual null                         as projectProfileCodeText       : String  @title: '{i18n>projectProfile}'           @odata.Type: 'Edm.String',
       virtual null                         as processingStatusText         : String  @title: '{i18n>processingStatus}'         @odata.Type: 'Edm.String',
+      virtual null                         as projectURL                   : String  @title: '{i18n>projectURL}'               @odata.Type: 'Edm.String',
+      virtual null                         as customerFullName             : String  @title: '{i18n>customerFullName}'         @odata.Type: 'Edm.String',
+      virtual null                         as salesOrderURL                : String  @title: '{i18n>salesOrderURL}'            @odata.Type: 'Edm.String',
       virtual null                         as isS4HC                       : Boolean @odata.Type: 'Edm.Boolean',
       // SAP Business One purchase order: visibility of button "Create Purchase Order in SAP Business One"
       virtual null                         as createB1PurchaseOrderEnabled : Boolean @odata.Type: 'Edm.Boolean',
       virtual null                         as purchaseOrderSystemName      : String  @title: '{i18n>purchaseOrderSystemName}'  @odata.Type: 'Edm.String',
+      virtual null                         as purchaseOrderURL             : String  @title: '{i18n>purchaseOrderURL}'         @odata.Type: 'Edm.String',
       virtual null                         as isB1                         : Boolean @odata.Type: 'Edm.Boolean',
       virtual null                         as isJobStatusShown             : Boolean @odata.Type: 'Edm.Boolean',
 
@@ -41,6 +44,8 @@ service PoetrySlamService @(
                                                                                on toByDProject.projectID = $self.projectID,
       toS4HCProject                                                        : Association to PoetrySlamService.S4HCProjects
                                                                                on toS4HCProject.project = $self.projectID,
+      toS4HCSalesOrderPartner                                              : Association to PoetrySlamService.S4HCSalesOrderPartner
+                                                                               on toS4HCSalesOrderPartner.salesOrderUUID = $self.salesOrderID,
       toB1PurchaseOrder                                                    : Association to PoetrySlamService.B1PurchaseOrder
                                                                                on toB1PurchaseOrder.docNum = $self.purchaseOrderID
     }
@@ -303,7 +308,7 @@ service PoetrySlamService @(
 using {byd_khproject as RemoteByDProject} from '../external/byd_khproject';
 
 extend service PoetrySlamService with {
-  entity ByDProjects     as
+  entity ByDProjects as
     projection on RemoteByDProject.ProjectCollection {
       key ObjectID                       as ID,
           ProjectID                      as projectID,
@@ -321,7 +326,7 @@ extend service PoetrySlamService with {
 using {S4HC_API_ENTERPRISE_PROJECT_SRV_0002 as RemoteS4HCProject} from '../external/S4HC_API_ENTERPRISE_PROJECT_SRV_0002';
 
 extend service PoetrySlamService with {
-  entity S4HCProjects    as
+  entity S4HCProjects as
     projection on RemoteS4HCProject.A_EnterpriseProject {
       key ProjectUUID           as projectUUID,
           Project               as project,
@@ -330,7 +335,20 @@ extend service PoetrySlamService with {
           ProjectStartDate      as projectStartDate,
           ProjectEndDate        as projectEndDate,
           ProjectProfileCode    as projectProfileCode,
-          ProcessingStatus      as processingStatus,
+          ProcessingStatus      as processingStatus
+    }
+};
+
+// -------------------------------------------------------------------------------
+// Extend service PoetrySlamService by SAP S/4HANA Cloud sales order (principal propagation)
+
+using {S4HC_CE_SALESORDER_0001 as RemoteS4HCSalesOrder} from '../external/S4HC_CE_SALESORDER_0001';
+
+extend service PoetrySlamService with {
+  entity S4HCSalesOrderPartner as
+    projection on RemoteS4HCSalesOrder.SalesOrderPartner {
+      key SalesOrder as salesOrderUUID,
+          Customer   as customer
     }
 };
 
@@ -349,4 +367,4 @@ extend service PoetrySlamService with {
           DocTotal     as docTotal,
           DocCurrency  as docCurrency
     }
-}
+};

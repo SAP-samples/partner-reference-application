@@ -104,7 +104,7 @@ class GenAI {
     const { DeploymentApi } = await import('@sap-ai-sdk/ai-api');
     try {
       const response = await DeploymentApi.deploymentQuery(
-        {},
+        { executableIds: ['azure-openai'], scenarioId: 'foundation-models' },
         { 'AI-Resource-Group': GenAI.AI_RESOURCE_GROUP }
       ).execute();
       return JSON.stringify(response.resources);

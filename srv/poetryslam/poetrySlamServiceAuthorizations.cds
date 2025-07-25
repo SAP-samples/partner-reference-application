@@ -15,7 +15,7 @@ annotate PoetrySlamService with @(requires: [
 // Restriction per authorization role:
 annotate PoetrySlamService.PoetrySlams with @(restrict: [
   {
-    // Managers can change all poetry slams, create new, detele and execute the actions
+    // Managers can change all poetry slams, create new, delete and execute the actions
     grant: ['*'],
     to   : 'PoetrySlamFull'
   },
@@ -78,6 +78,13 @@ annotate PoetrySlamService.ByDProjects with @(restrict: [{
 
 // S/4 projects: Managers can read remote projects (create is done using the remote service, not the projection in the PoetrySlamService)
 annotate PoetrySlamService.S4HCProjects with @(restrict: [{
+  grant: ['READ'],
+  to   : 'PoetrySlamFull'
+}]);
+
+
+// S/4 sales order partner: Managers can read remote sales order partners
+annotate PoetrySlamService.S4HCSalesOrderPartner with @(restrict: [{
   grant: ['READ'],
   to   : 'PoetrySlamFull'
 }]);

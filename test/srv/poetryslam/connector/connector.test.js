@@ -96,7 +96,7 @@ describe('Connector', () => {
     expect(connectorData.destination).to.eql();
     expect(connectorData.isConnectedIndicator).to.eql(false);
 
-    sinon.assert.calledOnce(stubReadDestination);
+    sinon.assert.calledTwice(stubReadDestination);
 
     sinon.assert.calledWith(
       stubLog,

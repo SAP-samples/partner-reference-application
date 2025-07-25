@@ -67,7 +67,7 @@ describe('Util Entity Calculations - Project', () => {
         return {
           projectID: 'ProjectTestID',
           ID: projectRecord.ID,
-          projectSystem: ConnectorByD.PROJECT_SYSTEM
+          projectSystem: ConnectorByD.ERP_SYSTEM
         };
       }
     });
@@ -113,8 +113,7 @@ describe('Util Entity Calculations - Project', () => {
 
     expect(updateData.projectID).to.eql('Test1');
     expect(updateData.projectObjectID).to.eql('TestObjectID');
-    expect(updateData.projectURL).to.eql('testDestinationURL');
-    expect(updateData.projectSystem).to.eql(ConnectorByD.PROJECT_SYSTEM);
+    expect(updateData.projectSystem).to.eql(ConnectorByD.ERP_SYSTEM);
 
     sinon.assert.calledOnce(stubProjectDataRecord);
     sinon.assert.notCalled(stubInsertRemoteProject);
@@ -136,8 +135,7 @@ describe('Util Entity Calculations - Project', () => {
 
     expect(updateData.projectID).to.eql('Test1');
     expect(updateData.projectObjectID).to.eql('TestObjectID');
-    expect(updateData.projectURL).to.eql('testDestinationURL');
-    expect(updateData.projectSystem).to.eql(ConnectorByD.PROJECT_SYSTEM);
+    expect(updateData.projectSystem).to.eql(ConnectorByD.ERP_SYSTEM);
 
     sinon.assert.calledOnce(stubProjectDataRecord);
     sinon.assert.calledOnce(stubInsertRemoteProject);
@@ -272,7 +270,7 @@ describe('Util Entity Calculations - Purchase Order', () => {
         }
         return {
           ID: record.ID,
-          purchaseOrderSystem: ConnectorB1.PURCHASE_ORDER_SYSTEM
+          purchaseOrderSystem: ConnectorB1.ERP_SYSTEM
         };
       }
     });
@@ -314,10 +312,7 @@ describe('Util Entity Calculations - Purchase Order', () => {
 
     expect(updateData.purchaseOrderID).to.eql('Test1');
     expect(updateData.purchaseOrderObjectID).to.eql('TestObjectID');
-    expect(updateData.purchaseOrderURL).to.eql('testDestinationURL');
-    expect(updateData.purchaseOrderSystem).to.eql(
-      ConnectorB1.PURCHASE_ORDER_SYSTEM
-    );
+    expect(updateData.purchaseOrderSystem).to.eql(ConnectorB1.ERP_SYSTEM);
 
     sinon.assert.calledOnce(stubPurchaseOrderDataRecord);
     sinon.assert.calledOnce(stubInsertRemotePurchaseOrder);
@@ -399,5 +394,87 @@ describe('Util Entity Calculations - Purchase Order', () => {
 
     sinon.assert.calledOnce(stubPurchaseOrderDataRecord);
     sinon.assert.calledOnce(stubInsertRemotePurchaseOrder);
+  });
+});
+
+describe('Util Entity Calculations - Calculate PoetrySlam Data', () => {
+  let stubLog;
+  let stubSELECT;
+
+  beforeEach(async () => {
+    // Use Stubs for external services
+    stubLog = sinon.stub(console, 'error');
+    stubSELECT = sinon.stub(SELECT, 'one').returns(null);
+  });
+
+  afterEach(function () {
+    // Restore Stubs
+    stubLog.restore();
+    stubSELECT.restore();
+  });
+
+  it('should throw error message because of missing id', async () => {
+    const req = {
+      target: {
+        name: 'mockdrafts'
+      }
+    };
+
+    await expect(entityCalculations.calculatePoetrySlamData(null, req)).to
+      .rejected;
+
+    sinon.assert.calledWith(stubLog, 'Poetry Slam ID not found');
+  });
+
+  it('should throw error message because of missing poetryslam', async () => {
+    const req = {
+      target: {
+        name: 'mockdrafts'
+      }
+    };
+
+    await expect(entityCalculations.calculatePoetrySlamData('mockId', req)).to
+      .rejected;
+
+    sinon.assert.calledWith(stubLog, 'Poetry Slam not found');
+  });
+});
+
+describe('Util Entity Calculations - Convert to Array', () => {
+  let stubIsArray;
+  let stubLog;
+
+  beforeEach(async () => {
+    // Use Stubs for external services
+    stubLog = sinon.stub(console, 'error');
+    stubIsArray = sinon.stub(Array, 'isArray').returns(false);
+  });
+
+  afterEach(function () {
+    // Restore Stubs
+    stubLog.restore();
+    stubIsArray.restore();
+  });
+
+  it('should return an empty array because of missing object', async () => {
+    const result = entityCalculations.convertToArray(null);
+
+    sinon.assert.calledWith(
+      stubLog,
+      'Input not defined - Cannot convert to array'
+    );
+    expect(result).to.be.empty;
+    expect(result.length).to.equal(0);
+  });
+
+  it('should return an array from a object', async () => {
+    const object = {
+      mockKey1: 'mockValue1',
+      mockKey2: 'mockValue2'
+    };
+    const result = entityCalculations.convertToArray(object);
+    expect(result).to.be.an('array');
+    expect(result.length).to.equal(1);
+    sinon.assert.called(stubIsArray);
   });
 });

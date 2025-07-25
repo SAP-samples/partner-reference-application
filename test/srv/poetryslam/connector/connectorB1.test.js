@@ -144,15 +144,22 @@ describe('ConnectorB1', () => {
     );
   });
 
+  it('should return an empty string when determing the destination URL and the systemURL is empty', async () => {
+    connector.systemURL = '';
+
+    const url = connector.determineDestinationURL('testOrder');
+    expect(url).to.eql('');
+  });
+
   it('should read remote purchase order data of the poetry slam entitiy', async () => {
     const poetrySlams = {
-      purchaseOrderSystem: ConnectorB1.PURCHASE_ORDER_SYSTEM,
+      purchaseOrderSystem: ConnectorB1.ERP_SYSTEM,
       purchaseOrderID: '1'
     };
 
     const expectedResult = {
       purchaseOrderID: '1',
-      purchaseOrderSystem: ConnectorB1.PURCHASE_ORDER_SYSTEM,
+      purchaseOrderSystem: ConnectorB1.ERP_SYSTEM,
       toB1PurchaseOrder: {
         comments: 'commentsTest',
         docNum: '1'
@@ -165,7 +172,7 @@ describe('ConnectorB1', () => {
 
   it('should return poetry slam data when reading remote purchase order data of a poetry slam entitiy without project ID', async () => {
     const poetrySlams = {
-      purchaseOrderSystem: ConnectorB1.PURCHASE_ORDER_SYSTEM,
+      purchaseOrderSystem: ConnectorB1.ERP_SYSTEM,
       ID: 1
     };
 

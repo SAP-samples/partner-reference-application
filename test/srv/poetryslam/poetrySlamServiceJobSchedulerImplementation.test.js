@@ -81,7 +81,8 @@ describe('sendReminderForPoetrySlam Service Handler', function () {
         `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
         'sendReminderForPoetrySlam'
       )
-    ).to.be.rejectedWith(httpCodes.internal_server_error.toString());
+    ).to.rejectedWith(httpCodes.internal_server_error.toString());
+
     delete process.env['test_tenant_id'];
 
     expect(consoleErrorStub.called).to.be.true;

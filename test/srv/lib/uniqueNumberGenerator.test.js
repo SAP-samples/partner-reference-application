@@ -6,7 +6,7 @@
 
 // Adds cds module
 const cds = require('@sap/cds');
-// Defines Sequence Helper for Poetry Slum Number
+// Defines Sequence Helper for Poetry Slam Number
 const uniqueNumberGenerator = require('../../../srv/lib/uniqueNumberGenerator');
 // Defines required CDS functions for testing
 const { expect } = cds.test(__dirname + '/../../..');

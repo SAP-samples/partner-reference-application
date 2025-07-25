@@ -38,13 +38,17 @@ module.exports = async (srv) => {
 
   srv.after('UPDATE', ['Visits.drafts', 'Visits'], async (_results, req) => {
     if (!req.data.visitor_ID) {
+      console.error('Visitor ID not found');
+      req.error(httpCodes.internal_server_error, 'UPDATE_VISIT_NOT_POSSIBLE', [
+        req.data.ID
+      ]);
       return;
     }
 
     const visit = await SELECT.one.from(req.subject).columns('ID', 'parent_ID');
 
     if (!visit) {
-      // Error message: update not possible
+      console.error('Visit not found - Update Visit not possible');
       req.error(httpCodes.internal_server_error, 'UPDATE_VISIT_NOT_POSSIBLE', [
         req.data.ID
       ]);
@@ -65,6 +69,7 @@ module.exports = async (srv) => {
   // Updates the poetry slam status and freevistor seats in case of deletion of a visit
   srv.before('DELETE', ['Visits.drafts', 'Visits'], async (req) => {
     if (!req.data.ID) {
+      console.error('Visit ID not found');
       req.error(httpCodes.internal_server_error, 'VISIT_NOT_FOUND', [
         req.data.ID
       ]);
@@ -76,6 +81,7 @@ module.exports = async (srv) => {
       .columns('ID', 'parent_ID', 'visitor_ID', 'status_code');
 
     if (!currentVisit) {
+      console.error('Current Visit not found');
       req.error(httpCodes.internal_server_error, 'VISIT_NOT_FOUND', [
         req.data.ID
       ]);
@@ -95,7 +101,7 @@ module.exports = async (srv) => {
       changedData.freeVisitorSeats,
       req,
       {
-        text: 'DELETION_VISIT_NOT_POSSIBLE',
+        text: 'DELETE_VISIT_NOT_POSSIBLE',
         param: await readVisitorName(currentVisit.visitor_ID)
       }
     );
@@ -136,6 +142,7 @@ module.exports = async (srv) => {
 
     if (!visit) {
       const id = req.params[req.params.length - 1]?.ID;
+      console.error('Visit not found');
       req.error(httpCodes.bad_request, 'VISIT_NOT_FOUND', [id]);
       return;
     }
@@ -144,6 +151,7 @@ module.exports = async (srv) => {
     const vistitorName = await readVisitorName(visit.visitor_ID);
 
     if (visit.status_code === visitStatusCode.canceled) {
+      console.info('Booking already canceled.');
       req.info(httpCodes.ok, 'ACTION_CANCELED_ALREADY', [vistitorName]);
       return visit;
     }
@@ -163,6 +171,7 @@ module.exports = async (srv) => {
     );
 
     if (!success) {
+      console.error('Update Poetry Slam failed');
       return {};
     }
 
@@ -172,6 +181,7 @@ module.exports = async (srv) => {
     });
 
     if (result !== 1) {
+      console.error('Update Visit not possible');
       req.error(
         httpCodes.internal_server_error,
         'ACTION_VISIT_CANCEL_NOT_POSSIBLE',
@@ -188,13 +198,14 @@ module.exports = async (srv) => {
   // Actions are not mass enabled in service, only on UI; they are handled in a batch mode;
   srv.on('confirmVisit', async (req) => {
     // In case, the visit is called via composition of poetry slam, there are two entries, the last is the association where the action was executed
+    const id = req.params[req.params.length - 1]?.ID;
     const visit = await SELECT.one
       .from(req.subject)
       .columns('ID', 'status_code', 'parent_ID', 'visitor_ID');
 
     // If visit was not found, throw an error
     if (!visit) {
-      const id = req.params[req.params.length - 1]?.ID;
+      console.error('Visit not found');
       req.error(httpCodes.bad_request, 'VISITS_NOT_FOUND', [id]);
       return;
     }
@@ -202,6 +213,7 @@ module.exports = async (srv) => {
     const vistitorName = await readVisitorName(visit.visitor_ID);
 
     if (visit.status_code === visitStatusCode.booked) {
+      console.info('Visit already booked.');
       req.info(httpCodes.ok, 'ACTION_BOOKED_ALREADY', [vistitorName]);
       return visit;
     }
@@ -209,6 +221,8 @@ module.exports = async (srv) => {
     //In case event gets overbooked do not allow visit confirmation
     const allowed = await checkPoetrySlamForVisitCreation(visit.parent_ID, req);
     if (!allowed) {
+      console.error('Visit creation not allowed');
+      req.error(httpCodes.bad_request, 'ACTION_VISIT_BOOK_NOT_POSSIBLE', [id]);
       return;
     }
     visit.status_code = visitStatusCode.booked;
@@ -224,6 +238,7 @@ module.exports = async (srv) => {
     );
 
     if (!success) {
+      console.error('Update Poetry Slam failed');
       return {};
     }
 
@@ -234,7 +249,7 @@ module.exports = async (srv) => {
 
     // Handle error case of update result
     if (result !== 1) {
-      // Error message: could not be booked
+      console.error('Visit could not be booked');
       req.error(httpCodes.bad_request, 'ACTION_VISIT_BOOK_NOT_POSSIBLE', [
         vistitorName
       ]);
@@ -253,6 +268,7 @@ module.exports = async (srv) => {
   // Enable creation of visits only for published poetry slams
   async function checkPoetrySlamForVisitCreation(poetrySlamID, req) {
     if (!poetrySlamID) {
+      console.error('Poetry Slam ID not found');
       req.error(httpCodes.internal_server_error, 'POETRYSLAM_NOT_FOUND', [
         poetrySlamID
       ]);
@@ -272,19 +288,23 @@ module.exports = async (srv) => {
 
     // Check poetry slam status
     if (!poetrySlam) {
+      console.error('Visit creation not possible. Poetry Slam not found.');
       req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [poetrySlamID]);
       result = false;
     } else if (poetrySlam.status_code === poetrySlamStatusCode.booked) {
+      console.error('Visit creation not possible. Poetry Slam fully booked.');
       req.error(httpCodes.bad_request, 'POETRYSLAM_FULLY_BOOKED', [
         poetrySlam.number
       ]);
       result = false;
     } else if (poetrySlam.status_code === poetrySlamStatusCode.canceled) {
+      console.error('Visit creation not possible. Poetry Slam canceled.');
       req.error(httpCodes.bad_request, 'POETRYSLAM_CANCELED', [
         poetrySlam.number
       ]);
       result = false;
     } else if (poetrySlam.status_code === poetrySlamStatusCode.inPreparation) {
+      console.error('Visit creation not possible. Poetry Slam not published');
       req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_PUBLISHED', [
         poetrySlam.number
       ]);

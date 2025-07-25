@@ -113,6 +113,7 @@ class JobSchedulerActionImplementation {
   // Send reminder emails to the visitors of all poetry slams until a specific date
   async handleReminderByDate(req, date) {
     const futureDate = new Date(date);
+    futureDate.setHours(23, 59, 59, 999);
     // Select visits of all published or fully booked poetry slam events until the future date
     // and thereof visitors which have the status booked
     const visits = await SELECT.from('PoetrySlamService.PoetrySlams')

@@ -58,8 +58,8 @@ describe('Util ServiceCredentials', () => {
     // Success case
     const token = await ServiceCredentials.getServiceToken(
       'mockService',
-      true,
       'UnitTest-TenantId',
+      true,
       () => Promise.resolve(tokenMock)
     );
     expect(token).eql('test token');
@@ -67,7 +67,7 @@ describe('Util ServiceCredentials', () => {
     // Error case: tenantId missing for consumer-specific token request
     delete process.env.test_tenant_id;
     await expect(
-      ServiceCredentials.getServiceToken('mockService', true, null, () =>
+      ServiceCredentials.getServiceToken('mockService', null, true, () =>
         Promise.resolve(tokenMock)
       )
     ).rejected;
@@ -81,8 +81,8 @@ describe('Util ServiceCredentials', () => {
     await expect(
       ServiceCredentials.getServiceToken(
         'mockService',
-        true,
         'UnitTest-TenantId2',
+        true,
         () => Promise.resolve(tokenMock)
       )
     ).rejected;
@@ -93,8 +93,8 @@ describe('Util ServiceCredentials', () => {
 
     const token = await ServiceCredentials.getServiceToken(
       'mockService',
-      false,
       'UnitTest-TenantId',
+      false,
       () => Promise.resolve(tokenMock)
     );
     expect(token).eql('test token');
@@ -104,7 +104,7 @@ describe('Util ServiceCredentials', () => {
     addMockServiceToEnv();
 
     await expect(
-      ServiceCredentials.getServiceToken('mockService', false, () =>
+      ServiceCredentials.getServiceToken('mockService', null, false, () =>
         Promise.resolve({ data: 'UnitTest: some response without token' })
       )
     ).rejected;

@@ -13,25 +13,27 @@ using from '@sap/cds-common-content';
 //Enforces uniqueness checks on all CREATE and UPDATE operations for the specified fields
 @assert.unique: {identifier: [number]}
 entity PoetrySlams : cuid, managed {
-  number                : String(255);
-  title                 : String(255);
-  description           : String(1000);
-  dateTime              : DateTime;
-  maxVisitorsNumber     : Integer;
-  freeVisitorSeats      : Integer;
-  visitorsFeeAmount     : Decimal(6, 2);
-  visitorsFeeCurrency   : Association to one sap.common.Currencies;
-  status                : Association to one PoetrySlamStatusCodes @assert.integrity;
-  visits                : Composition of many Visits
-                            on visits.parent = $self;
+  number              : String(255);
+  title               : String(255);
+  description         : String(1000);
+  dateTime            : DateTime;
+  maxVisitorsNumber   : Integer;
+  freeVisitorSeats    : Integer;
+  visitorsFeeAmount   : Decimal(6, 2);
+  visitorsFeeCurrency : Association to one sap.common.Currencies;
+  status              : Association to one PoetrySlamStatusCodes @assert.integrity;
+  visits              : Composition of many Visits
+                          on visits.parent = $self;
+}
+
+extend PoetrySlams with {
   projectID             : String;
   projectObjectID       : String;
-  projectURL            : String;
   projectSystem         : String;
   purchaseOrderID       : String;
   purchaseOrderObjectID : String;
-  purchaseOrderURL      : String;
   purchaseOrderSystem   : String;
+  salesOrderID          : String;
   jobStatusText         : String(255) default 'Job not triggered yet';
 }
 
@@ -88,12 +90,11 @@ annotate PoetrySlams with @fiori.draft.enabled {
   visits                 @title: '{i18n>visits}';
   projectID              @title: '{i18n>projectID}'              @readonly;
   projectObjectID        @title: '{i18n>projectObjectID}'        @readonly;
-  projectURL             @title: '{i18n>projectURL}'             @readonly;
   projectSystem          @title: '{i18n>projectSystem}'          @readonly;
   purchaseOrderID        @title: '{i18n>purchaseOrderID}'        @readonly;
   purchaseOrderObjectID  @title: '{i18n>purchaseOrderObjectID}'  @readonly;
-  purchaseOrderURL       @title: '{i18n>purchaseOrderURL}'       @readonly;
   purchaseOrderSystem    @title: '{i18n>purchaseOrderSystem}'    @readonly;
+  salesOrderID           @title: '{i18n>salesOrderID}';
   jobStatusText          @title: '{i18n>jobStatusText}'          @readonly;
 }
 

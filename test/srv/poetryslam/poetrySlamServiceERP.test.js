@@ -36,12 +36,9 @@ describe('Remote Projects in PoetrySlamService', () => {
     await POST(`/odata/v4/poetryslamservice/createTestData`);
 
     // Read all poetry slams for usage in the tests
-    poetrySlams = await GET(
-      `/odata/v4/poetryslamservice/PoetrySlams?$filter=status_code%20eq%203`,
-      {
-        params: { $select: `ID,status_code` }
-      }
-    );
+    poetrySlams = await GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
+      params: { $select: `ID,status_code` }
+    });
     expect(poetrySlams.data.value.length).to.greaterThan(0);
   });
 
@@ -98,6 +95,14 @@ describe('Remote Projects in PoetrySlamService', () => {
     await expect(
       GET(
         `/odata/v4/poetryslamservice/S4HCProjectsProjectProfileCode(projectProfileCode='aaaaaaa')`
+      )
+    ).to.rejectedWith(httpCodes.not_found.toString());
+  });
+
+  it('should throw error message when retrieving SAP HANA Cloud sales order partner and no system is connected', async () => {
+    await expect(
+      GET(
+        `/odata/v4/poetryslamservice/S4HCSalesOrderPartner(salesOrderUUID=00000000-0000-0000-0000-000000000000)`
       )
     ).to.rejectedWith(httpCodes.not_found.toString());
   });

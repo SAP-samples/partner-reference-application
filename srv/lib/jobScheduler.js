@@ -27,7 +27,6 @@ class JobScheduler {
     try {
       this.jwt = await serviceCredentialsUtil.getServiceToken(
         'jobscheduler',
-        true,
         this.consumerId
       );
       this.jobSchedulerClient = new jobSchedulerClient.Scheduler({

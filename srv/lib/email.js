@@ -31,7 +31,7 @@ class EMail {
   async send(req) {
     // Do not send email for test data
     if (this.mailConfig.to?.endsWith('@pra.ondemand.com')) {
-      console.log(
+      console.error(
         `ACTION send email: Sending email to pra.ondemand.com not allowed`
       );
       req.error(httpCodes.bad_request, 'ACTION_EMAIL_SEND_FAIL', [
@@ -95,7 +95,10 @@ class EMail {
 
   // Get the title in the user's locale
   static getMailTitleForPoetrySlam() {
-    return cds.i18n.labels.at('POETRYSLAM_EMAIL_TITLE', cds.context.locale);
+    return cds.i18n.labels.at(
+      'POETRYSLAM_EMAIL_TITLE',
+      cds.context.locale ?? 'en'
+    );
   }
 
   // Get the message content in the user's locale
@@ -107,7 +110,7 @@ class EMail {
   ) {
     const dateTime = new Date(eventDateTime);
     const text = cds.i18n.labels
-      .at('POETRYSLAM_EMAIL_CONTENT', cds.context.locale, [
+      .at('POETRYSLAM_EMAIL_CONTENT', cds.context.locale ?? 'en', [
         visitorName,
         title,
         dateTime.toLocaleDateString(),

@@ -399,7 +399,6 @@ describe('Poetryslams in PoetrySlamService', () => {
     let result = await db.update(PoetrySlams).with({
       projectID: '1',
       projectObjectID: '2',
-      projectURL: 'URL',
       projectSystem: 'System'
     }).where`ID=${id}`;
 
@@ -409,14 +408,13 @@ describe('Poetryslams in PoetrySlamService', () => {
       `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
       {
         params: {
-          $select: `ID,projectID,projectObjectID,projectURL,projectSystem`
+          $select: `ID,projectID,projectObjectID,projectSystem`
         }
       }
     );
 
     expect(result.data.projectID).to.eql('1');
     expect(result.data.projectObjectID).to.eql('2');
-    expect(result.data.projectURL).to.eql('URL');
     expect(result.data.projectSystem).to.eql('System');
 
     await ACTION(
@@ -430,7 +428,6 @@ describe('Poetryslams in PoetrySlamService', () => {
 
     expect(result.data.projectID).to.eql(null);
     expect(result.data.projectObjectID).to.eql(null);
-    expect(result.data.projectURL).to.eql(null);
     expect(result.data.projectSystem).to.eql(null);
   });
 
@@ -444,7 +441,6 @@ describe('Poetryslams in PoetrySlamService', () => {
     let result = await db.update(PoetrySlams).with({
       purchaseOrderID: '1',
       purchaseOrderObjectID: '2',
-      purchaseOrderURL: 'URL',
       purchaseOrderSystem: 'System'
     }).where`ID=${id}`;
 
@@ -454,14 +450,13 @@ describe('Poetryslams in PoetrySlamService', () => {
       `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
       {
         params: {
-          $select: `ID,purchaseOrderID,purchaseOrderObjectID,purchaseOrderURL,purchaseOrderSystem`
+          $select: `ID,purchaseOrderID,purchaseOrderObjectID,purchaseOrderSystem`
         }
       }
     );
 
     expect(result.data.purchaseOrderID).to.eql('1');
     expect(result.data.purchaseOrderObjectID).to.eql('2');
-    expect(result.data.purchaseOrderURL).to.eql('URL');
     expect(result.data.purchaseOrderSystem).to.eql('System');
 
     await ACTION(
@@ -475,7 +470,6 @@ describe('Poetryslams in PoetrySlamService', () => {
 
     expect(result.data.purchaseOrderID).to.eql(null);
     expect(result.data.purchaseOrderObjectID).to.eql(null);
-    expect(result.data.purchaseOrderURL).to.eql(null);
     expect(result.data.purchaseOrderSystem).to.eql(null);
   });
 

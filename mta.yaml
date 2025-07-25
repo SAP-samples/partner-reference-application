@@ -35,7 +35,8 @@ modules:
     requires:
       - name: poetry-slams-auth
       - name: poetry-slams-auditlog
-      - name: poetry-slams-cloud-logging
+      - name: poetry-slams-cloud-logging # (Option 1: Dedicated SAP Cloud Logging Instance)
+      #- name: shared-cloud-logging # (Option 2: Shared SAP Cloud Logging Instance)
       - name: poetry-slams-db
       - name: poetry-slams-adsrestapi
       - name: poetry-slams-destination
@@ -165,7 +166,8 @@ modules:
           name: mtx-api
           url: ~{mtx-url}
       - name: poetry-slams-auth
-      - name: poetry-slams-cloud-logging
+      - name: poetry-slams-cloud-logging # (Option 1: Dedicated SAP Cloud Logging Instance)
+      # - name: shared-cloud-logging # (Option 2: Shared SAP Cloud Logging Instance)
       - name: poetry-slams-html5-runtime
       - name: poetry-slams-jobscheduler
       - name: poetry-slams-destination
@@ -194,7 +196,8 @@ modules:
       - name: poetry-slams-db
       - name: poetry-slams-auth
       - name: poetry-slams-auditlog
-      - name: poetry-slams-cloud-logging
+      - name: poetry-slams-cloud-logging # (Option 1: Dedicated SAP Cloud Logging Instance)
+      # - name: shared-cloud-logging # (Option 2: Shared SAP Cloud Logging Instance)
       - name: poetry-slams-registry
       - name: poetry-slams-destination
       - name: poetry-slams-connectivity-service
@@ -208,7 +211,7 @@ modules:
           SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}.~{app-uri}
 
   # The service broker for the poetry slam manager
-  # Directly exposes the author reading service
+  # Directly exposes the poetry slam service
   - name: poetry-slams-servicebroker
     type: nodejs
     path: broker
@@ -361,7 +364,7 @@ resources:
       service: auditlog
       service-plan: premium
 
-  # Cloud Logging Service
+  # Cloud Logging Service (Option 1: Dedicated SAP Cloud Logging Instance)
   - name: poetry-slams-cloud-logging
     type: org.cloudfoundry.managed-service
     parameters:
@@ -372,6 +375,10 @@ resources:
           enabled: true
         backend:
           api_enabled: true
+
+  # Cloud Logging Service (Option 2: Shared SAP Cloud Logging Instance)
+  # - name: shared-cloud-logging
+  #   type: org.cloudfoundry.existing-service
 
   # Print Service
   - name: poetry-slams-print-service

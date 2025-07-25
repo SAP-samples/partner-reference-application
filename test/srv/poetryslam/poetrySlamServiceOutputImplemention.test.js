@@ -48,7 +48,6 @@ describe('PoetrySlamService - Output', () => {
       );
       expect(visits.data.value.length).to.greaterThan(0);
       const visit = visits.data.value[0];
-
       await expect(
         ACTION(
           `/odata/v4/poetryslamservice/PoetrySlams(ID=${visit.parent_ID},IsActiveEntity=true)/visits(ID=${visit.ID},IsActiveEntity=true)`,

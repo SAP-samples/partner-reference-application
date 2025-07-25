@@ -13,7 +13,7 @@
 | **Application Title**<br>Visitors                                                              |
 | **Namespace**<br>                                                                              |
 | **UI5 Theme**<br>sap_horizon                                                                   |
-| **UI5 Version**<br>1.120.20                                                                    |
+| **UI5 Version**<br>1.136.0                                                                     |
 | **Enable Code Assist Libraries**<br>False                                                      |
 | **Enable TypeScript**<br>False                                                                 |
 | **Add Eslint configuration**<br>False                                                          |

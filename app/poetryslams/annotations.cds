@@ -1,10 +1,10 @@
 using PoetrySlamService as service from '../../srv/poetryslam/poetrySlamService';
 
 annotate service.PoetrySlams with {
-  status                       @Common.Text: {
-    $value                : status.name,
-    ![@UI.TextArrangement]: #TextOnly
-  };
+  status                       @(Common: {
+    Text           : status.name,
+    TextArrangement: #TextOnly
+  });
   description                  @UI.MultiLineText;
   ID                           @UI.Hidden;
   statusCriticality            @UI.Hidden;
@@ -95,6 +95,20 @@ annotate service.PoetrySlams with @(
         ![@UI.Hidden]: {$edmJson: {$Eq: [
           {$Path: 'status/code'},
           1
+        ]}}
+      },
+      {
+        $Type        : 'UI.ReferenceFacet',
+        Label        : '{i18n>salesOrderData}',
+        ID           : 'SalesOrderData',
+        Target       : @UI.FieldGroup #SalesOrderData,
+        // Display SalesOrderData only in case a SAP S/4HANA Cloud system is connected and Sales Order ID is filled
+        ![@UI.Hidden]: {$edmJson: {$Or: [
+          {$Eq: [
+            {$Path: 'salesOrderID'},
+            {$Null: null}
+          ]},
+          {$Not: {$Path: 'isS4HC'}}
         ]}}
       },
       {
@@ -208,6 +222,28 @@ annotate service.PoetrySlams with @(
         {
           $Type: 'UI.DataField',
           Value: freeVisitorSeats
+        }
+      ]
+    },
+    FieldGroup #SalesOrderData     : {
+      $Type: 'UI.FieldGroupType',
+      Data : [
+        {
+          $Type                  : 'UI.DataFieldWithUrl',
+          Value                  : salesOrderID,
+          Url                    : salesOrderURL,
+          ![@Common.FieldControl]: #ReadOnly
+        },
+        {
+          $Type                  : 'UI.DataField',
+          Label                  : '{i18n>businessPartnerId}',
+          Value                  : toS4HCSalesOrderPartner.customer,
+          ![@Common.FieldControl]: #ReadOnly
+        },
+        {
+          $Type                  : 'UI.DataField',
+          Value                  : customerFullName,
+          ![@Common.FieldControl]: #ReadOnly
         }
       ]
     },
@@ -548,7 +584,17 @@ annotate service.PoetrySlams with @(
 );
 
 annotate service.Visits with {
-  visitor @(Common: {
+  ID                @UI.Hidden;
+  parent            @UI.Hidden;
+  statusCriticality @UI.Hidden;
+  status            @(
+    Common  : {
+      Text           : status.name,
+      TextArrangement: #TextOnly
+    },
+    readonly: true
+  );
+  visitor           @(Common: {
     // Visualization of a value list
     // Shows name and email in the value list
     // Returns corresponding visitor ID
@@ -575,10 +621,6 @@ annotate service.Visits with {
     TextArrangement: #TextOnly,
     Label          : '{i18n>name}'
   });
-  status  @readonly  @Common.Text: {
-    $value                : status.name,
-    ![@UI.TextArrangement]: #TextOnly
-  };
 };
 
 annotate service.Visits with @(
@@ -716,10 +758,13 @@ annotate service.Visits with @(
 );
 
 annotate service.Visitors with {
-  ID   @(Common: {
-    Text           : email,
-    TextArrangement: #TextOnly,
-    Label          : '{i18n>email}'
-  });
+  ID   @(
+    Common: {
+      Text           : email,
+      TextArrangement: #TextOnly,
+      Label          : '{i18n>email}'
+    },
+    UI    : {Hidden: true}
+  );
   name @readonly;
 };
