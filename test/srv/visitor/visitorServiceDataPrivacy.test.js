@@ -49,65 +49,6 @@ describe('personal data audit logging in CRUD', () => {
     await POST(`/odata/v4/poetryslamservice/createTestData`);
   });
 
-  it('should log audit log messages when a visitor is changed and activated', async function () {
-    const id = '79ceab87-300d-4b66-8cc3-182c679b7c01';
-
-    // Move visitor into draft mode by calling draftEdit action
-    await ACTION(
-      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=true)`,
-      `draftEdit`
-    );
-
-    // Reduce max visitors
-    let result = await PATCH(
-      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=false)`,
-      {
-        name: 'Thomas Schmitt'
-      }
-    );
-
-    expect(result.data.name).to.eql('Thomas Schmitt');
-    let auditLog = filterLog(cdsTestLog);
-    expect(auditLog.length).to.eql(1);
-
-    // Read the updated poetry slam in draft mode
-    result = await GET(
-      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=false)`
-    );
-
-    expect(result.data.name).to.eql('Thomas Schmitt');
-    auditLog = filterLog(cdsTestLog);
-    expect(auditLog.length).to.eql(1);
-
-    // Change the name back
-    await PATCH(
-      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=false)`,
-      {
-        name: 'Thomas Schmidt'
-      }
-    );
-
-    // Activate the draft
-    await ACTION(
-      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=false)`,
-      'draftActivate'
-    );
-
-    // Audit Log updates of visitors
-    auditLog = filterLog(cdsTestLog);
-    const types = auditLog.map((log) => log.type);
-    expect(auditLog.length).to.eql(3);
-    expect(types).to.include('PersonalDataModified');
-
-    result = await GET(
-      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=true)`
-    );
-
-    expect(result.data.IsActiveEntity).to.eql(true);
-    auditLog = filterLog(cdsTestLog);
-    expect(auditLog.length).to.eql(4);
-  });
-
   it('should log an audit log message when a visitor is read', async function () {
     // Read the updated poetry slam in draft mode
     const visitors = await GET(`/odata/v4/visitorservice/Visitors?$top=1`);

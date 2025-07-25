@@ -19,6 +19,7 @@ module.exports = async (srv) => {
     });
 
     if (!poetrySlam) {
+      console.error('Poetry Slam not found');
       req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [
         this.poetrySlamId
       ]);

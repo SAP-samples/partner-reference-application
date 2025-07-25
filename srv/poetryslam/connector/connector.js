@@ -20,8 +20,8 @@ class Connector {
   // Delegate OData requests to remote ERP system project entities
   async delegateODataRequests(req, remoteService) {
     try {
-      const project = await cds.connect.to(remoteService);
-      return await project.run(req.query);
+      const service = await cds.connect.to(remoteService);
+      return await service.run(req.query);
     } catch (error) {
       console.error('Connector - delegateODataRequests:', error);
     }
@@ -42,34 +42,32 @@ class Connector {
       destinationName
     );
 
+    data.destinationURL = await destinationUtil.readDestination(
+      req,
+      destinationURLName
+    );
+
+    if (data.destinationURL) {
+      data.systemURL = await destinationUtil.getDestinationURL(
+        data.destinationURL
+      );
+
+      data.systemName = await destinationUtil.getDestinationDescription(
+        data.destinationURL
+      );
+      console.log(`Check ERP destination: ${destinationURLName} found`);
+    } else {
+      console.log(`Check ERP destination: ${destinationURLName} not found`);
+    }
+
     if (!data.destination) {
       console.log(`Check ERP destination: ${destinationName} not found`);
       return data;
     }
 
     console.log(`Check ERP destination: ${destinationName} found`);
-
     data.isConnectedIndicator = true;
 
-    data.destinationURL = await destinationUtil.readDestination(
-      req,
-      destinationURLName
-    );
-
-    if (!data.destinationURL) {
-      console.log(`Check ERP destination: ${destinationURLName} not found`);
-      return data;
-    }
-
-    console.log(`Check ERP destination: ${destinationURLName} found`);
-
-    data.systemURL = await destinationUtil.getDestinationURL(
-      data.destinationURL
-    );
-
-    data.systemName = await destinationUtil.getDestinationDescription(
-      data.destinationURL
-    );
     return data;
   }
 }

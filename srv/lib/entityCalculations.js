@@ -13,6 +13,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
   const tableExtension = req.target.name.endsWith('drafts') ? '.drafts' : '';
   const changedData = {};
   if (!id) {
+    console.error('Poetry Slam ID not found');
     req.error(httpCodes.internal_server_error, 'POETRYSLAM_NOT_FOUND', [id]);
     return;
   }
@@ -25,6 +26,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
 
   // If poetry slam was not found, throw an error
   if (!poetrySlam) {
+    console.error('Poetry Slam not found');
     req.error(httpCodes.internal_server_error, 'POETRYSLAM_NOT_FOUND', [id]);
     return;
   }
@@ -111,6 +113,7 @@ async function updatePoetrySlam(
     .where({ ID: poetrySlamID });
 
   if (result !== 1) {
+    console.error('Update Poetry Slam failed');
     req.error(httpCodes.internal_server_error, errorMessage.text, [
       errorMessage.param
     ]);
@@ -126,6 +129,7 @@ async function updatePoetrySlam(
 // Helper function to convert an object to an array
 function convertToArray(x) {
   if (!x) {
+    console.error('Input not defined - Cannot convert to array');
     return [];
   }
   return Array.isArray(x) ? x : [x];
@@ -148,6 +152,7 @@ async function createProject(req, srv, ConnectorClass, errorText) {
   const connector = await ConnectorClass.createConnectorInstance(req);
 
   if (!connector.isConnected()) {
+    console.info(errorText);
     req.warn(httpCodes.internal_server_error, errorText);
     return;
   }
@@ -158,14 +163,16 @@ async function createProject(req, srv, ConnectorClass, errorText) {
     .where({ ID: poetrySlamID });
   // Allow action for active entity instances only
   if (!poetrySlam) {
+    console.error('Poetry Slam not found');
     req.error(httpCodes.bad_request, 'ACTION_CREATE_PROJECT_DRAFT');
     return;
   }
 
   if (
     poetrySlam.projectSystem &&
-    poetrySlam.projectSystem !== ConnectorClass.PROJECT_SYSTEM
+    poetrySlam.projectSystem !== ConnectorClass.ERP_SYSTEM
   ) {
+    console.info(errorText);
     req.warn(httpCodes.internal_server_error, errorText);
     return;
   }
@@ -208,8 +215,7 @@ async function createProject(req, srv, ConnectorClass, errorText) {
       .set({
         projectID: remoteProject.projectID,
         projectObjectID: remoteProject.projectObjectID,
-        projectURL: connector.determineDestinationURL(),
-        projectSystem: ConnectorClass.PROJECT_SYSTEM
+        projectSystem: ConnectorClass.ERP_SYSTEM
       })
       .where({ ID: poetrySlamID });
   } catch (error) {
@@ -226,6 +232,7 @@ async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
   const connector = await ConnectorClass.createConnectorInstance(req);
 
   if (!connector.isConnected()) {
+    console.info(errorText);
     req.warn(httpCodes.internal_server_error, errorText);
     return;
   }
@@ -236,20 +243,23 @@ async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
     .where({ ID: poetrySlamID });
   // Allow action for active entity instances only
   if (!poetrySlam) {
+    console.error('Poetry Slam not found');
     req.error(httpCodes.bad_request, 'ACTION_CREATE_PURCHASE_ORDER_DRAFT');
     return;
   }
 
   if (
     poetrySlam.purchaseOrderSystem &&
-    poetrySlam.purchaseOrderSystem !== ConnectorClass.PURCHASE_ORDER_SYSTEM
+    poetrySlam.purchaseOrderSystem !== ConnectorClass.ERP_SYSTEM
   ) {
+    console.info(errorText);
     req.warn(httpCodes.internal_server_error, errorText);
     return;
   }
 
   // With purchase order the read is not possible. It is always a create. Remove the purchase order first
   if (poetrySlam.purchaseOrderID) {
+    console.error('Purchase Order ID given. Read not possible.');
     req.error(httpCodes.internal_server_error, errorText);
     return;
   }
@@ -291,15 +301,12 @@ async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
       .set({
         purchaseOrderID: remotePurchaseOrder.purchaseOrderID,
         purchaseOrderObjectID: remotePurchaseOrder.purchaseOrderObjectID,
-        purchaseOrderURL: connector.determineDestinationURL(
-          remotePurchaseOrder.purchaseOrderObjectID
-        ), // Generate remote purchase order URL and update the URL
-        purchaseOrderSystem: ConnectorClass.PURCHASE_ORDER_SYSTEM
+        purchaseOrderSystem: ConnectorClass.ERP_SYSTEM
       })
       .where({ ID: poetrySlamID });
   } catch (error) {
     // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
-    console.log(`ACTION_CREATE_PURCHASE_ORDER_FAILED; ${error}`);
+    console.info(`ACTION_CREATE_PURCHASE_ORDER_FAILED; ${error}`);
     req.warn(
       httpCodes.internal_server_error,
       'ACTION_CREATE_PURCHASE_ORDER_FAILED',

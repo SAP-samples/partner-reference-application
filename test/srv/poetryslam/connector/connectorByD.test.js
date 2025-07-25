@@ -134,24 +134,30 @@ describe('ConnectorByD', () => {
   });
 
   it('should determine the destination URL to navigate to the project in SAP Business ByDesign', async () => {
-    connector.projectRecord = { ProjectID: 'testProject' };
     connector.systemURL = 'testSystemURL';
 
-    const url = connector.determineDestinationURL();
+    const url = connector.determineDestinationURL('testProject');
     expect(url).to.eql(
       'testSystemURL/sap/ap/ui/runtime?bo_ns=http://sap.com/xi/AP/ProjectManagement/Global&bo=Project&node=Root&operation=OpenByProjectID&object_key=testProject&key_type=APC_S_PROJECT_ID'
     );
   });
 
+  it('should return an empty string when determing the destination URL and the systemURL is empty', async () => {
+    connector.systemURL = '';
+
+    const url = connector.determineDestinationURL('testProject');
+    expect(url).to.eql('');
+  });
+
   it('should read remote project data of the poetry slam entitiy', async () => {
     const poetrySlams = {
-      projectSystem: ConnectorByD.PROJECT_SYSTEM,
+      projectSystem: ConnectorByD.ERP_SYSTEM,
       projectID: 1
     };
 
     const expectedResult = {
       projectID: 1,
-      projectSystem: ConnectorByD.PROJECT_SYSTEM,
+      projectSystem: ConnectorByD.ERP_SYSTEM,
       toByDProject: {
         costCenter: 'costCenterTest',
         projectID: 1
@@ -165,7 +171,7 @@ describe('ConnectorByD', () => {
   it('should return poetry slam data when reading remote project data of a poetry slam entitiy without project ID', async () => {
     const poetrySlams = {
       ID: 'testID',
-      projectSystem: ConnectorByD.PROJECT_SYSTEM
+      projectSystem: ConnectorByD.ERP_SYSTEM
     };
 
     const objectData = await connector.readProject(poetrySlams);

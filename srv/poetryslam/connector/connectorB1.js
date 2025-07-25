@@ -14,7 +14,7 @@ class ConnectorB1 extends Connector {
   // Constants Definition
   static DESTINATION = 'b1';
   static DESTINATION_URL = 'b1-url';
-  static PURCHASE_ORDER_SYSTEM = 'B1';
+  static ERP_SYSTEM = 'B1';
   static PURCHASE_ORDER_SERVICE = 'b1_sbs_v2';
 
   // ----------------------------------------------------------------------------------------------------------------------------------
@@ -97,10 +97,14 @@ class ConnectorB1 extends Connector {
 
   // Get the URL of SAP Business One Purchase Order overview screen for UI navigation
   determineDestinationURL(remotePurchaseOrderObjectID) {
+    if (!this.systemURL) {
+      return '';
+    }
+
     const b1RemotePurchaseOrderExternalURL =
       '/webx/index.html#webclient-OPOR&/Objects/OPOR/Detail?view=OPOR.detailView&id=OPOR%2C' +
       remotePurchaseOrderObjectID;
-    return encodeURI(this.systemURL?.concat(b1RemotePurchaseOrderExternalURL));
+    return encodeURI(this.systemURL.concat(b1RemotePurchaseOrderExternalURL));
   }
 
   // Enhance poetry slam with data of remote purchase order
@@ -111,7 +115,7 @@ class ConnectorB1 extends Connector {
       for (const poetrySlam of convertToArray(poetrySlams)) {
         // Check if the Purchase Order ID exists in the poetry slam record AND backend ERP is SAP Business One => read purchase order information from SAP Business One
         if (
-          poetrySlam.purchaseOrderSystem == ConnectorB1.PURCHASE_ORDER_SYSTEM &&
+          poetrySlam.purchaseOrderSystem == ConnectorB1.ERP_SYSTEM &&
           poetrySlam.purchaseOrderID
         ) {
           purchaseOrderIDs.push(poetrySlam.purchaseOrderID);

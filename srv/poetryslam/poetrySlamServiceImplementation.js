@@ -3,12 +3,12 @@
 // Include cds libraries and utility files
 const cds = require('@sap/cds');
 
-const erpForwardHandler = require('./poetrySlamServiceERPImplementation');
 // Access file system
 const fs = require('fs');
 const path = require('path');
 
 const poetrySlamsHandler = require('./poetrySlamServicePoetrySlamsImplementation');
+const erpForwardHandler = require('./poetrySlamServiceERPImplementation');
 const outputHandler = require('./poetrySlamServiceOutputImplementation');
 const visitsHandler = require('./poetrySlamServiceVisitsImplementation');
 const jobSchedulerHandler = require('./poetrySlamServiceJobSchedulerImplementation');
@@ -61,6 +61,7 @@ module.exports = cds.service.impl(async (srv) => {
     const visitsTestData = JSON.parse(visitsJson)?.visits;
 
     if (!poetrySlamsTestData || !visitorsTestData || !visitsTestData) {
+      console.warn('Test data is not defined');
       return false;
     }
 

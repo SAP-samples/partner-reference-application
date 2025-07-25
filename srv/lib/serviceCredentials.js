@@ -51,12 +51,13 @@ async function _getToken(
 // The parameter getToken is used for unit tests and allows a dependency injection; by default the internal implementation _getToken() is used
 async function getServiceToken(
   serviceName,
-  isConsumerSpecific = true,
   inTenantId,
+  isConsumerSpecific = true,
   getToken = _getToken
 ) {
   const srvCredentials = getServiceCredentials(serviceName);
   if (!srvCredentials) {
+    console.error(`Missing binding credentials for service "${serviceName}"`);
     throw new Error(`Missing binding credentials for service "${serviceName}"`);
   }
 

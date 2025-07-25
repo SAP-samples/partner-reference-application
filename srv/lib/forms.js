@@ -49,6 +49,7 @@ class Forms {
 
     // If poetry slam was not found, throw an error
     if (!this.poetrySlam) {
+      console.error('Poetry Slam ID not found');
       this.req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [
         this.poetrySlamId
       ]);
@@ -117,6 +118,7 @@ class Forms {
         serviceCredentials.getServiceCredentials('adsrestapi');
       const access_token = await serviceCredentials.getServiceToken(
         'adsrestapi',
+        null,
         false
       );
 
@@ -196,6 +198,7 @@ class Forms {
   // Convert file content as returned from the SAP Forms Service into a Readable that is returned as LargeBinary by the CAP service
   async getReadable(fileContent) {
     if (!fileContent) {
+      console.error('Util Forms: missing file content');
       throw new Error('Util Forms: missing file content');
     }
     const readable = new Readable();

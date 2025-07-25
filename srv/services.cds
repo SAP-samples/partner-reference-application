@@ -5,3 +5,5 @@ using from './visitor/visitorService';
 using from './visitor/visitorServiceAuthorizations';
 using from './visitor/visitorServiceDataPrivacy';
 using from './jobscheduler/jobSchedulerService';
+using from './api/poetrySlamManagerAPI';
+using from './api/poetrySlamManagerAPIAuthorizations';

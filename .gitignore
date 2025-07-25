@@ -12,7 +12,7 @@ dist/
 resources/
 .vscode/
 coverage/
-srv/external/
+srv/external/*API
 cli/
 .env
 

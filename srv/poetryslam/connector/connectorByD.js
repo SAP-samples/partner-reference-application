@@ -16,7 +16,7 @@ class ConnectorByD extends Connector {
 
   static DESTINATION = 'byd';
   static DESTINATION_URL = 'byd-url';
-  static PROJECT_SYSTEM = 'ByD';
+  static ERP_SYSTEM = 'ByD';
   static PROJECT_SERVICE = 'byd_khproject';
 
   // Constants Definition
@@ -90,13 +90,17 @@ class ConnectorByD extends Connector {
   }
 
   // Get the entity service (entity "ByDProjects")
-  determineDestinationURL() {
+  determineDestinationURL(projectID) {
+    if (!this.systemURL) {
+      return '';
+    }
+
     // Set the URL of SAP Business ByDesign project overview screen for UI navigation
     const remoteProjectExternalURL =
       '/sap/ap/ui/runtime?bo_ns=http://sap.com/xi/AP/ProjectManagement/Global&bo=Project&node=Root&operation=OpenByProjectID&object_key=' +
-      this.projectRecord.ProjectID +
+      projectID +
       '&key_type=APC_S_PROJECT_ID';
-    return encodeURI(this.systemURL?.concat(remoteProjectExternalURL));
+    return encodeURI(this.systemURL.concat(remoteProjectExternalURL));
   }
 
   // Enhance poetry slam with data of remote project
@@ -107,7 +111,7 @@ class ConnectorByD extends Connector {
       for (const poetrySlam of convertToArray(poetrySlams)) {
         // Check if the Project ID exists in the Poetry Slam record AND backend ERP is SAP Business ByDesign => then read project information from SAP Business ByDesign
         if (
-          poetrySlam.projectSystem == ConnectorByD.PROJECT_SYSTEM &&
+          poetrySlam.projectSystem == ConnectorByD.ERP_SYSTEM &&
           poetrySlam.projectID
         ) {
           projectIDs.push(poetrySlam.projectID);
