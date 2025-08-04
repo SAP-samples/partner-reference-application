@@ -234,7 +234,7 @@ Now, follow the next steps to make further required changes:
                         ProxyType: Internet
                         Type: HTTP
                         URL: https://${org}.launchpad.${default-domain} # Runtime destination of launchpad, required for workzone
-                        CEP.HTML5contentprovider: true
+                        CEP.HTML5ContentProvider: true
                       - Name: poetry-slams-srv-api
                         Description: Destination to access the poetry slams service module, required for workzone
                         Authentication: NoAuthentication
