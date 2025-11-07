@@ -38,7 +38,7 @@ The log statements are written during the use of your deployed application. Use 
 ## Hybrid Testing
 As described, your local environment runs with an SQLite database. If you want to connect your local test environment with an SAP HANA Cloud database to run your test against the same database technology as the deployed solution does, follow the instructions in this section.
 
-For general guidelines on how to connect your local test against services in the Cloud, refer to the SAP Cloud Application Programming Model documentation [on hybrid testing](https://cap.cloud.sap/docs/advanced/hybrid-testing).
+For general guidelines on how to connect your local test against services in the Cloud, refer to the SAP Cloud Application Programming Model documentation on [hybrid testing](https://cap.cloud.sap/docs/advanced/hybrid-testing).
 
 ### Prerequisites
 When this project was created, the SAP HANA Cloud capability was included. As a result, the dependency @sap/cds_hana is listed in the file *package.json* and the
