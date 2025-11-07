@@ -80,7 +80,7 @@ describe('ConnectorB1', () => {
     expect(connector.isConnected()).to.eql(true);
   });
 
-  it('should create a project record with SAP Business One specific data', async () => {
+  it('should create a purchase order record with SAP Business One specific data', async () => {
     const testPurchaseOrderRecord = {
       DocType: ConnectorB1.DOC_TYPE,
       DocDueDate: '2024-01-23T00:00:00.0000000Z',
@@ -135,7 +135,7 @@ describe('ConnectorB1', () => {
     expect(connector.purchaseOrderRecord).to.eql(testPurchaseOrderRecord);
   });
 
-  it('should determine the destination URL to navigate to the project in SAP Business One', async () => {
+  it('should determine the destination URL to navigate to the purchase order in SAP Business One', async () => {
     connector.systemURL = 'testSystemURL';
 
     const url = connector.determineDestinationURL('ID1');
@@ -170,7 +170,7 @@ describe('ConnectorB1', () => {
     expect(objectData).to.eql(expectedResult);
   });
 
-  it('should return poetry slam data when reading remote purchase order data of a poetry slam entitiy without project ID', async () => {
+  it('should return poetry slam data when reading remote purchase order data of a poetry slam entitiy without purchase order ID', async () => {
     const poetrySlams = {
       purchaseOrderSystem: ConnectorB1.ERP_SYSTEM,
       ID: 1

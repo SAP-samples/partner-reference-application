@@ -3,6 +3,8 @@
 const jobSchedulerClient = require('@sap/jobs-client');
 const serviceCredentialsUtil = require('./serviceCredentials');
 
+const { httpRequestMethod } = require('./codes');
+
 class JobScheduler {
   static SCHEDULE_DESCRIPTION_IMMEDIATELY = 'Immediately';
   static SCHEDULE_TIME_PATTERN_NOW = 'now';
@@ -253,10 +255,10 @@ class JobScheduler {
     const jobData = {
       job: {
         name: jobName,
-        description: 'One-time job to send email reminder',
+        description: 'One-time job to send reminder',
         action: actionEndpointURL,
         active: true,
-        httpMethod: 'POST',
+        httpMethod: httpRequestMethod.post,
         ansConfig: {
           onError: true,
           onSuccess: false

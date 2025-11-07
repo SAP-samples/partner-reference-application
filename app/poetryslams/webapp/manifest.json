@@ -32,7 +32,12 @@
           "subTitle": "{{flpSubtitle}}",
           "icon": "sap-icon://microphone",
           "shortTitle": "{{flpShortTitle}}",
-          "info": "{{flpShortTitle}}"
+          "info": "{{flpShortTitle}}",
+          "indicatorDataSource": {
+            "dataSource": "mainService",
+            "path": "PoetrySlams/$count?$filter=status_code%20eq%202",
+            "refresh": 60
+          }
         }
       }
     },

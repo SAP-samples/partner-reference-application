@@ -7,7 +7,7 @@ const { httpCodes } = require('../../../srv/lib/codes');
 const sinon = require('sinon');
 const JobSchedulerActionImplementation = require('../../../srv/lib/jobSchedulerActionImplementation');
 
-// Executes an action, like 'sendEmail'
+// Executes an action, like 'sendNotification'
 const ACTION = (url, name, data = {}, parameters = {}) =>
   POST(url + `/JobSchedulerService.${name}`, data, parameters);
 
@@ -33,9 +33,9 @@ describe('JobScheduler Service', () => {
       ).to.rejectedWith(httpCodes.forbidden.toString());
     });
 
-    it('should fail calling the service action sendEmailReminder', async () => {
+    it('should fail calling the service action sendReminder', async () => {
       await expect(
-        ACTION(`/odata/v4/jobschedulerservice`, 'sendEmailReminder')
+        ACTION(`/odata/v4/jobschedulerservice`, 'sendReminder')
       ).to.rejectedWith(httpCodes.forbidden.toString());
     });
   });
@@ -68,9 +68,9 @@ describe('JobScheduler Service', () => {
       ).to.rejectedWith(httpCodes.bad_request.toString());
     });
 
-    it('should fail to call action sendEmailReminder in case header with job id is missing', async () => {
+    it('should fail to call action sendReminder in case header with job id is missing', async () => {
       await expect(
-        ACTION(`/odata/v4/jobschedulerservice`, 'sendEmailReminder')
+        ACTION(`/odata/v4/jobschedulerservice`, 'sendReminder')
       ).to.rejectedWith(httpCodes.bad_request.toString());
     });
 
@@ -91,10 +91,10 @@ describe('JobScheduler Service', () => {
       ).to.rejectedWith(httpCodes.internal_server_error.toString());
     });
 
-    it('should allow to call the service action sendEmailReminder (no emails sent for poetry slams with test data)', async () => {
+    it('should allow to call the service action sendReminder (no notifications sent for poetry slams with test data)', async () => {
       response = await ACTION(
         `/odata/v4/jobschedulerservice`,
-        'sendEmailReminder',
+        'sendReminder',
         {
           poetrySlamID: '79ceab87-300d-4b66-8cc3-f82c679b77a1'
         },

@@ -68,7 +68,7 @@ class ConnectorS4HC extends Connector {
   // Return json-payload to create SAP S/4HANA Cloud projects
   projectDataRecord(poetrySlamIdentifier, poetrySlamTitle, poetrySlamDate) {
     try {
-      // Set project ID with pattern PRA-{{poetrySlam identifier}}
+      // Set project ID with pattern POETRYSLAM_{{poetrySlam identifier}}
       const generatedID =
         ConnectorS4HC.GENERATED_ID_PREFIX + poetrySlamIdentifier;
       const generatedPLANID =

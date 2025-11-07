@@ -1,4 +1,8 @@
 'strict';
+// Type definition required for CDSLint
+/** @typedef {import('@sap/cds').CRUDEventHandler.On} OnHandler */
+
+const cds = require('@sap/cds');
 
 // Include utility files
 const { color, poetrySlamStatusCode, httpCodes } = require('../lib/codes');
@@ -20,8 +24,11 @@ const ConnectorByD = require('./connector/connectorByD');
 const ConnectorS4HC = require('./connector/connectorS4HC');
 const ConnectorB1 = require('./connector/connectorB1');
 
+// Type definition required for CDSLint
+/** @type {OnHandler} */
 module.exports = async (srv) => {
   const db = await cds.connect.to('db');
+  const { PoetrySlams } = srv.entities;
 
   // ----------------------------------------------------------------------------
   // Implementation of entity events (entity PoetrySlams)
@@ -30,20 +37,18 @@ module.exports = async (srv) => {
   // Initialize status of drafts
   // Default the freeVisitorSeats to the maximumVisitorsNumber
   // Default number of poetry slam (human readable identifier)
-  srv.before('CREATE', 'PoetrySlams.drafts', (req) =>
-    initializePoetrySlam(req)
-  );
+  srv.before('CREATE', PoetrySlams.drafts, (req) => initializePoetrySlam(req));
 
   // Initialize status
   // Default the freeVisitorSeats to the maximumVisitorsNumber
   // Default number of poetry slam (human readable identifier)
-  srv.before('CREATE', 'PoetrySlams', async (req) => {
+  srv.before('CREATE', PoetrySlams, async (req) => {
     initializePoetrySlam(req);
 
     // Generate readable ID for poetry slam document
     try {
       req.data.number =
-        'PS-' +
+        'PS' +
         (await uniqueNumberGenerator.getNextNumber(
           'poetrySlamNumber',
           db.kind,
@@ -60,18 +65,17 @@ module.exports = async (srv) => {
   });
 
   // Set the event status to booked based on confirmed seats
-  srv.on('UPDATE', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
+  srv.on('UPDATE', [PoetrySlams.drafts, PoetrySlams], async (req, next) => {
     const { ID } = req.data;
     const result = await calculatePoetrySlamData(ID, req);
     if (result) {
       req.data.freeVisitorSeats = result.freeVisitorSeats;
       req.data.status_code = result.status_code;
     }
-
     return next();
   });
 
-  srv.before('DELETE', 'PoetrySlams', async (req) => {
+  srv.before('DELETE', PoetrySlams, async (req) => {
     // In req.subject, the poetry slam that is to be deleted is already included as condition
     const poetrySlam = await SELECT.one
       .from(req.subject)
@@ -88,8 +92,51 @@ module.exports = async (srv) => {
     }
   });
 
+  // Apply a colour code based on the poetry slam status
+  srv.after('READ', [PoetrySlams.drafts, PoetrySlams], (data) => {
+    for (const poetrySlam of convertToArray(data)) {
+      const status = poetrySlam.status?.code || poetrySlam.status_code;
+      // Set status colour code
+      switch (status) {
+        case poetrySlamStatusCode.inPreparation:
+          poetrySlam.statusCriticality = color.grey; // New poetry slams are grey
+          break;
+        case poetrySlamStatusCode.published:
+          poetrySlam.statusCriticality = color.green; // Published poetry slams are green
+          break;
+        case poetrySlamStatusCode.booked:
+          poetrySlam.statusCriticality = color.yellow; // Fully booked poetry slams are yellow
+          break;
+        case poetrySlamStatusCode.canceled:
+          poetrySlam.statusCriticality = color.red; // Canceled poetry slams are red
+          break;
+        default:
+          poetrySlam.statusCriticality = null;
+      }
+    }
+  });
+
+  srv.before('READ', [PoetrySlams.drafts, PoetrySlams], (req) => {
+    // Make sure that purchaseOrderObjectID is always selected when purchaseOrderID is requested.
+    // This information is required for the determineDestinationURL function in connectorB1.js.
+    if (
+      req.query.SELECT.columns?.some(
+        (column) =>
+          Object.hasOwn(column, 'ref') && column.ref[0] === 'purchaseOrderID'
+      ) &&
+      req.query.SELECT.columns?.every((column) => {
+        if (Object.hasOwn(column, 'ref')) {
+          return column.ref[0] !== 'purchaseOrderObjectID';
+        }
+        return true;
+      })
+    ) {
+      req.query.SELECT.columns.push({ ref: ['purchaseOrderObjectID'] });
+    }
+  });
+
   // Expand poetry slams
-  srv.on('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
+  srv.on('READ', [PoetrySlams.drafts, PoetrySlams], async (req, next) => {
     // Read the PoetrySlams instances
     let poetrySlams = await next();
 
@@ -172,11 +219,11 @@ module.exports = async (srv) => {
       }
 
       // Update PO system name and visibility of the "Create Purchase Order"-button
-      if (poetrySlam.purchaseOrderID) {
+      if (poetrySlam.purchaseOrderObjectID) {
         poetrySlam.createB1PurchaseOrderEnabled = false;
         poetrySlam.purchaseOrderSystemName = connectorB1.getSystemName();
         poetrySlam.purchaseOrderURL = connectorB1.determineDestinationURL(
-          poetrySlam.purchaseOrderID
+          poetrySlam.purchaseOrderObjectID
         );
       } else {
         poetrySlam.createB1PurchaseOrderEnabled = connectorB1.isConnected();
@@ -202,30 +249,6 @@ module.exports = async (srv) => {
 
     // Return remote data
     return poetrySlams;
-  });
-
-  // Apply a colour code based on the poetry slam status
-  srv.after('READ', ['PoetrySlams.drafts', 'PoetrySlams'], (data) => {
-    for (const poetrySlam of convertToArray(data)) {
-      const status = poetrySlam.status?.code || poetrySlam.status_code;
-      // Set status colour code
-      switch (status) {
-        case poetrySlamStatusCode.inPreparation:
-          poetrySlam.statusCriticality = color.grey; // New poetry slams are grey
-          break;
-        case poetrySlamStatusCode.published:
-          poetrySlam.statusCriticality = color.green; // Published poetry slams are green
-          break;
-        case poetrySlamStatusCode.booked:
-          poetrySlam.statusCriticality = color.yellow; // Fully booked poetry slams are yellow
-          break;
-        case poetrySlamStatusCode.canceled:
-          poetrySlam.statusCriticality = color.red; // Canceled poetry slams are red
-          break;
-        default:
-          poetrySlam.statusCriticality = null;
-      }
-    }
   });
 
   // ----------------------------------------------------------------------------

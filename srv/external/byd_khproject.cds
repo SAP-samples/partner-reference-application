@@ -1,4 +1,4 @@
-/* checksum : f4f76317ee017b512b09ac9dcdb62fcd */
+/* checksum : 66c24f99ed159c677017b91d4fc7a222 */
 @cds.external : true
 @m.IsDefaultEntityContainer : 'true'
 service byd_khproject {
@@ -29,7 +29,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ProjectTypeCodeText : LargeString;
+    ProjectTypeCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -40,7 +40,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ProjectLanguageCodeText : LargeString;
+    ProjectLanguageCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -78,7 +78,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    PlannedStartDateTimeTimeZoneCodeText : LargeString;
+    PlannedStartDateTimeTimeZoneCodeText : String;
     @odata.Type : 'Edm.DateTimeOffset'
     @odata.Precision : 7
     @sap.creatable : 'true'
@@ -96,7 +96,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    PlannedEndDateTimeTimeZoneCodeText : LargeString;
+    PlannedEndDateTimeTimeZoneCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -117,7 +117,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ProjectLifeCycleStatusCodeText : LargeString;
+    ProjectLifeCycleStatusCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -128,7 +128,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    SchedulingUpToDatenessStatusCodeText : LargeString;
+    SchedulingUpToDatenessStatusCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -139,7 +139,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    BlockingStatusCodeText : LargeString;
+    BlockingStatusCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -150,7 +150,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ClosureStatusCodeText : LargeString;
+    ClosureStatusCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -161,7 +161,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    FulfilmentProcessingStatusCodeText : LargeString;
+    FulfilmentProcessingStatusCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -172,7 +172,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    LifeCycleStatusCodeText : LargeString;
+    LifeCycleStatusCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -183,7 +183,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ProjectStartingStatusCodeText : LargeString;
+    ProjectStartingStatusCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -194,7 +194,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ReleaseStatusCodeText : LargeString;
+    ReleaseStatusCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -205,7 +205,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    StoppingStatusCodeText : LargeString;
+    StoppingStatusCodeText : String;
     Team : Association to many TeamCollection {  };
     ProjectSummaryTask : Association to ProjectSummaryTaskCollection {  };
     Task : Association to many TaskCollection {  };
@@ -259,7 +259,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    PriorityCodeText : LargeString;
+    PriorityCodeText : String;
     @odata.Type : 'Edm.DateTimeOffset'
     @odata.Precision : 7
     @sap.creatable : 'false'
@@ -284,7 +284,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    BlockingStatusCodeText : LargeString;
+    BlockingStatusCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -295,7 +295,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    LifeCycleStatusCodeText : LargeString;
+    LifeCycleStatusCodeText : String;
     Project : Association to ProjectCollection {  };
   };
 
@@ -360,7 +360,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    CommittedWorkQuantityUnitCodeText : LargeString;
+    CommittedWorkQuantityUnitCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -376,7 +376,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    TotalPlannedWorkQuantityUnitCodeText : LargeString;
+    TotalPlannedWorkQuantityUnitCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -392,7 +392,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    TotalActualWorkQuantityUnitCodeText : LargeString;
+    TotalActualWorkQuantityUnitCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -408,7 +408,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    TotalRemainingWorkQuantityUnitCodeText : LargeString;
+    TotalRemainingWorkQuantityUnitCodeText : String;
     Project : Association to ProjectCollection {  };
   };
 
@@ -504,7 +504,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    LifeCycleStatusCodeText : LargeString;
+    LifeCycleStatusCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -515,7 +515,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    WorkingDayCalendarCodeText : LargeString;
+    WorkingDayCalendarCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -558,7 +558,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ConstraintStartDateTimeZoneCodeText : LargeString;
+    ConstraintStartDateTimeZoneCodeText : String;
     @odata.Type : 'Edm.DateTimeOffset'
     @odata.Precision : 7
     @sap.creatable : 'true'
@@ -576,7 +576,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ConstraintEndDateTimeZoneCodeText : LargeString;
+    ConstraintEndDateTimeZoneCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -587,7 +587,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ScheduleActivityStartDateTimeConstraintTypeCodeText : LargeString;
+    ScheduleActivityStartDateTimeConstraintTypeCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -598,7 +598,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ScheduleActivityEndDateTimeConstraintTypeCodeText : LargeString;
+    ScheduleActivityEndDateTimeConstraintTypeCodeText : String;
     TaskService : Association to many TaskServiceCollection {  };
     Project : Association to ProjectCollection {  };
     TaskRelationship : Association to many TaskRelationshipCollection {  };
@@ -634,7 +634,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    DependencyTypeCodeText : LargeString;
+    DependencyTypeCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -701,7 +701,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    PlannedWorkQuantityUnitCodeText : LargeString;
+    PlannedWorkQuantityUnitCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -717,7 +717,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    RemainingWorkQuantityUnitCodeText : LargeString;
+    RemainingWorkQuantityUnitCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -733,7 +733,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    TotalActualWorkQuantityUnitCodeText : LargeString;
+    TotalActualWorkQuantityUnitCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -749,7 +749,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    TotalCostAmountCurrencyCodeText : LargeString;
+    TotalCostAmountCurrencyCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -765,7 +765,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ValuationPriceAmountCurrencyCodeText : LargeString;
+    ValuationPriceAmountCurrencyCodeText : String;
     Task : Association to TaskCollection {  };
     Project : Association to ProjectCollection {  };
     TaskServiceConfirmation : Association to many TaskServiceConfirmationCollection {  };
@@ -818,7 +818,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    PlannedQuantityUnitCodeText : LargeString;
+    PlannedQuantityUnitCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -834,7 +834,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ActualQuantityUnitCodeText : LargeString;
+    ActualQuantityUnitCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -850,7 +850,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    RemainingQuantityUnitCodeText : LargeString;
+    RemainingQuantityUnitCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -866,7 +866,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    TotalCostAmountCurrencyCodeText : LargeString;
+    TotalCostAmountCurrencyCodeText : String;
     Task : Association to TaskCollection {  };
     Project : Association to ProjectCollection {  };
   };
@@ -898,12 +898,12 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ExpenseGroupCodeText : LargeString;
+    ExpenseGroupCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString;
+    Description : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -919,7 +919,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    PlannedCostsAmountCurrencyCodeText : LargeString;
+    PlannedCostsAmountCurrencyCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -935,7 +935,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    TotalCostAmountCurrencyCodeText : LargeString;
+    TotalCostAmountCurrencyCodeText : String;
     Task : Association to TaskCollection {  };
     Project : Association to ProjectCollection {  };
   };
@@ -967,12 +967,12 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    IncomeGroupCodeText : LargeString;
+    IncomeGroupCodeText : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString;
+    Description : String;
     @sap.creatable : 'true'
     @sap.updatable : 'true'
     @sap.filterable : 'true'
@@ -988,7 +988,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    PlannedRevenueAmountCurrencyCodeText : LargeString;
+    PlannedRevenueAmountCurrencyCodeText : String;
     Task : Association to TaskCollection {  };
     Project : Association to ProjectCollection {  };
   };
@@ -1021,7 +1021,7 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'EndDateTimeZoneCode'
-    EndDateTimeZoneCode : LargeString;
+    EndDateTimeZoneCode : String;
     @odata.Type : 'Edm.DateTimeOffset'
     @odata.Precision : 7
     @sap.creatable : 'false'
@@ -1033,7 +1033,7 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'StartDateTimeZoneCode'
-    StartDateTimeZoneCode : LargeString;
+    StartDateTimeZoneCode : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -1049,7 +1049,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    RemainingWorkQuantityUnitCodeText : LargeString;
+    RemainingWorkQuantityUnitCodeText : String;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
@@ -1090,7 +1090,7 @@ service byd_khproject {
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
-    ConfirmedWorkQuantityUnitCodeText : LargeString;
+    ConfirmedWorkQuantityUnitCodeText : String;
     @odata.Type : 'Edm.DateTimeOffset'
     @odata.Precision : 7
     @sap.creatable : 'false'
@@ -1120,12 +1120,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1139,12 +1139,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1158,12 +1158,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1177,12 +1177,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1196,12 +1196,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1215,12 +1215,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1234,12 +1234,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1253,12 +1253,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1272,12 +1272,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1291,12 +1291,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1310,12 +1310,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1329,12 +1329,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1348,12 +1348,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1367,12 +1367,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1386,12 +1386,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1405,12 +1405,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1424,12 +1424,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1443,12 +1443,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1462,12 +1462,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1481,12 +1481,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1500,12 +1500,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1519,12 +1519,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1538,12 +1538,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1557,12 +1557,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1576,12 +1576,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1595,12 +1595,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1614,12 +1614,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1633,12 +1633,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1652,12 +1652,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1671,12 +1671,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1690,12 +1690,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1709,12 +1709,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1728,12 +1728,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1747,12 +1747,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1766,12 +1766,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1785,12 +1785,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1804,12 +1804,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1823,12 +1823,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1842,12 +1842,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1861,12 +1861,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1880,12 +1880,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1899,12 +1899,12 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
@@ -1918,73 +1918,73 @@ service byd_khproject {
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Code'
-    key Code : LargeString not null;
+    key Code : String not null;
     @sap.creatable : 'false'
     @sap.updatable : 'false'
     @sap.filterable : 'true'
     @sap.label : 'Description'
-    Description : LargeString not null;
+    Description : String not null;
   };
 
   @cds.external : true
   action Schedule(
-    ObjectID : LargeString
+    ObjectID : String
   ) returns ProjectCollection;
 
   @cds.external : true
   action Start(
-    ObjectID : LargeString
+    ObjectID : String
   ) returns ProjectCollection;
 
   @cds.external : true
   action Move(
-    ObjectID : LargeString,
+    ObjectID : String,
     TargetParentTaskUUID : UUID,
     TargetRightNeighbourTaskUUID : UUID
   ) returns TaskCollection;
 
   @cds.external : true
   action StartAndRelease(
-    ObjectID : LargeString
+    ObjectID : String
   ) returns ProjectCollection;
 
   @cds.external : true
   action Finish(
-    ObjectID : LargeString
+    ObjectID : String
   ) returns TaskCollection;
 
   @cds.external : true
   action Close(
-    ObjectID : LargeString
+    ObjectID : String
   ) returns TaskCollection;
 
   @cds.external : true
   action CreateProjectBaseline(
-    ObjectID : LargeString
+    ObjectID : String
   ) returns ProjectCollection;
 
   @cds.external : true
   action CreateProjectSnapshot(
-    ObjectID : LargeString,
-    SnapshotID : LargeString
+    ObjectID : String,
+    SnapshotID : String
   ) returns ProjectCollection;
 
   @cds.external : true
   function ProjectSummaryTaskQueryAccountableTasksByElements(
-    NumberOfRows : LargeString,
-    StartRow : LargeString,
-    ID : LargeString,
-    ProjectBillableIndicator : LargeString,
-    BuyerPartyID : LargeString,
-    ProjectID : LargeString,
-    CompanyID : LargeString,
-    CostCentreID : LargeString,
-    ProjectTypeCode : LargeString,
-    ProjectTaskName : LargeString,
-    ResponsibleEmployeeFamilyName : LargeString,
-    ResponsibleEmployeeGivenName : LargeString,
-    ResponsibleEmployeeID : LargeString,
-    SearchText : LargeString
+    NumberOfRows : String,
+    StartRow : String,
+    ID : String,
+    ProjectBillableIndicator : String,
+    BuyerPartyID : String,
+    ProjectID : String,
+    CompanyID : String,
+    CostCentreID : String,
+    ProjectTypeCode : String,
+    ProjectTaskName : String,
+    ResponsibleEmployeeFamilyName : String,
+    ResponsibleEmployeeGivenName : String,
+    ResponsibleEmployeeID : String,
+    SearchText : String
   ) returns many ProjectSummaryTaskCollection;
 };
 

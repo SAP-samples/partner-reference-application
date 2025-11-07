@@ -44,7 +44,7 @@ class ConnectorByD extends Connector {
   // Return json-payload to create SAP Business ByDesign projects
   projectDataRecord(poetrySlamIdentifier, poetrySlamTitle, poetrySlamDate) {
     try {
-      // Set project ID with pattern AR-{{Poetry Slam identifier}}
+      // Set project ID with pattern POETRYSLAM_{{Poetry Slam identifier}}
       const generatedID =
         ConnectorByD.GENERATED_ID_PREFIX + poetrySlamIdentifier;
 

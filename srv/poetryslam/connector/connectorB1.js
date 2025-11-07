@@ -97,7 +97,10 @@ class ConnectorB1 extends Connector {
 
   // Get the URL of SAP Business One Purchase Order overview screen for UI navigation
   determineDestinationURL(remotePurchaseOrderObjectID) {
-    if (!this.systemURL) {
+    if (!this.systemURL || !remotePurchaseOrderObjectID) {
+      console.warn(
+        'No valid link to the SAP Business One Purchase Order is available.'
+      );
       return '';
     }
 

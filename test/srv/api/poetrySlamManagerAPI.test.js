@@ -112,7 +112,7 @@ describe('Poetryslams in PoetrySlamManagerAPI', () => {
     const poetrySlamToBeCreated = {
       title: 'Poetry Slam Default Test',
       description: 'Description Poetry Slam Default Test',
-      dateTime: new Date().toISOString().replace(/\..*(?=Z)/, ''),
+      dateTime: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
       visitorsFeeAmount: 9.95,
       visitorsFeeCurrency_code: 'EUR'
     };

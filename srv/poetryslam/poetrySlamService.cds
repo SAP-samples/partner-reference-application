@@ -9,6 +9,7 @@ service PoetrySlamService @(
 
   // ----------------------------------------------------------------------------
   // Entity inclusions
+
   // Poetry Slams (draft enabled)
   @odata.draft.enabled
   @Common.SemanticObject: 'poetryslams'
@@ -74,7 +75,7 @@ service PoetrySlamService @(
       )
       action publish()                    returns PoetrySlams;
 
-      // Action: Schedule to once send E-Mail Reminder to all visitors for a specific poetry slam event
+      // Action: Schedule to once send reminder to all visitors for a specific poetry slam event
       @(
         // Determines that poetryslam entity is used when the action is performed
         cds.odata.bindingparameter.name: 'poetryslam',
@@ -227,7 +228,7 @@ service PoetrySlamService @(
       * // Selects all fields of the Visitors database model
     };
 
-  // Visits
+      // Visits
   @Common.SemanticObject: 'visits'
   @Common.SemanticKey   : [ID]
   entity Visits      as
@@ -265,7 +266,7 @@ service PoetrySlamService @(
       action confirmVisit() returns Visits;
 
       // Action: Inform a specific visitor about the event
-      action sendEMail();
+      action sendNotification();
     };
 
   // Generated PDF document with SAP Forms Service by Adobe
@@ -279,7 +280,7 @@ service PoetrySlamService @(
 
   // Currencies
   entity Currencies  as projection on sap.common.Currencies;
-  
+
   // Languages
   entity Language    as projection on sap.common.Languages;
 
@@ -308,7 +309,7 @@ service PoetrySlamService @(
 using {byd_khproject as RemoteByDProject} from '../external/byd_khproject';
 
 extend service PoetrySlamService with {
-  entity ByDProjects as
+  entity ByDProjects           as
     projection on RemoteByDProject.ProjectCollection {
       key ObjectID                       as ID,
           ProjectID                      as projectID,
@@ -326,7 +327,7 @@ extend service PoetrySlamService with {
 using {S4HC_API_ENTERPRISE_PROJECT_SRV_0002 as RemoteS4HCProject} from '../external/S4HC_API_ENTERPRISE_PROJECT_SRV_0002';
 
 extend service PoetrySlamService with {
-  entity S4HCProjects as
+  entity S4HCProjects          as
     projection on RemoteS4HCProject.A_EnterpriseProject {
       key ProjectUUID           as projectUUID,
           Project               as project,
@@ -358,7 +359,7 @@ extend service PoetrySlamService with {
 using {b1_sbs_v2 as RemoteB1} from '../external/b1_sbs_v2';
 
 extend service PoetrySlamService with {
-  entity B1PurchaseOrder as
+  entity B1PurchaseOrder       as
     projection on RemoteB1.PurchaseOrders {
       key DocEntry     as docEntry,
           DocNum       as docNum,

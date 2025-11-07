@@ -1,6 +1,7 @@
-/* checksum : 90090610cc6c23edee691c472e3e0dab */
+/* checksum : 1af2d0583c56ec2f4d66134a8bc3c29d */
 @cds.external : true
-@Aggregation.ApplySupported : { Transformations: [ 'aggregate', 'groupby', 'filter' ], Rollup: #None }
+@Aggregation.ApplySupported.Transformations : [ 'aggregate', 'groupby', 'filter' ]
+@Aggregation.ApplySupported.Rollup : #None
 @Common.ApplyMultiUnitBehaviorForSortingAndFiltering : true
 @Capabilities.FilterFunctions : [
   'eq',
@@ -18,24 +19,22 @@
   'all'
 ]
 @Capabilities.SupportedFormats : [ 'application/json', 'application/pdf' ]
-@PDF.Features : {
-  DocumentDescriptionReference: '../../../../default/iwbep/common/0001/$metadata',
-  DocumentDescriptionCollection: 'MyDocumentDescriptions',
-  ArchiveFormat: true,
-  Border: true,
-  CoverPage: true,
-  FitToPage: true,
-  FontName: true,
-  FontSize: true,
-  Margin: true,
-  Padding: true,
-  Signature: true,
-  HeaderFooter: true,
-  ResultSizeDefault: 20000,
-  ResultSizeMaximum: 20000,
-  IANATimezoneFormat: true,
-  Treeview: true
-}
+@PDF.Features.DocumentDescriptionReference : '../../../../default/iwbep/common/0001/$metadata'
+@PDF.Features.DocumentDescriptionCollection : 'MyDocumentDescriptions'
+@PDF.Features.ArchiveFormat : true
+@PDF.Features.Border : true
+@PDF.Features.CoverPage : true
+@PDF.Features.FitToPage : true
+@PDF.Features.FontName : true
+@PDF.Features.FontSize : true
+@PDF.Features.Margin : true
+@PDF.Features.Padding : true
+@PDF.Features.Signature : true
+@PDF.Features.HeaderFooter : true
+@PDF.Features.ResultSizeDefault : 20000
+@PDF.Features.ResultSizeMaximum : 20000
+@PDF.Features.IANATimezoneFormat : true
+@PDF.Features.Treeview : true
 @Capabilities.KeyAsSegmentSupported : true
 @Capabilities.AsynchronousRequestsSupported : true
 service S4HC_ENTPROJECTPROCESSINGSTATUS_0001 {

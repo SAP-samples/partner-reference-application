@@ -1,17 +1,21 @@
 'strict';
+// Type definition required for CDSLint
+/** @typedef {import('@sap/cds').CRUDEventHandler.On} OnHandler */
 
-const JobScheduler = require('../lib/jobScheduler');
 const cds = require('@sap/cds');
+const JobScheduler = require('../lib/jobScheduler');
 const { httpCodes } = require('../lib/codes');
 
+// Type definition required for CDSLint
+/** @type {OnHandler} */
 module.exports = async (srv) => {
   // -----------------------------------------------------------------------------------------------
   // Entity action "sendReminderForPoetrySlam": Triggers job generation in Job Scheduler service
-  // which sends email reminder to all visitors of a specific poetry slam event
+  // which sends reminder to all visitors of a specific poetry slam event
   // -----------------------------------------------------------------------------------------------
 
   srv.on('sendReminderForPoetrySlam', async (req) => {
-    // Generate one-time job for sending email reminder of poetry slam event
+    // Generate one-time job for sending reminder of poetry slam event
     const poetrySlamID = req.params[req.params.length - 1].ID;
 
     const poetrySlam = await SELECT.one('PoetrySlamService.PoetrySlams').where({
@@ -21,7 +25,7 @@ module.exports = async (srv) => {
     if (!poetrySlam) {
       console.error('Poetry Slam not found');
       req.error(httpCodes.bad_request, 'POETRYSLAM_NOT_FOUND', [
-        this.poetrySlamId
+        srv.poetrySlamId
       ]);
       return;
     }
@@ -32,7 +36,7 @@ module.exports = async (srv) => {
       const currentTenantID =
         cds.context?.tenant || process.env['test_tenant_id'];
       const jobScheduler = await JobScheduler.create(req, currentTenantID);
-      let jobName = `send_email_reminder_for_event (${currentTenantID.replace(/-/g, '_')})`;
+      let jobName = `send_reminder_for_event (${currentTenantID.replace(/-/g, '_')})`;
 
       req.info(httpCodes.ok, 'ACTION_JOB_EXECUTION_STARTED');
       poetrySlam.isJobStatusShown = true;
@@ -58,7 +62,7 @@ module.exports = async (srv) => {
         }
       };
 
-      await jobScheduler.startJob(jobName, scheduleData, 'sendEmailReminder');
+      await jobScheduler.startJob(jobName, scheduleData, 'sendReminder');
       return poetrySlam;
     } catch (e) {
       await tx.rollback();
