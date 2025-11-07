@@ -47,30 +47,30 @@ annotate service.PoetrySlams with @(
   },
   UI                             : {
     // Fields with special visualization or fields shown in the header of the object page
-    DataPoint #bookedSeats         : {
+    DataPoint #bookedSeats        : {
       Title        : '{i18n>bookedSeatsTitle}',
       Value        : bookedSeats,
       Visualization: #Progress,
       TargetValue  : maxVisitorsNumber
     },
-    DataPoint #dateTime            : {
+    DataPoint #dateTime           : {
       $Type: 'UI.DataPointType',
       Value: dateTime,
       Title: '{i18n>dateTime}'
     },
-    DataPoint #status_code         : {
+    DataPoint #status_code        : {
       $Type      : 'UI.DataPointType',
       Value      : status_code,
       Title      : '{i18n>status}',
       Criticality: statusCriticality
     },
-    DataPoint #visitorsFeeAmount   : {
+    DataPoint #visitorsFeeAmount  : {
       $Type: 'UI.DataPointType',
       Value: visitorsFeeAmount,
       Title: '{i18n>visitorsFeeAmount}'
     },
     // Collection of facets shown on the Object Page
-    Facets                         : [
+    Facets                        : [
       {
         $Type : 'UI.ReferenceFacet',
         ID    : 'GeneralData',
@@ -96,7 +96,7 @@ annotate service.PoetrySlams with @(
       }
     ],
     // Bundle multiple fields into a group
-    FieldGroup #CreatedByAndOn     : {
+    FieldGroup #CreatedByAndOn    : {
       $Type: 'UI.FieldGroupType',
       Data : [
         {
@@ -109,7 +109,7 @@ annotate service.PoetrySlams with @(
         }
       ]
     },
-    FieldGroup #AdministrativeData : {
+    FieldGroup #AdministrativeData: {
       $Type: 'UI.FieldGroupType',
       Data : [
         {
@@ -172,7 +172,7 @@ annotate service.PoetrySlams with @(
       ]
     },
     // Facets shown in the header of an object page
-    HeaderFacets                   : [
+    HeaderFacets                  : [
       {
         $Type : 'UI.ReferenceFacet',
         ID    : 'dateTime',
@@ -200,7 +200,7 @@ annotate service.PoetrySlams with @(
       }
     ],
     // Mandatory (and optional) data for the main entity type of the model
-    HeaderInfo                     : {
+    HeaderInfo                    : {
       $Type         : 'UI.HeaderInfoType',
       TypeName      : '{i18n>poetrySlam}',
       TypeNamePlural: '{i18n>poetrySlam-plural}',
@@ -210,11 +210,11 @@ annotate service.PoetrySlams with @(
       },
       Description   : {
         $Type: 'UI.DataField',
-        Value: description
+        Value: title
       }
     },
     // Addition of custom actions to the list page & object page
-    Identification                 : [
+    Identification                : [
       {
         $Type        : 'UI.DataFieldForAction',
         Action       : 'PoetrySlamService.publish',
@@ -235,41 +235,61 @@ annotate service.PoetrySlams with @(
       }
     ],
     // Definition of fields shown on the list page / table
-    LineItem                       : [
-      {
-        $Type : 'UI.DataFieldForAction',
-        Action: 'PoetrySlamService.cancel',
-        Label : '{i18n>cancel}'
-      },
+    LineItem                      : [
       {
         $Type : 'UI.DataFieldForAction',
         Action: 'PoetrySlamService.publish',
         Label : '{i18n>publish}'
       },
       {
-        $Type: 'UI.DataField',
-        Value: number
+        $Type             : 'UI.DataField',
+        Value             : number,
+        @HTML5.CssDefaults: {
+          $Type: 'HTML5.CssDefaultsType',
+          width: '5rem'
+        }
       },
       {
-        $Type: 'UI.DataField',
-        Value: title
+        $Type             : 'UI.DataField',
+        Value             : title,
+        @HTML5.CssDefaults: {
+          $Type: 'HTML5.CssDefaultsType',
+          width: '15rem'
+        }
       },
       {
-        $Type: 'UI.DataField',
-        Value: description
+        $Type             : 'UI.DataField',
+        Value             : description,
+        @HTML5.CssDefaults: {
+          $Type: 'HTML5.CssDefaultsType',
+          width: '30rem'
+        }
       },
       {
-        $Type      : 'UI.DataField',
-        Value      : status_code,
-        Criticality: statusCriticality
+        $Type             : 'UI.DataField',
+        Value             : status_code,
+        Criticality       : statusCriticality,
+        @HTML5.CssDefaults: {
+          $Type: 'HTML5.CssDefaultsType',
+          width: '8rem',
+        }
       },
       {
         $Type: 'UI.DataField',
         Value: dateTime
       },
       {
-        $Type : 'UI.DataFieldForAnnotation',
-        Target: '@UI.DataPoint#bookedSeats'
+        $Type             : 'UI.DataFieldForAnnotation',
+        Target            : '@UI.DataPoint#bookedSeats',
+        @HTML5.CssDefaults: {
+          $Type: 'HTML5.CssDefaultsType',
+          width: '8rem',
+        }
+      },
+      {
+        $Type : 'UI.DataFieldForAction',
+        Action: 'PoetrySlamService.cancel',
+        Label : '{i18n>cancel}'
       },
       {
         $Type : 'UI.DataFieldForAction',
@@ -278,10 +298,8 @@ annotate service.PoetrySlams with @(
       }
     ],
     // Default filters on the list page
-    SelectionFields                : [
+    SelectionFields               : [
       number,
-      title,
-      description,
       status_code,
       dateTime
     ]
@@ -363,7 +381,7 @@ annotate service.Visits with @(
       Label         : '{i18n>maintainVisitor}',
       Mapping       : [{
         $Type                 : 'Common.SemanticObjectMappingType',
-        LocalProperty         : visitor.ID,
+        LocalProperty         : visitor_ID,
         SemanticObjectProperty: 'ID'
       }],
     }],
@@ -437,7 +455,7 @@ annotate service.Visits with @(
       Data : [
         {
           $Type: 'UI.DataField',
-          Value: visitor.name
+          Value: visitor_ID
         },
         {
           $Type: 'UI.DataField',
@@ -458,13 +476,10 @@ annotate service.Visits with @(
 );
 
 annotate service.Visitors with {
-  ID   @(
-    Common: {
-      Text           : email,
-      TextArrangement: #TextOnly,
-      Label          : '{i18n>email}'
-    },
-    UI    : {Hidden: true}
-  );
+  ID   @(Common: {
+    Text           : email,
+    TextArrangement: #TextOnly,
+    Label          : '{i18n>email}'
+  });
   name @readonly;
 };

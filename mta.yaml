@@ -224,6 +224,9 @@ resources:
                 Type: HTTP
                 URL: https://${org}.launchpad.${default-domain} # Runtime destination of launchpad, required for workzone
                 CEP.HTML5ContentProvider: true
+                # Required for dynamic tiles in Work Zone
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
               - Name: poetry-slams-srv-api
                 Description: Destination to access the poetry slams service module, required for workzone
                 Authentication: NoAuthentication
