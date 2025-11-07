@@ -52,7 +52,7 @@ describe('Poetryslams in PoetrySlamService', () => {
     expect(poetrySlams.data.value.length).to.greaterThan(0);
   });
 
-  it('should set the correct statusCriticality in read of poetry slams', async () => {
+  it('should set the correct statusCriticality in read of poetry slams', () => {
     expect(
       poetrySlams.data.value.find(
         (poetrySlam) =>

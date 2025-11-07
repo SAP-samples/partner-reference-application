@@ -1,4 +1,8 @@
 'strict';
+// Type definition required for CDSLint
+/** @typedef {import('@sap/cds').CRUDEventHandler.On} OnHandler */
+
+const cds = require('@sap/cds');
 
 // Include utility files
 const { color, poetrySlamStatusCode, httpCodes } = require('../lib/codes');
@@ -10,8 +14,11 @@ const {
 
 const uniqueNumberGenerator = require('../lib/uniqueNumberGenerator');
 
+// Type definition required for CDSLint
+/** @type {OnHandler} */
 module.exports = async (srv) => {
   const db = await cds.connect.to('db');
+  const { PoetrySlams } = srv.entities;
 
   // ----------------------------------------------------------------------------
   // Implementation of entity events (entity PoetrySlams)
@@ -20,20 +27,18 @@ module.exports = async (srv) => {
   // Initialize status of drafts
   // Default the freeVisitorSeats to the maximumVisitorsNumber
   // Default number of poetry slam (human readable identifier)
-  srv.before('CREATE', 'PoetrySlams.drafts', (req) =>
-    initializePoetrySlam(req)
-  );
+  srv.before('CREATE', PoetrySlams.drafts, (req) => initializePoetrySlam(req));
 
   // Initialize status
   // Default the freeVisitorSeats to the maximumVisitorsNumber
   // Default number of poetry slam (human readable identifier)
-  srv.before('CREATE', 'PoetrySlams', async (req) => {
+  srv.before('CREATE', PoetrySlams, async (req) => {
     initializePoetrySlam(req);
 
     // Generate readable ID for poetry slam document
     try {
       req.data.number =
-        'PS-' +
+        'PS' +
         (await uniqueNumberGenerator.getNextNumber(
           'poetrySlamNumber',
           db.kind,
@@ -50,18 +55,17 @@ module.exports = async (srv) => {
   });
 
   // Set the event status to booked based on confirmed seats
-  srv.on('UPDATE', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
+  srv.on('UPDATE', [PoetrySlams.drafts, PoetrySlams], async (req, next) => {
     const { ID } = req.data;
     const result = await calculatePoetrySlamData(ID, req);
     if (result) {
       req.data.freeVisitorSeats = result.freeVisitorSeats;
       req.data.status_code = result.status_code;
     }
-
     return next();
   });
 
-  srv.before('DELETE', 'PoetrySlams', async (req) => {
+  srv.before('DELETE', PoetrySlams, async (req) => {
     // In req.subject, the poetry slam that is to be deleted is already included as condition
     const poetrySlam = await SELECT.one
       .from(req.subject)
@@ -79,7 +83,7 @@ module.exports = async (srv) => {
   });
 
   // Apply a colour code based on the poetry slam status
-  srv.after('READ', ['PoetrySlams.drafts', 'PoetrySlams'], (data) => {
+  srv.after('READ', [PoetrySlams.drafts, PoetrySlams], (data) => {
     for (const poetrySlam of convertToArray(data)) {
       const status = poetrySlam.status?.code || poetrySlam.status_code;
       // Set status colour code

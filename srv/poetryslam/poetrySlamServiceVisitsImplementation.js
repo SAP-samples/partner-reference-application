@@ -1,4 +1,9 @@
 'strict';
+// Type definition required for CDSLint
+/** @typedef {import('@sap/cds').CRUDEventHandler.On} OnHandler */
+
+// eslint-disable-next-line no-unused-vars
+const cds = require('@sap/cds');
 
 // Include utility files
 const {
@@ -14,20 +19,32 @@ const {
   convertToArray
 } = require('../lib/entityCalculations');
 
+// Type definition required for CDSLint
+/** @type {OnHandler} */
 module.exports = async (srv) => {
+  const { Visits } = srv.entities;
   // ----------------------------------------------------------------------------
   // Implementation of entity events (entity Visits)
   // ----------------------------------------------------------------------------
 
   // Check if visit is allowed to be created
-  srv.before('CREATE', ['Visits.drafts', 'Visits'], async (req) => {
+  srv.before('CREATE', [Visits, Visits.drafts], async (req) => {
     // Check that a visit is allowed to be created due to status of the poetry slam
     // Errors are thrown inside the method
     await checkPoetrySlamForVisitCreation(req.data.parent_ID, req);
   });
 
+  srv.before('UPDATE', [Visits, Visits.drafts], async (req) => {
+    const visit = await SELECT.one.from(req.subject).columns('ID', 'parent_ID');
+    const result = await checkPoetrySlamForVisitCreation(visit.parent_ID, req);
+    if (result === false) {
+      console.error('Action createVisits: Overbooked');
+      req.reject(httpCodes.bad_request, 'POETRYSLAM_OVERBOOKED');
+    }
+  });
+
   // Initialize status of visit and update poetry slam
-  srv.on('UPDATE', ['Visits.drafts', 'Visits'], (req, next) => {
+  srv.on('UPDATE', [Visits, Visits.drafts], (req, next) => {
     // In case visitor is updated, default status of visit
     if (req.data.visitor_ID) {
       req.data.status_code = visitStatusCode.booked;
@@ -36,21 +53,16 @@ module.exports = async (srv) => {
     return next();
   });
 
-  srv.after('UPDATE', ['Visits.drafts', 'Visits'], async (_results, req) => {
-    if (!req.data.visitor_ID) {
-      console.error('Visitor ID not found');
-      req.error(httpCodes.internal_server_error, 'UPDATE_VISIT_NOT_POSSIBLE', [
-        req.data.ID
-      ]);
-      return;
-    }
+  srv.after('UPDATE', [Visits, Visits.drafts], async (data, req) => {
+    // If visitor_ID is not part of the update, no need to update poetry slam
+    if (!Object.hasOwn(data, 'visitor_ID')) return;
 
     const visit = await SELECT.one.from(req.subject).columns('ID', 'parent_ID');
 
     if (!visit) {
       console.error('Visit not found - Update Visit not possible');
       req.error(httpCodes.internal_server_error, 'UPDATE_VISIT_NOT_POSSIBLE', [
-        req.data.ID
+        data.ID
       ]);
       return;
     }
@@ -62,12 +74,12 @@ module.exports = async (srv) => {
       changedData.status_code,
       changedData.freeVisitorSeats,
       req,
-      { text: 'UPDATE_VISIT_NOT_POSSIBLE', param: req.data.ID }
+      { text: 'UPDATE_VISIT_NOT_POSSIBLE', param: data.ID }
     );
   });
 
   // Updates the poetry slam status and freevistor seats in case of deletion of a visit
-  srv.before('DELETE', ['Visits.drafts', 'Visits'], async (req) => {
+  srv.before('DELETE', [Visits, Visits.drafts], async (req) => {
     if (!req.data.ID) {
       console.error('Visit ID not found');
       req.error(httpCodes.internal_server_error, 'VISIT_NOT_FOUND', [
@@ -108,7 +120,7 @@ module.exports = async (srv) => {
   });
 
   // Apply a colour code based on the visit status
-  srv.after('READ', ['Visits.drafts', 'Visits'], (data) => {
+  srv.after('READ', [Visits, Visits.drafts], (data) => {
     for (const visits of convertToArray(data)) {
       const status = visits.status?.code || visits.status_code;
       // Set status colour code

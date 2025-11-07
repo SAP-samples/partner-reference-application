@@ -30,7 +30,13 @@ const httpCodes = {
   forbidden: 403,
   not_found: 404,
   method_not_allowed: 405,
+  conflict: 409,
   internal_server_error: 500
+};
+
+const httpRequestMethod = {
+  post: 'POST',
+  get: 'GET'
 };
 
 // Publish constants and functions
@@ -38,5 +44,6 @@ module.exports = {
   color,
   poetrySlamStatusCode,
   visitStatusCode,
-  httpCodes
+  httpCodes,
+  httpRequestMethod
 };

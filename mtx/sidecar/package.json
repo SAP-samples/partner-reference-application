@@ -1,17 +1,17 @@
 {
   "name": "partner-reference-application-mtx",
   "dependencies": {
-    "@cap-js/hana": "^2.1.1",
-    "@sap/cds": "^9.1.0",
-    "@sap/cds-mtxs": "^3.1.0",
-    "@sap/xssec": "^4.9.0",
+    "@cap-js/hana": "^2.3.4",
+    "@sap/cds": "^9.4.4",
+    "@sap/cds-mtxs": "^3.4.3",
+    "@sap/xssec": "^4.11.0",
     "express": "^4.21.2"
   },
   "engines": {
     "node": ">=22.0.0"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^2.0.2"
+    "@cap-js/sqlite": "^2.0.4"
   },
   "scripts": {
     "start": "cds-serve"

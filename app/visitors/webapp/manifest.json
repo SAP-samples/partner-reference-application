@@ -40,8 +40,17 @@
           "shortTitle": "{{flpShortTitle}}",
           "info": "{{flpShortTitle}}",
           "signature": {
-            "parameters": {},
+            "parameters": {
+              "ID": {
+                "required": false
+              }
+            },
             "additionalParameters": "ignored"
+          },
+          "indicatorDataSource": {
+            "dataSource": "mainService",
+            "path": "Visitors/$count",
+            "refresh": 60
           }
         }
       }

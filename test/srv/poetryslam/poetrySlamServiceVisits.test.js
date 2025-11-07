@@ -43,7 +43,7 @@ describe('Visits in PoetrySlamService', () => {
     expect(visits.data.value.length).to.greaterThan(0);
   });
 
-  it('should set the correct statusCriticality during read of visits', async () => {
+  it('should set the correct statusCriticality during read of visits', () => {
     expect(
       visits.data.value.find(
         (visit) => visit.status_code === visitStatusCode.booked
