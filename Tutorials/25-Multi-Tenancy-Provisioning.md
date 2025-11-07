@@ -107,7 +107,7 @@ SAP Build Work Zone offers additional features besides navigation and theming su
 
 	 > Note: You must update the content channel every time you made changes to the web application. It may take some time to reflect the changes.
 
-	> Note: For more information, refer to the [SAP Help Creating a Content Provider](https://help.sap.com/docs/CIAS%20FES%202020/ecb81b5bfce440ca8e7e7c9ad58fcf3a/70e980150c174778aff9f698fde04307.html).
+	> Note: For more information, refer to [Creating a Content Provider](https://help.sap.com/docs/CIAS%20FES%202020/ecb81b5bfce440ca8e7e7c9ad58fcf3a/70e980150c174778aff9f698fde04307.html) on SAP Help Portal.
 
 ### Review the Created Content of Your Web Application
 
@@ -121,13 +121,17 @@ SAP Build Work Zone offers additional features besides navigation and theming su
 In this step, you create and review a launchpad site. If you already have a site, just add your web applications.
 
 1. Open the *Site Directory*. 
-2. Create a site and enter a site name, for example, *Partner Reference Application*.
-3. Edit the newly created site.
-4. In the *Assignments* area on the right side of the screen, click into the search field. The *Poetry Slam Manager Role* should show up as a result.
-5. Choose the plus behind the *Poetry Slam Manager Role*.
-6. Choose the plus behind the *Poetry Slam Visitor Role*.
-7. Save the changes.
-8. To launch the site, open the *URL* provided in the *Properties* of the *Site Settings*. On the site, you can see no tiles yet. Before being able to see the *Poetry Slams* and *Visitors* tiles, you need to set up the authorizations.
+2. Create a new site and enter a site name, for example, *Partner Reference Application*.
+3. Open the *Site Settings* to launch the *Site Editor*.
+	1. Open the *Role Assignments* and click on Edit.
+	2. Activate the *Assignment Status* of the roles *Poetry Slam Visitor Role* and *Poetry Slam Manager Role*.
+	3. Save the changes.
+4. Open *Manage Site Alias* and enter a site alias, for example `cet` or `central-entry-point`. 
+	> Note: Using a site alias, you obtain stable, short and human readable access URLs, for example `<subscription hostname>/site/cet#poetryslams-display`. This allows you to refactor or change Work Zone sites at a later point in time without forcing users to adapt custom tiles and browser bookmarks.
+5. Save the alias.
+
+You can launch the Work Zone site using the *URL* provided in the *Properties* of the *Site Settings*.
+However, on the site, you don’t see any tiles yet; before being able to see the tiles *Poetry Slam Events* and *Visitors and Artists*, you need to configure the authorization roles as described in the next steps.
 
 > Note: For quick access in the subsequent chapters of this tutorial, note down the *URL*. 
 
@@ -170,7 +174,7 @@ As a preferred approach, you configure trust between the SAP BTP subaccount and 
 
 #### OpenID Connect Configuration
 
-Set up the trust relationship between the SAP BTP subaccount to the Identity Authentication service using OpenID Connect (OIDC). For more information, refer to the [SAP help about OpenID Connect](https://help.sap.com/docs/identity-authentication/identity-authentication/openid-connect). 
+Set up the trust relationship between the SAP BTP subaccount to the Identity Authentication service using OpenID Connect (OIDC). For more information, refer to [Configuring OpenID Connect](https://help.sap.com/docs/identity-authentication/identity-authentication/openid-connect) on SAP Help Portal. 
 
 > Note: As a prerequisite for this setup, the SAP BTP subaccount and the Identity Authentication service tenant must be assigned to the same customer ID. If they are assigned to different customer IDs, configure SAML 2.0 as described below.
 
@@ -185,7 +189,7 @@ Set up the trust relationship between the SAP BTP subaccount to the Identity Aut
 	
 #### Configure Trust Using SAML 2.0
 
-Set up the trust relationship between the SAP BTP subaccount to the Identity Authentication service using SAML 2.0. For more information, refer to the [SAP help about SAP Cloud Identity Services](https://help.sap.com/docs/identity-authentication/identity-authentication/saml-2-0). The SAML2 usage applies only if the OpenID Connect configuration is not possible. That is the case when the SAP BTP subscriber subaccount and the Identity Authentication service tenant are not assigned to the same customer ID. This setup comes with limitations regarding remote access to the OData services of the SAP BTP application with principal propagation.
+Set up the trust relationship between the SAP BTP subaccount to the Identity Authentication service using SAML 2.0. For more information, refer to [SAP Cloud Identity Services](https://help.sap.com/docs/identity-authentication/identity-authentication/saml-2-0) on SAP Help Portal. The SAML2 usage applies only if the OpenID Connect configuration is not possible. That is the case when the SAP BTP subscriber subaccount and the Identity Authentication service tenant are not assigned to the same customer ID. This setup comes with limitations regarding remote access to the OData services of the SAP BTP application with principal propagation.
 
 1. In the SAP BTP consumer subaccount, download the **SAML metadata file of the subaccount**.
 	1. Open *Security* in the menu and go to *Trust Configuration*.
@@ -206,7 +210,7 @@ Set up the trust relationship between the SAP BTP subaccount to the Identity Aut
 	1. Choose *New SAML Trust Configuration*. 
 	2. Upload the **SAML metadata file of the IdP** that you just downloaded and enter a meaningful name and description of the IdP (for example, ``Corporate IdP``).
 
-Looking for more information on the SAP Authorization and Trust Management service? Go to the [Building Side-By-Side Extensions Using SAP BTP tutorial](https://learning.sap.com/learning-journeys/build-side-by-side-extensions-on-sap-btp/describing-authorization-and-trust-management-xsuaa-_cbf0d0c5-29ec-4685-9cf4-487156b41284).
+Looking for more information on the SAP Authorization and Trust Management service? Go to [Building Side-By-Side Extensions Using SAP BTP -> Describing Authorization and Trust Management (XSUAA)](https://learning.sap.com/learning-journeys/build-side-by-side-extensions-on-sap-btp/describing-authorization-and-trust-management-xsuaa-_cbf0d0c5-29ec-4685-9cf4-487156b41284).
 
 #### Configure Authorization Roles 
 
@@ -254,4 +258,4 @@ If you delete and recreate a subscription of the SAP BTP application, all consum
 
 If you manually delete an application or undeploy it from the provider subaccount while the application still has active subscriptions, note that there are a few service instances that can't be deleted. In addition, it's no longer possible to delete subscriptions to the removed application through the UI of the subscriber subaccounts. Instead, to delete the subscriptions, you need to access the service instance of the service _SaaS Provisioning Service_. Once you've removed all subscriptions, you can remove the remaining service instances from the provider subaccount.
 
-If you need more information on how to trace and debug your application, go to the section on [test and troubleshoot multitenancy](26-Test-Trace-Debug-Multi-Tenancy.md).
+If you need more information on how to trace and debug your application, go to [Test and Troubleshoot Multitenancy](26-Test-Trace-Debug-Multi-Tenancy.md).

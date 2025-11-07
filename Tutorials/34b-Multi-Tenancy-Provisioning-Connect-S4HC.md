@@ -32,7 +32,7 @@ To start the provisioning procedure, create a SAP BTP consumer subaccount for a 
 In this tutorial, the Identity Authentication service tenant that is used by the SAP S/4HANA Cloud Public Edition tenant for authentication is reused.  
 
 ### Configure Single Sign-On for the SAP BTP Application
-Configure a trust relationship between the SAP BTP consumer subaccount and the Identity Authentication service tenant of SAP S/4HANA Cloud Public Edition as described in the section [Configure Trust Using SAML 2.0](./25-Multi-Tenancy-Provisioning.md).
+Configure a trust relationship between the SAP BTP consumer subaccount and the Identity Authentication service tenant of SAP S/4HANA Cloud Public Edition as described in the section [Configure Trust Using SAML 2.0](./25-Multi-Tenancy-Provisioning.md#configure-trust-using-saml-20).
 
 ### Launch the SAP BTP Multi-Tenant Application
 
@@ -171,7 +171,7 @@ In this section, three destinations are created to access SAP S/4HANA Cloud ODat
 
 4. Create the *s4hc-tech-user* destination to consume SAP S/4HANA Cloud OData services using a technical communication user.
 
-5. In the SAP BTP consumer subaccount, go to *Connectivity* and choose *Destinations* to create a *New Destination* with the following field values:
+    In the SAP BTP consumer subaccount, go to *Connectivity* and choose *Destinations* to create a *New Destination* with the following field values:
 
     | Parameter Name    | Value                                                                                 |
     | :---------------- | :------------------------------------------------------------------------------------ |
@@ -186,7 +186,7 @@ In this section, three destinations are created to access SAP S/4HANA Cloud ODat
 
 6. Create the *s4hc-url* destination to launch SAP S/4HANA Cloud Public Edition apps and to store the name of the SAP S/4HANA Cloud Public Edition system used by business users. 
 
-7. In the SAP BTP consumer subaccount, go to *Connectivity* and choose *Destinations* to create a *New Destination* with the following field values:
+   In the SAP BTP consumer subaccount, go to *Connectivity* and choose *Destinations* to create a *New Destination* with the following field values:
 
     | Parameter Name    | Value                                                                                             |
     | :---------------- | :------------------------------------------------------------------------------------------------ |
@@ -201,7 +201,7 @@ In this section, three destinations are created to access SAP S/4HANA Cloud ODat
     
    At runtime, you dynamically assemble the parameterized URL to launch the project planning view of SAP S/4HANA Cloud enterprise projects. You do this by concatenating the base URL with the floorplan-specific path and the object-specific parameters, such as the project ID. The authentication method isn't relevant in this destination, so you choose *NoAuthentication* to keep things simple. Note that this destination can't be used to access any SAP S/4HANA Cloud service directly.
    
-    > Note: The destination description is used to store the name of the SAP S/4HANA Cloud Public Edition system used by business users. At runtime, we use this description to refer to the SAP S/4HANA Cloud Public Edition system on the UI of the SAP BTP application.
+    > Note: The destination description is used to store the name of the SAP S/4HANA Cloud Public Edition system used by business users. At runtime, this description is used to refer to the SAP S/4HANA Cloud Public Edition system on the UI of the SAP BTP application.
 
 ## Add SAP BTP Applications to SAP Fiori Launchpad
 
@@ -240,7 +240,7 @@ Repeat the same steps with suitable business catalogs to create custom tiles for
 The SAP BTP application design relies on business users and authorizations being created and managed in the Cloud ERP solution (in this case, SAP S/4HANA Cloud Public Edition) and the customer identity provider (in this case, Identity Authentication service connected to SAP S/4HANA Cloud Public Edition).
 As a general approach, users are created in the ERP solution and the IdP, and then assigned to the user group that includes the authorization of the partner application users.
 
-To create a user in  SAP S/4HANA Cloud Public Edition, follow the documentation about [Identity and Access Management](https://help.sap.com/docs/SAP_S4HANA_CLOUD/53e36b5493804bcdb3f6f14de8b487dd/f25f9108740442c3804370f2d88a9bdd.html?locale=en-US).
+To create a user in SAP S/4HANA Cloud Public Edition, follow the documentation about [Identity and Access Management](https://help.sap.com/docs/SAP_S4HANA_CLOUD/53e36b5493804bcdb3f6f14de8b487dd/f25f9108740442c3804370f2d88a9bdd.html?locale=en-US).
 
 > Note: Make sure that you maintain the same email address for users in the Cloud ERP and the Identity Authentication service tenant. Otherwise, single sign-on and the API-led integration using OAuth SAML bearer won't work.
 
@@ -263,4 +263,4 @@ To create a user in  SAP S/4HANA Cloud Public Edition, follow the documentation 
 
 ## Remarks and Troubleshooting
 
-If you need more information on how to trace and debug your application with ERP integration, go to the section on [testing and troubleshooting](32-Test-Trace-Debug-ERP.md). If you're looking for more information on the ERP integration of Poetry Slam Manager, take the [guided tour of the ERP integration](31-Guided-Tour-ERP-Integration.md).
+If you need more information on how to trace and debug your application with ERP integration, go to the section on [testing and troubleshooting](32-Test-Trace-Debug-ERP.md). If you're looking for more information on the ERP integration of Poetry Slam Manager, take the [guided tour about the ERP integration](31-Guided-Tour-ERP-Integration.md).

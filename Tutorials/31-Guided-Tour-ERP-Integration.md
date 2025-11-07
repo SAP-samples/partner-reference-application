@@ -2,7 +2,7 @@
 
 Put yourself in the shoes of a poetry slam manager: Imagine it's your job to organize and run poetry slams.
 
-You create the poetry slams in the Poetry Slam Manager application as described in the [Guided Tour](./17-Guided-Tour.md). 
+You create the poetry slams in the Poetry Slam Manager application as described in the [guided tour](./17-Guided-Tour.md). 
 
 But imagine you want to do additional planning in a project in your core ERP system. 
 
@@ -44,4 +44,4 @@ Let us take you on a guided tour through the integrated sample solution after th
     The link to launch the SAP Business ByDesign project overview is assembled dynamically and uses the SAP Business ByDesign hostname of your SAP BTP subaccount configuration as well as the project ID.
     When you go back to SAP Business ByDesign, no additional login is required because of single sign-on.
 
-This concludes the guided tour... We hope you enjoyed the ride. 
+This concludes the guided tour. We hope you enjoyed the ride. 

@@ -35,7 +35,7 @@ If you want to get the schema used for a consumer subaccount, follow the steps b
 
 ### Accessing the SQL Console 
 
-The SAP Help Portal articles [Open SAP HANA Cloud Central](https://help.sap.com/docs/hana-cloud/683a53aec4fc408783bbb2dd8e47afeb/98793b872315442c906080aebcf0bb44.html) and [Open the SQL Console in SAP HANA Cloud Central](https://help.sap.com/docs/hana-cloud/683a53aec4fc408783bbb2dd8e47afeb/a2b15cf9fbe24ef8a90ffb76cd0eaa5d.html) describe how to access the *SQL console*. To log on, use the database user and the password you defined during [*Create an SAP HANA Cloud Database*](./22-Multi-Tenancy-Prepare-Deployment.md#create-an-sap-hana-cloud-database). This logon allows you to select data from all schemas.
+The SAP Help Portal articles [Open SAP HANA Cloud Central](https://help.sap.com/docs/hana-cloud/sap-hana-cloud-administration-guide/open-sap-hana-cloud-central) and [Open the SQL Console in SAP HANA Cloud Central](https://help.sap.com/docs/hana-cloud/sap-hana-cloud-administration-guide/open-sql-console-in-sap-hana-cloud-central) describe how to access the *SQL console*. To log on, use the database user and the password you defined during [*Create an SAP HANA Cloud Database*](./22-Multi-Tenancy-Prepare-Deployment.md#create-an-sap-hana-cloud-database). This logon allows you to select data from all schemas.
 
 It is also possible to get access credentials for a single subscriber instance (that is, a specific database schema). To get these credentials, go to the BTP cockpit of the provider subaccount.
 
@@ -126,4 +126,4 @@ With the table above, this translates into roughly 100 MB for visits, 33 MB for 
 
 Using the [SAP HANA Capacity Unit Estimator](https://hcsizingestimator.cfapps.eu10.hana.ondemand.com/) and adding assumptions for other input variables like backup size and network volume, you can calculate the required capacity units (CU). For the Poetry Slam Manager the default size settings with the minimum values are sufficient.
 
-This concludes this chapter. You can go back to the [Tutorial Overview Page](../README.md).
+This concludes this chapter. You can go back to the [tutorial overview page](../README.md).

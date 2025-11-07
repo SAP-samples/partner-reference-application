@@ -1,6 +1,6 @@
 # Changes
 
-## Current Version - July 2025
+## Current Version - November 2025
 
 The current version is available in three branches:
 - Tutorials: [*main*](../../../)
@@ -8,13 +8,28 @@ The current version is available in three branches:
 - Additional features and ERP integration (based on the multi-tenant version): [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features)
 
 The current version includes:
+- [Send Notifications and Emails with SAP Build Work Zone](44c-Multi-Tenancy-Features-Notification.md): Use the SAP Alert Notification service for SAP BTP, integrated into SAP Build Work Zone, to send notifications and emails.
+- [Bruno Collection of Examplary API Requests to the Partner Reference Application](./api-samples/): Use the provided Bruno collection to explore the different APIs of the Partner Reference Application.
+- Enhancements of the User Interface and the SAP Build Work Zone Launchpad:
+  - Add additional business applications into the SAP Build Work Zone launchpad, for example, the [Audit Log Viewer](41-Multi-Tenancy-Features-Data-Privacy.md#add-audit-log-viewer-service-to-sap-build-work-zone) application or the [Print Service](44b-Multi-Tenancy-Features-Print.md#add-print-service-application-to-sap-build-work-zone) application.
+  - Use [Dynamic Tiles](14-Develop-Core-Application.md#dynamic-tiles) to dispay key performance indicators of your applications.
+- Smaller corrections, improvements, and updates
+
+## Older Versions
+
+### July 2025
+
+Includes
 - [API Service for Remote Integrations](42c-Multi-Tenancy-Features-API-Service.md): Create an API service for remote integrations without draft handling.
 - [SAP S/4HANA Cloud Developer Extensibility Scenario](52a-Multi-Tenancy-Features-API-Service-S4HC.md): Embed the application in an extensibility scenario with SAP S/4HANA Cloud Public Edition. 
 - [SAP Business One Integration Using Principal Propagation](33c-B1-Integration-With-Cloud-Connector.md#set-up-destinations-to-connect-the-sap-btp-application-to-sap-business-one): Use principal propagation to connect a SAP Business One system.
 - [Shared SAP Cloud Logging Instance for Observability](43-Multi-Tenancy-Features-Observability.md#option-2-use-a-shared-sap-cloud-logging-instance): Share a SAP Cloud Logging Instance across applications and subaccounts.
 - Smaller corrections, improvements, and updates
 
-## Older Versions
+Corresponsing Tags
+- Tutorials: [release-tutorial-2507](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-tutorial-2507)
+- Multitenancy: [release-multi-tenant-2507](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-2507)
+- ERP/Features: [release-multi-tenant-features-2507](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-features-2507)
 
 ### May 2025
 
@@ -61,7 +76,7 @@ Corresponding Tags
 ### October 2024
 
 Includes
-- Output management: [forms](44a-Multi-Tenancy-Features-Forms.md), [print](44b-Multi-Tenancy-Features-Print.md), [email](44c-Multi-Tenancy-Features-EMail.md)
+- Output management: [forms](44a-Multi-Tenancy-Features-Forms.md), [print](44b-Multi-Tenancy-Features-Print.md), email(deprecated)
 - Tutorial on [SAP HANA Cloud Tools](27-Hana-DB-Scaling.md#sap-hana-cloud-tools) and [SAP HANA Cloud size estimation](27-Hana-DB-Scaling.md)
 - Switch to CDS8 including subscription handling by the MTX sidecar module
 - Creation of test data using action instead of csv-files

@@ -1,6 +1,71 @@
-# Test and Troubleshoot the Application
+# Ensure Code Quality, Test, and Troubleshoot the Application
 
 When developing a productive application, quality assurance and the detection of issues are essential.
+
+## Code Quality
+
+Code quality includes readability, maintainability, and compliance. Several automated tools assist in formatting files consistently, checking for potential implementation, license, or security issues, and updating included external packages. To keep applications current, configure these tools.
+
+### CDS Lint
+
+To improve the code quality of CAP projects, you can use [CDS Lint](https://cap.cloud.sap/docs/tools/cds-lint/). This tool is an [ESLint](https://eslint.org/) plugin for CDS and includes a set of recommended rules that reflect best practices for CAP projects. Additionally, the recommended ESLint rules for JavaScript are applied to the Partner Reference Application.
+
+The following provides a step-by-step description on how to add CDS Lint to your CAP project.
+
+1. Open your project in the SAP Business Application Studio.
+2. Open a terminal.
+3. Run the `cds add lint` command.
+    > Note: The command installs ESLint, the CDS ESLint plugin, and adds the ESLint configuration.
+4. Replace the created ESLint configuration (eslint.config.js in the root folder of your project) with the [eslint.config.js](../../../tree/main-multi-tenant/eslint.config.js) file of the sample application.  
+    > Note: In this file, the recommended JavaScript rules of ESLint and all rules for CDS are set. The available rules for CDS are documented in [CDS Lint Rules Reference](https://cap.cloud.sap/docs/tools/cds-lint/rules/). The rules for JavaScript are found in [ESLint Rules Reference](https://eslint.org/docs/latest/rules/). You adapt them according to your needs.
+5. Add a new npm script to the [package.json](../../../tree/main-multi-tenant/package.json) file of your project. This script enables you to run ESLint checks with npm.
+  
+    ```json
+    "scripts": {
+      "eslint": "eslint ."
+    }
+    ```
+6. The service-handlers, which are added to external files for readability reasons, require a type definition on top of the file, before the module export. Otherwise the CDS checks may not identify all issues.
+
+  ```javascript
+  // Type definition required for CDSLint
+  /** @typedef {import('@sap/cds').CRUDEventHandler.On} OnHandler */
+
+  // Type definition required for CDSLint
+  /** @type {OnHandler} */
+  module.exports = async (srv) => {
+      ...
+  }
+  ```
+
+To run the ESLint checks, follow these steps:
+
+1. Open a terminal.
+2. Run the `npm run eslint` command.
+
+If there are issues, the console displays the errors. Successful execution doesn't return any output.
+
+### Update Project Dependencies
+
+To keep the project up to date, regularly update the dependencies to open source and third party libraries:
+
+- Node Modules:
+  - [package.json](../../../tree/main-multi-tenant/package.json)
+  - [app/poetryslams/package.json](../../../tree/main-multi-tenant/app/poetryslams/package.json)
+  - [app/router/package.json](../../../tree/main-multi-tenant/app/router/package.json)
+  - [mtx/sidecar/package.json](../../../tree/main-multi-tenant/mtx/sidecar/package.json)
+- SAPUI5 version:
+  - [app/poetryslams/webapp/manifest.json](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json)
+  - [app/poetryslams/webapp/index.html](../../../tree/main-multi-tenant/app/poetryslams/webapp/index.html)
+  - [app/poetryslams/webapp/test/flpSandbox.html](../../../tree/main-multi-tenant/app/poetryslams/webapp/test/flpSandbox.html)
+  - [app/poetryslams/webapp/test/integration/opaTests.qunit.html](../../../tree/main-multi-tenant/app/poetryslams/webapp/test/integration/opaTests.qunit.html)
+  - [app/visitors/webapp/manifest.json](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json)
+  - [app/visitors/webapp/index.html](../../../tree/main-multi-tenant/app/visitors/webapp/index.html)
+  - [app/visitors/webapp/test/flpSandbox.html](../../../tree/main-multi-tenant/app/visitors/webapp/test/flpSandbox.html)
+  - [app/visitors/webapp/test/integration/opaTests.qunit.html](../../../tree/main-multi-tenant/app/visitors/webapp/test/integration/opaTests.qunit.html)
+  - [@sap/ux-specification](https://www.npmjs.com/package/@sap/ux-specification?activeTab=versions): Keep the node module in sync with the currently used SAPUI5 version. For more details on mapping between the node module version and the SAPUI5 version, see this [overview](https://www.npmjs.com/package/@sap/ux-specification?activeTab=versions).
+
+> Note: You can find information on the available SAPUI5 versions and their maintenance status in this [overview](https://sapui5.hana.ondemand.com/versionoverview.html). Especially note the versions marked as *Long-term Maintenance*.
 
 ## Manual Test
 
@@ -18,7 +83,7 @@ For quality assurance to check if the application still works as expected, it's 
 
 The data model and services can be tested with the SAP Cloud Application Programming Model unit test framework. The framework uses standard JavaScript library Mocha. The [@cap-js/cds-test](https://www.npmjs.com/package/@cap-js/cds-test) module complements this by offering specific tools for testing Core Data Services within CAP applications. A reference test implementation can be found in the folder */test/*. There are tests available for the entity model (folder */db/*) and for the service (folder */srv/*).
 
-There are two ways to test the services in SAP Cloud Application Programming Model, either through service APIs or through HTTP APIs. For more details, go to the [SAP Cloud Application Programming Model documentation on testing with cds.test](https://cap.cloud.sap/docs/node.js/cds-test). 
+There are two ways to test the services in SAP Cloud Application Programming Model, either through service APIs or through HTTP APIs. For more details, go to the SAP Cloud Application Programming Model documentation on [testing with cds.test](https://cap.cloud.sap/docs/node.js/cds-test). 
 
 #### Example of a Service API
 
@@ -127,25 +192,25 @@ The tests are located in the directories [*app/poetryslams/webapp/test*](../../.
 
 - [Integration Testing with One Page Acceptance Tests (OPA5)](https://sapui5.hana.ondemand.com/sdk/#/topic/2696ab50faad458f9b4027ec2f9b884d.html)
 - [A First OPA Test](https://sapui5.hana.ondemand.com/sdk/#/topic/1b47457cbe4941ee926317d827517acb)
-- [Test Suite and Automated Testing](https://sapui5.hana.ondemand.com/sdk/#/topic/07c97a2e497d443eb6fa74bb9445ab9c)
+- [Automated Testing](https://sapui5.hana.ondemand.com/sdk/#/topic/07c97a2e497d443eb6fa74bb9445ab9c)
 - API:
   - [sap.fe.test](https://sapui5.hana.ondemand.com/#/api/sap.fe.test)
   - [sap.ui.test](https://sapui5.hana.ondemand.com/#/api/sap.ui.test)
 
 ## Testing Your Application During Development
 
-When developing your application in SAP Business Application Studio, you can always start your application using `cds watch` or `cds serve` (refer to [Jumpstarting a CAP project](https://cap.cloud.sap/docs/get-started/in-a-nutshell#jumpstart)).
+When developing your application in SAP Business Application Studio, you can always start your application using `cds watch` or `cds serve` (refer to [Jumpstart a Project](https://cap.cloud.sap/docs/get-started/in-a-nutshell#jumpstart)).
 
 > Note: In case you get the error "port 4004 already used" and you cannot close a previously started `cds watch` (because the corresponding terminal is already closed), you can stop this process using terminal commands. To achieve this, you can find the process using port 4004 with the command `netstat -nlp | grep 4004` in the terminal to find the process ID, and stop that process using `kill -2 <process id>`.
 
 ## Troubleshoot Your Application
 
-There are several out-of-the-box tools that can be used to troubleshoot your application. Besides the options explained in the [CAP documentation on troubleshooting](https://cap.cloud.sap/docs/get-started/troubleshooting), a few general approaches are described below that can help identify where an issue originates from.
+There are several out-of-the-box tools that can be used to troubleshoot your application. Besides the options explained in the SAP Cloud Application Programming Model documentation on [troubleshooting](https://cap.cloud.sap/docs/get-started/troubleshooting), a few general approaches are described below that can help identify where an issue originates from.
 
 ### Debug
 
 You can debug locally with the standard Node.js debugging tools.
-See also the [SAP Cloud Application Programming Model documentation on debugging](https://cap.cloud.sap/docs/tools/#debugging-with-cds-watch).
+See also the SAP Cloud Application Programming Model documentation on [debugging](https://cap.cloud.sap/docs/tools/cds-cli#debugging-with-cds-watch).
 
 ### Use Browser Development Tools
 
@@ -155,10 +220,6 @@ If you open the UI of your application and it doesn't look as expected, the brow
 
 2. Check the requests and responses sent by the application (you may need to reload the page to see the errors). 
 
-## Code Quality
-
-Besides automated testing, code quality includes readability, maintainability, and compliance. There are several automated tools that help you to format your files in a consistent way, check for possible implementation, license or security issues, and update the included external packages. To keep your application up to date, you should configure such tools. See also [Update Project Dependencies](./14-Develop-Core-Application.md#update-project-dependencies).
-
 ## Test Multi-Tenant Applications
 
-The information above refers to the locally running application. You can also refer to [Test and Troubleshoot Multitenancy](26-Test-Trace-Debug-Multi-Tenancy.md) for the deployed application and [Test and Troubleshoot the ERP Integration](32-Test-Trace-Debug-ERP.md).
+The information above refers to the locally running application. You can also refer to [Test and Troubleshoot Multitenancy](26-Test-Trace-Debug-Multi-Tenancy.md) for the deployed application and [Test and Troubleshoot an ERP Integration](32-Test-Trace-Debug-ERP.md).

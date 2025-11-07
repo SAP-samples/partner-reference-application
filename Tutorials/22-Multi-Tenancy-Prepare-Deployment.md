@@ -110,4 +110,4 @@ In the SAP BTP cockpit (provider subaccount), create an SAP BTP Cloud Foundry ru
 
 > Note: For efficient resource usage, you may [share your SAP HANA Cloud Database with other applications](https://help.sap.com/docs/HANA_SERVICE_CF/cc53ad464a57404b8d453bbadbc81ceb/390b47b7c0314d57a1829a0759a71ace.html). This can reduce your development costs in case you are developing several applications or use several test deployments. However, in productive setups, this approach may lead to challenges with lifecycle operations, scaling, and other unwanted interdependencies.
 
-You have now successfully prepared your provider account for deployment. Next, you can [Enhance the core application for deployment](./23-Multi-Tenancy-Develop-Sample-Application.md).
+You have now successfully prepared your provider account for deployment. Next, you can [enhance the core application for deployment](./23-Multi-Tenancy-Develop-Sample-Application.md).

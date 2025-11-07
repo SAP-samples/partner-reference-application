@@ -37,7 +37,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 ### Enabling Printing in the Poetry Slams Application
 
-1. As you will print the guest list which you created based on chapter [Manage Forms](./44a-Multi-Tenancy-Features-Forms.md) follow all enablement steps described there first. 
+1. As you will print the guest list which you created based on the [Manage Forms](./44a-Multi-Tenancy-Features-Forms.md) chapter, follow all enablement steps described there first. 
 
 2. Generate access classes to the SAP Print Service API.
 
@@ -111,16 +111,19 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
     3. Provide an implementation for the action in [*srv/poetryslam/poetrySlamServiceOutputImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceOutputImplementation.js)
         ```javascript
+        const cds = require('@sap/cds');
         const { getPrintQueues, print } = require('../lib/print');
         ...
+
         module.exports = async (srv) => {
+            const { PDFDocument, PrintQueues } = this.entities;
             ...
             // Entity action "printGuestList": Create a Form (PDF) and send it to the SAP Print Service
             srv.on('printGuestList', async (req) => {
                 ...
             });
             // Virtual Entity PrintQueues
-            srv.on('READ', 'PrintQueues', async () => {
+            srv.on('READ', PrintQueues, async () => {
                 ...
             });
         };
@@ -142,12 +145,13 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     6. Use the implementation in [*srv/poetryslam/poetrySlamServiceImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js)
         ```js
         const outputHandler = require('./poetrySlamServiceOutputImplementation');
-
-        module.exports = cds.service.impl(async (srv) => {
-            ...
-            await outputHandler(srv); // Forward handler for output
-            ...
-        });
+        module.exports = class extends cds.ApplicationService {
+            async init() {
+                ...
+                 await outputHandler(this); // Forward handler for output
+                ...
+            }
+        };
         ```
 
  4. Add the action to the user interface of your application.
@@ -228,6 +232,8 @@ To use the print functionality, you have to maintain a print queue which is the 
 
 2. In *Instances and Subscriptions* of the consumer subaccounts, create a subscription for plan *standard*.
 
+    > Note: A new application called *Print Service* has been added. The link to this application can be shared with customers, who can then view the print queues or the application can be directly added to the customer-specific SAP Build Work Zone launchpad refering to *Add Print Service Application to SAP Build Work Zone* below.
+
 3. In *Security* -> *Role Collections* create a role collection *PrintQueueManager*. Edit this role collection, add the role "PrintQueueSuperUser" and add *Users* and/or *UserGroups* who should be entitled to maintain print queues.
 
 4. In *Instances and Subscriptions* create an instance of *Print Service* plan *receiver*.
@@ -247,11 +253,124 @@ To use the print functionality, you have to maintain a print queue which is the 
 
 Next, you and/or your customer need to install the *SAP Print Manager for Pull Integration* to regularly read the print queue and send the documents to a printer. Follow the documentation about [Establishing the Connection Between SAP Print Service and SAP Cloud Print Manager for Pull Integration](https://help.sap.com/docs/SCP_PRINT_SERVICE/7615de0949ce441d8bc5df7725a6bfc6/2a1a47535a5948aabf4225e1f7d24a16.html).
 
+#### Add Print Service Application to SAP Build Work Zone
+
+It is possible to also add the *Print Service* application directly into the SAP Build Work Zone launchpad. This can be achieved by the following steps.
+
+1. In the Business Application Studio, copy the [*cdm.json*](../../../tree/main-multi-tenant-features/workzone/cdm.json) into the *./workzone* folder. This includes a *businessapp* schema for the *Print Service* application as described in [About the Common Data Model - Business App Schema](https://help.sap.com/docs/build-work-zone-standard-edition/sap-build-work-zone-standard-edition-on-china-shanghai-region/creating-cdm-json-file-for-multi-tenancy-html5-app?locale=en-US). 
+
+    ```json
+    {
+      "_version": "3.2",
+      "identification": {
+        "id": "printer",
+        "title": "{{title}}",
+        "entityType": "businessapp"
+      },
+      "payload": {
+        "visualizations": {
+          "printer-display": {
+            "vizType": "sap.ushell.StaticAppLauncher",
+            "vizConfig": {
+              "sap.ui": {
+                "icons": {
+                  "icon": "sap-icon://print"
+                }
+              },
+              "sap.app": {
+                "id": "printer",
+                "info": "",
+                "subTitle": "Manage Print Queues"
+              },
+              "sap.flp": {
+                "target": {
+                  "type": "IBN",
+                  "inboundId": "printer-display",
+                  "parameters": {}
+                }
+              }
+            }
+          }
+        },
+        "targetAppConfig": {
+          "sap.app": {
+            "crossNavigation": {
+              "inbounds": {
+                "printer-display": {
+                  "signature": {
+                    "parameters": {},
+                    "additionalParameters": "ignored"
+                  },
+                  "semanticObject": "printer",
+                  "action": "display"
+                }
+              }
+            },
+            "destination": "print-service"
+          },
+          "sap.integration": {
+            "urlTemplateId": "urltemplate.url-dynamic",
+            "urlTemplateParams": {
+              "enableSapParams": false
+            }
+          }
+        }
+      },
+      "texts": [
+        {
+          "locale": "",
+          "textDictionary": {
+            "title": "Printer"
+          }
+        },
+        {
+          "locale": "en",
+          "textDictionary": {
+            "title": "Printer"
+          }
+        },
+        {
+          "locale": "de",
+          "textDictionary": {
+            "title": "Printer"
+          }
+        }
+      ]
+    }
+    ```
+
+    - The *destination* under *sap.app* defines the respective destination for the application.
+    - Under *sap.integration* a dynamic URL template must be provided which will be replaced with the *Print Service* application URL at runtime and is taken from the defined *destination* for the *businessapp*. The destination must be configured in the consumer-specific subaccount which is mentioned in the next steps.
+    - The parameter *"enableSapParams": false* disables the default set SAP parameter for URLs.
+
+2. Build and deploy the application. As a result, the *Printer* tile is visible in the SAP Build Work Zone launchpad.
+    > Note: For detailed instructions on how to deploy, refer to [Deploy Your SAP BTP Multi-Tenant Application](./24-Multi-Tenancy-Deployment.md).
+
+3. Define the *print-service* destination for the *Print Service* application in the consumer-specific subaccount.
+    1. Open the SAP BTP cockpit of the consumer subaccount.
+    2. Navigate to the *Destinations* view.
+    3. Click on *Create* and on *From Scratch* to create a new destination.
+    4. Enter *print-service* as destination *name* and for the *URL* the *Print Service* application URL.
+    5. *Save* the destination.
+
+4. Create an alias mapping. Refer to [Map Aliases to Destinations](https://help.sap.com/docs/build-work-zone-standard-edition/sap-build-work-zone-standard-edition-on-china-shanghai-region/map-app-aliases-to-destinations?locale=en-US) on SAP Help Portal for more information.
+    1. Open the *SAP Build Work Zone, standard edition* application.
+    2. In the *Channel Manager*, click *Map aliases* in the *Status* column of the *Poetry Slam Manager* content provider.
+    3. In the *Alias Mapping* dialog box, select the *App Aliases* tab.
+    4. Click on *Select aliases to map* and select the *print-service* alias as defined in the *cdm.json* previously.
+    5. For the next dropdown list, called *runtime destination*, select the *print-service* destination as defined in the SAP BTP Cockpit under *Destinations* previously.
+    6. *Save* it.
+
+5. Go back to the *Site Directoy* and open the application. The SAP Build Work Zone launchpad of the deployed application opens.
+6. Click on the *Printer* tile, the *Print Service* application is opened in a new tab.
+
 ### Testing
 
-#### Local Testing
+To ensure good quality it is crucial to test the new functionality.
 
-To test locally (from within SAP Business Application Studio), you can connect the "local" application (started with `cds watch`) with a deployed print service and a subscription. 
+#### Hybrid Testing
+
+Testing in a hybrid setup, runs the application locally (in SAP Business Application Studio), but using services on the SAP BTP, running in the Cloud Foundry runtime. Enable hybrid testing by setting up the required configuration in your SAP BTP subaccount and your development environment in SAP Business Application Studio.
 
 1. Go to your provider subaccount in the SAP BTP cockpit and navigate to the Cloud Foundry space.
 
@@ -276,7 +395,7 @@ To test locally (from within SAP Business Application Studio), you can connect t
     }    
     ``` 
 
-    > Note: Since you are using the guest list that you created based on chapter [Managing Forms](./44a-Multi-Tenancy-Features-Forms.md), you will need both sections for `print` and `adrestapi`.
+    > Note: Since you are using the guest list that you created based on the [Managing Forms](./44a-Multi-Tenancy-Features-Forms.md) chapter, you will need both sections for `print` and `adrestapi`.
 
 6. Run the application using `cds watch` from a terminal within SAP Business Application Studio. You can use a terminal of type `JavaScript Debug Terminal` for easy debugging.
 
@@ -301,7 +420,7 @@ Now, take a tour through the print feature of *Poetry Slam Manager*:
 3. To create sample data for mutable data, such as poetry slams, visitors, and visits, choose *Generate Sample Data*. As a result, a list with several poetry slams is shown.
 
 4. Open a poetry slam and click the button *Print Guest List* in the menu of the object page. On the popup, select a print queue and choose *Print Guest List*. A popup confirms that the guest list was sent to the selected print queue.
-    > Note: If no print queue is available from the drop down list box, go back to the paragraph [Configuring Printing in Consumer Subaccounts](./44b-Multi-Tenancy-Features-Print.md#configuring-printing-in-consumer-subaccounts) and maintain a print queue as described there.
+    > Note: If no print queue is available from the drop down list box, go back to [Configuring Printing in Consumer Subaccounts](./44b-Multi-Tenancy-Features-Print.md#configuring-printing-in-consumer-subaccounts) and maintain a print queue as described there.
 
 5. When you open the print queue from the application *Print Service* available in the consumer subaccount, you will find the printed document. 
 

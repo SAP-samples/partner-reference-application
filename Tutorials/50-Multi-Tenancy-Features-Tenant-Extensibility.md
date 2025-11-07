@@ -112,7 +112,7 @@ To enable tenant-specific extensions as a SaaS provider follow these steps. For 
 1. Run the command `npm install` in your project root folder to install the required npm modules. 
 
 2. Build and deploy the application.
-    > Note: For detailed instructions on deployment, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
+    > Note: For detailed instructions on deployment, refer to [Deploy Your SAP BTP Multi-Tenant Application](./24-Multi-Tenancy-Deployment.md).
 
 ## Develop an Extension for a Customer
 This tutorial discusses offering extension possibilities in the Partner Reference Application. The [partner-reference-application-extension repository](https://github.com/SAP-samples/partner-reference-application-extension) provides an example and guidance on how you, as an extension developer, can create extensions for specific customers.

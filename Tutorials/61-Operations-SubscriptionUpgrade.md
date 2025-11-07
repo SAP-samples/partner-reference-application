@@ -41,7 +41,7 @@ To use the APIs of the **SAP SaaS Provisioning Service**, follow these steps:
     curl '<url>/oauth/token?grant_type=client_credentials&response_type=token' -u '<clientid>:<clientsecret>'
     ```
 
-4. Use that token and **saas_registry_url** to trigger the [batch update of all subscriptions](https://saas-manager.cfapps.eu10.hana.ondemand.com/api#/a_ApplicationController%20API/batchUpdateApplicationAndTenantSubscriptionAsync) and use the response (header attribute *Location*) to pull the [status of the update job](https://saas-manager.cfapps.eu10.hana.ondemand.com/api#/n_Job%20Management/getJobRelatedToSaasApplicationById):
+4. Use that token and **saas_registry_url** to trigger the update of the application subscriptions per [batch-update](https://saas-manager.cfapps.eu10.hana.ondemand.com/api#/a_ApplicationController%20API/batchUpdateApplicationAndTenantSubscriptionAsync) or per [tenant-id](https://saas-manager.cfapps.eu10.hana.ondemand.com/api#/a_ApplicationController%20API/updateApplicationAndTenantSubscriptionAsync)  and use the response (header attribute *Location*) to pull the [status of the update job](https://saas-manager.cfapps.eu10.hana.ondemand.com/api#/n_Job%20Management/getJobRelatedToSaasApplicationById):
 
     The script [*tenant_update_registry.sh*](../../../tree/main-multi-tenant-features/test/cicd/tenant_update_registry.sh) in the *test* folder of the *multi-tenant-features* branch demonstrates how to perform these steps. You can also use this in pipelines. Provide the values of step 2 to the script as environment variables: **registry_clientid**, **registry_clientsecret**, **registry_uaa_url**, and **registry_saasreg_url**.
 

@@ -88,9 +88,9 @@ Unit tests are available to test this feature:
     1. Enter the `npm install` command in a terminal in SAP Business Application Studio.
     2. Enter the `npm run test` command. All tests are carried out and the result is shown afterwards.
 
-### Test Locally
+### Local Testing
 
-Now, you can start the web application and test the `poetryslammanagerapi` locally in SAP Business Application Studio:
+For more efficient development, test your changes of the web application `poetryslammanagerapi` locally before deploying them to the SAP BTP provider subaccount. To set up the SAP Business Application Studio for local testing of the API service, follow these steps:
 
 1. Open a terminal in SAP Business Application Studio. 
 
@@ -114,7 +114,7 @@ Now, you can start the web application and test the `poetryslammanagerapi` local
 
 ## Deploy the Application
 
-Update your application in the provider subaccount. For detailed instructions, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
+Update your application in the provider subaccount. For detailed instructions, refer to [Deploy Your SAP BTP Multi-Tenant Application](./24-Multi-Tenancy-Deployment.md).
 
 You have now successfully deployed the application to the provider subaccount and you're ready to access the API service.
 

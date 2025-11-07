@@ -151,13 +151,13 @@ In general, SAP Business One exposes OData services through the SAP Business One
 To check the availability of the exposed SAP Business One service layer, you can get the OData metadata by calling the $metadata URL of the OData service in a browser window: *https://<sap-business-one-service-layer:port>/b1s/v2/$metadata*.
 
 To prevent exposing system ports to the public while connecting to SAP Business One, a Cloud Connector can be used instead.  
-For further details about the installation and usage of a Cloud Connector, please refer to the guide [Business One integration with Cloud Connector](./33c-B1-Integration-With-Cloud-Connector.md).  
+For further details about the installation and usage of a Cloud Connector, please refer to [SAP Business One Integration Using a Cloud Connector](./33c-B1-Integration-With-Cloud-Connector.md).  
 
 In case you don't need a Cloud Connector for your integration scenario, you can continue with the other sections below.
 
 ## Set Up Destinations to Connect the SAP BTP Application to SAP Business One
 
-[HTTP Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/http-destinations) can be configured in the subaccounts of SAP Business Technology Platform. They can be used to connect your application to the internet, as well as to an on-premise system. To set up a destination, follow these steps:
+[HTTP destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/http-destinations) can be configured in the subaccounts of SAP Business Technology Platform. They can be used to connect your application to the internet, as well as to an on-premise system. To set up a destination, follow these steps:
 1. Open your SAP BTP consumer subaccount.
 2. Go to *Connectivity* and choose *Destinations*.
 3. Create the following destinations:
@@ -175,7 +175,7 @@ In case you don't need a Cloud Connector for your integration scenario, you can 
 
     - **b1**: Connect to the SAP Business One API using the service layer.
 
-        > Note: For more details, refer to [Setting Up SAP BTP Destination for Service Layer](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/bfeaccb8b53348318970f8bbbc3d5f0a.html?locale=en-US&q=Business%20One%20extension).
+        > Note: For more details, refer to [Setting Up SAP BTP Destination for Service Layer](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/bfeaccb8b53348318970f8bbbc3d5f0a.html).
 
         - Option 1 (Basic Authentication):
             | Parameter Name           | Value                                                                                                  |
@@ -217,7 +217,7 @@ As a final step, add Poetry Slam Manager to the SAP Business One launchpad. This
     
     > Note: Consider the prerequisites: [Development Environment Setup](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/b121ab221f4044baaf6051bba14cc160.html?locale=en-US) with the setup steps of your operating system.
 
-    > Note: Ensure that the *SAP Business One Web Client Extensions* for Visual Code is installed. An installation guide can be found under [Installing VS Code Wizard for SAP Business One Web Client Extensions](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/a59a55746044497fbe975a0ace903dac.html?q=Business%20One%20extension). 
+    > Note: Ensure that the *SAP Business One Web Client Extensions* for Visual Code is installed. An installation guide can be found under [Installing VS Code Wizard for SAP Business One Web Client Extensions](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/1a3ec8c1142741dda2c9ad445736d56a.html#next-steps). 
 
     1. Open Visual Studio Code.
     2. Search for the `Application Wizard` *Extension* from SAP OS, published and verified by sap.com.
@@ -231,7 +231,7 @@ As a final step, add Poetry Slam Manager to the SAP Business One launchpad. This
     11. Provide tile settings information, such as *title*, *subtitle*, *dimension*, *tile link method*, *link for the tile*, *decoration type* as *icon*, and the icon for tile as *sap-icon://microphone*. 
         > Note: The link for the tile is the URL of the SAP BTP application to be launched from the SAP Business One launchpad, for example, the **SAP BTP Application Poetry Slams Tenant URL** you noted down in a previous step.
 
-        > Note: Refer to SAP Help documentation [Creating a URL Mashup App](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/28461b436583429b9d17c2db43567323.html?q=Business%20One%20extension) for more information.
+        > Note: For more information, refer to [Creating a URL Mashup App](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/28461b436583429b9d17c2db43567323.html) on SAP Help Portal.
     12. Choose package the application as *Yes* in the *Application Summary* section and choose *Finish*.
     13. An npm application is generated. In the folder *mta_archives*, a package of the type *mtar* is generated.
     14. Repeat the steps to add the Visitors application, too. Use the **SAP BTP Application Visitors Tenant URL** as link for the tile.
@@ -250,7 +250,7 @@ As a final step, add Poetry Slam Manager to the SAP Business One launchpad. This
     10. Choose *Finish* and complete the company assignment for the SAP Business One extension.
     11. Repeat steps one to ten for the *mtar* file of the visitor mashup.
 
-    > Note: For more details, refer to [Creating a URL Mashup App](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/28461b436583429b9d17c2db43567323.html?locale=en-US&q=Business%20One%20extension).
+    > Note: For more information, refer to [Creating a URL Mashup App](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/28461b436583429b9d17c2db43567323.html) on SAP Help Portal.
 
 3. Make the SAP Business One Web Client extension visible on the SAP Business One Web Client UI:
     1. Open *SAP Business One Web Client* using the URL _https://\<sap-business-one-server:port\>_.
@@ -267,4 +267,4 @@ As a final step, add Poetry Slam Manager to the SAP Business One launchpad. This
 
 ## Remarks and Troubleshooting
 
-If you need more information on how to trace and debug your application with ERP integration, go to the section on [testing and troubleshooting](32-Test-Trace-Debug-ERP.md). If you're looking for more information on the ERP integration of Poetry Slam Manager, take the [guided tour of the ERP integration](31-Guided-Tour-ERP-Integration.md).
+If you need more information on how to trace and debug your application with ERP integration, go to the section on [testing and troubleshooting](32-Test-Trace-Debug-ERP.md). If you're looking for more information on the ERP integration of Poetry Slam Manager, take the [guided tour about ERP integration](31-Guided-Tour-ERP-Integration.md).

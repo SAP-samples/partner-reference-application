@@ -139,7 +139,7 @@ You can have a look at the complete [config.yml](../../../tree/main-multi-tenant
 ### Run the Job for Initial Deployment
 There are three ways to trigger the jobs:
 1. Manually from the SAP Continuous Integration and Delivery UI.
-2. Regularly with timed triggers. For more information, see the [SAP Help documentation](https://help.sap.com/docs/continuous-integration-and-delivery/sap-continuous-integration-and-delivery/manage-timed-triggers-for-jobs).
+2. Regularly with timed triggers. For more information, see the [documentation](https://help.sap.com/docs/continuous-integration-and-delivery/sap-continuous-integration-and-delivery/manage-timed-triggers-for-jobs) on SAP Help Portal.
 3. Using automatic triggers: When creating your job, you specify a branch name. Whenever changes are pushed to the branch that is configured in the job, the job starts automatically. This behavior exemplifies  **_continuous_** integration and delivery.
 
 For the first run, trigger the job manually from the SAP Continuous Integration and Delivery UI:
@@ -154,7 +154,7 @@ You have two options to see the log:
 - Have a look at the full log by choosing *Show Full Log* at the top of a selected job.
     - The *Show Full Log* option often provides more details than simply examining the failed step. You can always search for the failed stage within the complete log.
 
-After the first run is triggered, you have to subscribe the application to your subscriber subaccount as described in the [following tutorial](./25-Multi-Tenancy-Provisioning.md). Now, you need to [configure the Service Broker](./42b-Multi-Tenancy-Provisioning-Service-Broker.md).
+After the first run is triggered, you have to subscribe the application to your subscriber subaccount as described in the [following tutorial](./25-Multi-Tenancy-Provisioning.md). Now, you need to [configure the service broker](./42b-Multi-Tenancy-Provisioning-Service-Broker.md).
 
 ### Enhance the config.yml File to Complete the Configuration
 After the successful initial deployment, you can have a look at the [config.yml](../../../tree/main-multi-tenant-features/.pipeline/config.yml) file that includes additional steps to execute integration tests. To execute these additional tests and use the complete sample, the credentials must be maintained in the config.yml file.
@@ -224,7 +224,7 @@ The *runFirst* command under *Build* copies the files located under [./test/cicd
 
 > Note: *runFirst* executes a command before the actual step. To run it after a step, use *runLast*.
 
-More information on the job configuration can be found in the SAP Help documentation [Configure a Cloud Foundry Environment Job in Your Repository](https://help.sap.com/docs/continuous-integration-and-delivery/sap-continuous-integration-and-delivery/configure-sap-cloud-application-programming-model-job-in-your-repository).
+For more information on the job configuration, see [Configure a Cloud Foundry Environment Job in Your Repository](https://help.sap.com/docs/continuous-integration-and-delivery/sap-continuous-integration-and-delivery/configure-sap-cloud-application-programming-model-job-in-your-repository) on SAP Help Portal.
 
 ### Additional Feature: Add the SAP Alert Notification Service for Automatic Notifications
 To receive email notifications about the job execution status, use the SAP Alert Notification service. This feature actively informs users whether a build runs successfully or encounters issues.
@@ -240,9 +240,9 @@ To receive email notifications about the job execution status, use the SAP Alert
 For simplicity, it is recommended to use the SAP BTP cockpit for the configuration. Follow these steps to activate notifications for CI/CD jobs:
 
 1. Navigate to *Instances and Subscriptions* and open the *SAP Alert Notification* instance.
-2. Create an action that defines the notification type to be received. To receive email notifications, the *Email* type has to be selected. Follow the steps provided in the [Creating Actions - SAP Help documentation](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/managing-actions#creating-actions).
-3. Next, confirm the action using a token sent to the defined email. Follow the steps provided in [Confirming Actions - SAP Help documentation](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/managing-actions#confirming-actions).
-4. Create the condition that is required for the registration of events. Follow the steps provided in [Managing Conditions - SAP Help documentation](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/managing-conditions#creating-conditions). To see which event properties are available for the CI/CD service, see [Next Steps - SAP Help](https://help.sap.com/docs/continuous-integration-and-delivery/sap-continuous-integration-and-delivery/enable-build-notifications?locale=en-US#next-steps). As *Condition*, you can use the *build.end* *event Type* in your pipeline to get a failure or success message at the end of the build. 
-5. Create the required subscription to receive notifications for this event. Follow the steps provided in [Managing Subscriptions - SAP Help documentation](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/managing-subscriptions).
+2. Create an action that defines the notification type to be received. To receive email notifications, the *Email* type has to be selected. Follow the steps provided in [Managing Actions > Creating Actions](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/managing-actions#creating-actions) on SAP Help Portal.
+3. Next, confirm the action using a token sent to the defined email. Follow the steps provided in [Managing Actions > Confirming Actions](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/managing-actions#confirming-actions).
+4. Create the condition that is required for the registration of events. Follow the steps provided in [Managing Conditions > Creating Conditions](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/managing-conditions#creating-conditions). To see which event properties are available for the CI/CD service, see [Enable Build Notifications > Next Steps](https://help.sap.com/docs/continuous-integration-and-delivery/sap-continuous-integration-and-delivery/enable-build-notifications?locale=en-US#next-steps). As *Condition*, you can use the *build.end* *event Type* in your pipeline to get a failure or success message at the end of the build. 
+5. Create the required subscription to receive notifications for this event. Follow the steps provided in [Managing Subscriptions](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/managing-subscriptions).
 6. Trigger the job to test the notification.
 7. After the job ran through, you get either a success our a failure message.

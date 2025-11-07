@@ -1,6 +1,6 @@
 # Configure and Consume the APIs of the SAP BTP Application
 
-In the previous steps ([Enhance the SAP BTP Application by a Service Broker](./42a-Multi-Tenancy-Service-Broker.md)), you added the service broker to the core of the application and deployed it to the provider SAP BTP subaccount.
+In the [previous steps](./42a-Multi-Tenancy-Service-Broker.md), you added the service broker to the core of the application and deployed it to the provider SAP BTP subaccount.
 
 The service broker is used to enable access to application OData services using tenant-specific credentials and authorizations, taking into account the tenant isolation of a multi-tenant application. 
 
@@ -12,7 +12,7 @@ In general, there are two approaches to create a service broker instance in the 
 - The Cloud Foundry CLI requires you to activate the SAP BTP Cloud Foundry runtime (without quota) in your subaccount. 
 - When using the SAP BTP CLI, there's no need to activate the SAP BTP Cloud Foundry runtime. 
 
-This section describes how to use the SAP BTP CLI. For more details, go to the [SAP BTP CLI documentation](https://help.sap.com/docs/btp/sap-btp-neo-environment/download-and-start-using-btp-cli-client).
+This section describes how to use the SAP BTP CLI. For more details, go to the [SAP BTP CLI documentation](https://help.sap.com/docs/btp/sap-business-technology-platform/download-and-start-using-btp-cli-client).
 
 1. As the SAP BTP CLI is not installed in the SAP Business Application Studio by default, you need to install it first. Use the statements below in a terminal from the root folder of your project in your SAP Business Application Studio:
 
@@ -98,7 +98,7 @@ This section describes how to use the SAP BTP CLI. For more details, go to the [
       btp register services/broker --name poetry-slams-servicebroker --url <provider service broker url> --user "<user>" --password "<password>" --subaccount <consumer subaccount id>
       ```
 
-      > Note: In the previous section about [Enabling API Access of SAP BTP Applications Using Service Broker](./42a-Multi-Tenancy-Service-Broker.md), a generated user/password combination was introduced in the provider subaccount. This means that this combination will get regenerated with new values during every redeployment. Nevertheless, the service keys that you create below will still work. However, for new subscriptions, use the updated values.
+      > Note: In the previous section about [enabling API access of SAP BTP applications using service broker](./42a-Multi-Tenancy-Service-Broker.md), a generated user/password combination was introduced in the provider subaccount. This means that this combination will get regenerated with new values during every redeployment. Nevertheless, the service keys that you create below will still work. However, for new subscriptions, use the updated values.
 
 5. Create an instance of the service broker in the consumer subaccount.
    1. Run the following command.
@@ -195,7 +195,7 @@ More samples are provided within [ServiceBroker_TechnicalAccess.http](./api-samp
 
 A regular user can consume the APIs of the Poetry Slams application with principal propagation. In this case, you use the logon of a regular user through your IdP with user-specific authorizations.
 
-You can test this scenario using Postman. In the folder [*api-samples*](./api-samples/), you find a Postman collection and a Postman environment with some examples. Check the documentation of the Postman collection for further details about how to run the examples.
+You can test this scenario using Bruno or Postman. In the folder [*api-samples*](./api-samples/), you find a Bruno collection, a Postman collection and a Postman environment with some examples. Check the documentation of the Bruno or Postman collection for further details about how to run the examples.
 
 ## Unsubscribe the Service Broker in a Consumer SAP BTP Subaccount
 

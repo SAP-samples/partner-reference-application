@@ -2,7 +2,7 @@
 
 Put yourself in the shoes of a poetry slam manager who uses a poetry slam management application to manage the events. A guest list helps to ensure a smooth reception of the guests and artists at the entrance of the event location. 
 
-Use the SAP Forms service by Adobe to manage print and interactive forms. For more information, refer to [SAP Help for SAP Forms Service by Adobe](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/sap-forms-service-by-adobe?q=xsd).
+Use the SAP Forms service by Adobe to manage print and interactive forms. For more information, refer to [SAP Forms Service by Adobe](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/sap-forms-service-by-adobe?version=Cloud) on SAP Help Portal.
 
 ## Bill of Materials
 
@@ -21,19 +21,19 @@ To enable the feature the _Adobe LiveCycle Designer_ application, which is provi
 ## Architecture
 You can use the SAP Forms service by Adobe REST API to call the service from a cloud application, and the SAP Forms service configuration UI to customize rendering behaviour. Use the Adobe LiveCycle Designer to create a form.
 
-1. **Adobe LiveCycle Designer**: Supports you in creating templates for interactive and print forms by providing a wide set of design functions. The created form is then uploaded to the Template Store of the SAP Forms service by Adobe. For more information, refer to [SAP Help Using the Adobe LiveCycle Designer](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/using-adobe-livecycle-designer).
+1. **Adobe LiveCycle Designer**: Supports you in creating templates for interactive and print forms by providing a wide set of design functions. The created form is then uploaded to the Template Store of the SAP Forms service by Adobe. For more information, refer to [Using the Adobe LiveCycle Designer](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/using-adobe-livecycle-designer) on SAP Help Portal.
 
     > Note: When creating a form in the Adobe LiveCycle Designer, make sure to disable JavaScript for your PDF to avoid potential security risks.
 
 2. **SAP Forms Service by Adobe Application**
 
     1. Template Store: Use the SAP Forms service template store to save and organize forms, template files, and schema files, and the SAP Forms service template store UI to create forms and assign templates and schemas to them. 
-        For more information, refer to the [Template Store API Endpoints](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/template-store-api-endpoints) and the [Template Store UI](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/template-store-ui).
+        For more information, refer to [Template Store API Endpoints](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/template-store-api-endpoints) and [Template Store UI](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/template-store-ui) on SAP Help Portal.
 
-    2. Configuration UI: Use the configuration tool to manage your SAP Forms service settings, custom fonts, job profiles, and support files. For more information, refer to the [SAP Help Configuration Tool](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/configuration-tool).
+    2. Configuration UI: Use the configuration tool to manage your SAP Forms service settings, custom fonts, job profiles, and support files. For more information, refer to [Configuration Tool](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/configuration-tool) on SAP Help Portal.
 
 
-3. **SAP Forms Service by Adobe REST API**: Access the template store to get the data from SAP Forms service by Adobe and use it in the SAP BTP application. For more information, refer to [SAP Help SAP Forms Service by Adobe REST API](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/sap-forms-service-by-adobe-rest-api).
+3. **SAP Forms Service by Adobe REST API**: Access the template store to get the data from SAP Forms service by Adobe and use it in the SAP BTP application. For more information, refer to [SAP Forms Service by Adobe REST API](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/sap-forms-service-by-adobe-rest-api) on SAP Help Portal.
 
 <p align="center">
     <img src="./images/44_Forms_ADS_Service.png" width="40%">
@@ -78,7 +78,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 2. Enhance the poetry slam service.
 
-    1. Add a new read-only and not persisted entity *PDFDocument* to the [poetry slam service](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds). The *ID* is the ID of the poetry slam. It is used to read the poetry slam data, such as event description and visitors. The *content* element indicates that it contains media data through the LargeBinary datatype and the *@Core.MediaType* annotation, refer to [Reading LargeBinary/BLOB - capire documentation](https://cap.cloud.sap/docs/guides/databases#reading-largebinary-blob). As soon as a redirect to *../PDFDocument/content* is done, a custom media stream is created and returned as response, refer to [Custom Streaming - capire documentation](https://cap.cloud.sap/docs/node.js/best-practices#custom-streaming-beta).
+    1. Add a new read-only and not persisted entity *PDFDocument* to the [poetry slam service](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds). The *ID* is the ID of the poetry slam. It is used to read the poetry slam data, such as event description and visitors. The *content* element indicates that it contains media data through the LargeBinary datatype and the *@Core.MediaType* annotation, refer to [Reading LargeBinary/BLOB - capire documentation](https://cap.cloud.sap/docs/guides/databases#reading-largebinary-blob). As soon as a redirect to *../PDFDocument/content* is done, a custom media stream is created and returned as response, refer to the capire documentation on [Custom Streaming](https://cap.cloud.sap/docs/node.js/best-practices#custom-streaming-beta).
     
         ```cds
         // Generated PDF document with SAP Forms Service by Adobe
@@ -101,9 +101,9 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         guestList               = Guest List
         ```
 
-        > Note: The function *getFileName* in the file *forms.js* provides an example of how to access the texts (in the user's language) using the cds i18n module [cds.i18n.labels](https://cap.cloud.sap/docs/node.js/cds-i18n#at-key).
+        > Note: The function *getFileName* in the file *forms.js* provides an example of how to access the texts (in the user's language) using the cds i18n module [cds.i18n.labels](https://cap.cloud.sap/docs/node.js/cds-i18n#labels).
 
-    4. Copy the logo class [*logo.js*](../../../tree/main-multi-tenant-features/srv/lib/logo.js) to your project. The logo class offers functionality that is required by other services, for example email, too.
+    4. Copy the logo class [*logo.js*](../../../tree/main-multi-tenant-features/srv/lib/logo.js) to your project. 
 
     5. Copy the service credentials class [*serviceCredentials.js*](../../../tree/main-multi-tenant-features/srv/lib/serviceCredentials.js) to your project. This class offers functionality to get the required logon to bound services (like the SAP Forms Service by Adobe API).
 
@@ -111,11 +111,14 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
     6. Copy the [poetry slam service output management implementation](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceOutputImplementation.js) with an on-READ event of the *PDFDocument* entity to your project. The implementation reads the poetry slam data including artists and visitors. Furthermore, it creates the form with the data and returns a media streaming object that includes the rendered PDF, a valid content type, and a file name for the guest list which is to be downloaded as PDF.
         ```javascript
+        const cds = require('@sap/cds');
+
         const Forms = require('../lib/forms');
         ...
         module.exports = async (srv) => {
+            const { PDFDocument, PrintQueues } = srv.entities;
             ...
-            srv.on('READ', 'PDFDocument', async () => {
+            srv.on('READ', PDFDocument, async () => {
                 ...
             });
         };
@@ -125,11 +128,13 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     
         ```javascript
         const outputHandler = require('./poetrySlamServiceOutputImplementation');
-        module.exports = cds.service.impl(async (srv) => {
-            ...
-            await outputHandler(srv); // Forward handler for output
-            ...
-        });
+        module.exports = class extends cds.ApplicationService {
+            async init() {
+                ...
+                 await outputHandler(this); // Forward handler for output
+                ...
+            }
+        };
         ```
 
 3. Enhance the Fiori elements UI of the *Poetry Slams* application. 
@@ -216,7 +221,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 3. Run the command `npm install` in your project root folder to install the required npm modules. 
 
 4. Build and deploy the application. As a result, an SAP Forms service by Adobe API instance named *poetry-slams-adsrestapi* is created.
-    > Note: For detailed instructions on how to deploy, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
+    > Note: For detailed instructions on how to deploy, refer to [Deploy Your SAP BTP Multi-Tenant Application](./24-Multi-Tenancy-Deployment.md).
 
 5. Open the menu item *Service Marketplace* in the SAP BTP cockpit and create an instance of *Forms Service by Adobe* with the *default* plan.
       
@@ -232,7 +237,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 ### Form Creation and Upload
 After you have deployed your application with the SAP Forms service by Adobe, you need to upload the form to the template store:
 
-> Note: The usage of the template store UI is described in the SAP help [Manage Forms, Templates and Schemas (UI)](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/manage-forms-templates-and-schemas-ui)
+> Note: The usage of the template store UI is described in [Manage Forms, Templates and Schemas (UI)](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/manage-forms-templates-and-schemas-ui) on SAP Help Portal.
 
 1. Open the *Forms Service by Adobe* application in the SAP BTP cockpit.
 
@@ -262,17 +267,17 @@ After you have deployed your application with the SAP Forms service by Adobe, yo
 
 6. Make sure to adjust the form and schema variable in the [forms class *forms.js*](../../../tree/main-multi-tenant-features/srv/lib/forms.js) according to the name of the uploaded form and schema file given in the template store.
 
-7. If the provided template and schema was used, the SAP custom font `72` needs to be uploaded to the configuration UI. To enable the SAP Forms service by Adobe to render the PDF correctly, the font needs to be provided since it was used for the template creation. Font 72, desktop version, can be downloaded [here](https://experience.sap.com/fiori-design-web/downloads/). How to upload a custom font to the SAP Forms service by Adobe, is described in [SAP Help - Upload a Font](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/upload-fonts?version=Cloud).
+7. If the provided template and schema was used, the SAP custom font `72` needs to be uploaded to the configuration UI. To enable the SAP Forms service by Adobe to render the PDF correctly, the font needs to be provided since it was used for the template creation. Font 72, desktop version, can be downloaded [here](https://experience.sap.com/fiori-design-web/downloads/). How to upload a custom font to the SAP Forms service by Adobe, is described in [Upload a Font](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/upload-fonts?version=Cloud).
 
-> Note:  If you want to create your own form, you can use the [Adobe LiveCycle Designer](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/using-adobe-livecycle-designer?locale=en-US). You can download the latest version of the Adobe LiveCycle Designer from [SAP for Me](https://me.sap.com/softwarecenter). This service is only available for the operating system Microsoft Windows.
+> Note:  If you want to create your own form, you can use the [Adobe LiveCycle Designer](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/using-adobe-livecycle-designer?locale=en-US). You can download the latest version of the Adobe LiveCycle Designer from [SAP for Me](https://me.sap.com/softwarecenter). This service is only available for Microsoft Windows.
 
 ### Testing
 
 To ensure good quality it is crucial to test the new functionality.
 
-#### Local Testing
+#### Hybrid Testing
 
-For more efficient development, test your changes locally before deploying them to the SAP BTP provider subaccount. To set up the SAP Business Application Studio for local testing of the forms feature, follow these steps:
+Testing in a hybrid setup, runs the application locally (in SAP Business Application Studio), but using services on the SAP BTP, running in the Cloud Foundry runtime. Enable hybrid testing by setting up the required configuration in your SAP BTP subaccount and your development environment in SAP Business Application Studio.
 
 1. In the SAP BTP provider account, navigate to the Cloud Foundry space.
 

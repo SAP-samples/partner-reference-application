@@ -54,6 +54,7 @@ The list shows the entitlements that are required in the different subaccounts t
 |               | SAP Forms service by Adobe API                       | standard                  | Service       | 1                                 | 
 |               | SAP Print service                                    | sender                    | Service       | 1                                 |
 |               | SAP AI Core                                          | extended                  | Service       | 1                                 | 
+|               | SAP Job Scheduling service                           | standard                  | Application   | 1                                 | 
 | Consumer      |                                                      |                           |               |                                   |
 |               | SAP Audit Log Viewer service for SAP BTP             | default                   | Application   | 1                                 |
 |               | SAP Print service                                    | standard                  | Application   | 1                                 | 

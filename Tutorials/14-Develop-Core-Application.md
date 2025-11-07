@@ -32,13 +32,13 @@ The Poetry Slam Manager has three entities: poetry slams, visitors and visits (b
 
 6. Adapt the created *package.json* file to your needs for example, change the description attribute, add scripts, etc. You may use the [*package.json*](../../../tree/main-multi-tenant/package.json) of this repository as a reference. For general documentation, see the [npmjs documentation](https://docs.npmjs.com/cli/v10/configuring-npm/package-json).
 
-Looking for more information? Go to the [SAP Cloud Application Programming Model documentation on command line interface](https://cap.cloud.sap/docs/tools/#command-line-interface-cli).
+Looking for more information? Go to the SAP Cloud Application Programming Model documentation on [command line interfaces](https://cap.cloud.sap/docs/tools/#command-line-interface-cli).
 
 ## Define the Domain Models
 
 The domain model represents the relational database model of the application. All entities (tables), their relations (associations), and additional metadata (annotations) are maintained in the domain model. 
 
-For more information on domain modeling, go to the [SAP Cloud Application Programming Model documentation on domain modeling](https://cap.cloud.sap/docs/guides/domain-modeling).
+For more information on domain modeling, go to the SAP Cloud Application Programming Model documentation on [domain modeling](https://cap.cloud.sap/docs/guides/domain-modeling).
 
 Following the SAP Cloud Application Programming Model, all domain models must be stored in the */db* folder of the project. You create a new file (in this example, [*/db/poetrySlamManagerModel.cds*](../../../tree/main-multi-tenant/db/poetrySlamManagerModel.cds)) and add your application entities. In a CDS file, specify a namespace, which is used to structure the entities of the domain model. 
 We recommend that you avoid names that are too long. To include reuse components, add a *using* statement. You can define as many entities as required by using the *entity* keyword.
@@ -49,11 +49,11 @@ To add entities, use the core data services graphical modeler for SAP Business A
 
 To open the CDS graphical modeler, open the context menu in the created CDS file and select *Open With > CDS Graphical Modeler*.  
 
-To add additional metadata to the entities, annotate them by using the *annotate* keyword. To make it as easy as possible to read the code, use different files to separate the entity definition and additional metadata. If you want to read up on adding annotations, go to the [SAP Cloud Application Programming Model documentation on data annotations](https://cap.cloud.sap/docs/advanced/odata#annotations).
+To add additional metadata to the entities, annotate them by using the *annotate* keyword. To make it as easy as possible to read the code, use different files to separate the entity definition and additional metadata. If you want to read up on adding annotations, go to the SAP Cloud Application Programming Model documentation on [data annotations](https://cap.cloud.sap/docs/advanced/odata#annotations).
 
-1. Copy [Tutorial Domain Model Entity Definitions](../../../tree/main-multi-tenant/db/poetrySlamManagerModel.cds) into your project.
+1. Copy the [domain model entity definitions](../../../tree/main-multi-tenant/db/poetrySlamManagerModel.cds) into your project.
 
-2. As foreign key constraints are enabled by the annotation *@assert.integrity*, add the parameter also to the [root package.json](../../../tree/main-multi-tenant-features/package.json) to generate foreign-key constraints on the database layer as described in the capire documentation [Database Constraints](https://cap.cloud.sap/docs/guides/databases#db-constraints). 
+2. As foreign key constraints are enabled by the annotation *@assert.integrity*, add the parameter also to the [root package.json](../../../tree/main-multi-tenant-features/package.json) to generate foreign-key constraints on the database layer as described in the capire documentation [Database Constraints](https://cap.cloud.sap/docs/guides/databases#database-constraints). 
 
 ```json
   "cds": {
@@ -90,7 +90,7 @@ Copy the [initial data sets](../../../tree/main-multi-tenant/db/data/) into your
 
 > Note: To add entries to mutable data, such as poetry slams, visitors, and visits, in a productive setup, use APIs. For demo purposes in this reference application, the OData action *createTestData* is added to the Poetry Slams service which can be called with a button on the user interface. This is described further below.
 
-> Note: If you have previously used CSV files to create sample data, but later removed them, you will need to adjust the [undeploy.json](../../../tree/main-multi-tenant/db/undeploy.json) to remove the database artifacts that were deployed by the CSV files. ([Undeploying Artifacts](https://cap.cloud.sap/docs/guides/databases-hana#undeploying-artifacts)).
+> Note: If you have previously used CSV files to create sample data, but later removed them, you will need to adjust the [undeploy.json](../../../tree/main-multi-tenant/db/undeploy.json) to remove the database artifacts that were deployed by the CSV files. For more information, see [Undeploying Artifacts](https://cap.cloud.sap/docs/guides/databases-hana#undeploying-artifacts).
 
 ## Define Services
 
@@ -114,7 +114,7 @@ Every entity defined in the domain model definition comes with a set of generic 
 
 Note that some code functions have been defined in separate utility files such as specific calculations for the entities and the constants for code list values.
 
-Copy the main file of the [Poetry Slams service implementation](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceImplementation.js), the service implementation of the [poetry slams entity](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) and the service implementation of the [visits entity](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceVisitsImplementation.js) into the *srv/poetryslam* folder and the [code definitions](../../../tree/main-multi-tenant/srv/lib/codes.js) and [entity calculation functions](../../../tree/main-multi-tenant/srv/lib/entityCalculations.js) into the *srv/lib* folder of your project.
+Copy the main file of the [Poetry Slams service implementation](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceImplementation.js), the service implementation of the [poetry slams entity](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js), and the service implementation of the [visits entity](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceVisitsImplementation.js) into the *srv/poetryslam* folder and the [code definitions](../../../tree/main-multi-tenant/srv/lib/codes.js) and [entity calculation functions](../../../tree/main-multi-tenant/srv/lib/entityCalculations.js) into the *srv/lib* folder of your project.
 
 The Poetry Slams service definition and implementation define and handle the `createTestData` action which is used to create and reset sample entries of mutable data, such as poetry slams, visitors, and visits, after the application is deployed and running. This function is available for demo purpose only. The implementation of the action reads the files [*srv/poetryslam/sample_data/poetrySlams.json*](../../../tree/main-multi-tenant/srv/poetryslam/sample_data/poetrySlams.json), [*srv/poetryslam/sample_data/visitors.json*](../../../tree/main-multi-tenant/srv/poetryslam/sample_data/visitors.json), and [*srv/poetryslam/sample_data/visits.json*](../../../tree/main-multi-tenant/srv/poetryslam/sample_data/visits.json) containing sample data, and adds the data to the corresponding database tables using [`UPSERT`](https://cap.cloud.sap/docs/node.js/cds-ql#upsert). Copy these files into your project.
 
@@ -141,7 +141,7 @@ entity Visitors : cuid, managed {
     ...
 }
 ```
-Find more details in the [SAP Cloud Application Programming Model documentation on input validation](https://cap.cloud.sap/docs/guides/providing-services#input-validation).
+Find more details in the SAP Cloud Application Programming Model documentation on [input validation](https://cap.cloud.sap/docs/guides/providing-services#input-validation).
 
 ### Calculations and Enrichments
 Data can be calculated and enriched in the service. Poetry Slam Manager includes examples of different types of calculations: calculated elements, virtual elements, and calculations of stored and read-only attributes.
@@ -227,7 +227,9 @@ The most relevant files are the following:
 - [`app/poetryslams/annotations.cds`](../../../tree/main-multi-tenant/app/poetryslams/annotations.cds): Configure the annotations to change the appearance of UI elements.
 - [`app/poetryslams/webapp/manifest.json`](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json): Define the information about the application (for example, application names, routes, navigations, and so on).
 
-In the next paragraphs, some of the content of these files is explained to showcase what may be achieved and how. However, this tutorial will not explain every single line of these files, so you may just replace the content of the generated *annotations.cds*, and *manifest.json* from the example implementation ([annotations.cds](../../../tree/main-multi-tenant/app/poetryslams/annotations.cds), and [manifest.json](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json)). 
+In the next paragraphs, some of the content of these files is explained to showcase what may be achieved and how. However, this tutorial will not explain every single line of these files, so you may just replace the content of the generated *annotations.cds*, and *manifest.json* from the example implementation ([annotations.cds](../../../tree/main-multi-tenant/app/poetryslams/annotations.cds), and [manifest.json](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json)).
+
+> Note: Information about the available properties of the **manifest.json** are described in the SAPUI5 documentation [Manifest (Descriptor for Applications, Components, and Libraries)](https://sapui5.hana.ondemand.com/sdk/#/topic/be0cf40f61184b358b5faedaec98b2da).
 
 #### Definition of the SAPUI5 Version
 
@@ -284,7 +286,7 @@ Copy the content of the [*ui5.yaml*](../../../tree/main-multi-tenant/app/poetrys
 
 | Functionality                                                                                      | Description                                                                                               | Example       |
 | ---------                                                                                          | -------------                                                                                             | ------------- |
-| [Semantic Key](https://sapui5.hana.ondemand.com/sdk/#/topic/4c2d17aec55b4162b19f1b573b5a4f99.html) | Display the editing status of a column in the list report                                                 | [annotations.cds > service.PoetrySlams](../../../tree/main-multi-tenant/app/poetryslams/annotations.cds) |
+| [Semantic Key](https://sapui5.hana.ondemand.com/sdk/#/topic/aa2793cd877a4ecebc35d335920ee145) | Display the editing status of a column in the list report                                                 | [annotations.cds > service.PoetrySlams](../../../tree/main-multi-tenant/app/poetryslams/annotations.cds) |
 | [Side Effects](https://sapui5.hana.ondemand.com/sdk/#/topic/18b17bdd49d1436fa9172cbb01e26544.html) | Reload data, permissions, or messages, or trigger determine actions based on data changes in the UI scenarios | [annotations.cds > service.Visits](../../../tree/main-multi-tenant/app/poetryslams/annotations.cds) |
 | [Value List](https://sapui5.hana.ondemand.com/sdk/#/topic/16d43eb0472c4d5a9439ca1bf92c915d.html)   | Enable the selection of a value in a column with the help of a value list                                 | [annotations.cds > service.Visits](../../../tree/main-multi-tenant/app/poetryslams/annotations.cds) |
 
@@ -309,8 +311,28 @@ Therefore, the following changes are required:
 
 > Note: In the flpSandbox.html, a specific SAP UI5 version is provided in the *src*-path. For information about how to change the SAP UI5 version, refer to the UI5 Demo Kit [Variant for Bootstrapping from Content Delivery Network](https://sapui5.hana.ondemand.com/sdk/#/topic/2d3eb2f322ea4a82983c1c62a33ec4ae).
 
+#### Dynamic Tiles
+
+You can define dynamic tiles that display a Key Performance Indicator (KPI) based on application data. For more information, refer to [Expose HTML5 Appliactions in SAP Build Work Zone, standard edition -> Configure the manifest.json File -> Dynamic Tile (Optional)](https://help.sap.com/docs/build-work-zone-standard-edition/sap-build-work-zone-standard-edition/expose-html5-applications-in-sap-build-work-zone-standard-edition?locale=en-US). This feature is reflected in the launchpad of SAP Build Work Zone.
+
+Add the *indicatorDataSource* parameter to the [manifest.json](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json) file. The *indicatorDataSource* parameter defines a *dataSource*, which is the service, including a *path* from which to aggregate the KPI based on a specific dataset. In this case, the dataset is the *PoetrySlams* entity, which counts the published events based on the `status_code=2` status code. The refresh interval is measured in seconds, so the tile refreshes every minute.
+
+```json
+  "crossNavigation": {
+    "inbounds": {
+      "poetryslams-display": {
+        "indicatorDataSource": {
+          "dataSource": "mainService",
+          "path": "PoetrySlams/$count?$filter=status_code%20eq%202",
+          "refresh": 60
+        }
+      }
+    }
+  }
+```
+
 #### Autoload Data
-By default, lists aren't automatically prefilled when the *List Report* is displayed. However, you can change this behavior by enabling the autoload feature. To do so, simply go to */app/poetryslams/webapp/manifest.json* and add the following parameters:
+By default, lists aren't automatically prefilled when the *List Report* is displayed. However, you can change this behavior by enabling the autoload feature. To do so, simply go to the [manifest.json](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json) and add the following parameters:
 
 ```json
 {
@@ -368,7 +390,7 @@ The color values, as defined in the codes constants, are fixed values that the U
 ### Draft Concept
 The SAP Cloud Application Programming Model / SAP Fiori elements stack supports a *Draft Concept* out of the box. This enables users to store inconsistent data without having to publish them to other users.
 
-You can find more details in the [SAP Cloud Application Programming Model documentation on draft support](https://cap.cloud.sap/docs/advanced/fiori#draft-support). In the Poetry Slams application, the used *Poetry Slams* Service has the entity *PoetrySlams* draft-enabled. In the *Visitors* service, which is used by the Visitors application, the *Visitors* entity is draft-enabled.
+You can find more details in the SAP Cloud Application Programming Model documentation on [draft support](https://cap.cloud.sap/docs/advanced/fiori#draft-support). In the Poetry Slams application, the used *Poetry Slams* Service has the entity *PoetrySlams* draft-enabled. In the *Visitors* service, which is used by the Visitors application, the *Visitors* entity is draft-enabled.
 
 > Note: SAP Fiori elements v4 only supports editable object pages for draft-enabled entities. In case an entity is not draft-enabled in the used service, the user interface does not allow changes.
 
@@ -387,7 +409,7 @@ For non-default languages, add the ISO code of the language to the file name, fo
 Copy the [domain model-i18n files](../../../tree/main-multi-tenant/db/i18n), [service model and message-i18n files](../../../tree/main-multi-tenant/srv/i18n), [web application texts](../../../tree/main-multi-tenant/app/poetryslams/webapp/i18n), and [web application texts for the manifest](../../../tree/main-multi-tenant/app/poetryslams/i18n) into your project.
 
 ## Add Authentication and Role-Based Authorization
-To protect the application against unauthorized access, add user-based authentication and authorizations to the application. Broadly speaking, the application defines roles and assigns them statically to service operations, such as the reading or writing of a certain entity. The customer creates role templates that group a set of roles which are assigned to the customer's users. You can find further details in the [SAP Cloud Application Programming Model documentation on authorization and access control](https://cap.cloud.sap/docs/guides/security/authorization).
+To protect the application against unauthorized access, add user-based authentication and authorizations to the application. Broadly speaking, the application defines roles and assigns them statically to service operations, such as the reading or writing of a certain entity. The customer creates role templates that group a set of roles which are assigned to the customer's users. You can find further details in the SAP Cloud Application Programming Model documentation on [authorization and access control](https://cap.cloud.sap/docs/guides/security/authorization).
 
 First define the *Roles* as part of the application definition concept. For the Poetry Slam Manager application, two roles are defined: *PoetrySlamManager* and *PoetrySlamVisitor*.
 
@@ -504,7 +526,7 @@ Last but not least, in the [*.cdsrc.json*](../../../tree/main-multi-tenant/.cdsr
 }
 ```
 
-In the next step, the second application *visitors* is added. You can already make a first test of the app now. Therefore, follow the steps described in [test the app](14-Develop-Core-Application.md#test-the-app).
+In the next step, the second application *visitors* is added. You can already make a first test of the app now. Therefore, follow the steps described in the [Test the App](14-Develop-Core-Application.md#test-the-app) section.
 
 ## Add a Second Application
 
@@ -548,12 +570,12 @@ In this section, you learn how to add a second application *Visitors* to the bus
 
 6. Copy i18n-files with the texts of the *Visitors* UI from [*app/visitors/i18n*-folder](../../../tree/main-multi-tenant/app/visitors/i18n) and [*app/visitors/webapp/i18n*-folder](../../../tree/main-multi-tenant/app/visitors/webapp/i18n).
 
-7. Adopt the generated file [annotations.cds](../../../tree/main-multi-tenant/app/visitors/annotations.cds) to adjust the auto-generated list and object Page to your needs. You can either copy the complete file or perform individual adjustments, for example:
+7. Adopt the generated file [app/visitors/annotations.cds](../../../tree/main-multi-tenant/app/visitors/annotations.cds) to adjust the auto-generated list and object Page to your needs. You can either copy the complete file or perform individual adjustments, for example:
    1. Rename the *UI.FieldGroup* from *#GeneratedGroup* to something more meaningful.
    2. Use *Capabilities.InsertRestrictions*, *Capabilities.UpdateRestrictions*, *Capabilities.DeleteRestrictions* to enable *Create*, *Edit*, *Delete* buttons.
    3. Add *HeaderInfo* and *SelectionFields*, as well as additional *UI.FieldGroups* and *Facets*.
    4. Add annotations for associations (in our case *Visits*).
-   5. Add the navigation logic between the *Poetry Slams* and the *Visitors* application by adding the [*intent-based navigation*](https://sapui5.hana.ondemand.com/sdk/#/topic/d782acf8bfd74107ad6a04f0361c5f62) of SAP Fiori elements.
+   5. Add the navigation logic between the *Poetry Slams* and the *Visitors* applications by adding the [*intent-based navigation*](https://sapui5.hana.ondemand.com/sdk/#/topic/d782acf8bfd74107ad6a04f0361c5f62) of SAP Fiori elements.
 
       1. Add the navigation from the poetry slams object page of the poetry slams app to the visitors list of the visitors app by enhancing the [app/poetryslams/annotations.cds](../../../tree/main-multi-tenant/app/poetryslams/annotations.cds). Add the following code to the *Identification* section of the *service.PoetrySlams* annotations.
 
@@ -576,7 +598,7 @@ In this section, you learn how to add a second application *Visitors* to the bus
             Label         : '{i18n>maintainVisitor}',
             Mapping       : [{
               $Type                 : 'Common.SemanticObjectMappingType',
-              LocalProperty         : visitor.ID,
+              LocalProperty         : visitor_ID,
               SemanticObjectProperty: 'ID'
             }],
           }],
@@ -593,43 +615,36 @@ In this section, you learn how to add a second application *Visitors* to the bus
           }],
           ```
    
-8. Ensure that both applications ([*poetryslams*](../../../tree/main-multi-tenant/app/poetryslams) and [*visitors*](../../../tree/main-multi-tenant/app/visitors)) use the same value *"poetryslammanager"* for *"service"* in the section *"sap.cloud"* of the [manifest.json](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json) file. This value specifies the name under which both UI definitions will be stored in the html5 repository, and this must be the same for all the applications of one solution (in our case, the two applications *poetryslams* and *visitors* make up the solution *poetryslammanager*):
+8. Ensure that both applications ([*poetryslams*](../../../tree/main-multi-tenant/app/poetryslams) and [*visitors*](../../../tree/main-multi-tenant/app/visitors)) use the value `poetryslammanager` for `service` in the section `sap.cloud` of the [manifest.json](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json) file. This value specifies the name under which both UI definitions will be stored in the html5 repository, and this must be the same for all the applications of one solution (in our case, the two applications *poetryslams* and *visitors* make up the solution *poetryslammanager*):
+    
     ```json
     "sap.cloud": {
       "service": "poetryslammanager",
       "public": true
-    },
-    ```
-
-9. Explicitly set the SAPUI5 version of the *visitors* application in the [app/visitors/webapp/manifest.json](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json) (see also [Definition of the SAPUI5 Version](14-Develop-Core-Application.md#definition-of-the-sapui5-version)):
-
-    ```json
-    "sap.platform.cf": {
-      "ui5VersionNumber": "1.130.5"
     }
     ```
 
-## Update Project Dependencies
-
-To keep the project up to date, regularly update a few dependencies:
-
-- Node Modules:
-  - [package.json](../../../tree/main-multi-tenant/package.json)
-  - [app/poetryslams/package.json](../../../tree/main-multi-tenant/app/poetryslams/package.json)
-  - [app/router/package.json](../../../tree/main-multi-tenant/app/router/package.json)
-  - [mtx/sidecar/package.json](../../../tree/main-multi-tenant/mtx/sidecar/package.json)
-- SAPUI5 version:
-  - [app/poetryslams/webapp/manifest.json](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json)
-  - [app/poetryslams/webapp/index.html](../../../tree/main-multi-tenant/app/poetryslams/webapp/index.html)
-  - [app/poetryslams/webapp/test/flpSandbox.html](../../../tree/main-multi-tenant/app/poetryslams/webapp/test/flpSandbox.html)
-  - [app/poetryslams/webapp/test/integration/opaTests.qunit.html](../../../tree/main-multi-tenant/app/poetryslams/webapp/test/integration/opaTests.qunit.html)
-  - [app/visitors/webapp/manifest.json](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json)
-  - [app/visitors/webapp/index.html](../../../tree/main-multi-tenant/app/visitors/webapp/index.html)
-  - [app/visitors/webapp/test/flpSandbox.html](../../../tree/main-multi-tenant/app/visitors/webapp/test/flpSandbox.html)
-  - [app/visitors/webapp/test/integration/opaTests.qunit.html](../../../tree/main-multi-tenant/app/visitors/webapp/test/integration/opaTests.qunit.html)
-  - [@sap/ux-specification](https://www.npmjs.com/package/@sap/ux-specification?activeTab=versions): Keep the node module in sync with the currently used SAPUI5 version. For more details on mapping between the node module version and the SAPUI5 version, see this [overview](https://www.npmjs.com/package/@sap/ux-specification?activeTab=versions).
-
-> Note: You can find information on the available SAPUI5 versions and their maintenance status in this [overview](https://sapui5.hana.ondemand.com/versionoverview.html). Especially note the versions marked as *Long-term Maintenance*.
+9. Make sure the [app/visitors/webapp/manifest.json](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json) includes the following configurations:
+    1. Add the parameter `ID` to the `signature` of the inbound navigation `visitors-display`, which is required to enable the intent-based navigation from the *poetryslams* application to the *visitors* application:
+        
+        ```json
+        "signature": {
+          "parameters": {
+            "ID": {
+              "required": false
+            }
+          },
+          "additionalParameters": "ignored"
+        }
+        ```
+        > Note: `additionalParameters` are not required in this use case and are therefore set to be `ignored`.
+    2. Explicitly set the SAPUI5 version of the *visitors* application (see also [Definition of the SAPUI5 Version](14-Develop-Core-Application.md#definition-of-the-sapui5-version)):
+        
+        ```json
+        "sap.platform.cf": {
+          "ui5VersionNumber": "1.130.5"
+        }
+        ```
 
 ## Test the App
 
@@ -656,7 +671,7 @@ Now, you can start the web application and test it locally in SAP Business Appli
 
 > Note: If you would like to switch users, clear the browser cache first. For example, in Google Chrome, press `CTRL+SHIFT+DEL`, go to *Advanced*, and choose a time range and *Passwords and other sign-in data*. 
 
-If you want to get more details about the application implementation, go to [Test, Trace, Debug](./16-Test-Trace-Debug.md).
+If you want to get more details about the application implementation, see [Ensure Code Quality, Test, and Troubleshoot the Application](./16-Test-Trace-Debug.md).
 
 For more in-depth information on building SAP Cloud Application Programming Model applications, see the [SAP Cloud Application Programming Model documentation](https://cap.cloud.sap/docs/).
 
