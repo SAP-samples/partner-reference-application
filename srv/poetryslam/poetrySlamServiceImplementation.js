@@ -16,7 +16,7 @@ module.exports = class extends cds.ApplicationService {
     await poetrySlamsHandler(this); // Forward handler to the Poetry Slam entity
     await visitsHandler(this); // Forward handler to the Visits entity
     // ----------------------------------------------------------------------------
-    // Implementation of oData function
+    // Implementation of OData function
     // ----------------------------------------------------------------------------
 
     // Function "userInfo": Return logged-in user
