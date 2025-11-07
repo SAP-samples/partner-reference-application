@@ -764,7 +764,7 @@ describe('JobScheduler Class - createJob Method', () => {
   it('should successfully create a job and return the result', async () => {
     const jobName = 'mockJobName';
     const scheduleData = { frequency: 'Daily' };
-    const actionName = 'sendEmailReminder';
+    const actionName = 'sendReminder';
     const createResult = { success: true };
 
     // Simulate successful job creation
@@ -786,7 +786,7 @@ describe('JobScheduler Class - createJob Method', () => {
   it('should log an error if job creation fails', async () => {
     const jobName = 'mockJobName';
     const scheduleData = { frequency: 'Daily' };
-    const actionName = 'sendEmailReminder';
+    const actionName = 'sendReminder';
     const errorMsg = 'Creation Error';
 
     // Simulate an error during job creation

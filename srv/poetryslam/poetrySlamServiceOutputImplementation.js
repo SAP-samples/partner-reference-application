@@ -1,16 +1,22 @@
 'strict';
+// Type definition required for CDSLint
+/** @typedef {import('@sap/cds').CRUDEventHandler.On} OnHandler */
 
+// eslint-disable-next-line no-unused-vars
+const cds = require('@sap/cds');
 const Forms = require('../lib/forms');
-const EMail = require('../lib/email');
 const { getPrintQueues, print } = require('../lib/print');
 const { httpCodes } = require('../lib/codes');
 
+// Type definition required for CDSLint
+/** @type {OnHandler} */
 module.exports = async (srv) => {
+  const { PDFDocument, PrintQueues } = srv.entities;
   // ----------------------------------------------------------------------------
   // Implementation of service call to SAP Forms by Adobe API Service
   // ----------------------------------------------------------------------------
 
-  srv.on('READ', 'PDFDocument', async (req) => {
+  srv.on('READ', PDFDocument, async (req) => {
     const poetrySlam = req.data;
 
     try {
@@ -53,45 +59,7 @@ module.exports = async (srv) => {
   });
 
   // Virtual Entity PrintQueues
-  srv.on('READ', 'PrintQueues', async () => {
+  srv.on('READ', PrintQueues, async () => {
     return await getPrintQueues();
-  });
-
-  // ----------------------------------------------------------------------------
-  // Entity action "sendEMail": Informs the visitor via email about the event
-  // ----------------------------------------------------------------------------
-
-  srv.on('sendEMail', async (req) => {
-    const visit = await SELECT.one
-      .from(req.subject)
-      .columns(
-        'parent_ID',
-        'visitor_ID',
-        'visitor.email as visitorEMail',
-        'visitor.name as visitorName',
-        'parent.title as title',
-        'parent.description as description',
-        'parent.dateTime as dateTime'
-      );
-
-    // If visit was not found, throw an error
-    if (!visit) {
-      const id = req.params[req.params.length - 1]?.ID;
-      console.error('ACTION sendEmail: No visits found');
-      req.error(httpCodes.bad_request, 'VISIT_NOT_FOUND', [id]);
-      return;
-    }
-
-    const email = new EMail(
-      visit.visitorEMail,
-      EMail.getMailTitleForPoetrySlam(),
-      EMail.generateMailContentForPoetrySlam(
-        visit.title,
-        visit.description,
-        visit.dateTime,
-        visit.visitorName
-      )
-    );
-    await email.send(req);
   });
 };

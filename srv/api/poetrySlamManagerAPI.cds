@@ -26,7 +26,6 @@ service PoetrySlamManagerAPIService @(path: 'poetryslammanagerapi') {
     salesOrderID
   };
 
-
   // Visitors
   entity Visitors    as
     projection on poetrySlamManagerModel.Visitors {

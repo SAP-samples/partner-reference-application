@@ -49,6 +49,71 @@ describe('personal data audit logging in CRUD', () => {
     await POST(`/odata/v4/poetryslamservice/createTestData`);
   });
 
+  // Check when PersonalDataModified is available again in the audit log.
+  it('should log audit log messages when a visitor is changed and activated', async function () {
+    const id = '79ceab87-300d-4b66-8cc3-182c679b7c01';
+
+    // Move visitor into draft mode by calling draftEdit action
+    await ACTION(
+      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=true)`,
+      `draftEdit`
+    );
+
+    // Reduce max visitors
+    let result = await PATCH(
+      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=false)`,
+      {
+        name: 'Thomas Schmitt'
+      }
+    );
+
+    expect(result.data.name).to.eql('Thomas Schmitt');
+
+    // Read the updated poetry slam in draft mode
+    result = await GET(
+      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=false)`
+    );
+
+    expect(result.data.name).to.eql('Thomas Schmitt');
+
+    // Activate the draft; Audit Log is only written after activation
+    await ACTION(
+      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=false)`,
+      'draftActivate'
+    );
+
+    // Read the updated poetry slam in draft mode
+    await GET(
+      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=true)`
+    );
+
+    // Audit Log updates of visitors
+    let auditLog = filterLog(cdsTestLog);
+    const types = auditLog.map((log) => log.type);
+    expect(auditLog.length).to.eql(4);
+    expect(types).to.include('PersonalDataModified');
+
+    // Move visitor into draft mode by calling draftEdit action
+    await ACTION(
+      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=true)`,
+      `draftEdit`
+    );
+
+    // Change the name back
+    await PATCH(
+      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=false)`,
+      {
+        name: 'Thomas Schmidt'
+      }
+    );
+
+    // Activate the draft
+    await ACTION(
+      `/odata/v4/visitorservice/Visitors(ID=${id},IsActiveEntity=false)`,
+      'draftActivate'
+    );
+  });
+
   it('should log an audit log message when a visitor is read', async function () {
     // Read the updated poetry slam in draft mode
     const visitors = await GET(`/odata/v4/visitorservice/Visitors?$top=1`);

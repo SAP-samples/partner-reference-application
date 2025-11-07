@@ -49,6 +49,36 @@ describe('personal data audit logging in CRUD', () => {
     await POST(`/odata/v4/poetryslamservice/createTestData`);
   });
 
+  // Check when PersonalDataModified is available again in the audit log.
+  it('should create no audit log messages when a poetry slam is changed and activated', async function () {
+    const id = '79ceab87-300d-4b66-8cc3-f82c679b77a1';
+
+    // Move poetry slam into draft mode by calling draftEdit action
+    await ACTION(
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
+      `draftEdit`
+    );
+
+    // Reduce max visitors
+    let result = await PATCH(
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=false)`,
+      {
+        maxVisitorsNumber: 3
+      }
+    );
+
+    expect(result.data.maxVisitorsNumber).to.eql(3);
+    expect(filterLog(cdsTestLog).length).to.eql(0);
+
+    // Read the updated poetry slam in draft mode
+    result = await GET(
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=false)`
+    );
+
+    expect(result.data.maxVisitorsNumber).to.eql(3);
+    expect(filterLog(cdsTestLog).length).to.eql(0);
+  });
+
   it('should log an audit log message when a visitor is read', async function () {
     // Read the updated poetry slam in draft mode
     const visitors = await GET(`/odata/v4/poetryslamservice/Visitors?$top=1`);

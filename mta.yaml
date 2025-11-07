@@ -36,7 +36,7 @@ modules:
       - name: poetry-slams-auth
       - name: poetry-slams-auditlog
       - name: poetry-slams-cloud-logging # (Option 1: Dedicated SAP Cloud Logging Instance)
-      #- name: shared-cloud-logging # (Option 2: Shared SAP Cloud Logging Instance)
+      # - name: shared-cloud-logging # (Option 2: Shared SAP Cloud Logging Instance)
       - name: poetry-slams-db
       - name: poetry-slams-adsrestapi
       - name: poetry-slams-destination
@@ -280,6 +280,9 @@ resources:
                 Type: HTTP
                 URL: https://${org}.launchpad.${default-domain} # Runtime destination of launchpad, required for workzone
                 CEP.HTML5ContentProvider: true
+                # Required for dynamic tiles in Work Zone
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
               - Name: poetry-slams-srv-api
                 Description: Destination to access the poetry slams service module, required for workzone
                 Authentication: NoAuthentication
@@ -315,6 +318,7 @@ resources:
       path: ./xs-security.json
       service: xsuaa
       service-plan: broker
+    processed-after: [poetry-slams-jobscheduler] # Ensure that poetry-slams-jobscheduler is created before poetry-slams-auth
 
   # Application Registry
   # Registers application for use by subscribers

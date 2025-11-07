@@ -19,58 +19,62 @@ echo " Parameter lengths:" UAA URL: ${#url}, ClientId: ${#clientid}, ClientSecre
 # Step 2: Get access token
 # ------------------------------------------------------------------------------------------------------------------------------------------------
 echo Retrieving token
-command=$(echo curl "'"$url"/oauth/token?grant_type=client_credentials&response_type=token""'" -u "'"$clientid:$clientsecret"'" --silent)
-resp_token=$(eval "$command") 
+resp_token=$(curl "$url/oauth/token?grant_type=client_credentials&response_type=token" -u "$clientid:$clientsecret" --silent)
 token=$(echo $resp_token | jq -r ".access_token")
-#token=$(echo $resp_token | grep -o '"access_token": *"[^"]*"' | sed 's/"access_token": *"\([^"]*\)"/\1/')
 echo " Token length:" ${#token}
 
-# Step 3: Trigger update
+# Step 3: Get Tenant IDs
 # ------------------------------------------------------------------------------------------------------------------------------------------------
-echo Triggering update
-command=$(echo curl --request PATCH \"$saas_registry_url"/saas-manager/v1/application/subscriptions/batch"\" -H \"Authorization: Bearer $token\" -H \"Accept: application/json\" -H \"Content-Type: application/json\" -d "'"{\"tenantIds\":[\"*\"]}"'" -sS -D - -o /dev/null --silent)
-resp_upgrade=$(eval "$command" | grep "location")
-location=$(echo ${resp_upgrade:10:-1})
-echo " Update job log location:" $location
+echo Retrieving Tenant IDs
+response=$(curl "$saas_registry_url/saas-manager/v1/application/subscriptions" -H "Authorization: Bearer $token" -H "Accept: application/json" --silent)
+tenant_ids=$(echo $response | jq -r '.subscriptions[].consumerTenantId')
 
-# Step 4: Pull status of update job
+# Step 4: Update Tenant Subscriptions
 # ------------------------------------------------------------------------------------------------------------------------------------------------
-echo Pulling Status of Update Job "("$saas_registry_url$location")"
-command=$(echo curl \"$saas_registry_url$location\" -H \"Authorization: Bearer $token\" --silent)
+echo Updating Tenant Subscriptions
 
-count10s=0
-while true; do
+update_not_successful_in_time=()
+for tenant in $tenant_ids; do
+    echo " Update Tenant: $tenant"
+    update_response=$(curl -i --silent -X PATCH "$saas_registry_url/saas-manager/v1/application/tenants/$tenant/subscriptions" \
+        -H "Authorization: Bearer $token" \
+        -H "Content-Type: application/json")
+    job_location=$(echo "$update_response" | grep 'location: ' | awk '{print $2}' | tr -d '\r\n')
 
-  resp_status=$(eval "$command")
-  state=$(echo $resp_status | jq -r ".state")
-  #state=$(echo $resp_status | grep -o '"state": *"[^"]*",' | sed 's/"state": *"\([^"]*\)",/\1/')
-  echo " State ("$count10s"0s)": $state
+    # Try for 60 seconds to get a successful job status
+    counter=0
+    while : ; do
+    job_response=$(curl "$saas_registry_url$job_location" -H "Authorization: Bearer $token" -H "Accept: application/json" --silent)
+    job_status=$(echo $job_response | jq -r ".state")
 
-  echo $resp_status | jq -r '.stateDetails.batchOperationDetails.subscriptionUpdates | .[] | "   \(.tenantId) \(.state)"'
-  #tenant_list=$(echo $resp_status | grep -o '"tenantId": *"[^"]*"' | sed 's/"tenantId": *"\([^"]*\)"/\1/')
-  #for tenant in $tenant_list; do
-  #  prefix='"tenantId":"'$tenant'","state":'
-  #  command_grep=$(echo grep -o "'"$prefix'"[^"]*"'"'")
-  #  command_sed=$(echo sed "'s/"$prefix'"\([^"]*\)"/\1/'"'")
-  #  tenant_state=$(echo $resp_status | eval $command_grep | eval $command_sed)
-  #  echo "  $tenant $tenant_state"
-  #done
+    echo "  Job Status: $job_status"
 
-  if [[ $state == "SUCCEEDED" ]]; then
-    echo Upgrade job succeeded
-    exit 0
-  fi
-
-  if [[ $state == "FAILED" ]]; then
-    echo Upgrade job failed
-    exit 1
-  fi
-
-  if [[ $count10s == 25 ]]; then
-    echo Upgrade job not finished within time limit
-    exit 1
-  fi
-
-  count10s=$((count10s+1))
-  sleep 10
+    if [ "$job_status" == "SUCCEEDED" ]; then
+        echo "  Tenant $tenant update succeeded."
+        break
+    else
+        if [ "$job_status" == "FAILED" ]; then
+            echo "  Tenant $tenant update failed."
+            update_not_successful_in_time+=("$tenant")
+            break
+        fi
+        if [ $counter -eq 5 ]; then
+            echo "  Tenant $tenant update did not succeed within expected time."
+            echo "  Last Job Response: $job_response"
+            update_not_successful_in_time+=("$tenant")
+            break
+        fi
+        sleep 10
+        ((counter++))
+        echo "  Fetch Job Status - Retry: $counter/5"
+    fi
+    done
 done
+
+if [ ${#update_not_successful_in_time[@]} -ne 0 ]; then
+    echo "The following tenants did not complete the update in time: ${update_not_successful_in_time[*]}"
+    exit 1
+else
+    echo "All tenant updates completed successfully."
+    exit 0
+fi

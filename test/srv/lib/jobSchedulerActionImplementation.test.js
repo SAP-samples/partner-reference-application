@@ -7,7 +7,7 @@ const sinon = require('sinon');
 // Lib reuse files
 const serviceCredentials = require('../../../srv/lib/serviceCredentials');
 const { httpCodes, visitStatusCode } = require('../../../srv/lib/codes');
-const EMail = require('../../../srv/lib/email');
+const Notification = require('../../../srv/lib/notification');
 const TenantManager = require('../../../srv/lib/tenantManager');
 const JobScheduler = require('../../../srv/lib/jobScheduler');
 const JobSchedulerActionImplementation = require('../../../srv/lib/jobSchedulerActionImplementation');
@@ -223,13 +223,13 @@ describe('JobSchedulerActionImplementation - sendReminder Method', function () {
     // Verify error handling when missing required data
     expect(
       consoleErrorStub.calledOnceWithExactly(
-        `Action sendReminder: Error while sending emails`
+        `Action sendReminder: Error while sending notifications`
       )
     ).to.be.true;
     expect(
       reqMock.error.calledOnceWithExactly(
         httpCodes.bad_request,
-        'ACTION_JOB_EMAIL_REMINDER_NO_ID_OR_DATE'
+        'ACTION_JOB_REMINDER_NO_ID_OR_DATE'
       )
     ).to.be.true;
   });
@@ -241,7 +241,7 @@ describe('JobSchedulerActionImplementation - handleReminderByDate Method', funct
   let consoleInfoStub;
   let consoleErrorStub;
   let selectStub;
-  let emailSendStub;
+  let notificationSendStub;
   let getMailTitleForPoetrySlamStub;
   let generateMailContentForPoetrySlamStub;
 
@@ -259,14 +259,16 @@ describe('JobSchedulerActionImplementation - handleReminderByDate Method', funct
 
     selectStub = sinon.stub(cds.ql.SELECT, 'from');
 
-    // Stubbing email send method within EMail
-    emailSendStub = sinon.stub(EMail.prototype, 'send').resolves(0);
+    // Stubbing Notification send method within Notification
+    notificationSendStub = sinon
+      .stub(Notification.prototype, 'send')
+      .resolves(0);
     getMailTitleForPoetrySlamStub = sinon.stub(
-      EMail,
+      Notification,
       'getMailTitleForPoetrySlam'
     );
     generateMailContentForPoetrySlamStub = sinon.stub(
-      EMail,
+      Notification,
       'generateMailContentForPoetrySlam'
     );
   });
@@ -275,7 +277,7 @@ describe('JobSchedulerActionImplementation - handleReminderByDate Method', funct
     consoleInfoStub.restore();
     consoleErrorStub.restore();
     selectStub.restore();
-    emailSendStub.restore();
+    notificationSendStub.restore();
     getMailTitleForPoetrySlamStub.restore();
     generateMailContentForPoetrySlamStub.restore();
   });
@@ -301,11 +303,11 @@ describe('JobSchedulerActionImplementation - handleReminderByDate Method', funct
 
     await jobAction.handleReminderByDate(reqMock, '2023-05-01');
 
-    // Validate email was sent
-    expect(emailSendStub.calledOnce).to.be.true;
+    // Validate notification was sent
+    expect(notificationSendStub.calledOnce).to.be.true;
     expect(getMailTitleForPoetrySlamStub.calledOnce).to.be.true;
     expect(generateMailContentForPoetrySlamStub.calledOnce).to.be.true;
-    expect(emailSendStub.calledWith(reqMock)).to.be.true;
+    expect(notificationSendStub.calledWith(reqMock)).to.be.true;
     expect(consoleInfoStub.notCalled).to.be.true;
   });
 
@@ -323,7 +325,7 @@ describe('JobSchedulerActionImplementation - handleReminderByDate Method', funct
 
     // Validate logging behavior
     expect(consoleInfoStub.calledOnce).to.be.true;
-    expect(emailSendStub.notCalled).to.be.true;
+    expect(notificationSendStub.notCalled).to.be.true;
   });
 });
 
@@ -335,10 +337,11 @@ describe('JobSchedulerActionImplementation - handleReminderByPoetrySlamID Method
   let consoleErrorStub;
   let stubSELECT;
   let stubUPDATE;
-  let emailSendStub;
+  let notificationSendStub;
   let jobSchedulerCreateStub;
   let getMailTitleForPoetrySlamStub;
   let generateMailContentForPoetrySlamStub;
+  let stubCdsContext;
 
   beforeEach(function () {
     jobAction = new JobSchedulerActionImplementation();
@@ -382,6 +385,13 @@ describe('JobSchedulerActionImplementation - handleReminderByPoetrySlamID Method
       }
     });
 
+    const fakeContext = {
+      locale: 'en'
+    };
+
+    // stub cds.context getter to return the fake context
+    stubCdsContext = sinon.stub(cds, 'context').get(() => fakeContext);
+
     // Stubbing UPDATE entity behavior
     stubUPDATE = sinon.stub(cds.ql.UPDATE, 'entity').returns({
       set: function () {
@@ -392,14 +402,16 @@ describe('JobSchedulerActionImplementation - handleReminderByPoetrySlamID Method
       }
     });
 
-    // Stubbing email send method within EMail
-    emailSendStub = sinon.stub(EMail.prototype, 'send').resolves(0);
+    // Stubbing notification send method within notification
+    notificationSendStub = sinon
+      .stub(Notification.prototype, 'send')
+      .resolves(0);
     getMailTitleForPoetrySlamStub = sinon.stub(
-      EMail,
+      Notification,
       'getMailTitleForPoetrySlam'
     );
     generateMailContentForPoetrySlamStub = sinon.stub(
-      EMail,
+      Notification,
       'generateMailContentForPoetrySlam'
     );
 
@@ -414,13 +426,14 @@ describe('JobSchedulerActionImplementation - handleReminderByPoetrySlamID Method
     consoleErrorStub.restore();
     stubSELECT.restore();
     stubUPDATE.restore();
-    emailSendStub.restore();
+    notificationSendStub.restore();
     jobSchedulerCreateStub.restore();
     getMailTitleForPoetrySlamStub.restore();
     generateMailContentForPoetrySlamStub.restore();
+    stubCdsContext.restore();
   });
 
-  it('should send email reminders for all visits found', async function () {
+  it('should send notification reminders for all visits found', async function () {
     process.env['test_tenant_id'] = 'mockTenantID';
     await jobAction.handleReminderByPoetrySlamID(
       reqMock,
@@ -429,8 +442,8 @@ describe('JobSchedulerActionImplementation - handleReminderByPoetrySlamID Method
     );
 
     delete process.env['test_tenant_id'];
-    // Validate email sending and job status text update
-    expect(emailSendStub.calledOnce).to.be.true;
+    // Validate notification sending and job status text update
+    expect(notificationSendStub.calledOnce).to.be.true;
     expect(getMailTitleForPoetrySlamStub.calledOnce).to.be.true;
     expect(generateMailContentForPoetrySlamStub.calledOnce).to.be.true;
     expect(txMock.run.calledOnce).to.be.true;
@@ -439,6 +452,7 @@ describe('JobSchedulerActionImplementation - handleReminderByPoetrySlamID Method
     expect(stubUPDATE.calledOnce).to.be.true;
     expect(consoleInfoStub.notCalled).to.be.true;
     expect(jobSchedulerCreateStub.calledOnce).to.be.true;
+    expect(cds.context.locale).to.equal('en');
   });
 
   it('should log info message when no visits are found', async function () {
@@ -457,15 +471,16 @@ describe('JobSchedulerActionImplementation - handleReminderByPoetrySlamID Method
       txMock
     );
 
-    // Validate logging behavior and no email sending
+    // Validate logging behavior and no notification sending
     expect(
       consoleInfoStub.calledOnceWithExactly(
         'ACTION handleReminderByPoetrySlamID: No Visits found.'
       )
     ).to.be.true;
-    expect(emailSendStub.notCalled).to.be.true;
+    expect(notificationSendStub.notCalled).to.be.true;
     expect(txMock.run.calledOnce).to.be.true;
     expect(txMock.commit.notCalled).to.be.true;
     expect(txMock.rollback.notCalled).to.be.true;
+    expect(cds.context.locale).to.equal('en');
   });
 });

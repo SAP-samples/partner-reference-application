@@ -401,7 +401,7 @@ describe('Util Entity Calculations - Calculate PoetrySlam Data', () => {
   let stubLog;
   let stubSELECT;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // Use Stubs for external services
     stubLog = sinon.stub(console, 'error');
     stubSELECT = sinon.stub(SELECT, 'one').returns(null);
@@ -444,7 +444,7 @@ describe('Util Entity Calculations - Convert to Array', () => {
   let stubIsArray;
   let stubLog;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // Use Stubs for external services
     stubLog = sinon.stub(console, 'error');
     stubIsArray = sinon.stub(Array, 'isArray').returns(false);
@@ -456,7 +456,7 @@ describe('Util Entity Calculations - Convert to Array', () => {
     stubIsArray.restore();
   });
 
-  it('should return an empty array because of missing object', async () => {
+  it('should return an empty array because of missing object', () => {
     const result = entityCalculations.convertToArray(null);
 
     sinon.assert.calledWith(
@@ -467,7 +467,7 @@ describe('Util Entity Calculations - Convert to Array', () => {
     expect(result.length).to.equal(0);
   });
 
-  it('should return an array from a object', async () => {
+  it('should return an array from a object', () => {
     const object = {
       mockKey1: 'mockValue1',
       mockKey2: 'mockValue2'

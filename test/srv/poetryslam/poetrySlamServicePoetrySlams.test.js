@@ -52,7 +52,7 @@ describe('Poetryslams in PoetrySlamService', () => {
     expect(poetrySlams.data.value.length).to.greaterThan(0);
   });
 
-  it('should set the correct statusCriticality in read of poetry slams', async () => {
+  it('should set the correct statusCriticality in read of poetry slams', () => {
     expect(
       poetrySlams.data.value.find(
         (poetrySlam) =>
@@ -471,6 +471,34 @@ describe('Poetryslams in PoetrySlamService', () => {
     expect(result.data.purchaseOrderID).to.eql(null);
     expect(result.data.purchaseOrderObjectID).to.eql(null);
     expect(result.data.purchaseOrderSystem).to.eql(null);
+  });
+
+  it('should add purchaseOrderObjectID to select when purchaseOrderID is requested', async () => {
+    let result = await GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
+      params: {
+        $select: `ID`,
+        $top: 1
+      }
+    });
+
+    expect(result.data.value.length).to.eql(1);
+    expect(Object.keys(result.data.value[0])).to.not.include('purchaseOrderID');
+    expect(Object.keys(result.data.value[0])).to.not.include(
+      'purchaseOrderObjectID'
+    );
+
+    result = await GET(`/odata/v4/poetryslamservice/PoetrySlams`, {
+      params: {
+        $select: `ID,purchaseOrderID`,
+        $top: 1
+      }
+    });
+
+    expect(result.data.value.length).to.eql(1);
+    expect(Object.keys(result.data.value[0])).to.include('purchaseOrderID');
+    expect(Object.keys(result.data.value[0])).to.include(
+      'purchaseOrderObjectID'
+    );
   });
 
   it('should reject createWithAI action without running SAP BTP AI Core service', async () => {

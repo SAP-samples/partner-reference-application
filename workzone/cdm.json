@@ -1,5 +1,159 @@
 [
   {
+    "_version": "3.2",
+    "identification": {
+      "id": "auditlog",
+      "title": "{{title}}",
+      "entityType": "businessapp"
+    },
+    "payload": {
+      "visualizations": {
+        "auditlog-display": {
+          "vizType": "sap.ushell.StaticAppLauncher",
+          "vizConfig": {
+            "sap.ui": {
+              "icons": {
+                "icon": "sap-icon://commission-check"
+              }
+            },
+            "sap.app": {
+              "id": "auditlog",
+              "info": "",
+              "subTitle": "Review Audit Data"
+            },
+            "sap.flp": {
+              "target": {
+                "type": "IBN",
+                "inboundId": "auditlog-display",
+                "parameters": {}
+              }
+            }
+          }
+        }
+      },
+      "targetAppConfig": {
+        "sap.app": {
+          "crossNavigation": {
+            "inbounds": {
+              "auditlog-display": {
+                "signature": {
+                  "parameters": {},
+                  "additionalParameters": "ignored"
+                },
+                "semanticObject": "auditlog",
+                "action": "display"
+              }
+            }
+          },
+          "destination": "audit-log-viewer-service"
+        },
+        "sap.integration": {
+          "urlTemplateId": "urltemplate.url-dynamic",
+          "urlTemplateParams": {
+            "enableSapParams": false
+          }
+        }
+      }
+    },
+    "texts": [
+      {
+        "locale": "",
+        "textDictionary": {
+          "title": "Audit Log Viewer"
+        }
+      },
+      {
+        "locale": "en",
+        "textDictionary": {
+          "title": "Audit Log Viewer"
+        }
+      },
+      {
+        "locale": "de",
+        "textDictionary": {
+          "title": "Audit Log Viewer"
+        }
+      }
+    ]
+  },
+  {
+    "_version": "3.2",
+    "identification": {
+      "id": "printer",
+      "title": "{{title}}",
+      "entityType": "businessapp"
+    },
+    "payload": {
+      "visualizations": {
+        "printer-display": {
+          "vizType": "sap.ushell.StaticAppLauncher",
+          "vizConfig": {
+            "sap.ui": {
+              "icons": {
+                "icon": "sap-icon://print"
+              }
+            },
+            "sap.app": {
+              "id": "printer",
+              "info": "",
+              "subTitle": "Manage Print Queues"
+            },
+            "sap.flp": {
+              "target": {
+                "type": "IBN",
+                "inboundId": "printer-display",
+                "parameters": {}
+              }
+            }
+          }
+        }
+      },
+      "targetAppConfig": {
+        "sap.app": {
+          "crossNavigation": {
+            "inbounds": {
+              "printer-display": {
+                "signature": {
+                  "parameters": {},
+                  "additionalParameters": "ignored"
+                },
+                "semanticObject": "printer",
+                "action": "display"
+              }
+            }
+          },
+          "destination": "print-service"
+        },
+        "sap.integration": {
+          "urlTemplateId": "urltemplate.url-dynamic",
+          "urlTemplateParams": {
+            "enableSapParams": false
+          }
+        }
+      }
+    },
+    "texts": [
+      {
+        "locale": "",
+        "textDictionary": {
+          "title": "Printer"
+        }
+      },
+      {
+        "locale": "en",
+        "textDictionary": {
+          "title": "Printer"
+        }
+      },
+      {
+        "locale": "de",
+        "textDictionary": {
+          "title": "Printer"
+        }
+      }
+    ]
+  },
+  {
     "_version": "3.0",
     "identification": {
       "id": "poetrySlamManagerGroupId",
@@ -17,6 +171,16 @@
           "id": "visitors",
           "appId": "visitors",
           "vizId": "visitors-display"
+        },
+        {
+          "id": "auditlog",
+          "appId": "auditlog",
+          "vizId": "auditlog-display"
+        },
+        {
+          "id": "printer",
+          "appId": "printer",
+          "vizId": "printer-display"
         }
       ]
     },
@@ -55,6 +219,12 @@
         },
         {
           "id": "visitors"
+        },
+        {
+          "id": "auditlog"
+        },
+        {
+          "id": "printer"
         }
       ],
       "groups": [

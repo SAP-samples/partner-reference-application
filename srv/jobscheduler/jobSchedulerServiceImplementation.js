@@ -40,10 +40,10 @@ module.exports = cds.service.impl(async (srv) => {
   });
 
   // ------------------------------------------------------------------------------------
-  // Action "sendEmailReminder": Consumer-specific job action of Job Scheduler service
+  // Action "sendReminder": Consumer-specific job action of Job Scheduler service
   // ------------------------------------------------------------------------------------
 
-  srv.on('sendEmailReminder', async (req) => {
+  srv.on('sendReminder', async (req) => {
     // Manual transaction to directly commit changes to the database
     const tx = cds.tx();
     try {
@@ -53,11 +53,11 @@ module.exports = cds.service.impl(async (srv) => {
     } catch (e) {
       tx.rollback();
       console.error(
-        `Action sendEmailReminder: Error while processing jobs: ${e.message}`
+        `Action sendReminder: Error while processing jobs: ${e.message}`
       );
       req.error(
         httpCodes.internal_server_error,
-        'ACTION_JOB_EMAIL_REMINDER_SEND_FAIL'
+        'ACTION_JOB_REMINDER_SEND_FAIL'
       );
     }
   });

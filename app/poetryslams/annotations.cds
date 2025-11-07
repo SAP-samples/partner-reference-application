@@ -139,7 +139,7 @@ annotate service.PoetrySlams with @(
         Label        : '{i18n>backgroundExecution}',
         ID           : 'BackgroundExecution',
         Target       : '@UI.FieldGroup#BackgroundExecution',
-        ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'isJobStatusShown'}}} // Display Job Status if SendEmailReminder tiggered
+        ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'isJobStatusShown'}}} // Display Job Status if SendReminder tiggered
       }
     ],
     // Bundle multiple fields into a group
@@ -419,7 +419,7 @@ annotate service.PoetrySlams with @(
       },
       Description   : {
         $Type: 'UI.DataField',
-        Value: description
+        Value: title
       }
     },
     // Addition of custom actions to the list page & object page
@@ -466,7 +466,7 @@ annotate service.PoetrySlams with @(
           {$Path: 'IsActiveEntity'}
         ]}}}
       },
-      // Send reminder email
+      // Send reminder
       {
         $Type        : 'UI.DataFieldForAction',
         Action       : 'PoetrySlamService.sendReminderForPoetrySlam',
@@ -518,38 +518,58 @@ annotate service.PoetrySlams with @(
     LineItem                       : [
       {
         $Type : 'UI.DataFieldForAction',
-        Action: 'PoetrySlamService.cancel',
-        Label : '{i18n>cancel}'
-      },
-      {
-        $Type : 'UI.DataFieldForAction',
         Action: 'PoetrySlamService.publish',
         Label : '{i18n>publish}'
       },
       {
-        $Type: 'UI.DataField',
-        Value: number
+        $Type             : 'UI.DataField',
+        Value             : number,
+        @HTML5.CssDefaults: {
+          $Type: 'HTML5.CssDefaultsType',
+          width: '5rem'
+        }
       },
       {
-        $Type: 'UI.DataField',
-        Value: title
+        $Type             : 'UI.DataField',
+        Value             : title,
+        @HTML5.CssDefaults: {
+          $Type: 'HTML5.CssDefaultsType',
+          width: '15rem'
+        }
       },
       {
-        $Type: 'UI.DataField',
-        Value: description
+        $Type             : 'UI.DataField',
+        Value             : description,
+        @HTML5.CssDefaults: {
+          $Type: 'HTML5.CssDefaultsType',
+          width: '30rem'
+        }
       },
       {
-        $Type      : 'UI.DataField',
-        Value      : status_code,
-        Criticality: statusCriticality
+        $Type             : 'UI.DataField',
+        Value             : status_code,
+        Criticality       : statusCriticality,
+        @HTML5.CssDefaults: {
+          $Type: 'HTML5.CssDefaultsType',
+          width: '8rem',
+        }
       },
       {
         $Type: 'UI.DataField',
         Value: dateTime
       },
       {
-        $Type : 'UI.DataFieldForAnnotation',
-        Target: '@UI.DataPoint#bookedSeats'
+        $Type             : 'UI.DataFieldForAnnotation',
+        Target            : '@UI.DataPoint#bookedSeats',
+        @HTML5.CssDefaults: {
+          $Type: 'HTML5.CssDefaultsType',
+          width: '8rem',
+        }
+      },
+      {
+        $Type : 'UI.DataFieldForAction',
+        Action: 'PoetrySlamService.cancel',
+        Label : '{i18n>cancel}'
       },
       {
         $Type: 'UI.DataFieldWithUrl',
@@ -575,8 +595,6 @@ annotate service.PoetrySlams with @(
     // Default filters on the list page
     SelectionFields                : [
       number,
-      title,
-      description,
       status_code,
       dateTime
     ]
@@ -658,7 +676,7 @@ annotate service.Visits with @(
       Label         : '{i18n>maintainVisitor}',
       Mapping       : [{
         $Type                 : 'Common.SemanticObjectMappingType',
-        LocalProperty         : visitor.ID,
+        LocalProperty         : visitor_ID,
         SemanticObjectProperty: 'ID'
       }],
     }],
@@ -693,8 +711,8 @@ annotate service.Visits with @(
       },
       {
         $Type : 'UI.DataFieldForAction',
-        Action: 'PoetrySlamService.sendEMail',
-        Label : '{i18n>sendEMail}'
+        Action: 'PoetrySlamService.sendNotification',
+        Label : '{i18n>sendNotification}'
       }
     ],
     Facets                        : [
@@ -737,7 +755,7 @@ annotate service.Visits with @(
       Data : [
         {
           $Type: 'UI.DataField',
-          Value: visitor.name
+          Value: visitor_ID
         },
         {
           $Type: 'UI.DataField',
@@ -758,13 +776,10 @@ annotate service.Visits with @(
 );
 
 annotate service.Visitors with {
-  ID   @(
-    Common: {
-      Text           : email,
-      TextArrangement: #TextOnly,
-      Label          : '{i18n>email}'
-    },
-    UI    : {Hidden: true}
-  );
+  ID   @(Common: {
+    Text           : email,
+    TextArrangement: #TextOnly,
+    Label          : '{i18n>email}'
+  });
   name @readonly;
 };

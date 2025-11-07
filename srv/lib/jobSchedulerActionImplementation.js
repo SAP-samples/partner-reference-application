@@ -2,7 +2,7 @@
 
 const JobScheduler = require('./jobScheduler');
 const TenantManager = require('./tenantManager');
-const EMail = require('./email');
+const Notification = require('./notification');
 const cds = require('@sap/cds');
 const { httpCodes, poetrySlamStatusCode, visitStatusCode } = require('./codes');
 
@@ -30,8 +30,12 @@ class JobSchedulerActionImplementation {
     return tomorrow.toISOString().split('T')[0]; // Returns the date in YYYY-MM-DD format
   }
 
-  setJobStatusText(visitCount, emailCount) {
-    return `Visitors: ${visitCount}, Emails sent: ${emailCount}`;
+  setJobStatusText(visitCount, notificationCount) {
+    return cds.i18n.labels.at(
+      'JOBSCHEDULER_JOB_STATUS_TEXT',
+      cds.context.locale ?? 'en',
+      [visitCount, notificationCount]
+    );
   }
 
   // ----------------------------------------------------------------------------
@@ -54,12 +58,12 @@ class JobSchedulerActionImplementation {
           tenant.subscribedTenantId
         );
         let formattedSubdomain = `(${tenant.subscribedSubdomain.replace(/-/g, '_')})`;
-        let jobName = `send_email_reminder_for_all_events_until_date ${formattedSubdomain}`;
+        let jobName = `send_reminder_for_all_events_until_date ${formattedSubdomain}`;
         // Start job for tenant
         jobData = await jobScheduler.startJob(
           jobName,
           this.scheduleData,
-          'sendEmailReminder'
+          'sendReminder'
         );
         if (jobData) {
           jobCount++;
@@ -91,7 +95,7 @@ class JobSchedulerActionImplementation {
   }
 
   // ----------------------------------------------------------------------------
-  //  Implmentation of action endpoint: send reminder email
+  //  Implmentation of action endpoint: send reminder notification
   // ----------------------------------------------------------------------------
   async sendReminder(req, tx) {
     const { poetrySlamID, date } = req.data;
@@ -102,15 +106,12 @@ class JobSchedulerActionImplementation {
     } else if (poetrySlamID) {
       await this.handleReminderByPoetrySlamID(req, poetrySlamID, tx);
     } else {
-      console.error(`Action sendReminder: Error while sending emails`);
-      req.error(
-        httpCodes.bad_request,
-        'ACTION_JOB_EMAIL_REMINDER_NO_ID_OR_DATE'
-      );
+      console.error(`Action sendReminder: Error while sending notifications`);
+      req.error(httpCodes.bad_request, 'ACTION_JOB_REMINDER_NO_ID_OR_DATE');
     }
   }
 
-  // Send reminder emails to the visitors of all poetry slams until a specific date
+  // Send reminder notifications to the visitors of all poetry slams until a specific date
   async handleReminderByDate(req, date) {
     const futureDate = new Date(date);
     futureDate.setHours(23, 59, 59, 999);
@@ -121,10 +122,9 @@ class JobSchedulerActionImplementation {
         'title',
         'description',
         'dateTime',
-        'status',
+        'visits.status_code as visitStatusCode',
         'visits.visitor.name as visitorName',
-        'visits.visitor.email as visitorEMail',
-        'visits.status_code'
+        'visits.visitor.email as visitorEMail'
       )
       .where({
         dateTime: { '<=': futureDate },
@@ -139,37 +139,32 @@ class JobSchedulerActionImplementation {
       console.info(`ACTION sendReminderByDate: No Visits found.`);
       return;
     }
-    // Send email reminder to each visitor
-    visits.forEach(async (visit) => {
-      const email = new EMail(
+    // Send notification reminder to each visitor
+    for (const visit of visits) {
+      const notification = new Notification(
         visit.visitorEMail,
-        EMail.getMailTitleForPoetrySlam(),
-        EMail.generateMailContentForPoetrySlam(
-          visit.title,
-          visit.description,
-          visit.dateTime,
-          visit.visitorName
-        )
+        Notification.getMailTitleForPoetrySlam(),
+        Notification.generateMailContentForPoetrySlam(),
+        Notification.getNotificationSubtitleForPoetrySlam(),
+        visit
       );
 
-      await email.send(req);
-    });
+      await notification.send(req);
+    }
   }
 
-  // Send reminder emails for the visitors of a specific poetry slam event
+  // Send reminder notifications for the visitors of a specific poetry slam event
   async handleReminderByPoetrySlamID(req, poetrySlamID, tx) {
     // Select visits of a specific and published or fully booked poetry slam event
     // and thereof visitors which have the status booked
     const visits = await SELECT.from('PoetrySlamService.PoetrySlams')
       .columns(
-        'number',
         'title',
         'description',
         'dateTime',
-        'status',
+        'visits.status_code as visitStatusCode',
         'visits.visitor.name as visitorName',
-        'visits.visitor.email as visitorEMail',
-        'visits.status_code'
+        'visits.visitor.email as visitorEMail'
       )
       .where({
         ID: poetrySlamID,
@@ -180,7 +175,7 @@ class JobSchedulerActionImplementation {
       });
 
     // Initalize Status Text
-    let emailCount = 0;
+    let notificationCount = 0;
 
     // Visit was not found
     if (!visits.length) {
@@ -195,27 +190,24 @@ class JobSchedulerActionImplementation {
 
     let currentTenantID = cds.context?.tenant || process.env['test_tenant_id'];
 
-    // Send email reminder to each visitor
+    // Send notification reminder to each visitor
     for (const visit of visits) {
-      const email = new EMail(
+      const notification = new Notification(
         visit.visitorEMail,
-        EMail.getMailTitleForPoetrySlam(),
-        EMail.generateMailContentForPoetrySlam(
-          visit.title,
-          visit.description,
-          visit.dateTime,
-          visit.visitorName
-        )
+        Notification.getMailTitleForPoetrySlam(),
+        Notification.generateMailContentForPoetrySlam(),
+        Notification.getNotificationSubtitleForPoetrySlam(),
+        visit
       );
-      // Send Email
-      const emailStatus = await email.send(req);
-      if (emailStatus === 0) emailCount++;
+      // Send notification
+      const notificationStatus = await notification.send(req);
+      if (notificationStatus === 0) notificationCount++;
     }
 
     await tx.run(
       UPDATE.entity('PoetrySlamService.PoetrySlams')
         .set({
-          jobStatusText: this.setJobStatusText(visits.length, emailCount)
+          jobStatusText: this.setJobStatusText(visits.length, notificationCount)
         })
         .where({ ID: poetrySlamID })
     );
@@ -227,7 +219,7 @@ class JobSchedulerActionImplementation {
     );
     const logData = {
       success: true,
-      message: this.setJobStatusText(visits.length, emailCount)
+      message: this.setJobStatusText(visits.length, notificationCount)
     };
     await jobSchedulerProvider.updateSchedulerRunLog(
       req.headers['x-sap-job-id'],

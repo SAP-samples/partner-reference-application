@@ -1,4 +1,4 @@
-/* checksum : ad64f9c36e090119a5580dea7163d805 */
+/* checksum : 93870c2240156ce09e2d1b7fab6525f7 */
 @cds.external : true
 service b1_sbs_v2 {
   @cds.external : true
@@ -23,17 +23,17 @@ service b1_sbs_v2 {
     @odata.Precision : 0
     @odata.Type : 'Edm.DateTimeOffset'
     DocDueDate : DateTime;
-    CardCode : LargeString;
-    Comments : LargeString;
+    CardCode : String;
+    Comments : String;
     @odata.Precision : 0
     @odata.Type : 'Edm.DateTimeOffset'
     DocDate : DateTime;
     @odata.Precision : 0
     @odata.Type : 'Edm.DateTimeOffset'
     CreationDate : DateTime;
-    CardName : LargeString;
+    CardName : String;
     DocTotal : Double;
-    DocCurrency : LargeString;
+    DocCurrency : String;
   };
 
   @cds.external : true
