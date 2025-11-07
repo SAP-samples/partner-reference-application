@@ -11,7 +11,7 @@
     "node": ">=22.0.0"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "2.0.4"
+    "@cap-js/sqlite": "^2.0.4"
   },
   "scripts": {
     "start": "cds-serve"
