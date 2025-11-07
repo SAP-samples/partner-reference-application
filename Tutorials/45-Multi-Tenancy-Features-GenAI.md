@@ -202,7 +202,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 1. Run the command `npm install` in your project root folder to install the required npm modules. 
 
 2. Build and deploy the application.
-    > Note: For detailed instructions on how to deploy, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
+    > Note: For detailed instructions on how to deploy, refer to [Deploy Your SAP BTP Multi-Tenant Application](./24-Multi-Tenancy-Deployment.md).
 
 ### Unit Tests
 
@@ -249,7 +249,7 @@ Now it is time to take you on a guided tour through the generative artificial In
 
 ## Metering genAI Usage
 
-The use of models in the generative AI hub of the SAP AI Core service is metered using genAI tokens. For more information, refer to the documentation on [SAP Help Portal](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/metering-and-pricing-for-generative-ai-hub). 
+The use of models in the generative AI hub of the SAP AI Core service is metered using genAI tokens. For more information, refer to the documentation on [SAP Help Portal](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/metering-and-pricing-for-generative-ai). 
 
 In case you want to estimate how many input and output tokens are required for the use case of the Partner Reference Application, the method `callAI` of class `genAI` shows how to determine the used tokens per genAI request. On this basis, you can make an assumption for your use case.
 

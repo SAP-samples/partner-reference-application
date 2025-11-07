@@ -1,6 +1,6 @@
 # Observability: Logging, Metrics, and Tracing
 
-In [Test and Troubleshoot](26-Test-Trace-Debug-Multi-Tenancy.md#check-application-logs), you can find information about out-of-the-box logs provided by SAP BTP Cloud Foundry runtime. These logs are helpful when it comes to ad hoc error analysis. However, they don't allow for sophisticated analyses and are only stored for a specific time.
+In [Test and Troubleshoot Multitenancy](26-Test-Trace-Debug-Multi-Tenancy.md#check-application-logs), you can find information about out-of-the-box logs provided by SAP BTP Cloud Foundry runtime. These logs are helpful when it comes to ad hoc error analysis. However, they don't allow for sophisticated analyses and are only stored for a specific time.
 
 The [SAP Cloud Logging service](https://help.sap.com/docs/cloud-logging/cloud-logging/what-is-sap-cloud-logging?version=Cloud) provides the big picture of the behavior and health of your application, since it offers more features by collecting logs, traces, and metrics in a central place with a longer storage time. In this way, it helps you ensure and improve efficiency, scalability, resilience, and availability.
 
@@ -33,11 +33,14 @@ The service builds upon [OpenSearch](https://opensearch.org/), which offers feat
 For more information, refer to the documentation on the [SAP Cloud Logging service](https://help.sap.com/docs/cloud-logging/cloud-logging/what-is-sap-cloud-logging?version=Cloud).  
 
 To use the SAP Cloud Logging service, you have several options: 
-You can set up the service as a dedicated instance for each application. Alternatively, you can use one central service instance and share it across your applications. The following sections demonstrate both approaches.
+1. You can set up the service as a dedicated instance for each application.
+2. Alternatively, you can use one central service instance and share it across your applications.
+
+The following sections demonstrate both approaches.
 
 #### Option 1: Use a Dedicated SAP Cloud Logging Instance
 
-For the Partner Reference Application, an SAP Cloud Logging instance is created with service plan [standard](https://help.sap.com/docs/cloud-logging/cloud-logging/service-plans?version=Cloud) using the [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml) file:
+For the Partner Reference Application, an SAP Cloud Logging instance is created with [standard](https://help.sap.com/docs/cloud-logging/cloud-logging/service-plans?version=Cloud) service plan using the [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml) file:
 
 1. Enable the SAP Cloud Logging service instance and [OpenTelemetry](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-via-opentelemetry-api-endpoint?version=Cloud) by adding the following code snippet to the *resources* in the *mta.yaml*:
     ```yml
@@ -57,7 +60,7 @@ For the Partner Reference Application, an SAP Cloud Logging instance is created 
     #...
     ```
 
-   The parameters `ingest_otlp` and `backend` allow the ingestion of OpenTelemetry data and backend/API access to the SAP Cloud Logging service. They are explained in the [SAP Cloud Logging configuration documentation](https://pages.github.tools.sap/perfx/cloud-logging-service/documentation/configuration/).
+   The parameters `ingest_otlp` and `backend` allow the ingestion of OpenTelemetry data and backend/API access to the SAP Cloud Logging service. They are explained in the [Configuration Parameters](https://help.sap.com/docs/cloud-logging/cloud-logging/configuration-parameters) document of the SAP Cloud Logging service on the SAP Help Portal.
 
 2. Add service bindings to all modules that create logs in the SAP Cloud Logging service. For the Poetry Slam Manager, the SAP Cloud Logging service instance is bound to the service module, MTX module, and approuter.
     ```yml
@@ -105,7 +108,7 @@ When you choose to share an existing SAP Cloud Logging instance, your applicatio
         }'
         ```   
         This creates a *service instance* named `shared-cloud-logging` with *service offering* as `cloud-logging` and *service plan* as `standard` with the given configuration.  
-        > Note: The parameters `ingest_otlp` and `backend` allow the ingestion of OpenTelemetry data and backend/API access to the SAP Cloud Logging service. They are explained in the [SAP Cloud Logging configuration documentation](https://pages.github.tools.sap/perfx/cloud-logging-service/documentation/configuration/).
+        > Note: The parameters `ingest_otlp` and `backend` allow the ingestion of OpenTelemetry data and backend/API access to the SAP Cloud Logging service. They are explained in the [Configuration Parameters](https://help.sap.com/docs/cloud-logging/cloud-logging/configuration-parameters) document of the SAP Cloud Logging service on the SAP Help Portal.
     
     2. Check if the SAP Cloud Logging service instance is created by running the `cf service shared-cloud-logging` command.
     
@@ -113,7 +116,7 @@ When you choose to share an existing SAP Cloud Logging instance, your applicatio
         ```
         cf share-service shared-cloud-logging -s <target-space>
         ```  
-    > Note: There are multiple ways to share the SAP Cloud Logging service resources, even across SAP BTP subaccounts. For more details, see SAP Help Portal: [SAP Cloud Logging > Ingest Observability Data](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-observability-data?locale=en-US&version=Cloud).
+    > Note: There are multiple ways to share the SAP Cloud Logging service resources, even across SAP BTP subaccounts. For more details, see [Ingest Observability Data](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-observability-data?locale=en-US&version=Cloud) on SAP Help Portal.
 
 3. Reference the existing SAP Cloud Logging service instance `shared-cloud-logging-service` in your [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml) file and bind it to your applications:
     1. Add the exisiting resource to the *resources* section in the *mta.yaml*:
@@ -150,17 +153,35 @@ By enabling the telemetry plugin in your project, various kinds of telemetry dat
 
 For more information, refer to the CDS plugin [@cap-js/telemetry](https://github.com/cap-js/telemetry) and [Telemetry](https://cap.cloud.sap/docs/plugins/#telemetry).
 
-1. Open a terminal and run the command `npm add @cap-js/telemetry`. As a result, a dependency to the latest version of the @cap-js/telemetry is added to the *package.json* of your project.
-
-2. Add the dependencies for the [OpenTelemetry Collector Metrics Exporter](https://www.npmjs.com/package/@opentelemetry/exporter-metrics-otlp-grpc) and the [OpenTelemetry Collector Traces Exporter](https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-grpc) to the *package.json*.
+1. Add the required dependencies for telemetry to the [*package.json*](../../../tree/main-multi-tenant-features/package.json).
 
     1. Open a terminal.
 
-    2. Run the command `npm add @opentelemetry/exporter-metrics-otlp-grpc`.
+    2. Run the command to add the dependency *cap-js/telemetry* which provides observability features enabling collecting tracing and metrics.
+    
+        ```
+        npm add @cap-js/telemetry
+        ``` 
 
-    3. Run the command `npm add @opentelemetry/exporter-trace-otlp-grpc`.
+    2. Run the command to add the dependency *@grpc/grpc-js* allowing communication between services using the gRPC protocol. 
 
-3. Make CDS write telemetry data to the SAP Cloud Logging service by adding the following code snippet to the profile `[production]` in the [*package.json*](../../../tree/main-multi-tenant-features/package.json):
+        ```
+        npm add @grpc/grpc-js
+        ```
+
+    2. Run the command to add the dependency *@opentelemetry/exporter-metrics-otlp-grpc* which sends collected OpenTelemetry metrics data to an OpenTelemetry Protocol (OTLP) endpoint using gRPC.
+
+        ```
+        npm add @opentelemetry/exporter-metrics-otlp-grpc
+        ``` 
+
+    3. Run the command to add the dependency *npm add @opentelemetry/exporter-trace-otlp-grpc`* which sends collected OpenTelemetry trace data to an OTLP endpoint using gRPC.
+      
+        ```
+        npm add @opentelemetry/exporter-trace-otlp-grpc
+        ```
+
+2. Make CDS write telemetry data to the SAP Cloud Logging service by adding the following code snippet to the profile `[production]` in the [*package.json*](../../../tree/main-multi-tenant-features/package.json):
     ```json
     "telemetry": {
       "kind": "to-cloud-logging"
@@ -169,7 +190,7 @@ For more information, refer to the CDS plugin [@cap-js/telemetry](https://github
 
 > Note: The OpenTelemetry modules that export [metrics](https://www.npmjs.com/package/@opentelemetry/exporter-metrics-otlp-grpc) and [traces](https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-grpc), as well as the [CAP Telemetry feature](https://cap.cloud.sap/docs/plugins/#telemetry), are (as of June 2024) still in beta phase. New releases may include breaking changes.
 
-4. Build and deploy the multi-tenant application to the provider SAP BTP subaccount.
+3. Build and deploy the multi-tenant application to the provider SAP BTP subaccount.
 > Note: In case a shared SAP Cloud Logging instance is used, make sure to target the correct Cloud Foundry space when deploying the application.
 
 ### Access Logs in the SAP Cloud Logging Service

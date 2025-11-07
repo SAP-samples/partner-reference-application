@@ -30,7 +30,7 @@ To start the provisioning procedure, create an SAP BTP consumer subaccount for a
 In this tutorial, the Identity Authentication service tenant that is used by the SAP Business ByDesign tenant for authentication is reused.  
 
 ### Configure Single Sign-On for the SAP BTP Application
-Configure a trust relationship between the SAP BTP consumer subaccount and the Identity Authentication service tenant of SAP Business ByDesign as described in [Configure Trust Using SAML 2.0](./25-Multi-Tenancy-Provisioning.md).
+Configure a trust relationship between the SAP BTP consumer subaccount and the Identity Authentication service tenant of SAP Business ByDesign as described in [Configure Trust Using SAML 2.0](./25-Multi-Tenancy-Provisioning.md#configure-trust-using-saml-20).
 
 ### Launch the SAP BTP Multi-Tenant Application
 
@@ -127,54 +127,57 @@ This section describes how to configure SAP Business ByDesign for OAuth 2.0 SAML
 
 ## Set Up Destinations to Connect the SAP BTP Application to SAP Business ByDesign 
 
-In your SAP BTP consumer subaccount, create the destination *byd* to connect to SAP Business ByDesign with principal propagation:
+1. In your SAP BTP consumer subaccount, create the destination *byd* to connect to SAP Business ByDesign with principal propagation:
 
-1. Open the *Connectivity* menu item on the SAP BTP consumer subaccount, choose *Destinations*, and create a new destination with the following field values:
+	1. Open the *Connectivity* menu item on the SAP BTP consumer subaccount.
+	2. Choose *Destinations*.
+	3. Create a new destination with the following field values:
 
 
-    | Parameter Name           | Value                                                                                   |
-    | :------------------------ | :------------------------------------------------------------------------------------- |
-    | *Name*:                   | *byd*                                                                                  |
-    | *Type*:                   | *HTTP*                                                                                 |
-    | *Description*:            | Enter a destination description, for example, ``SAP Business ByDesign 123456 with principal propagation``. |
-    | *URL*:                    | *https://{{ByD-hostname}}*, for example, ``https://my123456.sapbydesign.com``          |
-    | *Proxy Type*:             | *Internet*                                                                             |
-    | *Authentication*:         | *OAuth2SAMLBearerAssertion*                                                            |
-    | *Audience*:               | Enter the **SAP Business ByDesign service provider name**.                             |
-    | *AuthnContextClassRef*:   | *urn:none*                                                                             |
-    | *Client Key*:             | Enter the **SAP Business ByDesign OAuth Client ID**.                                   |
-    | *Token Service URL*:      | *https://{{ByD-hostname}}/sap/bc/sec/oauth2/token*                                     |
-    | *Token Service User*:     | Enter the **SAP Business ByDesign OAuth Client ID**.                                   |
-    | *Token Service Password*: | Enter the **SAP Business ByDesign OAuth Client Secret**.                               |
+	    | Parameter Name           | Value                                                                                   |
+	    | :------------------------ | :------------------------------------------------------------------------------------- |
+	    | *Name*:                   | *byd*                                                                                  |
+	    | *Type*:                   | *HTTP*                                                                                 |
+	    | *Description*:            | Enter a destination description, for example, ``SAP Business ByDesign 123456 with principal propagation``. |
+	    | *URL*:                    | *https://{{ByD-hostname}}*, for example, ``https://my123456.sapbydesign.com``          |
+	    | *Proxy Type*:             | *Internet*                                                                             |
+	    | *Authentication*:         | *OAuth2SAMLBearerAssertion*                                                            |
+	    | *Audience*:               | Enter the **SAP Business ByDesign service provider name**.                             |
+	    | *AuthnContextClassRef*:   | *urn:none*                                                                             |
+	    | *Client Key*:             | Enter the **SAP Business ByDesign OAuth Client ID**.                                   |
+	    | *Token Service URL*:      | *https://{{ByD-hostname}}/sap/bc/sec/oauth2/token*                                     |
+	    | *Token Service User*:     | Enter the **SAP Business ByDesign OAuth Client ID**.                                   |
+	    | *Token Service Password*: | Enter the **SAP Business ByDesign OAuth Client Secret**.                               |
 
-2. Enter the *Additional Properties*:
-    
-    | Property Name  | Value                                                   |
-    | :-------------- | :------------------------------------------------------- |
-    | *nameIdFormat*: | *urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress* |
-    | *scope*:        | Enter the **SAP Business ByDesign OAuth Scope** (*UIWC:CC_HOME*).           |
-    | *userIdSource*: | *email*                                                  |
+	4. Enter the *Additional Properties*:
+	    
+	    | Property Name  | Value                                                   |
+	    | :-------------- | :------------------------------------------------------- |
+	    | *nameIdFormat*: | *urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress* |
+	    | *scope*:        | Enter the **SAP Business ByDesign OAuth Scope** (*UIWC:CC_HOME*).           |
+	    | *userIdSource*: | *email*                                                  |
 
     > Note: You may need to upload the SAP Business ByDesign server certificate, which you downloaded in a previous step as **SAP Business ByDesign server certificate** into the destination service for Secure Sockets Layer (SSL) authentication using the link *Upload and Delete Certificates* on the destinations screen. 
 
     > Note: Destinations in the SAP BTP subaccount are deleted and the system raises the error code 409 (conflict) if the user used for deployment (user logged-on in SAP BTP Cloud Foundry runtime) does not have the authorization to edit destinations. Always make sure your deployment user has the authorization to edit destinations.
 
-In your SAP BTP consumer subaccount, create the destination *byd-url* to launch SAP Business ByDesign screens. 
+5. In your SAP BTP consumer subaccount, create the destination *byd-url* to launch SAP Business ByDesign screens. 
+	1. Open the *Connectivity* menu item of the SAP BTP consumer subaccount.
+ 	2. Choose *Destinations*.
+  	3. Create new Destination with the following field values:
 
-The destination *byd-url* is used to store the single sign-on URL of the SAP Business ByDesign system. By storing the base URL in a destination, you ensure that connecting the SAP BTP web application to SAP Business ByDesign systems is a pure configuration task and does not require any code changes.
+	    | Parameter Name   | Value                                                                                 |
+	    | :---------------- | :-------------------------------------------------------------------------------------- |
+	    | *Name*:           | *byd-url*                                                                               |
+	    | *Type*:           | *HTTP*                                                                                  |
+	    | *Description*:    | Enter a destination description, for example, ``SAP Business ByDesign 123456 URL``.                         |
+	    | *URL*:            | *https://{{ByD-hostname-for-SSO}}* for example, ``https://my123456-sso.sapbydesign.com`` |
+	    | *Proxy Type*:     | *Internet*                                                                              |
+	    | *Authentication*: | *NoAuthentication*                                                                      |
 
-At runtime, you dynamically assemble the parameterized URL to launch the SAP Business ByDesign project overview (referred to as *external object-based navigation* in SAP Business ByDesign) by concatenating the base URL with the SAP Business ByDesign floorplan-specific path and the object-specific parameters (for example, the project ID). The authentication method is not relevant in this destination and, therefore, you choose *NoAuthentication* to keep things simple (of course, this destination cannot be used to use any SAP Business ByDesign service directly).
-
-1. Open the *Connectivity* menu item of the SAP BTP consumer subaccount, choose *Destinations*, and create new Destination with the following field values:
-
-    | Parameter Name   | Value                                                                                 |
-    | :---------------- | :-------------------------------------------------------------------------------------- |
-    | *Name*:           | *byd-url*                                                                               |
-    | *Type*:           | *HTTP*                                                                                  |
-    | *Description*:    | Enter a destination description, for example, ``SAP Business ByDesign 123456 URL``.                         |
-    | *URL*:            | *https://{{ByD-hostname-for-SSO}}* for example, ``https://my123456-sso.sapbydesign.com`` |
-    | *Proxy Type*:     | *Internet*                                                                              |
-    | *Authentication*: | *NoAuthentication*                                                                      |
+	> Note: The destination *byd-url* is used to store the single sign-on URL of the SAP Business ByDesign system. By storing the base URL in a destination, you ensure that connecting the SAP BTP web application to SAP Business ByDesign systems is a pure configuration task and does not require any code changes.
+		
+	At runtime, you dynamically assemble the parameterized URL to launch the SAP Business ByDesign project overview (referred to as *external object-based navigation* in SAP Business ByDesign) by concatenating the base URL with the SAP Business ByDesign floorplan-specific path and the object-specific parameters (for example, the project ID). The authentication method is not relevant in this destination and, therefore, you choose *NoAuthentication* to keep things simple (of course, this destination cannot be used to use any SAP Business ByDesign service directly).
     
 ## Add SAP BTP Applications to the SAP Business ByDesign Launchpad
 
@@ -191,7 +194,7 @@ As a last step, Poetry Slams and Visitors and SAP BTP admin applications are add
     - *URL*: Enter the **SAP BTP Application Poetry Slams Tenant URL** you noted down in a previous step.
     - *HTTP Method*: Select *Get*.
 
-    For more information on mashup creation in SAP Business ByDesign, go to the [SAP help](https://help.sap.com/docs/SAP_BUSINESS_BYDESIGN/2754875d2d2a403f95e58a41a9c7d6de/2be269a4722d1014a96d9a0ba09c255a.html).
+    For more information, refer to [Create a URL Mashup](https://help.sap.com/docs/SAP_BUSINESS_BYDESIGN/2754875d2d2a403f95e58a41a9c7d6de/2be269a4722d1014a96d9a0ba09c255a.html) on SAP Help Portal.
 
 3. Create and activate a new URL mashup for the *Poetry Slam Manager - Visitors* application with the following data: 
 
@@ -241,4 +244,4 @@ To create a user in SAP Business ByDesign, you can either hire an *Employee* or 
 
 ## Remarks and Troubleshooting
 
-If you need more information on how to trace and debug your application with ERP integration, go to the section on [testing and troubleshooting](32-Test-Trace-Debug-ERP.md). If you're looking for more information on the ERP integration of Poetry Slam Manager, take the [guided tour of the ERP integration](31-Guided-Tour-ERP-Integration.md).
+If you need more information on how to trace and debug your application with ERP integration, go to the section on [testing and troubleshooting](32-Test-Trace-Debug-ERP.md). If you're looking for more information on the ERP integration of Poetry Slam Manager, take the [guided tour about the ERP integration](31-Guided-Tour-ERP-Integration.md).

@@ -7,7 +7,7 @@
 This Partner Reference Application repository provides you with a “golden path” to becoming a SaaS provider of multi-tenant applications based on the SAP Business Technology Platform (SAP BTP).
 
 The guidance covers building, running, and integrating scalable full-stack cloud applications. 
-It includes an ERP-agnostic design that lets you deliver your application as a side-by-side extension to consumers using any SAP solution, such as SAP S/4HANA Cloud, SAP Business One, and SAP Business ByDesign. 
+It includes an ERP-agnostic design that lets you deliver your application as a side-by-side extension to consumers using any SAP solution, such as SAP S/4HANA Cloud Public Edition, SAP Business One, and SAP Business ByDesign. 
 
 By using SAP BTP services and the SAP Cloud Application Programming Model (CAP), your application meets SAP standards for enterprise-class business solutions. It offers a harmonized user experience and seamless integration, including:
 -	centralized identity and access management,
@@ -117,7 +117,7 @@ Updates to this repository are documented in the [change history](./Tutorials/99
     1. [Prepare your SAP BTP account for development](./Tutorials/11-Prepare-BTP-Account.md) 
     2. [Develop the core of the SAP BTP application](./Tutorials/14-Develop-Core-Application.md)
     3. [Go on a guided tour to explore the capabilities of the sample application](./Tutorials/17-Guided-Tour.md)
-    4. [Test and troubleshoot the application](./Tutorials/16-Test-Trace-Debug.md)
+    4. [Ensure code quality, test and troubleshoot the application](./Tutorials/16-Test-Trace-Debug.md)
 
 2. Enhance the application for **multi-tenant deployments** to support multiple customers using shared SAP BTP resources:
     1. [Learn about multitenancy and get an overview of the bill of materials](./Tutorials/20-Multi-Tenancy-BillOfMaterials.md)
@@ -150,17 +150,16 @@ Updates to this repository are documented in the [change history](./Tutorials/99
     3. Add capabilities for output management to your application:
         1. [Manage forms](./Tutorials/44a-Multi-Tenancy-Features-Forms.md)
         2. [Print documents](./Tutorials/44b-Multi-Tenancy-Features-Print.md)
-        3. [Send emails](./Tutorials/44c-Multi-Tenancy-Features-EMail.md)
-    4. [Add capabilities for generative artificial intelligence (GenAI)](./Tutorials/45-Multi-Tenancy-Features-GenAI.md)
-    5. [Schedule jobs and add background execution](./Tutorials/46-Multi-Tenancy-Features-Job-Scheduling.md)
-
+    4. [Send notifications and emails with SAP Build Work Zone](./Tutorials/44c-Multi-Tenancy-Features-Notification.md)
+    5. [Add capabilities for generative artificial intelligence (GenAI)](./Tutorials/45-Multi-Tenancy-Features-GenAI.md)
+    6. [Schedule jobs and add background execution](./Tutorials/46-Multi-Tenancy-Features-Job-Scheduling.md)
 5. Enable the application for **third-party integrations and extensibility**:
     1. Open the APIs of the SAP BTP application for third-party integrations:
         1. [Enable API access to SAP BTP applications using service broker](./Tutorials/42a-Multi-Tenancy-Service-Broker.md)
         2. [Configure and consume the APIs of the SAP BTP application](./Tutorials/42b-Multi-Tenancy-Provisioning-Service-Broker.md) 
         3. [Create an API service for remote integrations without draft handling](./Tutorials/42c-Multi-Tenancy-Features-API-Service.md)
-    2. Embed the application in a SAP S/4HANA Cloud developer extensibility scenario:
-        1. [Enhance the application to lookup the latest sales order information](./Tutorials/52a-Multi-Tenancy-Features-API-Service-S4HC.md)
+    2. Embed the application in a SAP S/4HANA Cloud Public Edition developer extensibility scenario:
+        1. [Enhance the application to look up the latest sales order information](./Tutorials/52a-Multi-Tenancy-Features-API-Service-S4HC.md)
         2. [Configure the connection with SAP S/4HANA Cloud Public Edition](./Tutorials/52b-Multi-Tenancy-Features-API-Service-S4HC-Provisioning.md)
     3. [Enable consumer-specific extensions](./Tutorials/50-Multi-Tenancy-Features-Tenant-Extensibility.md)
     4. [Enable key user flexibility using SAP Build Work Zone](./Tutorials/51-Multi-Tenancy-Features-Tenant-Key-User-Flexibility.md)

@@ -195,16 +195,10 @@ In SAP Business Application Studio, enhance the SAP CAP entity models in [*/db/p
 
 You can define reuse functions that handle the connection for the different ERP systems in separate files. 
 
-1. Create a file to check and get the destinations in the **/srv/lib/destination.js** path. 
-2. Add the functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* from the [*/srv/lib/destination.js*](../../../tree/main-multi-tenant-features/srv/lib/destination.js) file.
-
-    > Note: The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* read the destination from the SAP BTP consumer subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information.
-
-    > Note: The *getDestinationDescription* reuse function returns the destination description from the SAP BTP consumer subaccount.
-
-3. Create a new folder named **connector** in the */srv/poetryslam* path.
-4. Create a file with the path **/srv/poetryslam/connector/connector.js**. This file is reused for different ERP integrations.
-5. Copy the ERP connection reuse functions in the [*/srv/poetryslam/connector/connector.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connector.js) file into your project. It delegates the OData requests and reads the destinations.
+1. Copy the file [*srv/lib/destination.js*](../../../tree/main-multi-tenant-features/srv/lib/destination.js) to your project. The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* are required to read the destination from the subscriber subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information. The reuse function *getDestinationDescription* returns the destination description from the SAP BTP consumer subaccount.
+2. Create a new folder named **connector** in the */srv/poetryslam* path.
+3. Create a file with the path **/srv/poetryslam/connector/connector.js**. This file is reused for different ERP integrations.
+4. Copy the ERP connection reuse functions in the [*/srv/poetryslam/connector/connector.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connector.js) file into your project. It delegates the OData requests and reads the destinations.
 
 ##### Create a File with Reuse Functions for SAP S/4HANA Cloud Public Edition
 
@@ -224,18 +218,23 @@ In SAP Business Application Studio, enhance the implementation of the SAP CAP se
     2. Copy the following code snippet into the newly created file. As a reference, you can have a look at the [poetrySlamServiceERPImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceERPImplementation.js) file in the reference application.
 
         ```javascript
-        'strict';
+        'strict'    
+
+        const cds = require('@sap/cds');
 
         // Add connector for project management systems
         const ConnectorS4HC = require('./connector/connectorS4HC');
 
         module.exports = async (srv) => {
+            const {
+                S4HCSalesOrderPartner
+            } = this.entities;
             // -------------------------------------------------------------------------------------------------
             // Implementation of remote OData services (back-channel integration with SAP S/4HANA Cloud)
             // -------------------------------------------------------------------------------------------------
 
             // Delegate OData requests to SAP S/4HANA Cloud remote sales order entities
-            srv.on('READ', 'S4HCSalesOrderPartner', async (req) => {
+            srv.on('READ', S4HCSalesOrderPartner, async (req) => {
                 const connector = await ConnectorS4HC.createConnectorInstance(req);
                 return await connector.delegateODataRequests(
                     req,
@@ -247,19 +246,18 @@ In SAP Business Application Studio, enhance the implementation of the SAP CAP se
 
         > Note: Without delegation, the remote entities return the error code 500 with the message: *SQLITE_ERROR: no such table* (local testing).
 
-2. Enhance the [*/srv/poetryslam/poetrySlamServiceImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js) file to call the ERP implementation.
+2. Enhance the [*/srv/poetryslam/poetrySlamServiceImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js) to call the ERP implementation.
 
-    1. Import the ERP forward handler after the **poetrySlamsHandler**.
-
-        ```javascript
-        const erpForwardHandler = require('./poetrySlamServiceERPImplementation');
-        ```
-
-    2. Call the ERP forward handler after the **poetrySlamsHandler**.
-
-        ```javascript
-        await erpForwardHandler(srv); // Forward handler to the ERP systems
-        ```
+    ```javascript
+    const erpForwardHandler = require('./poetrySlamServiceERPImplementation');
+    module.exports = class extends cds.ApplicationService {
+        async init() {
+            ...
+            await erpForwardHandler(this); // Forward handler to the ERP systems
+            ...
+        }
+    };
+     ```
 
 3.  In the [*/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) file, the poetry slams entity is enriched with SAP S/4HANA Cloud Public Edition specific data. The connected back-end system is determined and the sales order data is read from the remote system.
 
@@ -273,7 +271,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP CAP se
 
     ```javascript
     // Expand poetry slams
-    srv.on('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
+    srv.on('READ', [PoetrySlams.drafts, PoetrySlams], async (req, next) => {
         // Read the PoetrySlams instances
         let poetrySlams = await next();
 
@@ -428,7 +426,7 @@ Unit tests are available to test this feature:
     1. Enter the `npm install` command in a terminal in SAP Business Application Studio.
     2. Enter the `npm run test` command. All tests are carried out and the result is shown afterwards.
 
-### Test Locally
+### Local Testing
 
 The goal of local tests is to connect to integrated ERP systems without using destinations. Therefore, you need to adjust the code slightly, as shown below:
 
@@ -457,7 +455,7 @@ The goal of local tests is to connect to integrated ERP systems without using de
 
 ## Deploy the Application
 
-Update your application in the provider subaccount. For detailed instructions, refer to [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
+Update your application in the provider subaccount. For detailed instructions, refer to [Deploy Your SAP BTP Multi-Tenant Application](./24-Multi-Tenancy-Deployment.md).
 
 > Note: Make sure that any local changes have been reverted before deployment.
 

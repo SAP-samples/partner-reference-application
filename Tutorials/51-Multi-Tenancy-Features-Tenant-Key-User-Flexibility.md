@@ -1,7 +1,7 @@
 # Enable Key User Flexibility Using SAP Build Work Zone
 Imagine you're a key user, also known as citizen user, for a customer using the poetry slam manager. You want to customize the user interface of the poetry slam manager application for all users in your company. This could be adding, hiding or rearranging fields, or renaming labels. 
 
-In SAP Build Work Zone, the [SAP BTP service UI5 flexibility for key users](https://help.sap.com/docs/ui5-flexibility-for-key-users) comes included out-of-the-box. You can enable it in a SAP Build Work Zone site to support key user adaptations for applications built with SAP Fiori elements. 
+In SAP Build Work Zone, the [SAP BTP service UI5 flexibility for key users](https://help.sap.com/docs/ui5-flexibility-for-key-users) comes included out of the box. You can enable it in a SAP Build Work Zone site to support key user adaptations for applications built with SAP Fiori elements. 
 
 Make sure you've completed the steps described in chapter [Provision Your Multi-Tenant Application to Consumer Subaccounts](./25-Multi-Tenancy-Provisioning.md), including the SAP Build Work Zone setup. 
 
@@ -18,7 +18,7 @@ Ensure that the key user adaptation is enabled in the SAP Build Work Zone site b
 8. Save your changes.
 
 ## Configure Authorization Roles 
-To assign authorization roles to different users, use user groups from the Identity Authentication Service (IAS). For more details and setup steps, see [Configure Authentication and Authorization ](./25-Multi-Tenancy-Provisioning.md#configure-authentication-and-authorization).
+To assign authorization roles to different users, use user groups from the Identity Authentication Service (IAS). For more details and setup steps, see [Configure Authentication and Authorization](./25-Multi-Tenancy-Provisioning.md#configure-authentication-and-authorization).
 
 To set up authorization roles for your application, follow these steps:
 
@@ -37,6 +37,6 @@ After completing these enablement steps, key users are ready to adapt the user i
 2. Open the *User Action Menu* by clicking on your profile.
 3. Choose *Adapt UI* to start the *UI Adaptation*.
 
-Examples of possible adaptations include moving and renaming UI elements and embedding external content. You can find more examples in the SAP Help document [Key User Adaptation](https://help.sap.com/docs/UI5_FLEXIBILITY/430e2c1a4ff241bc8162df4bf51e0730/328a550137344514ae085b924180d078.html).
+Examples of possible adaptations include moving and renaming UI elements and embedding external content. You can find more examples in [Key User Adaptation](https://help.sap.com/docs/UI5_FLEXIBILITY/430e2c1a4ff241bc8162df4bf51e0730/328a550137344514ae085b924180d078.html) on SAP Help Portal.
 
-You can also find a description on how to adapt the user interface in the SAP Help document [Adapting SAP Fiori UIs at Runtime - Key User Adaptation](https://help.sap.com/docs/ui5-flexibility-for-key-users/ui5-flexibility-for-key-users/adapting-sap-fiori-uis-at-runtime-key-user-adaptation).
+You can also find a description on how to adapt the user interface in [Adapting SAP Fiori UIs at Runtime - Key User Adaptation](https://help.sap.com/docs/ui5-flexibility-for-key-users/ui5-flexibility-for-key-users/adapting-sap-fiori-uis-at-runtime-key-user-adaptation) on SAP Help Portal.

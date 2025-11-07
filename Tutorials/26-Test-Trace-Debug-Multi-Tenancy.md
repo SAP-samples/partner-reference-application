@@ -25,7 +25,7 @@ To use the dashboard:
 
 <center><img src="./images/26_DependencyGraph.png" width="75%"></center>
 
-For more information about using the Subscription Management Dashboard, refer to [Using the Subscription Management Dashboard](https://help.sap.com/docs/btp/sap-business-technology-platform/using-subscription-management-dashboard)
+For more information about using the Subscription Management Dashboard, refer to [Using the Subscription Management Dashboard](https://help.sap.com/docs/btp/sap-business-technology-platform/using-subscription-management-dashboard) on SAP Help Portal.
 
 ## Trace Your Deployed Application
 
@@ -38,7 +38,7 @@ The log statements are written during the use of your deployed application. Use 
 ## Hybrid Testing
 As described, your local environment runs with an SQLite database. If you want to connect your local test environment with an SAP HANA Cloud database to run your test against the same database technology as the deployed solution does, follow the instructions in this section.
 
-For general guidelines on how to connect your local test against services in the Cloud, refer to the [SAP Cloud Application Programming Model documentation on hybrid testing](https://cap.cloud.sap/docs/advanced/hybrid-testing).
+For general guidelines on how to connect your local test against services in the Cloud, refer to the SAP Cloud Application Programming Model documentation on [hybrid testing](https://cap.cloud.sap/docs/advanced/hybrid-testing).
 
 ### Prerequisites
 When this project was created, the SAP HANA Cloud capability was included. As a result, the dependency @sap/cds_hana is listed in the file *package.json* and the
@@ -142,4 +142,4 @@ The SAP Cloud Application Programming Model documentation also contains a [Resou
 
 ## Additional Information
 
-The information above is specific to a deployed multi-tenant application. Find additional hints in the tutorials [Test and Troubleshoot](16-Test-Trace-Debug.md) for the application development, local testing, and [Test and Troubleshoot an ERP Integration](32-Test-Trace-Debug-ERP.md).
+The information above is specific to a deployed multi-tenant application. Find additional hints in the tutorials [Ensure Code Quality, Test, and Troubleshoot the Application](16-Test-Trace-Debug.md) for the application development, local testing, and [Test and Troubleshoot an ERP Integration](32-Test-Trace-Debug-ERP.md).

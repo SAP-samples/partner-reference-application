@@ -1,0 +1,1638 @@
+{
+	"info": {
+		"_postman_id": "30a5ece0-ee42-400f-a596-68388782a289",
+		"name": "Partner Reference App",
+		"description": "# Partner Reference Application - OData API Samples\n\nThis Postman collection contains examples to use the OData APIs of the multi-tenant sample application of the SAP samples GitHub repositories [Partner Reference Application 'Poetry Slam Manager'](https://github.com/SAP-samples/partner-reference-application) and the tenant-specific extension [Partner Reference Application Extension 'Catering Management'](https://github.com/SAP-samples/partner-reference-application-extension).\n\nService _**poetryslamservice**_:\n\n- The folders '_Get poetry slam_', '_Create poetry slam_' and '_Update poetry slam_' provide examples tailored for web applications with draft handling.\n- The folders '_Create caterer_' and '_Update caterer_' contain examples based on the customer specific extension '_Catering Management_' and extension entity '_x_Caterers_'.\n    \n\nService _**poetryslammanagerapi**_:\n\n- The folder '_API without draft handling_' provides examples to read and change poetry slams without draft handling and tailored for remote integration scenarios.\n    \n\nEach folder contains a sequence of service requests. Parameters are passed to subsequent requests using test scripts and request parameters.  \nThe examples in folder '_API without draft handling_' are based on the poetry slam event created in folder '_Create poetry slam_'.\n\nSteps to run the sample requests:\n\n1. Open the Postman environment '_Partner Reference App_' and enter the current values listed in the table below. You get the values from the service binding of the service broker instance: Open the consumer subaccount of the BTP app in the BTP cockpit, open menu item _Instances and Subscriptions_, open the service broker instance and find the parameter values in the service binding (compare as well tutorial [Configure and Consume the APIs of the BTP Application](https://github.com/SAP-samples/partner-reference-application/blob/main/Tutorials/42b-Multi-Tenancy-Provisioning-Service-Broker.md)).\n    \n    | Variable: | Current Value: |\n    | --- | --- |\n    | _api_url_ | Enter the service access URL (element _endpoints/psm-servicebroker_ ) |\n    | _uaa_clientid_ | Enter the authentication service client ID (element _uaa/clientid_) |\n    | _uaa_clientsecret_ | Enter the authentication service client secret (element _uaa/clientsecret_) |\n    | _uaa_url_ | Enter the authentication service URL (element _uaa/url_) |\n    \n2. Open the Postman collection _Partner Reference App_ and sheet _Authorization_. Select the Postman environment _Partner Reference App_ on the upper right corner and click on _Get New Access Token_. Authenticate on the IDP and finish the authentication with button _Use Token_.\n3. Open request _Get author readings_ in the Postman collection and _Send_ the request.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32947898"
+	},
+	"item": [
+		{
+			"name": "Get poetry slams",
+			"item": [
+				{
+					"name": "Get entities",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get metadata",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/$metadata?sap-labels=true",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"$metadata"
+							],
+							"query": [
+								{
+									"key": "sap-labels",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get poetry slams and expand",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams?sap-locale=en&$expand=visitorsFeeCurrency,status,visits($expand=visitor,status),toS4HCProject,toByDProject,toB1PurchaseOrder,SiblingEntity&$filter=number eq {{PoetrySlamsNumber_1}}&$count=true",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams"
+							],
+							"query": [
+								{
+									"key": "sap-language",
+									"value": "en_US",
+									"disabled": true
+								},
+								{
+									"key": "sap-locale",
+									"value": "en"
+								},
+								{
+									"key": "$select",
+									"value": "number,title,projectID",
+									"disabled": true
+								},
+								{
+									"key": "$expand",
+									"value": "visitorsFeeCurrency,status,visits($expand=visitor,status),toS4HCProject,toByDProject,toB1PurchaseOrder,SiblingEntity"
+								},
+								{
+									"key": "$filter",
+									"value": "number eq {{PoetrySlamsNumber_1}}"
+								},
+								{
+									"key": "$count",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create poetry slam",
+			"item": [
+				{
+					"name": "Create new poetry slam draft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"PoetrySlamsID_new\", jsonResponse.ID);\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"New poetry slam \" + jsonResponse.ID + \" created (draft)\", function () { pm.response.to.have.status(201) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update poetry slam draft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"PoetrySlamsNumber_new\", jsonResponse.number);\r",
+									"pm.environment.set(\"PoetrySlamsID_new\", jsonResponse.ID);\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Poetry slam '\" + jsonResponse.title + \"' updated\", function () { pm.response.to.have.status(200) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"API Dreams & Draft Realities\",\r\n    \"description\": \"Where code meets creativity, and structure meets soul. Step into a world where the elegance of APIs and the chaos of draft handling collide with poetic rhythm.\",\r\n    \"maxVisitorsNumber\": 10,\r\n    \"visitorsFeeAmount\": 29,\r\n    \"visitorsFeeCurrency_code\": \"EUR\",\r\n    \"dateTime\": \"2026-01-01T12:00:00+01:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams(ID={{PoetrySlamsID_new}},IsActiveEntity=false)",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams(ID={{PoetrySlamsID_new}},IsActiveEntity=false)"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activate poetry slam draft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"PoetrySlamsNumber_new\", jsonResponse.number);\r",
+									"pm.environment.set(\"PoetrySlamsID_new\", jsonResponse.ID);\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Poetry slam draft \" + jsonResponse.number + \" '\" + jsonResponse.title + \"' activated\", function () { pm.response.to.have.status(201) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams(ID={{PoetrySlamsID_new}},IsActiveEntity=false)/PoetrySlamService.draftActivate",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams(ID={{PoetrySlamsID_new}},IsActiveEntity=false)",
+								"PoetrySlamService.draftActivate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get poetry slam by number",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"PoetrySlamsNumber_new\", jsonResponse.value[0].number);\r",
+									"pm.environment.set(\"PoetrySlamsID_new\", jsonResponse.value[0].ID);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams?$filter=number eq '{{PoetrySlamsNumber_new}}'",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "number eq '{{PoetrySlamsNumber_new}}'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete poetry slam",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Validations\r",
+									"pm.test(\"Poetry slam deleted\", function () { pm.response.to.have.status(204) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams(ID={{PoetrySlamsID_new}},IsActiveEntity=true)",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams(ID={{PoetrySlamsID_new}},IsActiveEntity=true)"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Update poetry slam",
+			"item": [
+				{
+					"name": "Get poetry slams",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams?$expand=toS4HCProject&$count=true",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams"
+							],
+							"query": [
+								{
+									"key": "sap-language",
+									"value": "de",
+									"disabled": true
+								},
+								{
+									"key": "$select",
+									"value": "number,title,projectID",
+									"disabled": true
+								},
+								{
+									"key": "$expand",
+									"value": "toS4HCProject"
+								},
+								{
+									"key": "$count",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get poetry slam by number",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"PoetrySlamsNumber\", jsonResponse.value[0].number);\r",
+									"pm.environment.set(\"PoetrySlamsID\", jsonResponse.value[0].ID);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams?$filter=number eq '{{PoetrySlamsNumber_1}}'",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "number eq '{{PoetrySlamsNumber_1}}'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create poetry slam draft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonResponse = pm.response.json();\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Draft entity \" + jsonResponse.number + \" '\" + jsonResponse.title + \"' created\", function () { pm.response.to.have.status(201) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams(ID={{PoetrySlamsID}},IsActiveEntity=true)/PoetrySlamService.draftEdit",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams(ID={{PoetrySlamsID}},IsActiveEntity=true)",
+								"PoetrySlamService.draftEdit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get poetry slam draft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"PoetrySlamsNumber\", jsonResponse.number);\r",
+									"pm.environment.set(\"PoetrySlamsID\", jsonResponse.ID);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "IEEE754Compatible",
+								"value": "true",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams(ID={{PoetrySlamsID}},IsActiveEntity=false)",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams(ID={{PoetrySlamsID}},IsActiveEntity=false)"
+							],
+							"query": [
+								{
+									"key": "$expand",
+									"value": "participants($expand=statusCode),statusCode,currency,texts($expand=DraftAdministrativeData),DraftAdministrativeData",
+									"disabled": true
+								},
+								{
+									"key": "sap-language",
+									"value": "en",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update poetry slam draft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonResponse = pm.response.json();\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Poetry slam \" + jsonResponse.number + \" '\" + jsonResponse.title + \"' updated\", function () { pm.response.to.have.status(200) });\r",
+									"\r",
+									"// Set environment variables for subsequent OData requests\r",
+									"//pm.environment.set(\"eventID\", jsonResponse.ID);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"visitorsFeeAmount\": \"42.00\",\r\n    \"visitorsFeeCurrency_code\": \"EUR\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams(ID={{PoetrySlamsID}},IsActiveEntity=false)",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams(ID={{PoetrySlamsID}},IsActiveEntity=false)"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activate poetry slam draft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonResponse = pm.response.json();\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Poetry slam draft \" + jsonResponse.number + \" '\" + jsonResponse.title + \"' activated\", function () { pm.response.to.have.status(200) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams(ID={{PoetrySlamsID}},IsActiveEntity=false)/PoetrySlamService.draftActivate",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams(ID={{PoetrySlamsID}},IsActiveEntity=false)",
+								"PoetrySlamService.draftActivate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get poetry slam by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"PoetrySlamsNumber\", jsonResponse.number);\r",
+									"pm.environment.set(\"PoetrySlamsID\", jsonResponse.ID);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "IEEE754Compatible",
+								"value": "true",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams(ID={{PoetrySlamsID}},IsActiveEntity=true)",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams(ID={{PoetrySlamsID}},IsActiveEntity=true)"
+							],
+							"query": [
+								{
+									"key": "$expand",
+									"value": "participants($expand=statusCode),statusCode,currency,texts($expand=DraftAdministrativeData),DraftAdministrativeData",
+									"disabled": true
+								},
+								{
+									"key": "sap-language",
+									"value": "en",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create caterer",
+			"item": [
+				{
+					"name": "Get poetry slams with caterer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams?$expand=status,x_caterer($expand=cuisine($expand=texts))&$filter=number eq '{{PoetrySlamsNumber_1}}'&$count=true",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams"
+							],
+							"query": [
+								{
+									"key": "sap-language",
+									"value": "en",
+									"disabled": true
+								},
+								{
+									"key": "$select",
+									"value": "number,title,projectID",
+									"disabled": true
+								},
+								{
+									"key": "$expand",
+									"value": "status,x_caterer($expand=cuisine($expand=texts))"
+								},
+								{
+									"key": "$filter",
+									"value": "number eq '{{PoetrySlamsNumber_1}}'"
+								},
+								{
+									"key": "$count",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all caterer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/x_Caterers?$expand=cuisine($expand=texts)&$count=true",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"x_Caterers"
+							],
+							"query": [
+								{
+									"key": "$expand",
+									"value": "cuisine($expand=texts)"
+								},
+								{
+									"key": "$count",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create caterer draft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"CatererID\", jsonResponse.ID);\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"New caterer \" + jsonResponse.ID + \" created (draft)\", function () { pm.response.to.have.status(201) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/x_Caterers",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"x_Caterers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update caterer draft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonResponse = pm.response.json();\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Caterer '\" + jsonResponse.name + \"' updated\", function () { pm.response.to.have.status(200) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Tapas y Tradición\",\r\n    \"contactPerson\": \"Lola Almendra\",\r\n    \"phone\": \"+34 1234 5678910\",\r\n    \"email\": \"lola.almendra@tapastradicion.com\",\r\n    \"cuisine_code\": \"4\",\r\n    \"maxServiceCapacity\": 125\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/x_Caterers(ID={{CatererID}},IsActiveEntity=false)",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"x_Caterers(ID={{CatererID}},IsActiveEntity=false)"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activate caterer draft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonResponse = pm.response.json();\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Caterer \" + \"'\"+ jsonResponse.name + \"' activated\", function () { pm.response.to.have.status(201) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/x_Caterers(ID={{CatererID}},IsActiveEntity=false)/PoetrySlamService.draftActivate",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"x_Caterers(ID={{CatererID}},IsActiveEntity=false)",
+								"PoetrySlamService.draftActivate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get caterer by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"CatererID\", jsonResponse.ID);\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Caterer \" + jsonResponse.name + \" retrieved\", function () { pm.response.to.have.status(200) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/x_Caterers(ID={{CatererID}},IsActiveEntity=true)",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"x_Caterers(ID={{CatererID}},IsActiveEntity=true)"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete caterer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Validations\r",
+									"pm.test(\"Caterer deleted\", function () { pm.response.to.have.status(204) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/x_Caterers(ID={{CatererID}},IsActiveEntity=true)",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"x_Caterers(ID={{CatererID}},IsActiveEntity=true)"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Update caterer",
+			"item": [
+				{
+					"name": "Get poetry slams with caterer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/PoetrySlams?$expand=status,x_caterer($expand=cuisine($expand=texts))&$filter=number eq '{{PoetrySlamsNumber_1}}'&$count=true",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"PoetrySlams"
+							],
+							"query": [
+								{
+									"key": "sap-language",
+									"value": "en",
+									"disabled": true
+								},
+								{
+									"key": "$select",
+									"value": "number,title,projectID",
+									"disabled": true
+								},
+								{
+									"key": "$expand",
+									"value": "status,x_caterer($expand=cuisine($expand=texts))"
+								},
+								{
+									"key": "$filter",
+									"value": "number eq '{{PoetrySlamsNumber_1}}'"
+								},
+								{
+									"key": "$count",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get caterer by name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"CatererID\", jsonResponse.value[0].ID);\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Caterer '\" + jsonResponse.value[0].name + \"' found\", function () { pm.response.to.have.status(200) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/x_Caterers?$expand=cuisine($expand=texts)&$filter=name eq 'Tapas y Tradición'&$count=true",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"x_Caterers"
+							],
+							"query": [
+								{
+									"key": "$expand",
+									"value": "cuisine($expand=texts)"
+								},
+								{
+									"key": "$filter",
+									"value": "name eq 'Tapas y Tradición'"
+								},
+								{
+									"key": "$count",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get caterer by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"CatererID\", jsonResponse.ID);\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Caterer '\" + jsonResponse.name + \"' retrieved\", function () { pm.response.to.have.status(200) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/x_Caterers(ID={{CatererID}},IsActiveEntity=true)",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"x_Caterers(ID={{CatererID}},IsActiveEntity=true)"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create caterer draft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonResponse = pm.response.json();\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Draft record for caterer \" + \"'\"+ jsonResponse.name + \"' created\", function () { pm.response.to.have.status(201) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/x_Caterers(ID={{CatererID}},IsActiveEntity=true)/PoetrySlamService.draftEdit",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"x_Caterers(ID={{CatererID}},IsActiveEntity=true)",
+								"PoetrySlamService.draftEdit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update caterer draft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonResponse = pm.response.json();\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Caterer '\" + jsonResponse.name + \"' updated\", function () { pm.response.to.have.status(200) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Tapas y Tradición\",\r\n    \"contactPerson\": \"Lola Almendra\",\r\n    \"phone\": \"+34 1234 5678910\",\r\n    \"email\": \"lola.almendra@tapastradicion.com\",\r\n    \"cuisine_code\": \"4\",\r\n    \"maxServiceCapacity\": 125\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/x_Caterers(ID={{CatererID}},IsActiveEntity=false)",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"x_Caterers(ID={{CatererID}},IsActiveEntity=false)"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activate caterer draft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonResponse = pm.response.json();\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Draft record of caterer \" + \"'\"+ jsonResponse.name + \"' activated\", function () { pm.response.to.have.status(200) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/x_Caterers(ID={{CatererID}},IsActiveEntity=false)/PoetrySlamService.draftActivate",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"x_Caterers(ID={{CatererID}},IsActiveEntity=false)",
+								"PoetrySlamService.draftActivate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get caterer by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"CatererID\", jsonResponse.ID);\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Caterer \" + jsonResponse.name + \" retrieved\", function () { pm.response.to.have.status(200) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslamservice/x_Caterers(ID={{CatererID}},IsActiveEntity=true)",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslamservice",
+								"x_Caterers(ID={{CatererID}},IsActiveEntity=true)"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API without draft handling",
+			"item": [
+				{
+					"name": "Get entities",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslammanagerapi",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslammanagerapi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get metadata",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslammanagerapi/$metadata?sap-labels=true",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslammanagerapi",
+								"$metadata"
+							],
+							"query": [
+								{
+									"key": "sap-labels",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get poetry slams and expand",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set environment variables for subsequent OData requests\r",
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"PoetrySlamsNumber\", jsonResponse.value[0].number);\r",
+									"pm.environment.set(\"PoetrySlamsID\", jsonResponse.value[0].ID);\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(jsonResponse['@odata.count'] + \" poetry slam events found\", function () { jsonResponse['@odata.count'] > 0 });\r",
+									"pm.test(\"Poetry slam \" + jsonResponse.value[0].number + \" '\" + jsonResponse.value[0].title + \"' noted for updates\", function () { pm.response.to.have.status(200) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslammanagerapi/PoetrySlams?sap-locale=en&$expand=visitorsFeeCurrency,status,visits($expand=visitor,status)&$filter=number eq '{{PoetrySlamsNumber_new}}'&$count=true",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslammanagerapi",
+								"PoetrySlams"
+							],
+							"query": [
+								{
+									"key": "sap-language",
+									"value": "en_US",
+									"disabled": true
+								},
+								{
+									"key": "sap-locale",
+									"value": "en"
+								},
+								{
+									"key": "$select",
+									"value": "number,title,projectID",
+									"disabled": true
+								},
+								{
+									"key": "$expand",
+									"value": "visitorsFeeCurrency,status,visits($expand=visitor,status)"
+								},
+								{
+									"key": "$filter",
+									"value": "number eq '{{PoetrySlamsNumber_new}}'"
+								},
+								{
+									"key": "$count",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update poetry slam",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"PoetrySlamsID\", jsonResponse.ID);\r",
+									"\r",
+									"// Validations\r",
+									"pm.test(\"Poetry slam \" + jsonResponse.number + \" updated\", function () { pm.response.to.have.status(200) });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"title\": \"Simple Calls, Deep Echoes: An API Slam\",\r\n    \"description\": \"Where every request reverberates with meaning. In the world of APIs, a single call can trigger a cascade of responses - some expected, some profound. Through spoken word, tech metaphors, and lyrical storytelling, performers will unpack the emotional and technical depth behind the interfaces we build and use.\",\r\n    \"visitorsFeeAmount\": 32,\r\n    \"visitorsFeeCurrency_code\": \"EUR\",\r\n    \"dateTime\": \"2026-01-01T08:16:32+01:00\",\r\n    \"salesOrderID\": \"90000087\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/odata/v4/poetryslammanagerapi/PoetrySlams({{PoetrySlamsID}})",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"odata",
+								"v4",
+								"poetryslammanagerapi",
+								"PoetrySlams({{PoetrySlamsID}})"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "useBrowser",
+				"value": false,
+				"type": "boolean"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "http://localhost",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "Postman",
+				"type": "string"
+			},
+			{
+				"key": "challengeAlgorithm",
+				"value": "S256",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{ias_user}}",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "{{ias_password}}",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "authorization_code",
+				"type": "string"
+			},
+			{
+				"key": "clientSecret",
+				"value": "{{uaa_clientsecret}}",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "{{uaa_clientid}}",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "{{uaa_url}}/oauth/authorize",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "body",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "{{uaa_url}}/oauth/token",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

@@ -50,4 +50,4 @@ Buckle up and let us take you on a guided tour through the debployed sample solu
 
     <img src="./images/17_guided_tour_visitorobjectpage.png" width="100%">
 
-This concludes the guided tour... We hope you enjoyed the ride. 
+This concludes the guided tour. We hope you enjoyed the ride. 

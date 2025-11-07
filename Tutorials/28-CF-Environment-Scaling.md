@@ -36,7 +36,7 @@ For example, a **Memory per Instance** of 1 GB entitles the application to use u
 
 > Note: Node.js is a single-threaded runtime. Since the Partner Reference Application is developed with CAP Node.js, requests to the application are handled sequentially. This means that an increase of entitled CPUs beyond 100% will not increase the throughput. This means, vertical scaling beyond a memory size of 4 GB will not improve the performance.
 
-For more information, see [SAP Help Portal - SAP BTP-Specific Configurations](https://help.sap.com/docs/btp/sap-business-technology-platform/cloud-foundry-environment#sap-btp-specific-configurations).
+For more information, see [SAP BTP-Specific Configurations](https://help.sap.com/docs/btp/sap-business-technology-platform/cloud-foundry-environment#sap-btp-specific-configurations) on SAP Help Portal.
 
 ### Horizontal Scaling
 
@@ -57,7 +57,7 @@ The [Multi-Target Application Development Descriptor (mta.yaml)](https://help.sa
 
 1. Open the file [mta.yaml](../../../tree/main-multi-tenant/mta.yaml) in the root directory of the project.
 2. Navigate to the *modules* section and check the configuration of the applications to be deployed (for example, poetry-slams-srv, poetry-slams-mtx and poetry-slams).
-3. The module-specific *parameters* section can be configured. In case a parameter is not listed, it automatically gets a default value assigned during deployment (see [help on parameters](https://help.sap.com/docs/SAP_HANA_PLATFORM/4505d0bdaf4948449b7f7379d24d0f0d/4050fee4c469498ebc31b10f2ae15ff2.html#parameters)):
+3. The module-specific *parameters* section can be configured. In case a parameter is not listed, it automatically gets a default value assigned during deployment (refer to the documentation on [parameters](https://help.sap.com/docs/SAP_HANA_PLATFORM/4505d0bdaf4948449b7f7379d24d0f0d/4050fee4c469498ebc31b10f2ae15ff2.html#parameters) on SAP Help Portal):
     
     - memory (default: 1 GB)
     - instances (default: 1)
@@ -83,7 +83,7 @@ Lastly, the [Cloud Foundry CLI](https://docs.cloudfoundry.org/cf-cli/) can also 
 - Disk Space: ```cf scale app-name -k <disk_quota>```
 - Memory: ```cf scale app-name -m <memory>```
 
-> Detailed information about the setup and configuration of the Cloud Foundry environment are available on SAP Help Portal ([Cloud Foundry Environment](https://help.sap.com/docs/btp/sap-business-technology-platform/cloud-foundry-environment#loio9809fa4f02cb4696baea5c23d6eaac94)).
+> Detailed information about the setup and configuration of the [Cloud Foundry environment](https://help.sap.com/docs/btp/sap-business-technology-platform/cloud-foundry-environment#loio9809fa4f02cb4696baea5c23d6eaac94) are available on SAP Help Portal.
 
 ## Understanding the Cloud Foundry Runtime Requirements of Your Application
 
@@ -261,7 +261,7 @@ To maintain the **Average CPU Consumption** per application instance at around *
 
 > Note: You can display the required **Disk per Instance** of each service using the command ```cf app <app-name>```. The disk quota is not relevant for the entitlement of the [SAP BTP, Cloud Foundry runtime](https://www.sap.com/germany/products/technology-platform/btp-cloud-foundry-runtime.html). In all services described here, you can reduce it to the same value as the **Memory per Instance**.
 
-> Note: You can optimize individual services, such as [Approuter Configurations](https://www.npmjs.com/package/@sap/approuter#configurations) or [Database Pool Configuration](https://cap.cloud.sap/docs/node.js/databases#pool), in addition to scaling the application. These changes can positively influence the required scaling. However, they are beyond the scope of this tutorial.
+> Note: You can optimize individual services, such as [approuter configurations](https://www.npmjs.com/package/@sap/approuter#configurations) or [database pool configuration](https://cap.cloud.sap/docs/node.js/databases#pool), in addition to scaling the application. These changes can positively influence the required scaling. However, they are beyond the scope of this tutorial.
 
 In general, these settings give a starting point. Of course, in productive usage you will still need to monitor the resource consumption. For example, base loads and peak loads may allow you even more optimized settings. [Automatic scaling](https://help.sap.com/docs/application-autoscaler) can help to address dynamic resource needs. Additonaly, based on your application, it might be necessary to monitor the usage of the SAP HANA database in case it reaches its limits during the load test. An upgrade of the database itself is another possibility to enhance the performance of the application. For simple applications, like the Poetry Slam Manager, this option is not necessary.
 

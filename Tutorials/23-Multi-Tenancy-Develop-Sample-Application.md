@@ -7,7 +7,7 @@ If you want to start right away with a working multi-tenant implementation, clon
 
 To fast-forward:
 
-1. In the development subaccount SAP BTP cockpit (subaccount level), navigate to *Instances and Subscriptions*, open *SAP Business Application Studio*, and open the dev space *PoetrySlams* created during the [Prepare Your SAP Business Technology Platform Account for Development](./11-Prepare-BTP-Account.md).
+1. In the development subaccount SAP BTP cockpit (subaccount level), navigate to *Instances and Subscriptions*, open *SAP Business Application Studio*, and open the dev space *PoetrySlams* created during the [Prepare Your SAP BTP Account for Development](./11-Prepare-BTP-Account.md).
 
 2. Use the tile *Clone from Git* on the *Welcome* view to clone this GitHub repository (https://github.com/SAP-samples/partner-reference-application) and switch to the branch *main-multi-tenant*.
 
@@ -20,8 +20,8 @@ In this approach, you use the core application as developed in the previous part
 Therefore, open the Partner Reference Application you developed before in the SAP Business Application Studio of your development account. 
 
 Follow the steps described in this section to enhance your application. Additionally, find detailed information in
-- the [CAP Multitenancy Documentation](https://cap.cloud.sap/docs/guides/multitenancy/)
-- the [SAP BTP Implemented Application Router Documentation](https://help.sap.com/docs/btp/sap-business-technology-platform/application-router).
+- the [CAP multitenancy documentation](https://cap.cloud.sap/docs/guides/multitenancy/)
+- the [SAP BTP implemented application router documentation](https://help.sap.com/docs/btp/sap-business-technology-platform/application-router).
 
 ### Prepare Your Project Configuration for Cloud Foundry Deployments
 
@@ -209,7 +209,7 @@ Now, follow the next steps to make further required changes:
 
     8. Adjust the destination service resource (*poetry-slams-destination*). This includes the *poetry-slams-srv-api* as defined in the *destination* for the route as defined in the web application configuration files [*./app/poetryslams/xs-app.json*](../../../tree/main-multi-tenant/app/poetryslams/xs-app.json) and [*./app/visitors/xs-app.json*](../../../tree/main-multi-tenant/app/visitors/xs-app.json) in the `requires` section.
 
-        > Note: There will be two destinations created that are required for the SAP Build Work Zone integration: the runtime destination of the launchpad and the destination to access the poetry slams service module.
+        > Note: There will be two destinations created that are required for the SAP Build Work Zone integration: the runtime destination of the launchpad and the destination to access the poetry slams service module. For detailed instructions, see [Developing HTML5 Business Solutions as Content Providers -> Procedure -> Step 2: Define destinations (provider subaccount)-> Runtime Destination](https://help.sap.com/docs/build-work-zone-standard-edition/sap-build-work-zone-standard-edition/developing-html5-apps-for-cross-subaccount-consumption?locale=en-US#procedure) on SAP Help Portal.
 
         ```yml
         resources:
@@ -235,6 +235,9 @@ Now, follow the next steps to make further required changes:
                         Type: HTTP
                         URL: https://${org}.launchpad.${default-domain} # Runtime destination of launchpad, required for workzone
                         CEP.HTML5ContentProvider: true
+                        # Required for dynamic tiles in Work Zone
+                        HTML5.DynamicDestination: true
+                        HTML5.ForwardAuthToken: true
                       - Name: poetry-slams-srv-api
                         Description: Destination to access the poetry slams service module, required for workzone
                         Authentication: NoAuthentication
@@ -335,8 +338,7 @@ Now, follow the next steps to make further required changes:
 
 5. Repeat steps 3 and 4 for the *Visitors* application (see [*index.html*](../../../tree/main-multi-tenant/app/visitors/webapp/index.html), [*initAppStyle.css*](../../../tree/main-multi-tenant/app/visitors/webapp/util/initAppStyle.css) and [*xs-app.json*](../../../tree/main-multi-tenant/app/visitors/xs-app.json)).
 
-6. Ensure that the scope `mtcallback` is available in the [*xs-security.json*](../../../tree/main-multi-tenant/xs-security.json). Check the documentation for more details: [XSUAA](https://cap.cloud.sap/docs/java/multitenancy-classic#xsuaa-mt-configuration).:
-
+6. Ensure that the scope `mtcallback` is available in the [*xs-security.json*](../../../tree/main-multi-tenant/xs-security.json).
     ```json
       "scopes": [
         {
@@ -351,7 +353,7 @@ Now, follow the next steps to make further required changes:
         
 7. Adjust the [*package.json*](../../../tree/main-multi-tenant/package.json) in the *root* folder.
 
-    1. Ensure that the profile *mtx-sidecar* is available. For more information, check the documentation: [SaaS Registry Dependencies](https://cap.cloud.sap/docs/guides/multitenancy/#saas-registry-dependencies):
+    1. Ensure that the profile *mtx-sidecar* is available. For more information, check the documentation about [SaaS Registry Dependencies](https://cap.cloud.sap/docs/guides/multitenancy/#saas-dependencies).
 
       ```json
       "cds": {

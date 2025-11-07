@@ -3,7 +3,7 @@
 ## Purpose
 
 In the previous sections, you learned how to integrate the Poetry Slam Manager with SAP Business One as an ERP back end. In this section, You're connecting the Poetry Slam Manager with your SAP Business One system through a secure tunnel, avoiding the need to expose the service layer from the SAP Business One back end to the internet. To achieve this, you're adding an instance of a Cloud Connector to your environment.
-The Cloud Connector serves as a secure link between cloud applications and on-premise systems, allowing controlled access to them. It functions as a reverse invoke proxy within a secured network, providing fine-grained control over both accessible on-premise resources and cloud applications that use it. For more information about the Cloud Connector, see [SAP Help Portal - Cloud Connector](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/cloud-connector).
+The Cloud Connector serves as a secure link between cloud applications and on-premise systems, allowing controlled access to them. It functions as a reverse invoke proxy within a secured network, providing fine-grained control over both accessible on-premise resources and cloud applications that use it. For more information, refer to [Cloud Connector](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/cloud-connector) on SAP Help Portal.
 
 The finished integration of SAP Business One using the Cloud Connector offers the same features as the direct connection explained in previous chapters:
 
@@ -65,20 +65,20 @@ Update your application in the provider subaccount. For detailed instructions, r
 
 ## Install a Cloud Connector in Your SAP Business One Environment
 
-Before beginning, ensure that a computer or virtual machine is available for installing the Cloud Connector. This resource should meet the following criteria:
+Before you start, ensure that a computer or virtual machine is available for installing the Cloud Connector. This resource should meet the following criteria:
 1. Located within a network zone with:
     - Internet access to the SAP BTP region host, either directly or through an HTTPS proxy.
     - Direct access to the SAP Business One system it provides access to, meaning that there is transparent connectivity between the Cloud Connector and the SAP Business One system.
     > Note: For more information on prerequisites for network zones, see [Network Zones](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/cloud-connector-network-zones).
-2. Meet the [hardware requirements](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/prerequisites#hardware).
-3. Adequate operating system for Cloud Connector installation: [Product availability matrix](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/prerequisites#product-availability-matrix).
-4. JDK preinstalled according to [JDK requirements](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/prerequisites#jdks).
+2. Meets the [hardware requirements](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/prerequisites#hardware).
+3. Has adequate operating system for Cloud Connector installation. see [Product Availability Matrix](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/prerequisites#product-availability-matrix) for more information.
+4. JDK is preinstalled according to [JDK requirements](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/prerequisites#jdks).
 
 For Windows installations, Microsoft Visual C++ 2019 runtime libraries should be preinstalled. For more information, refer to the [Microsoft installation guide](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/installation-on-microsoft-windows-os).
 
-For more information about installing the Cloud Connector, see [Cloud Connector installation](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/installation).
+For more information about installing the Cloud Connector, see [Installation](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/installation) on SAP Help Portal.
 
-1. Download the desired version of the Cloud Connector for installation on your on-premise network from the following page: [SAP development tools](https://tools.hana.ondemand.com/#cloud).
+1. Download the desired version of the Cloud Connector for installation on your on-premise network from the [SAP Development Tools](https://tools.hana.ondemand.com/#cloud) page.
     > For the purpose of this guide, the non-portable Windows installer will be used.
 2. Open the downloaded file and follow the steps in the installer.
     > Note: Ensure the default port 8443 is not being used by another service. If port 8443 is already in use, choose a free port during installation. The selected port will be used later in this guide.
@@ -158,11 +158,11 @@ To connect the Cloud Connector with SAP Business One, some configuration is nece
     - Set the Access Policy to _Path and all Sub-Paths_.
     - Leave the other configuration unchanged.
 
-> Note: More details about the configuration of the system mapping in the Cloud Connector are described in the SAP Help document [Configure Access Control (HTTP)](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/configure-access-control-http).
+> Note: More details about the configuration of the system mapping in the Cloud Connector are described in [Configure Access Control (HTTP)](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/configure-access-control-http) on SAP Help Portal.
 
 ## Set Up Destinations to Connect the SAP BTP Application to SAP Business One
 
-[HTTP Destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/http-destinations) can be configured in the subaccounts of the SAP Business Technology Platform. They can be used to connect your application to the internet, as well as to an on-premise system. To setup a destination, follow these steps:
+[HTTP destinations](https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/http-destinations) can be configured in the subaccounts of the SAP Business Technology Platform. They can be used to connect your application to the internet, as well as to an on-premise system. To setup a destination, follow these steps:
 1. Open your SAP BTP consumer subaccount.
 2. Go to *Connectivity* and choose *Destinations*.
 3. Create the following destinations:
@@ -197,7 +197,7 @@ To connect the Cloud Connector with SAP Business One, some configuration is nece
 
         - Option 2 (Principal Propagation):
 
-            > Note: To use principal propagation, make sure you have completed the required setup in SAP Business One: [Register the Identity Provider of the SAP BTP Application in the SAP Business One SSO Extension Manager](./33b-Multi-Tenancy-Provisioning-Connect-B1.md#optional-register-the-identity-provider-of-the-sap-btp-application-in-the-sap-business-one-sso-extension-manager)
+            > Note: To use principal propagation, make sure you have completed the required setup in SAP Business One described in [Register the Identity Provider of the SAP BTP Application in the SAP Business One SSO Extension Manager](./33b-Multi-Tenancy-Provisioning-Connect-B1.md#optional-register-the-identity-provider-of-the-sap-btp-application-in-the-sap-business-one-sso-extension-manager)
 
             | Parameter Name           | Value                                                                                            |
             | :------------------------ | :-------------------------------------------------------------------------------------          |
@@ -218,11 +218,11 @@ To connect the Cloud Connector with SAP Business One, some configuration is nece
 
             > Note: You can see the `{{Company ID}}` in the SAP Business One Extension SSO Manager in the *Tenant Binding List*.
 
-            > Note: The *Additional Properties* `HTML5.DynamicDestination` and `WebIDEEnabled` are only needed if the destination is also used for local tests in the Business Application Studio. More details about local tests are described in the documentation [On-Premise Connectivity From Business Application Studio (BAS)](https://sap.github.io/cloud-sdk/docs/java/features/connectivity/running-locally#on-premise-connectivity-from-business-application-studio-bas) of the SAP Cloud SDK.
+            > Note: The *Additional Properties* `HTML5.DynamicDestination` and `WebIDEEnabled` are only needed if the destination is also used for local tests in the Business Application Studio. More details about local tests are described in [On-Premise Connectivity From Business Application Studio (BAS)](https://sap.github.io/cloud-sdk/docs/java/features/connectivity/running-locally#on-premise-connectivity-from-business-application-studio-bas) of the SAP Cloud SDK.
 
 ## Remarks and Troubleshooting
 
 Now, everything is set up for your back-channel integration to SAP Business One using a Cloud Connector. To continue with the integration example, you can now follow the guide on how to [add SAP BTP applications to the SAP Business One launchpad](./33b-Multi-Tenancy-Provisioning-Connect-B1.md#add-sap-btp-applications-to-the-sap-business-one-launchpad).  
 
-If you need more information on how to trace and debug your application with ERP integration, go to the section on [testing and troubleshooting](32-Test-Trace-Debug-ERP.md). If you're looking for more information on the ERP integration of Poetry Slam Manager, take the [guided tour of the ERP integration](31-Guided-Tour-ERP-Integration.md).
+If you need more information on how to trace and debug your application with ERP integration, go to the section on [testing and troubleshooting](32-Test-Trace-Debug-ERP.md). If you're looking for more information on the ERP integration of Poetry Slam Manager, take the [guided tour about the ERP integration](31-Guided-Tour-ERP-Integration.md).
 

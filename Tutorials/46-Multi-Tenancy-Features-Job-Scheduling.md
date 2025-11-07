@@ -2,11 +2,11 @@
 
 Jobs and background execution are required for various use cases. This tutorial covers two specific use cases:
 
-1. Job scheduling by the partner: Imagine you host a poetry slam manager solution for several customers. You need to execute some logic for all subscribed consumers of your solution. For example, you want to schedule jobs that regularly run for poetry slam events of each consumer. For each customer using the application, a reminder email notification is sent to their visitors about upcoming poetry slam events.
+1. Job scheduling by the partner: Imagine you host a poetry slam manager solution for several customers. You need to execute some logic for all subscribed consumers of your solution. For example, you want to schedule jobs that regularly run for poetry slam events of each consumer. For each customer using the application, a reminder notification (launchpad notification and email) is sent to their visitors about upcoming poetry slam events.
 
-2. Background execution triggered by the customer: Imagine you're a poetry slam manager using a poetry slam management solution to handle events. You want to send email notifications for a specific poetry slam asynchronously, using background execution. The status of this background execution appears on the poetry slam's object page.
+2. Background execution triggered by the customer: Imagine you're a poetry slam manager using a poetry slam management solution to handle events. You want to send notifications for a specific poetry slam asynchronously, using background execution. The status of this background execution appears on the poetry slam's object page.
 
-For both use cases, the SAP Job Scheduling service is used to schedule jobs either regularly or as a one-time task. For more information, refer to [SAP Help for SAP Job Scheduling Service](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/what-is-sap-job-scheduling-service). This service also offers a dashboard for job management. In a multi-tenant landscape, only the application provider can access this dashboard. Through a web-based user interface, jobs for provider instances can be created and updated. Jobs for consumers can be viewed and edited but can't be created using the dashboard.
+For both use cases, the SAP Job Scheduling service is used to schedule jobs either regularly or as a one-time task. For more information, refer to [What Is SAP Job Scheduling Service?](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/what-is-sap-job-scheduling-service) on SAP Help Portal. This service also offers a dashboard for job management. In a multi-tenant landscape, only the application provider can access this dashboard. Through a web-based user interface, jobs for provider instances can be created and updated. Jobs for consumers can be viewed and edited but can't be created using the dashboard.
 
 > Note: For smaller use cases where asynchronous event handling is primarily needed, consider using the [Event-Queue framework](https://github.com/cap-js-community/event-queue). Built on top of CAP Node.js, it's designed for efficient and streamlined asynchronous event processing. However, this approach is not covered here.
 
@@ -21,11 +21,11 @@ In addition to the entitlements listed for the [multitenancy version](./20-Multi
 |               | Job Scheduling Service                    | standard              | Service       | 1                         | 
 
 ## Architecture
-The Partner Reference Application uses the SAP Job Scheduling service as a resource. This service needs to access the Poetry Slam Manager application to call actions for sending emails. The Poetry Slam Manager provides a new service, *JobSchedulerService*, with the actions (*generateConsumerJobs* and *sendEmailReminder*). It grants access to the SAP Job Scheduling service to call it directly from a job execution. 
+The Partner Reference Application uses the SAP Job Scheduling service as a resource. This service needs to access the Poetry Slam Manager application to call actions for sending notifications. The Poetry Slam Manager provides a new service, *JobSchedulerService*, with the actions (*generateConsumerJobs* and *sendReminder*). It grants access to the SAP Job Scheduling service to call it directly from a job execution. 
 
-For the "Job Scheduling by the partner" use case, you as a partner manually create a job in the SAP Job Scheduling dashboard once and it's scheduled to run regularly. During each run, it executes the *generateConsumerJobs* action on the application instance operating within the provider subaccount. This action creates a job for each consumer and schedules it for immediate execution. The generated consumer jobs have a *date* parameter that specifies sending emails for all poetry slams occurring up to that date. The job then calls the *sendEmailReminders* action with the *date* as a parameter in the consumer subscription. It selects the relevant poetry slams and sends notifications to the registered visitors and artists.
+For the "Job Scheduling by the partner" use case, you as a partner manually create a job in the SAP Job Scheduling dashboard once and it's scheduled to run regularly. During each run, it executes the *generateConsumerJobs* action on the application instance operating within the provider subaccount. This action creates a job for each consumer and schedules it for immediate execution. The generated consumer jobs have a *date* parameter that specifies sending notifications for all poetry slams occurring up to that date. The job then calls the *sendReminder* action with the *date* as a parameter in the consumer subscription. It selects the relevant poetry slams and sends notifications to the registered visitors and artists.
 
-For the "Background execution triggered by the customer" use case, the user interface of the poetry slam object page is enhanced with a button linked to the instance-based (bound) *sendEmailReminderForPoetrySlam* action. This action is defined in the *PoetrySlamService*. It generates a job for this consumer tenant and schedules it for immediate execution. The generated job includes a *poetry slam ID* parameter, which specifies the poetry slam for which emails shall be sent. The job executes the *sendEmailReminders* action with the poetry slam ID as a parameter in the consumer subscription, selecting the relevant poetry slam and sending the emails to the registered visitors and artists.
+For the "Background execution triggered by the customer" use case, the user interface of the poetry slam object page is enhanced with a button linked to the instance-based (bound) *sendReminderForPoetrySlam* action. This action is defined in the *PoetrySlamService*. It generates a job for this consumer tenant and schedules it for immediate execution. The generated job includes a *poetry slam ID* parameter, which specifies the poetry slam for which notifications shall be sent. The job executes the *sendReminder* action with the poetry slam ID as a parameter in the consumer subscription, selecting the relevant poetry slam and sending the notifications to the registered visitors and artists.
 
 <p align="center">
     <img src="./images/46_JobScheduler_UseCaseDiagram.png" width="50%">
@@ -43,16 +43,16 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 ### Application Enablement of "Job Scheduling by the Partner" Use Case
 
-1. As you're sending an email you configured based on chapter [Send emails](./44c-Multi-Tenancy-Features-EMail.md), follow all enablement steps described there first. 
+1. As you're sending notifications you configured based on the [Send notifications](./44c-Multi-Tenancy-Features-Notification.md) chapter, follow all enablement steps described there first. 
 
 2. Add a new OData service to the application called *jobSchedulerService*.
 
-    1. Copy the [job scheduler service definition](../../../tree/main-multi-tenant-features/srv/jobscheduler/jobSchedulerService.cds) to a new folder `jobscheduler` in the `srv` folder. The service offers actions to send email reminders and to generate consumer jobs. Besides this, the required authorizations are defined.
+    1. Copy the [job scheduler service definition](../../../tree/main-multi-tenant-features/srv/jobscheduler/jobSchedulerService.cds) to a new folder `jobscheduler` in the `srv` folder. The service offers actions to send reminders and to generate consumer jobs. Besides this, the required authorizations are defined.
 
     2. Copy the [job scheduler service implementation](../../../tree/main-multi-tenant-features/srv/jobscheduler/jobSchedulerServiceImplementation.js) to the `jobscheduler` folder. The file includes the registration of the actions that are triggered directly by the job scheduler.
-        > Note: When the SAP Job Scheduling service invokes an application endpoint, it provides request headers like the *Job ID*, the *Job Schedule ID*, the *Job Run ID* and the *SAP Job Scheduling service Host URI*. They can be utilized to use the SAP Job Scheduling service REST APIs and Node.js Client Library. More information can be accessed in the SAP Help Portal document [Asynchronous Mode](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/asynchronous-mode).
+        > Note: When the SAP Job Scheduling service invokes an application endpoint, it provides request headers like the *Job ID*, the *Job Schedule ID*, the *Job Run ID* and the *SAP Job Scheduling service Host URI*. They can be utilized to use the SAP Job Scheduling service REST APIs and Node.js Client Library. For more information, see [Asynchronous Mode](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/asynchronous-mode) on SAP Help Portal.
 
-    3. Copy the [job scheduler action implementation](../../../tree/main-multi-tenant-features/srv/lib/jobSchedulerActionImplementation.js) to the `lib` folder in the `srv` folder. The file includes the implementation of the actions to send email reminders and to generate consumer jobs.
+    3. Copy the [job scheduler action implementation](../../../tree/main-multi-tenant-features/srv/lib/jobSchedulerActionImplementation.js) to the `lib` folder in the `srv` folder. The file includes the implementation of the actions to send reminders and to generate consumer jobs.
 
     4. Copy the [job scheduler class](../../../tree/main-multi-tenant-features/srv/lib/jobScheduler.js) to the `lib` folder. This class handles the access to the job scheduler service by using the Node.js module [@sap/jobs-client](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/node-js-client-library).
 
@@ -73,8 +73,8 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         ACTION_JOB_GENERATION_FAILED                            = The job scheduling failed.
         ACTION_JOB_EXECUTION_STARTED                            = Job execution triggered.
         ACTION_JOB_EXECUTION_FAILED                             = Job could not be triggered.
-        ACTION_JOB_EMAIL_REMINDER_SEND_FAIL                     = The reminder email could not be sent.
-        ACTION_JOB_EMAIL_REMINDER_NO_ID_OR_DATE                 = A valid Poetry Slam ID or date is missing.
+        ACTION_JOB_REMINDER_SEND_FAIL                           = The reminder could not be sent.
+        ACTION_JOB_REMINDER_NO_ID_OR_DATE                       = A valid Poetry Slam ID or date is missing.
         ```
 
         > Note: In the reference example, the [*srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages_de.properties) file with the German texts is also available. You can adopt them accordingly.
@@ -165,11 +165,11 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         virtual null                         as isJobStatusShown             : Boolean @odata.Type: 'Edm.Boolean',
         ```
     
-    2. Add a new action named `sendReminderForPoetrySlam` to the entity *PoetrySlams* in the [poetry slam service definition](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds). The action sends an email to all visitors of a specific poetry slam.
+    2. Add a new action named `sendReminderForPoetrySlam` to the entity *PoetrySlams* in the [poetry slam service definition](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds). The action sends a notification to all visitors of a specific poetry slam.
 
         ```cds
 
-        // Action: Schedule to once send E-Mail Reminder to all visitors for a specific poetry slam event
+        // Action: Schedule to once send reminder to all visitors for a specific poetry slam event
         @(
             // Determines that poetryslam entity is used when the action is performed
             cds.odata.bindingparameter.name: 'poetryslam',
@@ -185,7 +185,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     3. Add the implementation of the *read*-handler of the poetry slam entity in the [poetry slam service](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) to set the value of the `isJobStatusShown` field.
 
         ```js
-        srv.on('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
+        srv.on('READ', [PoetrySlams.drafts, PoetrySlams], async (req, next) => {
 
             // Read the PoetrySlams instances
             let poetrySlams = await next();
@@ -219,17 +219,19 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         });
         ```
 
-    4. Copy the file [poetrySlamServiceJobSchedulerImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceJobSchedulerImplementation.js) to directory *srv/poetryslam/*. It includes the implementation of the action *sendReminderForPoetrySlams*, which schedules a job with predefined parameters. The parameters include the scheduling data, like the time to execute the job, a description and the poetry slam ID. Additionally, it states that the action `sendEmailReminder` shall be triggered by the job.
+    4. Copy the file [poetrySlamServiceJobSchedulerImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceJobSchedulerImplementation.js) to directory *srv/poetryslam/*. It includes the implementation of the action *sendReminderForPoetrySlams*, which schedules a job with predefined parameters. The parameters include the scheduling data, like the time to execute the job, a description and the poetry slam ID. Additionally, it states that the action `sendReminder` shall be triggered by the job.
 
     5. Add the job scheduling implementation handler to the [srv/poetryslam/poetrySlamServiceImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js) file.
     
         ```javascript
         const jobSchedulerHandler = require('./poetrySlamServiceJobSchedulerImplementation');
-        module.exports = cds.service.impl(async (srv) => {
-            ...
-            await jobSchedulerHandler(srv); // Forward handler for job scheduling
-            ...
-        });
+        module.exports = class extends cds.ApplicationService {
+            async init() {
+                ...
+                 await jobSchedulerHandler(this); // Forward handler for output
+                ...
+            }
+        };
         ```
 
 3. Enhance the SAP Fiori elements UI of the *Poetry Slams* application. 
@@ -262,7 +264,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
                 Label        : '{i18n>backgroundExecution}',
                 ID           : 'BackgroundExecution',
                 Target       : '@UI.FieldGroup#BackgroundExecution',
-                ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'isJobStatusShown'}}} // Display Job Status if SendEmailReminder triggered
+                ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'isJobStatusShown'}}} // Display Job Status if SendReminder triggered
             }
             ```
 
@@ -304,6 +306,14 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
             - name: poetry-slams-jobscheduler
 
     resources:
+        # Authorization XSUAA service
+        # Manages authentication, single sign-on (SSO), user management, and provides a way to manage authorizations based on scopes and role collections
+        - name: poetry-slams-auth
+          type: org.cloudfoundry.managed-service
+          requires:
+          ...
+          processed-after: [poetry-slams-jobscheduler] # Ensure that poetry-slams-jobscheduler is created before poetry-slams-auth
+    ...
         # Job scheduler Service
         - name: poetry-slams-jobscheduler
           type: org.cloudfoundry.managed-service
@@ -313,6 +323,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
             config:
                 enable-xsuaa-support: true
     ```
+> Note: Since the job scheduler resource is referenced as a scope in the [*xs-security.json*](../../../tree/main-multi-tenant-features/xs-security.json#L23), it has to be created before the SAP Authorization and Trust Management Service (XSUAA) service. Therefore, ensure that `processed-after: [poetry-slams-jobscheduler]` is set for [*poetry-slams-auth*](../../../tree/main-multi-tenant-features/mta.yaml) otherwise the deployment might throw an error.
 
 2. Register the service in the multi-tenant environment [*mtx/sidecar/package.json*](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json) (see [SaaS Registry Dependencies](https://cap.cloud.sap/docs/guides/multitenancy/#saas-dependencies)):
 
@@ -338,7 +349,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
      - *Job Scheduling Service* with the *standard* plan to schedule jobs.
 
 4. Build and deploy the application. As a result, a Job Scheduling Service instance named *poetry-slams-jobscheduler* is created.
-    > Note: For detailed instructions on how to deploy, refer to [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
+    > Note: For detailed instructions on how to deploy, refer to [Deploy Your SAP BTP Multi-Tenant Application](./24-Multi-Tenancy-Deployment.md).
 
 ### Unit Tests
 
@@ -419,7 +430,7 @@ For the "Job scheduling by the partner" use case, the job that is regularly sche
     | *Data (JSON)*:          | *{}*                      |
 
 
-    > Note: Besides one-time schedules, recurring schedules are supported. A one-time schedule executes the job once at a specific time. Recurring schedules allow the job to run multiple times with a defined recurrence. For more details on these schedule types, refer to the SAP Help document [Schedule Types](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/schedule-types). The job remains available regardless of the scheduling type.
+    > Note: Besides one-time schedules, recurring schedules are supported. A one-time schedule executes the job once at a specific time. Recurring schedules allow the job to run multiple times with a defined recurrence. For more details, refer to [Schedule Types](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/schedule-types). The job remains available regardless of the scheduling type.
 
     > Note: With this creation, the job is executed directly. 
 
@@ -451,7 +462,7 @@ As the application provider, you can analyze a job execution.
 
 Now it is time to take you on a guided tour through the job scheduling feature of Poetry Slam Manager: 
 
-> Note: This exploration is intended for the application provider. The generated email will be retrieved by the users of the customers.
+> Note: This exploration is intended for the application provider. The generated notification will be retrieved by the users of the customers.
 
 1. Open the SAP BTP cockpit of the provider subaccount.
 
@@ -497,9 +508,9 @@ Now it is time to take you on a guided tour through the background execution fea
 
 11. Select the booking from the list.
 
-12. Choose *Send Reminder Email*. You get the information that the job execution was successfully triggered.
+12. Choose *Send Reminder*. You get the information that the job execution was successfully triggered.
 
-    > Note: A new section called *Background Execution* is shown on the object page. This section shows the event reminder status. For instance, it displays *Job execution triggered.* when the job is running. It displays *Visitors: 2, Emails sent 2.* when the emails are successfully sent.
+    > Note: A new section called *Background Execution* is shown on the object page. This section shows the event reminder status. For instance, it displays *Job execution triggered.* when the job is running. It displays *Visitors: 2, Notifications sent 2.* when the notifications are successfully sent.
 
 Now, let's have a look how you as the application provider can analyze the background execution. 
 
@@ -509,11 +520,11 @@ Now, let's have a look how you as the application provider can analyze the backg
 
 3. Navigate to the *Jobs* view. The overview shows the triggered jobs with the subdomain and tenant ID (context of the job), the creation date, and the schedule counts.
 
-4. Choose the *send_email_reminder_for_event(<Tenant ID>)* job to view the details. This job runs in context of the customer tenant.
+4. Choose the *send_reminder_for_event(<Tenant ID>)* job to view the details. This job runs in context of the customer tenant.
 
 5. Navigate to the *Schedules* view.
 
-6. Open the schedule called *Immediately for Poetry Slam Number <Number of the poetry slam for which the reminder was sent>*. In the *Data (JSON)* section, the poetry slam ID, you'll find the poetry slam ID for which the email reminder is sent.
+6. Open the schedule called *Immediately for Poetry Slam Number <Number of the poetry slam for which the reminder was sent>*. In the *Data (JSON)* section, the poetry slam ID, you'll find the poetry slam ID for which the reminder is sent.
 
     > Note: The data section is set in the [poetry slam job scheduler implementation](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceJobSchedulerImplementation.js).
 

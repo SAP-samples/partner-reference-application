@@ -178,14 +178,9 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 You can define reuse functions that handle the connection for the different Enterprise Resource Planning (ERP) systems in separate files.
 
-1. Create a file to check and get the destinations in path */srv/lib/destination.js*. 
-2. Add the functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* from the file [*/srv/lib/destination.js*](../../../tree/main-multi-tenant-features/srv/lib/destination.js).
+1. Copy the file [*srv/lib/destination.js*](../../../tree/main-multi-tenant-features/srv/lib/destination.js) to your project. The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* are required to read the destination from the subscriber subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information. The reuse function *getDestinationDescription* returns the destination description from the SAP BTP consumer subaccount.
 
-    > Note: The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* read the destination from the subscriber subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information.
-
-    > Note: The reuse function *getDestinationDescription* returns the destination description from the SAP BTP consumer subaccount.
-
-3. Since the npm module *@sap-cloud-sdk/connectivity* is used in the file *destination.js*, add the corresponding npm modules to your project. To do so, open a terminal and run the commands:
+2. Since the npm module *@sap-cloud-sdk/connectivity* is used in the file *destination.js*, add the corresponding npm modules to your project. To do so, open a terminal and run the commands:
 
     i. `npm add @sap-cloud-sdk/connectivity` 
 
@@ -193,9 +188,9 @@ You can define reuse functions that handle the connection for the different Ente
 
     The dependencies are added to the *dependencies* section in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) file. 
 
-4. Create a new folder *connector* in path */srv/poetryslam*.
-5. Create a file with the path */srv/poetryslam/connector/connector.js*. This file is reused for different ERP integrations.
-6. Copy the ERP connection reuse functions in the file [*/srv/poetryslam/connector/connector.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connector.js) into your project. It delegates the OData requests and holds the destinations.
+3. Create a new folder *connector* in path */srv/poetryslam*.
+4. Create a file with the path */srv/poetryslam/connector/connector.js*. This file is reused for different ERP integrations.
+5. Copy the ERP connection reuse functions in the file [*/srv/poetryslam/connector/connector.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connector.js) into your project. It delegates the OData requests and holds the destinations.
 
 ### Create a File with Reuse Functions for SAP Business ByDesign
 
@@ -219,16 +214,21 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
         ```javascript
         'strict';
 
+        const cds = require('@sap/cds');
+
         // Add connector for project management systems
         const ConnectorByD = require('./connector/connectorByD');
 
         module.exports = async (srv) => {
+            const {
+                ByDProjects
+            } = this.entities;
             // -------------------------------------------------------------------------------------------------
             // Implementation of remote OData services (back-channel integration with SAP Business ByDesign)
             // -------------------------------------------------------------------------------------------------
 
             // Delegate OData requests to remote project entities
-            srv.on('READ', 'ByDProjects', async (req) => {
+            srv.on('READ', ByDProjects, async (req) => {
                 const connector = await ConnectorByD.createConnectorInstance(req);
                 return await connector.delegateODataRequests(
                     req,
@@ -242,27 +242,26 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
 
         > Note: In this example, the projection of the remote project in SAP Business ByDesign as modeled in the PoetrySlamService is only used for *READ* access. In case you want to support *UPDATE* as well, you would need to change ```srv.on('READ', ...)``` to ```srv.on(['READ', 'UPDATE'], ...)``` in the above snippet. The *CREATE* is implemented separately as described in the previous section.
 
-2. Enhance the [poetrySlamServiceImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js) to call the ERP implementation.
+2. Enhance the [*/srv/poetryslam/poetrySlamServiceImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js) to call the ERP implementation.
 
-    1. Import the ERP forward handler.
-
-        ```javascript
-        const erpForwardHandler = require('./poetrySlamServiceERPImplementation');
-        ```
-
-    2. Call the ERP forward handler.
-
-        ```javascript
-        await erpForwardHandler(srv); // Forward handler to the ERP systems
-        ```
-
+    ```javascript
+    const erpForwardHandler = require('./poetrySlamServiceERPImplementation');
+    module.exports = class extends cds.ApplicationService {
+        async init() {
+            ...
+            await erpForwardHandler(this); // Forward handler to the ERP systems
+            ...
+        }
+    };
+     ```
+     
 3. In the file [*/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js), the poetry slams entity is enriched with SAP Business ByDesign specific data. 
 
     1. Determine the connected back-end systems and read the project data from the remote system. Set the virtual element `createByDProjectEnabled` to control the visualization of the action to create a project dynamically and pass on the project system name.
 
         ```javascript
         // Expand poetry slams
-        srv.on('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
+        srv.on('READ', [PoetrySlams.drafts, PoetrySlams], async (req, next) => {
             // Read the PoetrySlams instances
             let poetrySlams = await next();
 
@@ -578,7 +577,7 @@ Enhance the file [*package.json*](../../../tree/main-multi-tenant-features/packa
 
 > Note: For local testing, replace `{{ByD-hostname}}`, `{{test-user}}`, and `{{test-password}}` with a system, user, and password from SAP Business ByDesign. Don't push this information to your GitHub repository.
 
-### Test Locally
+### Local Testing
 
 The goal of local tests is to connect to integrated ERP systems without using destinations. Therefore, you need to adjust the code slightly, as shown below:
 
@@ -617,7 +616,7 @@ In order to test this button locally, the value of **connector.isConnectedIndica
 
 ### Deploy the Application
 
-Update your application in the provider subaccount. For detailed instructions, refer to the section [Deploy the Multi-Tenant Application to a Provider Subaccount](./24-Multi-Tenancy-Deployment.md).
+Update your application in the provider subaccount. For detailed instructions, refer to the section [Deploy Your SAP BTP Multi-Tenant Application](./24-Multi-Tenancy-Deployment.md).
 
 > Note: Make sure any local changes have been reverted before deployment.
 

@@ -17,7 +17,7 @@ Make sure that you fulfill the following prerequisites to implement this section
     - to add web client extensions.
 
 ## API Overview
-As Poetry Slam Manager will use OData services of SAP Business One to create and read purchase order data, make yourself familiar with the interfaces: [Working with SAP Business One Service Layer](https://help.sap.com/doc/0d2533ad95ba4ad7a702e83570a21c32/9.3/en-US/Working_with_SAP_Business_One_Service_Layer.pdf)
+As Poetry Slam Manager will use OData services of SAP Business One to create and read purchase order data, make yourself familiar with the interfaces as described in [Working with SAP Business One Service Layer](https://help.sap.com/docs/SAP_BUSINESS_ONE/f110a154dd0f4c20bf7f3ebca9eeb794/894666ccf6bc4b8a9fb681b23b5a8da8.html).
 
 ## Links to SAP Business One Help
 As the integration of Poetry Slam Manager and SAP Business One is supposed to work without any further authentification steps, you configure single sign-on in the tutorial. Besides this, URL mashups are created. User maintenance and authorizations are, of course, important, too. 
@@ -26,7 +26,7 @@ If you need more information about these topics, you can have a look at the foll
 
 1. [Identity and Authentication Management in SAP Business One](https://help.sap.com/docs/SAP_BUSINESS_ONE_IAM/548d6202b2b6491b824a488cfc447343/7f94c5836fad44e6a02322d39e229cc3.html)
 
-2. [Setting Up SAP BTP Destination for Service Layer](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/bfeaccb8b53348318970f8bbbc3d5f0a.html?q=Business%20One%20extension)
+2. [Setting Up SAP BTP Destination for Service Layer](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/bfeaccb8b53348318970f8bbbc3d5f0a.html)
 
 3. Visual Studio Code Wizard for SAP Business One, Web client extensions
 
@@ -34,9 +34,9 @@ If you need more information about these topics, you can have a look at the foll
 
     ii. [Development Environment Setup](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/b121ab221f4044baaf6051bba14cc160.html)
 
-    iii. [Packaging Your Apps Using VS Code Wizard for SAP Business One, Web Client Extensions](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/581b9433bb92442eb24b86b34041766e.html?q=Business%20One%20extension)
+    iii. [Packaging Your Apps Using VS Code Wizard for SAP Business One, Web Client Extensions](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/581b9433bb92442eb24b86b34041766e.html)
     
-    iv. [Create a URL mashup](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/28461b436583429b9d17c2db43567323.html?q=Business%20One%20extension)
+    iv. [Creating a URL Mashup App](https://help.sap.com/docs/SAP_BUSINESS_ONE_WEB_CLIENT/e6ac71d18c7543828bd4463f77d67ff7/28461b436583429b9d17c2db43567323.html)
 
 4. [User Accounts and Authorizations](https://help.sap.com/doc/saphelpiis_hc_b1_image_repository_consultant_training_basic_b1_90_tb1200_02_03_pdf/9.0/en-US/B1_90_TB1200_02_03.pdf)
 

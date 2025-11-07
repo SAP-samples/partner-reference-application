@@ -249,14 +249,9 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 You can define reuse functions that handle the connection for the different Enterprise Resource Planning (ERP) systems in separate files. 
 
-1. Create a file to check and get the destinations in path */srv/lib/destination.js*. 
-2. Add the functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* from the file [*/srv/lib/destination.js*](../../../tree/main-multi-tenant-features/srv/lib/destination.js).
+1. Copy the file [*srv/lib/destination.js*](../../../tree/main-multi-tenant-features/srv/lib/destination.js) to your project. The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* are required to read the destination from the subscriber subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information. The reuse function *getDestinationDescription* returns the destination description from the SAP BTP consumer subaccount.
 
-    > Note: The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* read the destination from the subscriber subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information.
-
-    > Note: The reuse function *getDestinationDescription* returns the destination description from the SAP BTP consumer subaccount.
-
-3. Since the npm module *@sap-cloud-sdk/connectivity* is used in the file *destination.js*, add the corresponding npm modules to your project. To do so, open a terminal and run the commands:
+2. Since the npm module *@sap-cloud-sdk/connectivity* is used in the file *destination.js*, add the corresponding npm modules to your project. To do so, open a terminal and run the commands:
 
     i. `npm add @sap-cloud-sdk/connectivity` 
 
@@ -264,9 +259,9 @@ You can define reuse functions that handle the connection for the different Ente
 
     The dependencies are added to the *dependencies* section in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) file. 
 
-4. Create a new folder *connector* in path */srv/poetryslam*.
-5. Create a file with the path */srv/poetryslam/connector/connector.js*. This file is reused for different ERP integrations.
-6. Copy the ERP connection reuse functions in the file [*/srv/poetryslam/connector/connector.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connector.js) into your project. It delegates the OData requests and holds the destinations.
+3. Create a new folder *connector* in path */srv/poetryslam*.
+4. Create a file with the path */srv/poetryslam/connector/connector.js*. This file is reused for different ERP integrations.
+5. Copy the ERP connection reuse functions in the file [*/srv/poetryslam/connector/connector.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connector.js) into your project. It delegates the OData requests and holds the destinations.
     
 ### Create a File with Reuse Functions for SAP S/4HANA Cloud Public Edition
 
@@ -289,18 +284,23 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
     2. Copy the following code snippet into the newly created file. As a reference you can have a look in the file [poetrySlamServiceERPImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceERPImplementation.js) in the reference application.
 
         ```javascript
-        'strict';
+        'strict'    
+
+        const cds = require('@sap/cds');
 
         // Add connector for project management systems
         const ConnectorS4HC = require('./connector/connectorS4HC');
 
         module.exports = async (srv) => {
+            const {
+                S4HCProjects,
+            } = this.entities;
             // -------------------------------------------------------------------------------------------------
             // Implementation of remote OData services (back-channel integration with SAP S/4HANA Cloud)
             // -------------------------------------------------------------------------------------------------
 
             // Delegate OData requests to SAP S/4HANA Cloud remote project entities
-            srv.on('READ', 'S4HCProjects', async (req) => {
+            srv.on('READ', S4HCProjects, async (req) => {
                 const connector = await ConnectorS4HC.createConnectorInstance(req);
                 return await connector.delegateODataRequests(
                     req,
@@ -316,17 +316,16 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 
 2. Enhance the [*/srv/poetryslam/poetrySlamServiceImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js) to call the ERP implementation.
 
-    1. Import the ERP forward handler.
-
-        ```javascript
-        const erpForwardHandler = require('./poetrySlamServiceERPImplementation');
-        ```
-
-    2. Call the ERP forward handler.
-
-        ```javascript
-        await erpForwardHandler(srv); // Forward handler to the ERP systems
-        ```
+    ```javascript
+    const erpForwardHandler = require('./poetrySlamServiceERPImplementation');
+    module.exports = class extends cds.ApplicationService {
+        async init() {
+            ...
+            await erpForwardHandler(this); // Forward handler to the ERP systems
+            ...
+        }
+    };
+     ```
 
 3.  In the file [*/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js), the poetry slams entity is enriched with SAP S/4HANA Cloud Public Edition specific data. 
 
@@ -334,7 +333,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 
         ```javascript
         // Expand poetry slams
-        srv.on('READ', ['PoetrySlams.drafts', 'PoetrySlams'], async (req, next) => {
+        srv.on('READ', [PoetrySlams.drafts, PoetrySlams], async (req, next) => {
             // Read the PoetrySlams instances
             let poetrySlams = await next();
 
@@ -635,7 +634,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 
     > In the reference example, the [*app/poetryslams/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n_de.properties) file with the German texts is available too. You can take them over accordingly.
 
-### Test Locally
+### Local Testing
 
 The goal of local tests is to connect to integrated ERP systems without using destinations. Therefore, you need to adjust the code slightly, as shown below:
 
@@ -678,4 +677,4 @@ Update your application in the provider subaccount. For detailed instructions, r
 
 > Note: Make sure any local changes have been reverted before deployment.
 
-You have now successfully deployed the application to the provider subaccount and you're ready to [provision tenants of the multi-tenant application to customers and connect with SAP S/4HANA Cloud](./34b-Multi-Tenancy-Provisioning-Connect-S4HC.md).
+You have now successfully deployed the application to the provider subaccount and you're ready to [provision tenants of the multi-tenant application to customers and connect with SAP S/4HANA Cloud Public Edition](./34b-Multi-Tenancy-Provisioning-Connect-S4HC.md).
