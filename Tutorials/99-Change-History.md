@@ -9,10 +9,10 @@ The current version is available in three branches:
 
 The current version includes:
 - [Send Notifications and Emails with SAP Build Work Zone](44c-Multi-Tenancy-Features-Notification.md): Use the SAP Alert Notification service for SAP BTP, integrated into SAP Build Work Zone, to send notifications and emails.
-- [Bruno Collection of Examplary API Requests to the Partner Reference Application](./api-samples/): Use the provided Bruno collection to explore the different APIs of the Partner Reference Application.
+- [Bruno Collection of Exemplary API Requests to the Partner Reference Application](./api-samples/): Use the provided Bruno collection to explore the different APIs of the Partner Reference Application.
 - Enhancements of the User Interface and the SAP Build Work Zone Launchpad:
   - Add additional business applications into the SAP Build Work Zone launchpad, for example, the [Audit Log Viewer](41-Multi-Tenancy-Features-Data-Privacy.md#add-audit-log-viewer-service-to-sap-build-work-zone) application or the [Print Service](44b-Multi-Tenancy-Features-Print.md#add-print-service-application-to-sap-build-work-zone) application.
-  - Use [Dynamic Tiles](14-Develop-Core-Application.md#dynamic-tiles) to dispay key performance indicators of your applications.
+  - Use [Dynamic Tiles](14-Develop-Core-Application.md#dynamic-tiles) to display key performance indicators of your applications.
 - Smaller corrections, improvements, and updates
 
 ## Older Versions
