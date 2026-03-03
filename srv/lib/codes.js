@@ -39,11 +39,17 @@ const httpRequestMethod = {
   get: 'GET'
 };
 
+const mimeTypes = {
+  application_pdf: 'application/pdf',
+  application_json: 'application/json'
+};
+
 // Publish constants and functions
 module.exports = {
   color,
   poetrySlamStatusCode,
   visitStatusCode,
   httpCodes,
-  httpRequestMethod
+  httpRequestMethod,
+  mimeTypes
 };

@@ -71,7 +71,7 @@
   "sap.ui5": {
     "flexEnabled": true,
     "dependencies": {
-      "minUI5Version": "1.136.0",
+      "minUI5Version": "1.136.11",
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
@@ -206,6 +206,6 @@
     "archeType": "transactional"
   },
   "sap.platform.cf": {
-    "ui5VersionNumber": "1.136.0"
+    "ui5VersionNumber": "1.136.11"
   }
 }
