@@ -107,8 +107,8 @@ service PoetrySlamService @(
   };
 
   type user {
-    id     : String;
-    locale : String;
+    id     : String(255);
+    locale : String(14);
     roles  : userRoles;
   };
 

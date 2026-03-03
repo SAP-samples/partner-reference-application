@@ -27,7 +27,8 @@ annotate service.Visitors with @(
       $Type         : 'UI.DataFieldForIntentBasedNavigation',
       SemanticObject: 'poetryslams',
       Action        : 'display',
-      Label         : '{i18n>maintainPoetrySlams}'
+      Label         : '{i18n>maintainPoetrySlams}',
+      @UI.Hidden    : {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
     }],
     FieldGroup #GeneralData       : {
       $Type: 'UI.FieldGroupType',

@@ -13,7 +13,7 @@ annotate PoetrySlamService with @(requires: [
 // Restriction per authorization role:
 annotate PoetrySlamService.PoetrySlams with @(restrict: [
   {
-    // Managers can change all poetry slams, create new, detele and execute the actions
+    // Managers can change all poetry slams, create new, delete and execute the actions
     grant: ['*'],
     to   : 'PoetrySlamFull'
   },

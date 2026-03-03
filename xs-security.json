@@ -2,11 +2,11 @@
   "scopes": [
     {
       "name": "$XSAPPNAME.PoetrySlamFull",
-      "description": "Full Read/Write Access to PoetrySlams"
+      "description": "Full Read/Write Access to Poetry Slams"
     },
     {
       "name": "$XSAPPNAME.PoetrySlamRestricted",
-      "description": "Restricted Read/Write Access to PoetrySlams"
+      "description": "Restricted Read/Write Access to Poetry Slams"
     },
     {
       "name": "$XSAPPNAME.mtcallback",
@@ -20,15 +20,18 @@
   "role-templates": [
     {
       "name": "PoetrySlamManagerRole",
-      "description": "Full Access to PoetrySlams",
+      "description": "Full Access to Poetry Slams",
       "scope-references": ["$XSAPPNAME.PoetrySlamFull"],
       "attribute-references": []
     },
     {
       "name": "PoetrySlamVisitorRole",
-      "description": "Restricted Access to PoetrySlams for Visitors",
+      "description": "Restricted Access to Poetry Slams for Visitors",
       "scope-references": ["$XSAPPNAME.PoetrySlamRestricted"],
       "attribute-references": []
     }
-  ]
+  ],
+  "oauth2-configuration": {
+    "credential-types": ["binding-secret"]
+  }
 }

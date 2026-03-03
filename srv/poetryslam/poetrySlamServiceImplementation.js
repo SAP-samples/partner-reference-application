@@ -7,6 +7,8 @@ const cds = require('@sap/cds');
 const fs = require('fs');
 const path = require('path');
 
+const { httpCodes } = require('../lib/codes');
+
 const poetrySlamsHandler = require('./poetrySlamServicePoetrySlamsImplementation');
 const visitsHandler = require('./poetrySlamServiceVisitsImplementation');
 
@@ -16,7 +18,7 @@ module.exports = class extends cds.ApplicationService {
     await poetrySlamsHandler(this); // Forward handler to the Poetry Slam entity
     await visitsHandler(this); // Forward handler to the Visits entity
     // ----------------------------------------------------------------------------
-    // Implementation of OData function
+    // Implementation of oData function
     // ----------------------------------------------------------------------------
 
     // Function "userInfo": Return logged-in user
@@ -33,48 +35,80 @@ module.exports = class extends cds.ApplicationService {
 
     // Action "createTestData": Create test data (poetry slams, visitors, visits)
     // Only for demo purpose
-    this.on('createTestData', async () => {
+    this.on('createTestData', async (req) => {
       const db = await cds.connect.to('db');
       const { PoetrySlams, Visits, Visitors } = cds.entities;
+      try {
+        // Read the json-files with the test data from the file system
+        const poetrySlamsJson = fs.readFileSync(
+          path.join(__dirname, './sample_data/poetrySlams.json')
+        );
 
-      // Read the json-files with the test data from the file system
-      const poetrySlamsJson = fs.readFileSync(
-        path.join(__dirname, './sample_data/poetrySlams.json')
-      );
+        const visitorsJson = fs.readFileSync(
+          path.join(__dirname, './sample_data/visitors.json')
+        );
 
-      const visitorsJson = fs.readFileSync(
-        path.join(__dirname, './sample_data/visitors.json')
-      );
+        const visitsJson = fs.readFileSync(
+          path.join(__dirname, './sample_data/visits.json')
+        );
 
-      const visitsJson = fs.readFileSync(
-        path.join(__dirname, './sample_data/visits.json')
-      );
+        const poetrySlamsTestData = JSON.parse(poetrySlamsJson)?.poetrySlams;
+        const visitorsTestData = JSON.parse(visitorsJson)?.visitors;
+        const visitsTestData = JSON.parse(visitsJson)?.visits;
 
-      const poetrySlamsTestData = JSON.parse(poetrySlamsJson)?.poetrySlams;
-      const visitorsTestData = JSON.parse(visitorsJson)?.visitors;
-      const visitsTestData = JSON.parse(visitsJson)?.visits;
+        if (!poetrySlamsTestData || !visitorsTestData || !visitsTestData) {
+          console.warn('Test data is not defined');
+          req.warn(httpCodes.internal_server_error, 'TEST_DATA_NOT_DEFINED');
+          return false;
+        }
 
-      if (!poetrySlamsTestData || !visitorsTestData || !visitsTestData) {
-        console.warn('Test data is not defined');
-        return false;
+        // Reset all fields which are not part of the entity to their default value or null (except administrative data, associations and compositions)
+        const administrativeData = [
+          'createdAt',
+          'createdBy',
+          'modifiedAt',
+          'modifiedBy'
+        ];
+        for (const poetrySlam of poetrySlamsTestData) {
+          for (const element of PoetrySlams.elements) {
+            if (
+              !['cds.Association', 'cds.Composition'].includes(element.type) &&
+              !administrativeData.includes(element.name) &&
+              !(element.name in poetrySlam)
+            ) {
+              poetrySlam[element.name] = element.default?.val ?? null;
+            }
+          }
+        }
+
+        // Clear Visits test data
+        const poetrySlamIDs = poetrySlamsTestData.map(
+          (poetrySlam) => poetrySlam.ID
+        );
+
+        await db.run(
+          DELETE.from(Visits).where({ parent_ID: { in: poetrySlamIDs } })
+        );
+
+        let count = 1;
+        poetrySlamsTestData.forEach((poetrySlam) => {
+          poetrySlam.dateTime = new Date();
+          // Determine days to add to today as event date; in 30 days steps
+          const daysToAdd = poetrySlam.dateTime.getDate() + 30 * count;
+          poetrySlam.dateTime.setDate(daysToAdd);
+          // Determine hours of the event between between 2 and 22 p.m.
+          poetrySlam.dateTime.setHours(13 + count, 0, 0);
+          poetrySlam.dateTime.setMilliseconds(0);
+          count++;
+        });
+
+        await db.run(UPSERT(poetrySlamsTestData).into(PoetrySlams));
+        await db.run(UPSERT(visitorsTestData).into(Visitors));
+        await db.run(INSERT(visitsTestData).into(Visits));
+      } catch (error) {
+        console.error(`Error: Failed to create test data`, error.message);
+        req.error(httpCodes.internal_server_error, 'TEST_DATA_CREATION_FAILED');
       }
-
-      let count = 1;
-      poetrySlamsTestData.forEach((poetrySlam) => {
-        poetrySlam.dateTime = new Date();
-        // Determine days to add to today as event date; in 30 days steps
-        const daysToAdd = poetrySlam.dateTime.getDate() + 30 * count;
-        poetrySlam.dateTime.setDate(daysToAdd);
-        // Determine hours of the event between between 2 and 22 p.m.
-        poetrySlam.dateTime.setHours(13 + count, 0, 0);
-        poetrySlam.dateTime.setMilliseconds(0);
-        count++;
-      });
-
-      await db.run(UPSERT(poetrySlamsTestData).into(PoetrySlams));
-      await db.run(UPSERT(visitorsTestData).into(Visitors));
-      await db.run(UPSERT(visitsTestData).into(Visits));
-
       return true;
     });
 

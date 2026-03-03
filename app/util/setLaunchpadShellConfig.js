@@ -64,7 +64,7 @@ window['sap-ushell-config'] = {
                   id: 'VisitorsDisplay',
                   tileType: 'sap.ushell.ui.tile.DynamicTile',
                   properties: {
-                    title: 'Manage Visitors',
+                    title: 'Manage Visitors and Artists',
                     targetURL: '#visitors-display'
                   }
                 }

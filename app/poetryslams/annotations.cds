@@ -78,15 +78,12 @@ annotate service.PoetrySlams with @(
         Target: '@UI.FieldGroup#GeneralData'
       },
       {
-        $Type        : 'UI.ReferenceFacet',
-        Label        : '{i18n>visitorData}',
-        ID           : 'VisitorData',
-        Target       : 'visits/@UI.LineItem#VisitorData',
+        $Type     : 'UI.ReferenceFacet',
+        Label     : '{i18n>visitorData}',
+        ID        : 'VisitorData',
+        Target    : 'visits/@UI.LineItem#VisitorData',
         // Hide facet in case the PoetrySlam is in status In Preparation
-        ![@UI.Hidden]: {$edmJson: {$Eq: [
-          {$Path: 'status/code'},
-          1
-        ]}}
+        @UI.Hidden: {$value: (status.code = 1)}
       },
       {
         $Type : 'UI.ReferenceFacet',
@@ -134,8 +131,9 @@ annotate service.PoetrySlams with @(
       $Type: 'UI.FieldGroupType',
       Data : [
         {
-          $Type: 'UI.DataField',
-          Value: number
+          $Type     : 'UI.DataField',
+          Value     : number,
+          @UI.Hidden: {$value: (number = null)}
         },
         {
           $Type: 'UI.DataField',
@@ -216,22 +214,47 @@ annotate service.PoetrySlams with @(
     // Addition of custom actions to the list page & object page
     Identification                : [
       {
-        $Type        : 'UI.DataFieldForAction',
-        Action       : 'PoetrySlamService.publish',
-        Label        : '{i18n>publish}',
-        ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
+        $Type     : 'UI.DataFieldForAction',
+        Action    : 'PoetrySlamService.publish',
+        Label     : '{i18n>publish}',
+        @UI.Hidden: {$edmJson: {$Or: [
+          {$Not: {$Path: 'IsActiveEntity'}},
+          {$Not: {$Or: [
+            {$Eq: [
+              {$Path: 'status/code'},
+              1
+            ]},
+            {$Eq: [
+              {$Path: 'status/code'},
+              4
+            ]}
+          ]}}
+        ]}}
       },
       {
-        $Type        : 'UI.DataFieldForAction',
-        Action       : 'PoetrySlamService.cancel',
-        Label        : '{i18n>cancel}',
-        ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
+        $Type     : 'UI.DataFieldForAction',
+        Action    : 'PoetrySlamService.cancel',
+        Label     : '{i18n>cancel}',
+        @UI.Hidden: {$edmJson: {$Or: [
+          {$Not: {$Path: 'IsActiveEntity'}},
+          {$Or: [
+            {$Eq: [
+              {$Path: 'status/code'},
+              1
+            ]},
+            {$Eq: [
+              {$Path: 'status/code'},
+              4
+            ]}
+          ]}
+        ]}}
       },
       {
         $Type         : 'UI.DataFieldForIntentBasedNavigation',
         SemanticObject: 'visitors',
         Action        : 'display',
-        Label         : '{i18n>maintainVisitors}'
+        Label         : '{i18n>maintainVisitors}',
+        @UI.Hidden    : {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
       }
     ],
     // Definition of fields shown on the list page / table
@@ -303,7 +326,17 @@ annotate service.PoetrySlams with @(
       status_code,
       dateTime
     ]
-  }
+  },
+  UI.DeleteHidden                : {$edmJson: {$Not: {$Or: [
+    {$Eq: [
+      {$Path: 'status/code'},
+      1
+    ]},
+    {$Eq: [
+      {$Path: 'status/code'},
+      4
+    ]}
+  ]}}}
 );
 
 annotate service.Visits with {

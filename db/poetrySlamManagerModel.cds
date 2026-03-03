@@ -18,7 +18,7 @@ entity PoetrySlams : cuid, managed {
   description         : String(1000);
   dateTime            : DateTime;
   maxVisitorsNumber   : Integer;
-  freeVisitorSeats    : Integer;
+  freeVisitorSeats    : Integer default 0;
   visitorsFeeAmount   : Decimal(6, 2);
   visitorsFeeCurrency : Association to one sap.common.Currencies;
   status              : Association to one PoetrySlamStatusCodes @assert.integrity;
@@ -43,9 +43,9 @@ entity Visits : cuid, managed {
 
 //Visitors table
 entity Visitors : cuid, managed {
-  name   : String;
+  name   : String(255);
   // Regex annotation to validate the input of the email
-  email  : String @assert.format: '^[\w\-\.]+@([\w-]+\.)+[\w-]{2,4}$';
+  email  : String(255) @assert.format: '^[\w\-\.]+@([\w-]+\.)+[\w-]{2,4}$';
   visits : Association to many Visits
              on visits.visitor = $self;
 }
