@@ -97,15 +97,15 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
                                 },
                               }
                             )
-                            printQueue : String);
+                            printQueue : String(50));
             };
 
         // PrintQueues (virtual entity for value help)
         @readonly
         @cds.persistence.skip
         entity PrintQueues {
-            key name  : String;
-                descr : String;
+            key name  : String(50);
+                descr : String(255);
         };
         ```
 
@@ -358,7 +358,7 @@ It is possible to also add the *Print Service* application directly into the SAP
     2. In the *Channel Manager*, click *Map aliases* in the *Status* column of the *Poetry Slam Manager* content provider.
     3. In the *Alias Mapping* dialog box, select the *App Aliases* tab.
     4. Click on *Select aliases to map* and select the *print-service* alias as defined in the *cdm.json* previously.
-    5. For the next dropdown list, called *runtime destination*, select the *print-service* destination as defined in the SAP BTP Cockpit under *Destinations* previously.
+    5. For the next dropdown list, called *runtime destination*, select the *print-service* destination as defined in the SAP BTP cockpit under *Destinations* previously.
     6. *Save* it.
 
 5. Go back to the *Site Directoy* and open the application. The SAP Build Work Zone launchpad of the deployed application opens.

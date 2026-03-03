@@ -11,10 +11,10 @@ The [SAP Cloud Logging service](https://help.sap.com/docs/cloud-logging/cloud-lo
 ### Entitlements
 In addition to the entitlements listed for the [multitenancy version](./20-Multi-Tenancy-BillOfMaterials.md), the list shows the entitlements that are required in the different subaccounts to add observability. 
 
-| Subaccount    |  Entitlement Name                         | Service Plan          | Type          | Quantity                  | 
-| ------------- |  ---------------------------------------- | -----------------     | ------------- | ------------------------- |
-| Provider      |                                           |                       |               |                           |
-|               | SAP Cloud Logging                         | standard              | Service       | 1                         |
+| Subaccount    |  Entitlement Name                         | Service Technical Plan | Service Plan          | Type          | Quantity                  | 
+| ------------- |  ---------------------------------------- |----------------------  | -----------------     | ------------- | ------------------------- |
+| Provider      |                                           |                        |                       |               |                           |
+|               | SAP Cloud Logging                         | cloudlogging           | dev                   | Service       | 1                         |
 
 ## Guide How to Enhance the Application Step by Step
 
@@ -40,7 +40,7 @@ The following sections demonstrate both approaches.
 
 #### Option 1: Use a Dedicated SAP Cloud Logging Instance
 
-For the Partner Reference Application, an SAP Cloud Logging instance is created with [standard](https://help.sap.com/docs/cloud-logging/cloud-logging/service-plans?version=Cloud) service plan using the [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml) file:
+For the Partner Reference Application, an SAP Cloud Logging instance is created with [dev](https://help.sap.com/docs/cloud-logging/cloud-logging/service-plans?version=Cloud) service plan using the [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml) file:
 
 1. Enable the SAP Cloud Logging service instance and [OpenTelemetry](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-via-opentelemetry-api-endpoint?version=Cloud) by adding the following code snippet to the *resources* in the *mta.yaml*:
     ```yml
@@ -51,16 +51,18 @@ For the Partner Reference Application, an SAP Cloud Logging instance is created 
       type: org.cloudfoundry.managed-service
       parameters:
         service: cloud-logging
-        service-plan: standard
+        service-plan: dev
         config:
           ingest_otlp:
             enabled: true
           backend:
-            api_enabled: true
+            api_enabled: false
     #...
     ```
 
-   The parameters `ingest_otlp` and `backend` allow the ingestion of OpenTelemetry data and backend/API access to the SAP Cloud Logging service. They are explained in the [Configuration Parameters](https://help.sap.com/docs/cloud-logging/cloud-logging/configuration-parameters) document of the SAP Cloud Logging service on the SAP Help Portal.
+    The parameter `ingest_otlp` allows the ingestion of OpenTelemetry data. The `backend` parameter provides backend/API access to the SAP Cloud Logging service. Both are explained in the [Configuration Parameters](https://help.sap.com/docs/cloud-logging/cloud-logging/configuration-parameters) document of the SAP Cloud Logging service on the SAP Help Portal. 
+
+    > Note: The **backend.api_enabled** parameter should remain set to false by default to maintain a secure multi-tenant setup. Only enable it if absolutely required, as activating backend/API access exposes the OpenSearch API and breaks multi-tenancy isolation.
 
 2. Add service bindings to all modules that create logs in the SAP Cloud Logging service. For the Poetry Slam Manager, the SAP Cloud Logging service instance is bound to the service module, MTX module, and approuter.
     ```yml
@@ -98,16 +100,16 @@ When you choose to share an existing SAP Cloud Logging instance, your applicatio
 2. Create a SAP Cloud Logging service instance in the shared resources Cloud Foundry space of your provider subaccount:
     1. Create a SAP Cloud Logging service instance with the following command:  
         ```
-        cf create-service cloud-logging standard shared-cloud-logging -c '{
+        cf create-service cloud-logging dev shared-cloud-logging -c '{
           "ingest_otlp": {
             "enabled":  true
           },
           "backend": {
-            "api_enabled": true
+            "api_enabled": false
           }
         }'
         ```   
-        This creates a *service instance* named `shared-cloud-logging` with *service offering* as `cloud-logging` and *service plan* as `standard` with the given configuration.  
+        This creates a *service instance* named `shared-cloud-logging` with *service offering* as `cloud-logging` and *service plan* as `dev` with the given configuration.  
         > Note: The parameters `ingest_otlp` and `backend` allow the ingestion of OpenTelemetry data and backend/API access to the SAP Cloud Logging service. They are explained in the [Configuration Parameters](https://help.sap.com/docs/cloud-logging/cloud-logging/configuration-parameters) document of the SAP Cloud Logging service on the SAP Help Portal.
     
     2. Check if the SAP Cloud Logging service instance is created by running the `cf service shared-cloud-logging` command.

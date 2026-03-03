@@ -50,7 +50,7 @@ After you've created a new SAP BTP subaccount, only the standard services appear
 
     <img src="./images/11_startBAS.png" width="50%">
 
-16. After you've started the development environment, create a new *Dev Space* for the development of this tutorial. Name it `PoetrySlams` and select *Full-Stack Cloud Application*.
+16. After you've started the development environment, create a new *Dev Space* for the development of this tutorial. Name it `PartnerReferenceApplication` and select *Full-Stack Cloud Application*.
 
     <img src="./images/11_startBAS2.png" width="25%">
 

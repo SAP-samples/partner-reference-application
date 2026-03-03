@@ -65,11 +65,11 @@ The [Multi-Target Application Development Descriptor (mta.yaml)](https://help.sa
 
 > Note: If landscape-specific configurations are required, the parameters can also be provided in a [Multi-Target Apllication Deployment Extension Descriptor (mtaext.yaml)](https://help.sap.com/docs/SAP_HANA_PLATFORM/4505d0bdaf4948449b7f7379d24d0f0d/51ac525c78244282919029d8f5e2e35d.html?locale=en-US).
 
-#### BTP Cockpit
+#### SAP BTP Cockpit
 
-The configuration of a *deployed* application can be changed in the SAP BTP Cockpit of the provider subaccount:
+The configuration of a *deployed* application can be changed in the SAP BTP cockpit of the provider subaccount:
 
-1. Open the SAP BTP Cockpit of the provider subaccount.
+1. Open the SAP BTP cockpit of the provider subaccount.
 2. Select *Cloud Foundry > Spaces*.
 3. Access the application in the Cloud Foundry Space (i.e. poetry-slams-srv).
 

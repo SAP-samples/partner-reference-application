@@ -68,7 +68,7 @@ Upcoming versions of the sample application might include further features provi
 - Provide a centralized launchpad that streamlines access to applications, offering a consistent user experience through predefined layout templates and navigation patterns.
 - Use a draft concept to allow users to change data in multiple steps without having to publish incomplete changes.
 - Benefit from enterprise-grade security by authentication and role-based authorizations in line with SAP product standards and technology alignments.
-- Have enterprise-ready compliance by personal data management and audit log.
+- Achieve enterprise-grade compliance supported by audit logging.
 - Offer seamless and secure front-end and back-channel integration with SAP ERP solutions.
 - Deliver open solutions by integration-ready OData APIs and business events following SAP technology alignments.
 - Deploy the app as a multi-customer solution.
@@ -88,6 +88,9 @@ The application is based on SAP Business Technology Platform (SAP BTP) and SAP E
 
 To get a more detailed list of the required entitlements, the proposed structure of subaccounts for the deployed Partner Reference Application, and the scaling effects of the multi-tenant solution, go to the [Bill of Materials](./Tutorials/01-BillOfMaterials.md).
 
+> [!IMPORTANT]
+> For software development projects, SAP implements the [Secure Software Development and Operations Lifecycle (secure SDOL) at SAP](https://www.sap.com/documents/2016/03/a248a699-627c-0010-82c7-eda71af511fa.html). This framework provides training, tools, and processes to ensure security is integrated at every stage of development: design, coding, testing, and deployment. This approach reduces vulnerabilities and enhances the overall security posture of applications. Following this process is advisable.
+
 ## Overview
 
 This repository explains the development journey along the path from
@@ -95,7 +98,8 @@ This repository explains the development journey along the path from
 2. enhancement to a multi-customer ("multi-tenant") solution,
 3. integration with different ERP back ends,
 4. extension with additional features,
-5. enablement of the application for third-party integrations and extensibility.
+5. enablement of the application for third-party integrations and extensibility, and
+6. adding operational aspects of multi-tenant SaaS applications.
 
 <p align="center">
     <img src="./Tutorials/images/00_Dev_Journey.png" width="80%">  
@@ -115,7 +119,10 @@ Updates to this repository are documented in the [change history](./Tutorials/99
 
 1. Develop the **core application** focusing on business models, business logic, and UI:
     1. [Prepare your SAP BTP account for development](./Tutorials/11-Prepare-BTP-Account.md) 
-    2. [Develop the core of the SAP BTP application](./Tutorials/14-Develop-Core-Application.md)
+    2. Develop the core of the SAP BTP application
+        1. [Develop the domain model and the business logic with SAP Cloud Application Programming Model](./Tutorials/14-Develop-Core-Application.md)
+        2. [Develop the user interface with SAP Fiori elements](./Tutorials/14a-Develop-Core-UserInterface.md)
+        3. [Enhance the business solution with translation and authorization](./Tutorials/14b-Develop-Core-Finetuning.md)
     3. [Go on a guided tour to explore the capabilities of the sample application](./Tutorials/17-Guided-Tour.md)
     4. [Ensure code quality, test and troubleshoot the application](./Tutorials/16-Test-Trace-Debug.md)
 
@@ -153,6 +160,8 @@ Updates to this repository are documented in the [change history](./Tutorials/99
     4. [Send notifications and emails with SAP Build Work Zone](./Tutorials/44c-Multi-Tenancy-Features-Notification.md)
     5. [Add capabilities for generative artificial intelligence (GenAI)](./Tutorials/45-Multi-Tenancy-Features-GenAI.md)
     6. [Schedule jobs and add background execution](./Tutorials/46-Multi-Tenancy-Features-Job-Scheduling.md)
+    7. [Store Attachments](./Tutorials/47-Multi-Tenancy-Features-Attachments.md)
+    
 5. Enable the application for **third-party integrations and extensibility**:
     1. Open the APIs of the SAP BTP application for third-party integrations:
         1. [Enable API access to SAP BTP applications using service broker](./Tutorials/42a-Multi-Tenancy-Service-Broker.md)
@@ -161,14 +170,17 @@ Updates to this repository are documented in the [change history](./Tutorials/99
     2. Embed the application in a SAP S/4HANA Cloud Public Edition developer extensibility scenario:
         1. [Enhance the application to look up the latest sales order information](./Tutorials/52a-Multi-Tenancy-Features-API-Service-S4HC.md)
         2. [Configure the connection with SAP S/4HANA Cloud Public Edition](./Tutorials/52b-Multi-Tenancy-Features-API-Service-S4HC-Provisioning.md)
-    3. [Enable consumer-specific extensions](./Tutorials/50-Multi-Tenancy-Features-Tenant-Extensibility.md)
+    3. Enable the application for extensibility:
+        1. [Enable consumer-specific extensions](./Tutorials/50-Multi-Tenancy-Features-Tenant-Extensibility.md)
+        2. [Enable business logic extensions](./Tutorials/50a-Multi-Tenancy-Features-Tenant-BusinessLogicExtensibility.md)
     4. [Enable key user flexibility using SAP Build Work Zone](./Tutorials/51-Multi-Tenancy-Features-Tenant-Key-User-Flexibility.md)
 
 6. **Operational aspects** of multi-tenant SaaS applications
     1. [Upgrading multi-tenant SaaS applications](./Tutorials/61-Operations-SubscriptionUpgrade.md)
     2. [Estimate the required size of the SAP HANA Cloud database](./Tutorials/27-Hana-DB-Scaling.md)
     3. [Estimate the required Cloud Foundry environment configuration](./Tutorials/28-CF-Environment-Scaling.md)
-    4. [Capabilities of SAP Continuous Integration and Delivery Service](./Tutorials/62-Multi-Tenancy-Features-CICD.md)
+    4. [Estimate the SAP Cloud Logging Service Consumption](./Tutorials/29-Cloud-Logging-Consumption.md)
+    5. [Capabilities of SAP Continuous Integration and Delivery Service](./Tutorials/62-Multi-Tenancy-Features-CICD.md)
 
 ## More Information
 - [SAP BTP Developer’s Guide](https://help.sap.com/docs/btp/btp-developers-guide/what-is-btp-developers-guide)
@@ -177,6 +189,11 @@ Updates to this repository are documented in the [change history](./Tutorials/99
 - [SAP Discovery Center](https://discovery-center.cloud.sap/missionssearch)
 - [What's New for SAP Business Technology Platform](https://help.sap.com/whats-new/cf0cb2cb149647329b5d02aa96303f56?clear=all&locale=en-US)
 - [SAP HANA Cloud Administration Guide](https://help.sap.com/docs/hana-cloud/sap-hana-cloud-administration-guide/sap-hana-cloud-administration-guide)
+  
+Further Partner Reference Applications: 
+- [Partner Reference Application Extension 'Catering Management' using SAP Cloud Application Programming Model (CAP)](https://github.com/SAP-samples/partner-reference-application-extension)
+- [Partner Reference Application 'Music Festival Manager' using ABAP RESTful Application Programming Model (RAP)](https://github.com/SAP-samples/abap-partner-reference-application)
+- [Cross-Stack Partner Reference Extension Poetry Slam Event Commerce on SAP S/4HANA Cloud Public Edition](https://github.com/SAP-samples/cross-stack-partner-reference-extension)
 
 ## Known Issues
 
@@ -189,3 +206,6 @@ This repository is provided "as-is", we don't offer support. For questions and c
 ## License
 
 Copyright (c) 2025 SAP SE or an SAP affiliate company. All rights reserved. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
+
+## Disclaimer
+This repository contains sample code provided “as is” for instructional purposes only. SAP makes no warranties and accepts no liability, except in cases of gross negligence or willful misconduct. All included data is fictitious and contains no real personal, confidential, or sensitive information. Do not use this tutorial app productively with real personal data. SAP is not responsible if anyone uses it to capture personal data.

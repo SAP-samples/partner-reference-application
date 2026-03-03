@@ -43,86 +43,95 @@ You use the SAP S/4HANA Cloud Public Edition OData services for enterprise proje
 
 5. Open a terminal. Navigate to the root folder of the application, and import the remote services using the command:  
 
-    1. `cds import ./external_resources/S4HC_API_ENTERPRISE_PROJECT_SRV_0002.edmx --as cds` 
-    2. `cds import ./external_resources/S4HC_ENTPROJECTPROCESSINGSTATUS_0001.edmx --as cds` 
-    3. `cds import ./external_resources/S4HC_ENTPROJECTPROFILECODE_0001.edmx --as cds` 
+    1.  ```
+        cds import ./external_resources/S4HC_API_ENTERPRISE_PROJECT_SRV_0002.edmx --as cds
+        ``` 
+    2.  ```
+        cds import ./external_resources/S4HC_ENTPROJECTPROCESSINGSTATUS_0001.edmx --as cds
+        ```
+    3.  ```
+        cds import ./external_resources/S4HC_ENTPROJECTPROFILECODE_0001.edmx --as cds
+        ```
 
-    As a result, the system creates CDS files in the folder *./srv/external* for all remote services and enhanced the file *package.json* with CDS configurations referring to the remote services. Additionally, this command also adds the following node modules to your project:
+    As a result, the system creates CDS files in the folder *./srv/external* for all remote services and enhances the file *package.json* with CDS configurations referring to the remote services. Additionally, this command also adds the following node modules to your project:
 
     - @sap-cloud-sdk/connectivity
     - @sap-cloud-sdk/http-client
     - @sap-cloud-sdk/resilience
+   <br>
 
-    > Note: Don't use the CDS import command parameter `--keep-namespace` because it would lead to service name clashes if you import multiple SAP S/4HANA Cloud Public Edition OData services.
+   > Note: Don't use the CDS import command parameter `--keep-namespace` because it would lead to service name clashes if you import multiple SAP S/4HANA Cloud Public Edition OData services.
 
-6. Enhance the file [*package.json*](../../../tree/main-multi-tenant-features/package.json) with development configurations for local testing and productive configurations. Ensure that the flag *csrf* and *csrfInBatch* is set in the file *package.json* to enable the management of cross-site request forgery tokens (required for POST requests at runtime) using destinations.
+6. Enhance the created *external services* in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) with development configurations for local testing and productive configurations. Ensure that the flag *csrf* and *csrfInBatch* is set for each newly added *external service* to enable the management of cross-site request forgery tokens (required for POST requests at runtime) using destinations. 
 
     ```json
     "cds": {
-        "S4HC_API_ENTERPRISE_PROJECT_SRV_0002": {
-            "kind": "odata-v2",
-            "model": "srv/external/S4HC_API_ENTERPRISE_PROJECT_SRV_0002",
-            "csrf": true,
-            "csrfInBatch": true,
-            "[development]": {
-                "credentials": {
-                    "url": "https://{{S4HC-hostname}}/sap/opu/odata/sap/API_ENTERPRISE_PROJECT_SRV;v=0002",
-                    "authentication": "BasicAuthentication",
-                    "username": "{{test-user}}",
-                    "password": "{{test-password}}"
+        "requires": {
+            "S4HC_API_ENTERPRISE_PROJECT_SRV_0002": {
+                "kind": "odata-v2",
+                "model": "srv/external/S4HC_API_ENTERPRISE_PROJECT_SRV_0002",
+                "csrf": true,
+                "csrfInBatch": true,
+                "[development]": {
+                    "credentials": {
+                        "url": "https://{{S4HC-hostname}}/sap/opu/odata/sap/API_ENTERPRISE_PROJECT_SRV;v=0002",
+                        "authentication": "BasicAuthentication",
+                        "username": "{{test-user}}",
+                        "password": "{{test-password}}"
+                    }
+                },
+                "[production]": {
+                    "credentials": {
+                        "destination": "s4hc",
+                        "path": "/sap/opu/odata/sap/API_ENTERPRISE_PROJECT_SRV;v=0002"
+                    }
                 }
             },
-            "[production]": {
-                "credentials": {
-                    "destination": "s4hc",
-                    "path": "/sap/opu/odata/sap/API_ENTERPRISE_PROJECT_SRV;v=0002"
-                }
-            }
-        },
-        "S4HC_ENTPROJECTPROCESSINGSTATUS_0001": {
-            "kind": "odata",
-            "model": "srv/external/S4HC_ENTPROJECTPROCESSINGSTATUS_0001",
-            "csrf": true,
-            "csrfInBatch": true,
-            "[development]": {
-                "credentials": {
-                    "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojprocessingstat/srvd_a2x/sap/entprojectprocessingstatus/0001",
-                    "authentication": "BasicAuthentication",
-                    "username": "{{test-user}}",
-                    "password": "{{test-password}}"
-                }
-            },
-            "[production]": {
-                "credentials": {
-                    "destination": "s4hc-tech-user",
-                    "path": "/sap/opu/odata4/sap/api_entprojprocessingstat/srvd_a2x/sap/entprojectprocessingstatus/0001"
-                }
-            }
-        },
-        "S4HC_ENTPROJECTPROFILECODE_0001": {
-            "kind": "odata",
-            "model": "srv/external/S4HC_ENTPROJECTPROFILECODE_0001",
-            "csrf": true,
-            "csrfInBatch": true,
-            "[development]": {
-                "credentials": {
-                    "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojectprofilecode/srvd_a2x/sap/entprojectprofilecode/0001",
-                    "authentication": "BasicAuthentication",
-                    "username": "{{test-user}}",
-                    "password": "{{test-password}}"
+            "S4HC_ENTPROJECTPROCESSINGSTATUS_0001": {
+                "kind": "odata",
+                "model": "srv/external/S4HC_ENTPROJECTPROCESSINGSTATUS_0001",
+                "csrf": true,
+                "csrfInBatch": true,
+                "[development]": {
+                    "credentials": {
+                        "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojprocessingstat/srvd_a2x/sap/entprojectprocessingstatus/0001",
+                        "authentication": "BasicAuthentication",
+                        "username": "{{test-user}}",
+                        "password": "{{test-password}}"
+                    }
+                },
+                "[production]": {
+                    "credentials": {
+                        "destination": "s4hc-tech-user",
+                        "path": "/sap/opu/odata4/sap/api_entprojprocessingstat/srvd_a2x/sap/entprojectprocessingstatus/0001"
+                    }
                 }
             },
-            "[production]": {
-                "credentials": {
-                    "destination": "s4hc-tech-user",
-                    "path": "/sap/opu/odata4/sap/api_entprojectprofilecode/srvd_a2x/sap/entprojectprofilecode/0001"
+            "S4HC_ENTPROJECTPROFILECODE_0001": {
+                "kind": "odata",
+                "model": "srv/external/S4HC_ENTPROJECTPROFILECODE_0001",
+                "csrf": true,
+                "csrfInBatch": true,
+                "[development]": {
+                    "credentials": {
+                        "url": "https://{{S4HC-hostname}}/sap/opu/odata4/sap/api_entprojectprofilecode/srvd_a2x/sap/entprojectprofilecode/0001",
+                        "authentication": "BasicAuthentication",
+                        "username": "{{test-user}}",
+                        "password": "{{test-password}}"
+                    }
+                },
+                "[production]": {
+                    "credentials": {
+                        "destination": "s4hc-tech-user",
+                        "path": "/sap/opu/odata4/sap/api_entprojectprofilecode/srvd_a2x/sap/entprojectprofilecode/0001"
+                    }
                 }
             }
         }
     }
     ```
 
-    > Note: The *package.json* refers to the destinations *s4hc* and *s4hc-tech-user* that must be created in the consumer SAP BTP subaccount. The destination *s4hc* is used for remote service calls with principal propagation. See the next section for more details.
+    > Note: The *external services* refer to the destinations *s4hc* and *s4hc-tech-user* that must be created in the consumer SAP BTP subaccount. The destination *s4hc* is used for remote service calls with principal propagation. See the next section for more details.
 
     > Note: For local testing, replace `{{S4HC-hostname}}`, `{{test-user}}`, and `{{test-password}}` with a system, user, and password from SAP S/4HANA Cloud Public Edition. However, don't push this information to your GitHub repository.
 
@@ -132,14 +141,14 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 1. Enhance the entity *PoetrySlams* with the following elements:
     ```javascript
-    projectID       : String;
-    projectObjectID : String;
-    projectSystem   : String;  
+    projectID             : String(24);
+    projectObjectID       : String(70);
+    projectSystem         : String(4);  
     ```  
 
 2. Enhance the annotations of entity *PoetrySlams* with the following elements:
     ```javascript
-    projectID           @title: '{i18n>projectID}';         @readonly;
+    projectID           @title: '{i18n>projectID}'          @readonly;
     projectObjectID     @title: '{i18n>projectObjectID}'    @readonly;
     projectSystem       @title: '{i18n>projectSystem}'      @readonly;
     ```  
@@ -193,12 +202,12 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
             maxVisitorsNumber - freeVisitorSeats as bookedSeats                  : Integer @title     : '{i18n>bookedSeats}',
             // Relevant for coloring of status in UI to show criticality
             virtual null                         as statusCriticality            : Integer @title     : '{i18n>statusCriticality}',
-            virtual null                         as projectSystemName            : String  @title     : '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
+            virtual null                         as projectSystemName            : String(255)  @title     : '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
             // SAP S/4HANA Cloud projects: visibility of button "Create Project in SAP S/4HANA Cloud", code texts
             virtual null                         as createS4HCProjectEnabled     : Boolean @odata.Type: 'Edm.Boolean',
-            virtual null                         as projectProfileCodeText       : String  @title     : '{i18n>projectProfile}'           @odata.Type: 'Edm.String',
-            virtual null                         as processingStatusText         : String  @title     : '{i18n>processingStatus}'         @odata.Type: 'Edm.String',
-            virtual null                         as projectURL                   : String  @title     : '{i18n>projectURL}'               @odata.Type: 'Edm.String',
+            virtual null                         as projectProfileCodeText       : String(40)  @title     : '{i18n>projectProfile}'           @odata.Type: 'Edm.String',
+            virtual null                         as processingStatusText         : String(60)  @title     : '{i18n>processingStatus}'         @odata.Type: 'Edm.String',
+            virtual null                         as projectURL                   : String(255)  @title     : '{i18n>projectURL}'               @odata.Type: 'Edm.String',
             virtual null                         as isS4HC                       : Boolean @odata.Type: 'Edm.Boolean',
             // Projection of remote service data as required by the UI
             toS4HCProject                                                        : Association to PoetrySlamService.S4HCProjects on toS4HCProject.project = $self.projectID
@@ -253,9 +262,13 @@ You can define reuse functions that handle the connection for the different Ente
 
 2. Since the npm module *@sap-cloud-sdk/connectivity* is used in the file *destination.js*, add the corresponding npm modules to your project. To do so, open a terminal and run the commands:
 
-    i. `npm add @sap-cloud-sdk/connectivity` 
+    1. ```
+       npm add @sap-cloud-sdk/connectivity
+       ```
 
-    ii. `npm add @sap-cloud-sdk/http-client`
+    2. ```
+       npm add @sap-cloud-sdk/http-client
+       ```
 
     The dependencies are added to the *dependencies* section in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) file. 
 
@@ -284,7 +297,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
     2. Copy the following code snippet into the newly created file. As a reference you can have a look in the file [poetrySlamServiceERPImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceERPImplementation.js) in the reference application.
 
         ```javascript
-        'strict'    
+        'strict'
 
         const cds = require('@sap/cds');
 
@@ -294,7 +307,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
         module.exports = async (srv) => {
             const {
                 S4HCProjects,
-            } = this.entities;
+            } = srv.entities;
             // -------------------------------------------------------------------------------------------------
             // Implementation of remote OData services (back-channel integration with SAP S/4HANA Cloud)
             // -------------------------------------------------------------------------------------------------
@@ -425,6 +438,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
                     req,
                     srv,
                     ConnectorS4HC,
+                    'ACTION_ASSIGN_PROJECT_SUCCESS',
                     'ACTION_CREATE_PROJECT_NO_S4_HANA_CLOUD_SYSTEM'
                 );
             });
@@ -492,10 +506,11 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
 
     ```javascript
     ACTION_CREATE_PROJECT_DRAFT                             = Projects cannot be created for draft Poetry Slams.
-    ACTION_CREATE_PROJECT_NO_S4_HANA_CLOUD_SYSTEM           = No SAP S/4HANA Cloud system connected. Project cannot be created.
+    ACTION_CREATE_PROJECT_NO_S4_HANA_CLOUD_SYSTEM           = No SAP S/4HANA Cloud Public Edition system connected. Project cannot be created.
     ACTION_CREATE_PROJECT_FAILED                            = Project creation failed. Poetry Slam {0} was not updated.
     ACTION_READ_PROJECT_CONNECTION                          = Project cannot be retrieved.
-    ACTION_ERP_REMOVED                                      = The ERP information was removed from poetry slam {0}.
+    ACTION_CLEAR_PROJECT_DATA_SUCCESS                       = Project data cleared.
+    ACTION_ASSIGN_PROJECT_SUCCESS                           = Project {0} added.
     ```
 
 ### Enhance the Web App to Display SAP S/4HANA Cloud Public Edition Data 
@@ -598,7 +613,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP Cloud 
         ]
         ```
 
-    4. Add two buttons to the identification area:
+    4. Add two buttons to the fieldgroup *#ProjectData*:
         ```javascript
         // Create a project in the connected SAP S/4HANA Cloud system
         {

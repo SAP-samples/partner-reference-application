@@ -31,12 +31,22 @@ To set up authorization roles for your application, follow these steps:
 3. Assign the created user group *PoetrySlamManagerKeyUser* from the identity provider to the role collection *PoetrySlamKeyUserRoleCollection*.
 
 ## Adapting the User Interface for all Users
-After completing these enablement steps, key users are ready to adapt the user interface for all users of the *Poetry Slam Manager*:
+After completing the steps below, the **Price** is shown in the **Poetry Slams** table of the **Poetry Slam Manager** for all users:
 
 1. Open the application *Poetry Slam Manager*.
 2. Open the *User Action Menu* by clicking on your profile.
 3. Choose *Adapt UI* to start the *UI Adaptation*.
+4. Right-click a colum of the **Poetry Slams** table.
+5. Choose **View Settings**.
+6. Select the **Price** column.
+7. Close the popup.
+8. Activate the new version on the top left.
+9. Enter a version title, for example **Add Price to Poetry Slams List**.
+11. Activate the version with title *AddPrice*.
+10. Publish the version.
+11. Exit the adaptation mode.
+12. In case the **Price** column is not visible, switch the display of the list to show all columns by selecting the **Show More per Row** icon.
 
-Examples of possible adaptations include moving and renaming UI elements and embedding external content. You can find more examples in [Key User Adaptation](https://help.sap.com/docs/UI5_FLEXIBILITY/430e2c1a4ff241bc8162df4bf51e0730/328a550137344514ae085b924180d078.html) on SAP Help Portal.
+Further examples of possible adaptations include moving and renaming UI elements and embedding external content. You can find more examples in [Key User Adaptation](https://help.sap.com/docs/UI5_FLEXIBILITY/430e2c1a4ff241bc8162df4bf51e0730/328a550137344514ae085b924180d078.html) on SAP Help Portal.
 
 You can also find a description on how to adapt the user interface in [Adapting SAP Fiori UIs at Runtime - Key User Adaptation](https://help.sap.com/docs/ui5-flexibility-for-key-users/ui5-flexibility-for-key-users/adapting-sap-fiori-uis-at-runtime-key-user-adaptation) on SAP Help Portal.

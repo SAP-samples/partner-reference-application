@@ -40,7 +40,11 @@ The SAP Business One OData service is consumed by using a destination. SAP Cloud
 
 4. Open the context menu of the *./external_resources* folder and upload the *.edmx* file with the OData service.
 
-5. Open a terminal and ensure that you're in the root folder of the application. Import the *.edmx* file using the command `cds import ./external_resources/b1_sbs_v2.edmx --as cds`.
+5. Open a terminal and ensure that you're in the root folder of the application. Import the *.edmx* file using the following command:
+
+    ```
+    cds import ./external_resources/b1_sbs_v2.edmx --as cds
+    ```
 
     > Note: Don't use the CDS import command parameter `--keep-namespace` because it would result in the CDS service name *cust*, which would lead to service name clashes if you import multiple SAP Business One custom OData services.
 
@@ -54,9 +58,9 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 1. Enhance the entity *PoetrySlams* with the following elements:
     ```javascript
-    purchaseOrderID       : String;
-    purchaseOrderObjectID : String;
-    purchaseOrderSystem   : String;
+    purchaseOrderID       : String(70);
+    purchaseOrderObjectID : String(70);
+    purchaseOrderSystem   : String(4);
     ```  
 
 2. Enhance the annotations of entity *PoetrySlams* with the following elements:
@@ -114,8 +118,8 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
             virtual null                         as statusCriticality            : Integer @title     : '{i18n>statusCriticality}',
             // SAP Business One purchase order: visibility of button "Create Purchase Order in SAP Business One"
             virtual null                         as createB1PurchaseOrderEnabled : Boolean @odata.Type: 'Edm.Boolean',
-            virtual null                         as purchaseOrderSystemName      : String  @title     : '{i18n>purchaseOrderSystemName}'  @odata.Type: 'Edm.String',
-            virtual null                         as purchaseOrderURL             : String  @title     : '{i18n>purchaseOrderURL}'         @odata.Type: 'Edm.String',
+            virtual null                         as purchaseOrderSystemName      : String(255)  @title     : '{i18n>purchaseOrderSystemName}'  @odata.Type: 'Edm.String',
+            virtual null                         as purchaseOrderURL             : String(255)  @title     : '{i18n>purchaseOrderURL}'         @odata.Type: 'Edm.String',
             virtual null                         as isB1                         : Boolean @odata.Type: 'Edm.Boolean',
             // Projection of remote service data as required by the UI
             toB1PurchaseOrder                                                    : Association to PoetrySlamService.B1PurchaseOrder on toB1PurchaseOrder.docNum = $self.purchaseOrderID
@@ -171,9 +175,13 @@ You can define reuse functions that handle the connection for the different Ente
 
 2. Since the npm module *@sap-cloud-sdk/connectivity* is used in the file *destination.js*, add the corresponding npm modules to your project. To do so, open a terminal and run the commands:
 
-    1. `npm add @sap-cloud-sdk/connectivity` 
+    1.  ```
+        npm add @sap-cloud-sdk/connectivity
+        ```
 
-    2. `npm add @sap-cloud-sdk/http-client`
+    2.  ```
+        npm add @sap-cloud-sdk/http-client
+        ```
 
     The dependencies are added to the *dependencies* section in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) file. 
 
@@ -488,7 +496,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
         ]
         ```
 
-    4. Add two buttons to the identification area:
+    4. Add two buttons to the field group *#PurchaseOrderData*:
         ```javascript
         // Create a purchase order in the connected SAP Business One system
         {

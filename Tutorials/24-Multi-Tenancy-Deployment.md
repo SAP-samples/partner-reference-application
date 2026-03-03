@@ -5,7 +5,11 @@ This tutorial guides you through the steps to deploy and configure the multi-ten
 ## Build and Deploy to Cloud Foundry
 
 1. Open a new terminal and log on to SAP BTP Cloud Foundry runtime: 
-	1. Run the command `cf login`. 
+	1. Run the following command to login. 
+        ```
+        cf login
+        ```
+
 	2. Enter the SAP BTP Cloud Foundry runtime API of your environment, for example, `https://api.cf.eu10.hana.ondemand.com`.
 	3. Enter your development user and password.
 	4. Select the org of the SAP BTP provider subaccount for the application. 
@@ -13,25 +17,46 @@ This tutorial guides you through the steps to deploy and configure the multi-ten
 
 2. Navigate to the root folder of the project.
 
-3. Run the command `npm install` on the root folder to install the npm packages. 
+3. Run the command to install the npm packages on the root folder .
+    ```
+    npm install
+    ``` 
 
-4. Run the command `npm install` for the app/poetryslams subfolder.
+4. Run the command to install the npm packages for the app/poetryslams subfolder.
+    ```
+    npm install
+    ``` 
 
-5. Run the command `npm install` for the app/router subfolder.
+5. Run the command to install the npm packages for the app/router subfolder.
+    ```
+    npm install
+    ``` 
 
-6. Run the command `npm install` for the app/visitors subfolder.
+6. Run the command to install the npm packages for the app/visitors subfolder.
+    ```
+    npm install
+    ``` 
 
-7. Run the command `npm install` for the mtx/sidecar subfolder.
+7. Run the command to install the npm packages for the mtx/sidecar subfolder.
+    ```
+    npm install
+    ``` 
 
-8. Run the command `npm run build` to build the project. The *archive.mtar* is added to the folder *mta_archives*. 
+8. Run the command to build the project. The *archive.mtar* is added to the folder *mta_archives*. 
+    ```
+    npm run build
+    ``` 
 
-9. To deploy the application, run the command `npm run deploy`. 
+9. To deploy the application, run the following command. 
+    ```
+    npm run deploy
+    ``` 
 
 > Note: The first deployment of the application creates instances of SAP BTP services in the provider subaccount. Navigate to the SAP BTP provider subaccount and view the created services.
 
 > Note: The first deployment of the application creates destinations in the provider subaccount that are required for SAP Build Work Zone. Navigate to the SAP BTP provider subaccount and view the created destinations.
 
-Looking for more details? Go to the SAP Cloud Application Programming Model documentation on how to [deploy to SAP BTP Cloud Foundry runtime](https://cap.cloud.sap/docs/guides/deployment/to-cf).
+Looking for more details? Go to the SAP Cloud Application Programming Model documentation on how to [deploy to SAP BTP Cloud Foundry runtime](https://cap.cloud.sap/docs/guides/deploy/to-cf).
 
 ## Configure the Application Subdomain (Custom Domain)
 
@@ -45,9 +70,7 @@ The [SAP Custom Domain service](https://help.sap.com/docs/custom-domain) helps y
 
 Below is a condensed version using the SAP default domain.
 
-1. Create entitlement to the SAP Custom Domain service:
-    1. If you haven't created an entitlement yet, create one for Custom Domain Manager in the SAP BTP Control Center (Custom Domain Service | custom-domain-manager).
-    2. Select *Custom Domain service* as the application, and *Standard* as a plan.
+1. Ensure to have the required entitlements listed for the [multitenancy version](./20-Multi-Tenancy-BillOfMaterials.md). 
     
 2. Create an instance of SAP Custom Domain service in the provider SAP BTP subaccount:
     1. If not yet done, in the provider SAP BTP subaccount, navigate to *Entitlements*. Press *Edit*, press *Add Service Plans* and select *Custom Domain Service* with plan *Standard (Application)*. Add the service plan and save your changes.

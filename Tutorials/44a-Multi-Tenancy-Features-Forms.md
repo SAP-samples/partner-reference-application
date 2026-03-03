@@ -90,7 +90,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
                 content       : LargeBinary;
 
                 @Core.IsMediaType: true
-                mediaType : String;
+                mediaType : String(50);
         }
         ```
 

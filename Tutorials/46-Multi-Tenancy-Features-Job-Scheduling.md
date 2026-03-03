@@ -119,13 +119,25 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 5. Add the required npm modules as dependencies to the [package.json](../../../tree/main-multi-tenant-features/package.json) of your project:
     
-    1. Open a terminal.
+    1. Open a terminal. Ensure that your project root folder is selected.
     
-    2. Run the command `npm add @sap/jobs-client`. This node module integrates the SAP Job Scheduling service. 
- 
-    3. Run the command `npm add @sap-cloud-sdk/http-client`. This node module offers a generic http-client.    
+    2. Run the following command to add the `@sap/jobs-client` npm package. This node module integrates the SAP Job Scheduling service. 
+
+        ```
+        npm add @sap/jobs-client
+        ```
+
+    3. Add the `@sap-cloud-sdk/http-client` with the following command. This node module offers a generic http-client.  
+
+        ```
+        npm add @sap/jobs-client
+        ```
     
-    4. Run the command `npm install` in your project root folder to install the required npm modules for the application. 
+    4. Install the required npm modules for the application.
+
+        ```
+        npm install
+        ```
 
 ### Application Enablement of "Background Execution Triggered by the Customer" Use Case
 

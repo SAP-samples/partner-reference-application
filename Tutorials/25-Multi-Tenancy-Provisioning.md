@@ -26,14 +26,15 @@ To provision the application on an SAP BTP consumer subaccount for a specific cu
 ### Entitle and Subscribe to SAP Build Work Zone Application
 
 1. In the newly created SAP BTP cockpit consumer subaccount, open *Entitlements* and assign *SAP Build Work Zone* with 
-	- *Service*: *SAP Build Work Zone, standard edition* 
-	- *Plan*: *standard (Application)*.
+	- *Service*: *SAP Build Work Zone, standard edition (SAPLaunchpad)* 
+	- *Plan*: *build-default (application)*.
 
 2. Open the *Service Marketplace* and select the service *SAP Build Work Zone*.
 
 3. Create a subscription of *SAP Build Work Zone* with
-    - *Service*: *SAP Build Work Zone, standard edition*
-    - *Plan*: *standard (Application)*.
+    - *Service*: *SAP Build Work Zone, standard edition (SAPLaunchpad)*
+    - *Plan*: *build-default (application)*.
+
 
 	> Note: In case the subscription fails, check the error message by clicking on the red status icon. If the following error message is shown, the error is caused as an OpenID Connect (OIDC) trust configuration is required: *'To subscribe this application link an Identity Authentication tenant to the subaccount with the "Establish Trust" option. For more information: https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/161f8f0cfac64c4fa2d973bc5f08a894.html'*. As a prerequisite for the trust, the SAP BTP subaccount and the Identity Authentication service tenant must be assigned to the same customer ID. In the partner use case, they are assigned to different customer IDs. Therefore, in this tutorial SAML 2.0 is used for single sign-on in this tutorial.
 	
@@ -95,13 +96,14 @@ SAP Build Work Zone offers additional features besides navigation and theming su
 
 ### Configure the Content Channel of Your Web Application
 
-1. In the *Site Manager*, open the *Channel Manager*. As the web application is deployed in the provider subaccount, it is not automatically added as content to the *HTML5 Apps* content channel.
-
-2. Create a new *Content Provider*. 
-	1. Set the title *Poetry Slam Manager*.
-	2. Set the description *Content of Poetry Slam Manager Solution*.
-	3. Select *poetry-slams-cdm* as *Design-Time-Destination*.
-	4. Select *poetry-slams-rt* as *Runtime-Destination*.
+1. In the SAP BTP cockpit of the **customer subaccount**, go to **Services** -> **Instances and Subscriptions**.
+2. Open **SAP Build Work Zone, standard edition**.
+3. In the **Site Manager**, open the **Channel Manager**. As the web application is deployed in the provider subaccount, it's not automatically added as content to the **HTML5 Apps** content channel.
+4. Create a new *Content Provider*. 
+	1. As title, set *Poetry Slam Manager*.
+	2. As description, set *Content of *Poetry Slam Manager* Solution*.
+	3. As **Design-Time-Destination**, select *poetry-slams-cdm*. It is used to fetch the structure and metadata of the application content.
+	4. As **Runtime-Destination**, select *poetry-slams-rt*. It is used to access the business data and resources from the application.
 	5. Save the content channel.
 	6. Use *Report* to see the created elements of your channel.
 
@@ -111,29 +113,32 @@ SAP Build Work Zone offers additional features besides navigation and theming su
 
 ### Review the Created Content of Your Web Application
 
-1. Open the *Content Manager*.
-2. The *Poetry Slam Manager Role* and the *Poetry Slam Visitor Role* were automatically created. The names in the *ID* fields are the name of the role collections that are created in the SAP BTP cockpit of the consumer account that handles the access for the application content.
-3. Select one of the roles.
-4. The *Poetry Slams* and the *Visitors* apps are automatically assigned. These were defined in the cdm-file of the application.
+1. Open the **Content Manager**.
+2. The **Poetry Slam Manager Role** and the **Poetry Slam Visitor Role** were automatically created during subscription of the application. The names in the **ID** fields are the names of the role collections that are created in the SAP BTP cockpit of the consumer account that handles the access for the application content.
+3. Access one of the roles to view the assigned apps.
+4. The **Poetry Slams** and the **Visitors** apps are automatically assigned. These were defined in the provided **Poetry Slam Manager** application.
+
+> Note: In the **Poetry Slam Manager**, the **Poetry Slam Manager Role** has full authorization to the application. The **Poetry Slam Visitor Role** is used to handle read-only access. 
+
+> Note: The roles are defined in the *Poetry Slam Manager* application. You can get more details in chapter [Add Authentication and Role-Based Authorization](https://github.com/SAP-samples/partner-reference-application/blob/main/Tutorials/14-Develop-Core-Application.md#add-authentication-and-role-based-authorization).
 
 ### Create a Launchpad Site
 
 In this step, you create and review a launchpad site. If you already have a site, just add your web applications.
 
-1. Open the *Site Directory*. 
-2. Create a new site and enter a site name, for example, *Partner Reference Application*.
-3. Open the *Site Settings* to launch the *Site Editor*.
-	1. Open the *Role Assignments* and click on Edit.
-	2. Activate the *Assignment Status* of the roles *Poetry Slam Visitor Role* and *Poetry Slam Manager Role*.
-	3. Save the changes.
-4. Open *Manage Site Alias* and enter a site alias, for example `cet` or `central-entry-point`. 
+1. Open the **Site Directory**. 
+2. Create a site and enter a site name, for example, *Partner Reference Application*.
+3. Open the **Role Assignments** area on the left side of the screen.
+4. Edit the role assignments.
+	1. Enable the *Assignment Status* of the roles *Poetry Slam Visitor Role* and *Poetry Slam Manager Role*.
+	2. Save the changes.
+5. Navigate back to the **Site Directory**.
+6. Open *Manage Site Alias* and enter a site alias, for example `cet` or `central-entry-point`. 
 	> Note: Using a site alias, you obtain stable, short and human readable access URLs, for example `<subscription hostname>/site/cet#poetryslams-display`. This allows you to refactor or change Work Zone sites at a later point in time without forcing users to adapt custom tiles and browser bookmarks.
-5. Save the alias.
+7. Save the alias.
 
-You can launch the Work Zone site using the *URL* provided in the *Properties* of the *Site Settings*.
+You can launch the Work Zone site using the *URL* provided in the *Properties* of the *Site Settings*. For quick access in the subsequent chapters of this tutorial, note down the *URL* (**LaunchpadSiteURL**). 
 However, on the site, you don’t see any tiles yet; before being able to see the tiles *Poetry Slam Events* and *Visitors and Artists*, you need to configure the authorization roles as described in the next steps.
-
-> Note: For quick access in the subsequent chapters of this tutorial, note down the *URL*. 
 
 ### (Optional) Customer-Specific Apps
 
@@ -210,7 +215,7 @@ Set up the trust relationship between the SAP BTP subaccount to the Identity Aut
 	1. Choose *New SAML Trust Configuration*. 
 	2. Upload the **SAML metadata file of the IdP** that you just downloaded and enter a meaningful name and description of the IdP (for example, ``Corporate IdP``).
 
-Looking for more information on the SAP Authorization and Trust Management service? Go to [Building Side-By-Side Extensions Using SAP BTP -> Describing Authorization and Trust Management (XSUAA)](https://learning.sap.com/learning-journeys/build-side-by-side-extensions-on-sap-btp/describing-authorization-and-trust-management-xsuaa-_cbf0d0c5-29ec-4685-9cf4-487156b41284).
+Looking for more information on the SAP Authorization and Trust Management service? Go to [Building Side-By-Side Extensions Using SAP BTP -> Describing Authorization and Trust Management (XSUAA)](https://learning.sap.com/courses/develop-extensions-with-cap-following-the-sap-btp-developer-s-guide/describing-authorization-and-trust-management-xsuaa-_cbf0d0c5-29ec-4685-9cf4-487156b41284).
 
 #### Configure Authorization Roles 
 
@@ -226,9 +231,12 @@ In this example, Identity Authentication service user groups are used to assign 
 	| `PoetrySlamVisitor`           | Poetry Slam Visitor       	  	|
    > Note: To add users to the user group, choose *Add* and select the user from the list of users and save your changes.
 
-3. In the SAP BTP consumer subaccount, open the menu item *Role Collections* and edit the role collections that were created by SAP Build Work Zone, for example, ~poetry_slam_manager_poetrySlamManagerRole. 
-
-	For each role collection, add the role from the reference application (defined in the [*xs-security.json*](../../../tree/main-multi-tenant/xs-security.json)) and add a user group by selecting the previously configured identity provider and set the name of the *User Group* (using the unique technical name of the user group of the Identity Authentication service).
+3. Enhance the role collections created by SAP Build Work Zone with the role defined by the application and the user group of the Identity Authentication service.
+	1. In the SAP BTP consumer subaccount, go to **Security** -> **Role Collections**.
+	2. Edit the `~poetry_slam_manager_poetrySlamManagerRole` role collection that was created by SAP Build Work Zone. 
+	3. In **Roles** section, use the value help for the **Role Name** field to select `PoetrySlamManagerRole`.
+	4. Add the role to the role collection.
+	5. In **User Grops** section, select the previously configured **Identity Provider** and the **Name** of the user group. Use the unique technical name of the user group of the Identity Authentication service).
 
 	| Role Collection                    				| Role		  			| User Groups         		|
 	| :---                               				| :---					| :---			       		|

@@ -2,13 +2,13 @@
 
 The SAP Cloud Application Programming Model (CAP) services created in the section [Develop the Core of the SAP BTP Application](./14-Develop-Core-Application.md) are built for the SAP Fiori elements UI. Therefore, the entities are draft-enabled. when a service is called using an API, draft handling is not required. This can complicate the call sequence. 
 
-In the CAP documentation [Single-Purposed Services](https://cap.cloud.sap/docs/guides/providing-services#single-purposed-services), CAP recommends designing services for single use cases only. As a result, the Poetry Slam Manager application includes a service that users can call through an API. This service is not draft-enabled.
+In the CAP documentation [Single-Purposed Services](https://cap.cloud.sap/docs/guides/services/providing-services#use-case-oriented-services), CAP recommends designing services for single use cases only. As a result, the Poetry Slam Manager application includes a service that users can call through an API. This service is not draft-enabled.
 
 This section describes how an API service can be created and how the service can be accessed using the service broker. The service broker needs to be enabled first. 
          
 ## Application Enablement 
 
-Defining an API service is similar to a service that is called from the UI. For more detailed information, refer to [SAP Cloud Application Programming Model services](https://cap.cloud.sap/docs/guides/providing-services). Place all service definitions in the */srv* folder. You can use subfolders to structure the different services based on their usage. 
+Defining an API service is similar to a service that is called from the UI. For more detailed information, refer to [SAP Cloud Application Programming Model services](https://cap.cloud.sap/docs/guides/services/). Place all service definitions in the */srv* folder. You can use subfolders to structure the different services based on their usage. 
 
 1. Create a *api* in the */srv* folder. This contains all files that are required for the Poetry Slam Manager API service.
 2. Create a *poetrySlamManagerAPI.cds* file in the */api* folder, which is the service definition of the Poetry Slam Manager API service.

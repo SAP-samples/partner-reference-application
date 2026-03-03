@@ -6,6 +6,8 @@ This section describes how the Poetry Slam Manager application is enhanced to su
 
 As a result, the **Poetry Slam Manager API** service is called, and the *PoetrySlams* entity is updated with the sales order information. In the Poetry Slam Manager application, the poetry slam displays the **Sales Order ID** and **Customer Name** in a new UI section called **Sponsoring Data**. The **Customer Name** is directly read from the SAP S/4HANA Cloud Public Edition application.
 
+After the Poetry Slam Manager application is enhanced, the **Poetry Slam Manager API** can be called from an on-stack extension within SAP S/4HANA Cloud Public Edition using the ABAP RESTful Application Programming Model (RAP). This is described in detail in the [Cross-Stack Partner Reference Extension Poetry Slam Event Commerce](https://github.com/SAP-samples/cross-stack-partner-reference-extension).
+
 This process requires enabling and provisioning the service broker. The tutorials [Enable API Access to SAP BTP Applications Using Service Broker](./42a-Multi-Tenancy-Service-Broker.md), [Configure and Consume the APIs of the SAP BTP Application](./42b-Multi-Tenancy-Provisioning-Service-Broker.md), and [Create an API Service for Remote Integrations without Draft Handling](./42c-Multi-Tenancy-Features-API-Service.md) describe these steps. Follow all enablement steps described there first. 
 
 ## Bill of Materials
@@ -116,7 +118,7 @@ In SAP Business Application Studio, enhance the SAP CAP entity models in [*/db/p
 1. Extend the **PoetrySlams** entity:
     ```cds
     extend PoetrySlams with {
-        salesOrderID          : String;
+        salesOrderID          : String(70);
     };
     ```  
 
@@ -180,8 +182,8 @@ In SAP Business Application Studio, enhance the SAP CAP entity models in [*/db/p
       // Relevant for coloring of status in UI to show criticality
       virtual null                         as statusCriticality            : Integer @title     : '{i18n>statusCriticality}',
       // SAP S/4HANA Cloud projects: visibility of button "Create Project in SAP S/4HANA Cloud", code texts
-      virtual null                         as customerFullName             : String  @title: '{i18n>customerFullName}'         @odata.Type: 'Edm.String',
-      virtual null                         as salesOrderURL                : String  @title: '{i18n>salesOrderURL}'            @odata.Type: 'Edm.String',
+      virtual null                         as customerFullName             : String(50)  @title: '{i18n>customerFullName}'         @odata.Type: 'Edm.String',
+      virtual null                         as salesOrderURL                : String(255)  @title: '{i18n>salesOrderURL}'            @odata.Type: 'Edm.String',
       virtual null                         as isS4HC                       : Boolean @odata.Type: 'Edm.Boolean',
 
       // Projection of remote service data as required by the UI
