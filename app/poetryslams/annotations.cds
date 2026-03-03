@@ -87,15 +87,18 @@ annotate service.PoetrySlams with @(
         Target: '@UI.FieldGroup#GeneralData'
       },
       {
-        $Type        : 'UI.ReferenceFacet',
-        Label        : '{i18n>visitorData}',
-        ID           : 'VisitorData',
-        Target       : 'visits/@UI.LineItem#VisitorData',
+        $Type     : 'UI.ReferenceFacet',
+        Label     : '{i18n>visitorData}',
+        ID        : 'VisitorData',
+        Target    : 'visits/@UI.LineItem#VisitorData',
         // Hide facet in case the PoetrySlam is in status In Preparation
-        ![@UI.Hidden]: {$edmJson: {$Eq: [
-          {$Path: 'status/code'},
-          1
-        ]}}
+        @UI.Hidden: {$value: (status.code = 1)}
+      },
+      {
+        $Type : 'UI.LineItem',
+        ID    : 'Attachments',
+        Label : '{i18n>Attachments}',
+        Target: '@UI.LineItem#Attachments',
       },
       {
         $Type        : 'UI.ReferenceFacet',
@@ -129,17 +132,17 @@ annotate service.PoetrySlams with @(
         ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'isB1'}}} // Display PurchaseOrderData only in case a SAP Business One system is connected
       },
       {
-        $Type : 'UI.ReferenceFacet',
-        Label : '{i18n>administrativeData}',
-        ID    : 'AdministrativeData',
-        Target: '@UI.FieldGroup#AdministrativeData'
-      },
-      {
         $Type        : 'UI.ReferenceFacet',
         Label        : '{i18n>backgroundExecution}',
         ID           : 'BackgroundExecution',
         Target       : '@UI.FieldGroup#BackgroundExecution',
         ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'isJobStatusShown'}}} // Display Job Status if SendReminder tiggered
+      },
+      {
+        $Type : 'UI.ReferenceFacet',
+        Label : '{i18n>administrativeData}',
+        ID    : 'AdministrativeData',
+        Target: '@UI.FieldGroup#AdministrativeData'
       }
     ],
     // Bundle multiple fields into a group
@@ -188,8 +191,9 @@ annotate service.PoetrySlams with @(
       $Type: 'UI.FieldGroupType',
       Data : [
         {
-          $Type: 'UI.DataField',
-          Value: number
+          $Type     : 'UI.DataField',
+          Value     : number,
+          @UI.Hidden: {$value: (number = null)}
         },
         {
           $Type: 'UI.DataField',
@@ -341,6 +345,39 @@ annotate service.PoetrySlams with @(
         ![@UI.Hidden]          : {$edmJson: {$Not: {$Path: 'isS4HC'}}},
         ![@Common.FieldControl]: #ReadOnly
       },
+      // Create a project in the connected SAP Business ByDesign system
+      {
+        $Type     : 'UI.DataFieldForAction',
+        Label     : '{i18n>createByDProject}',
+        Action    : 'PoetrySlamService.createByDProject',
+        @UI.Hidden: {$edmJson: {$Not: {$And: [
+          {$Path: 'createByDProjectEnabled'},
+          {$Path: 'IsActiveEntity'}
+        ]}}}
+      },
+      // Create a project in the connected SAP S/4HANA Cloud system
+      {
+        $Type        : 'UI.DataFieldForAction',
+        Label        : '{i18n>createS4HCProject}',
+        Action       : 'PoetrySlamService.createS4HCProject',
+        ![@UI.Hidden]: {$edmJson: {$Not: {$And: [
+          {$Path: 'createS4HCProjectEnabled'},
+          {$Path: 'IsActiveEntity'}
+        ]}}}
+      },
+      // Clear the project data
+      {
+        $Type        : 'UI.DataFieldForAction',
+        Label        : '{i18n>removeProjectData}',
+        Action       : 'PoetrySlamService.clearProjectData',
+        ![@UI.Hidden]: {$edmJson: {$Or: [
+          {$Eq: [
+            {$Path: 'projectID'},
+            {$Null: null}
+          ]},
+          {$Not: {$Path: 'IsActiveEntity'}}
+        ]}}
+      },
     ]},
     FieldGroup #PurchaseOrderData  : {Data: [
       // SAP Business One specific fields
@@ -379,6 +416,29 @@ annotate service.PoetrySlams with @(
         Value                  : toB1PurchaseOrder.docCurrency,
         ![@Common.FieldControl]: #ReadOnly
       },
+      // Create a purchase order in the connected SAP Business One system
+      {
+        $Type        : 'UI.DataFieldForAction',
+        Label        : '{i18n>createB1PurchaseOrder}',
+        Action       : 'PoetrySlamService.createB1PurchaseOrder',
+        ![@UI.Hidden]: {$edmJson: {$Not: {$And: [
+          {$Path: 'createB1PurchaseOrderEnabled'},
+          {$Path: 'IsActiveEntity'}
+        ]}}}
+      },
+      // Clear the purchase order data
+      {
+        $Type        : 'UI.DataFieldForAction',
+        Label        : '{i18n>removePurchaseOrderData}',
+        Action       : 'PoetrySlamService.clearPurchaseOrderData',
+        ![@UI.Hidden]: {$edmJson: {$Or: [
+          {$Eq: [
+            {$Path: 'purchaseOrderID'},
+            {$Null: null}
+          ]},
+          {$Not: {$Path: 'IsActiveEntity'}}
+        ]}}
+      }
     ]},
     // Facets shown in the header of an object page
     HeaderFacets                   : [
@@ -425,46 +485,40 @@ annotate service.PoetrySlams with @(
     // Addition of custom actions to the list page & object page
     Identification                 : [
       {
-        $Type        : 'UI.DataFieldForAction',
-        Action       : 'PoetrySlamService.publish',
-        Label        : '{i18n>publish}',
-        ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
+        $Type     : 'UI.DataFieldForAction',
+        Action    : 'PoetrySlamService.publish',
+        Label     : '{i18n>publish}',
+        @UI.Hidden: {$edmJson: {$Or: [
+          {$Not: {$Path: 'IsActiveEntity'}},
+          {$Not: {$Or: [
+            {$Eq: [
+              {$Path: 'status/code'},
+              1
+            ]},
+            {$Eq: [
+              {$Path: 'status/code'},
+              4
+            ]}
+          ]}}
+        ]}}
       },
-      {
-        $Type        : 'UI.DataFieldForAction',
-        Action       : 'PoetrySlamService.cancel',
-        Label        : '{i18n>cancel}',
-        ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
-      },
-      // Create a project in the connected SAP Business ByDesign system
       {
         $Type     : 'UI.DataFieldForAction',
-        Label     : '{i18n>createByDProject}',
-        Action    : 'PoetrySlamService.createByDProject',
-        @UI.Hidden: {$edmJson: {$Not: {$And: [
-          {$Path: 'createByDProjectEnabled'},
-          {$Path: 'IsActiveEntity'}
-        ]}}}
-      },
-      // Create a project in the connected SAP S/4HANA Cloud system
-      {
-        $Type        : 'UI.DataFieldForAction',
-        Label        : '{i18n>createS4HCProject}',
-        Action       : 'PoetrySlamService.createS4HCProject',
-        ![@UI.Hidden]: {$edmJson: {$Not: {$And: [
-          {$Path: 'createS4HCProjectEnabled'},
-          {$Path: 'IsActiveEntity'}
-        ]}}}
-      },
-      // Create a purchase order in the connected SAP Business One system
-      {
-        $Type        : 'UI.DataFieldForAction',
-        Label        : '{i18n>createB1PurchaseOrder}',
-        Action       : 'PoetrySlamService.createB1PurchaseOrder',
-        ![@UI.Hidden]: {$edmJson: {$Not: {$And: [
-          {$Path: 'createB1PurchaseOrderEnabled'},
-          {$Path: 'IsActiveEntity'}
-        ]}}}
+        Action    : 'PoetrySlamService.cancel',
+        Label     : '{i18n>cancel}',
+        @UI.Hidden: {$edmJson: {$Or: [
+          {$Not: {$Path: 'IsActiveEntity'}},
+          {$Or: [
+            {$Eq: [
+              {$Path: 'status/code'},
+              1
+            ]},
+            {$Eq: [
+              {$Path: 'status/code'},
+              4
+            ]}
+          ]}
+        ]}}
       },
       // Send reminder
       {
@@ -481,37 +535,12 @@ annotate service.PoetrySlams with @(
         ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
 
       },
-      // Clear the project data
-      {
-        $Type        : 'UI.DataFieldForAction',
-        Label        : '{i18n>removeProjectData}',
-        Action       : 'PoetrySlamService.clearProjectData',
-        ![@UI.Hidden]: {$edmJson: {$Or: [
-          {$Eq: [
-            {$Path: 'projectID'},
-            {$Null: null}
-          ]},
-          {$Not: {$Path: 'IsActiveEntity'}}
-        ]}}
-      },
-      // Clear the purchase order data
-      {
-        $Type        : 'UI.DataFieldForAction',
-        Label        : '{i18n>removePurchaseOrderData}',
-        Action       : 'PoetrySlamService.clearPurchaseOrderData',
-        ![@UI.Hidden]: {$edmJson: {$Or: [
-          {$Eq: [
-            {$Path: 'purchaseOrderID'},
-            {$Null: null}
-          ]},
-          {$Not: {$Path: 'IsActiveEntity'}}
-        ]}}
-      },
       {
         $Type         : 'UI.DataFieldForIntentBasedNavigation',
         SemanticObject: 'visitors',
         Action        : 'display',
-        Label         : '{i18n>maintainVisitors}'
+        Label         : '{i18n>maintainVisitors}',
+        @UI.Hidden    : {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
       }
     ],
     // Definition of fields shown on the list page / table
@@ -598,7 +627,17 @@ annotate service.PoetrySlams with @(
       status_code,
       dateTime
     ]
-  }
+  },
+  UI.DeleteHidden                : {$edmJson: {$Not: {$Or: [
+    {$Eq: [
+      {$Path: 'status/code'},
+      1
+    ]},
+    {$Eq: [
+      {$Path: 'status/code'},
+      4
+    ]}
+  ]}}}
 );
 
 annotate service.Visits with {
@@ -782,4 +821,38 @@ annotate service.Visitors with {
     Label          : '{i18n>email}'
   });
   name @readonly;
+};
+
+annotate service.PoetrySlams.attachments with @UI: {LineItem #Attachments: [
+  {
+    Value             : type,
+    @HTML5.CssDefaults: {width: '10%'}
+  },
+  {
+    Value             : filename,
+    @HTML5.CssDefaults: {width: '25%'}
+  },
+  {
+    Value             : content,
+    @HTML5.CssDefaults: {width: '0%'}
+  },
+  {
+    Value             : createdAt,
+    @HTML5.CssDefaults: {width: '20%'}
+  },
+  {
+    Value             : createdBy,
+    @HTML5.CssDefaults: {width: '20%'}
+  },
+  {
+    Value             : note,
+    @HTML5.CssDefaults: {width: '25%'}
+  }
+]};
+
+annotate service.PoetrySlams.attachments with {
+  folderId     @UI.Hidden;
+  mimeType     @UI.Hidden;
+  status       @UI.Hidden;
+  repositoryId @UI.Hidden;
 };

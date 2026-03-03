@@ -4,7 +4,7 @@ const sinon = require('sinon');
 const JobScheduler = require('../../../srv/lib/jobScheduler');
 const { httpCodes } = require('../../../srv/lib/codes');
 
-// Executes an action, like 'sendNotification'
+// Executes an action, like 'sendReminderForPoetrySlam'
 const ACTION = (url, name, parameters = {}) =>
   POST(url + `/PoetrySlamService.${name}`, parameters);
 // ----------------------------------------------------------------------------

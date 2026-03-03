@@ -4,11 +4,9 @@ const cdsEslintPlugin = require('@sap/eslint-plugin-cds');
 
 module.exports = [
   cdsEslintPlugin.configs.all,
+  cdsEslintPlugin.configs.js.all,
   js.configs.recommended,
   {
-    plugins: {
-      cds: cdsEslintPlugin
-    },
     languageOptions: {
       ecmaVersion: 'latest',
       globals: {
@@ -54,9 +52,10 @@ module.exports = [
     rules: {
       'no-console': 'off',
       'require-atomic-updates': 'off',
-      'cds/no-deep-sap-cds-import': 'warn',
-      'cds/no-shared-handler-variable': 'error',
-      'cds/use-cql-select-template-strings': 'warn'
+      '@sap/cds/no-deep-sap-cds-import': 'warn',
+      '@sap/cds/no-shared-handler-variable': 'error',
+      '@sap/cds/cql-template-strings': 'warn',
+      '@sap/cds/start-elements-lowercase': 'warn'
     }
   },
   {

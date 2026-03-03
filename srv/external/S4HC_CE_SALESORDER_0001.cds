@@ -1,4 +1,4 @@
-/* checksum : e0fb832cc6fa61089a9ba7b84c8cb281 */
+/* checksum : d3dc21cfe44f6fd670df2c33a3d31446 */
 @cds.external : true
 @CodeList.CurrencyCodes.Url : '../../../../default/iwbep/common/0001/$metadata'
 @CodeList.CurrencyCodes.CollectionPath : 'Currencies'
@@ -529,13 +529,13 @@ service S4HC_CE_SALESORDER_0001 {
     OverallOrdReltdBillgStatus : String(1) not null;
     SAP__Messages : many SAP__Message not null;
     @Common.Composition : true
-    _Item : Composition of many SalesOrderItem {  };
+    _Item : Composition of many SalesOrderItem on _Item._SalesOrder = $self;
     @Common.Composition : true
-    _Partner : Composition of many SalesOrderPartner {  };
+    _Partner : Composition of many SalesOrderPartner on _Partner._SalesOrder = $self;
     @Common.Composition : true
-    _PricingElement : Composition of many SalesOrderPricingElement {  };
+    _PricingElement : Composition of many SalesOrderPricingElement on _PricingElement._SalesOrder = $self;
     @Common.Composition : true
-    _Text : Composition of many SalesOrderText {  };
+    _Text : Composition of many SalesOrderText on _Text._SalesOrder = $self;
   };
 
   @cds.external : true
@@ -1037,14 +1037,14 @@ service S4HC_CE_SALESORDER_0001 {
     OvrlTrdCmplncLegalCtrlChkSts : String(1) not null;
     SAP__Messages : many SAP__Message not null;
     @Common.Composition : true
-    _ItemPartner : Composition of many SalesOrderItemPartner {  };
+    _ItemPartner : Composition of many SalesOrderItemPartner on _ItemPartner._Item = $self;
     @Common.Composition : true
-    _ItemPricingElement : Composition of many SalesOrderItemPricingElement {  };
+    _ItemPricingElement : Composition of many SalesOrderItemPricingElement on _ItemPricingElement._Item = $self;
     @Common.Composition : true
-    _ItemText : Composition of many SalesOrderItemText {  };
-    _SalesOrder : Association to one SalesOrder {  };
+    _ItemText : Composition of many SalesOrderItemText on _ItemText._Item = $self;
+    _SalesOrder : Association to one SalesOrder on _SalesOrder.SalesOrder = SalesOrder;
     @Common.Composition : true
-    _ScheduleLine : Composition of many SalesOrderScheduleLine {  };
+    _ScheduleLine : Composition of many SalesOrderScheduleLine on _ScheduleLine._Item = $self;
     _VariantConfiguration : Association to one VariantConfiguration {  };
   };
 
@@ -1104,8 +1104,8 @@ service S4HC_CE_SALESORDER_0001 {
     @Common.DocumentationRef : 'urn:sap-com:documentation:key?=type=DE&id=SD_PARTNER_ITEM_IND'
     PartnerIsSpecificForSDDocItem : Boolean not null;
     SAP__Messages : many SAP__Message not null;
-    _Item : Association to one SalesOrderItem {  };
-    _SalesOrder : Association to one SalesOrder {  };
+    _Item : Association to one SalesOrderItem on _Item.SalesOrderItem = SalesOrderItem;
+    _SalesOrder : Association to one SalesOrder on _SalesOrder.SalesOrder = SalesOrder;
   };
 
   @cds.external : true
@@ -1260,8 +1260,8 @@ service S4HC_CE_SALESORDER_0001 {
     @Common.DocumentationRef : 'urn:sap-com:documentation:key?=type=DE&id=WAERK'
     TransactionCurrency : String(3) not null;
     SAP__Messages : many SAP__Message not null;
-    _Item : Association to one SalesOrderItem {  };
-    _SalesOrder : Association to one SalesOrder {  };
+    _Item : Association to one SalesOrderItem on _Item.SalesOrderItem = SalesOrderItem;
+    _SalesOrder : Association to one SalesOrder on _SalesOrder.SalesOrder = SalesOrder;
   };
 
   @cds.external : true
@@ -1305,8 +1305,8 @@ service S4HC_CE_SALESORDER_0001 {
     @Common.Label : 'String'
     LongText : String not null;
     SAP__Messages : many SAP__Message not null;
-    _Item : Association to one SalesOrderItem {  };
-    _SalesOrder : Association to one SalesOrder {  };
+    _Item : Association to one SalesOrderItem on _Item.SalesOrderItem = SalesOrderItem;
+    _SalesOrder : Association to one SalesOrder on _SalesOrder.SalesOrder = SalesOrder;
   };
 
   @cds.external : true
@@ -1354,7 +1354,7 @@ service S4HC_CE_SALESORDER_0001 {
     @Common.DocumentationRef : 'urn:sap-com:documentation:key?=type=DE&id=PARNR'
     ContactPerson : String(10);
     SAP__Messages : many SAP__Message not null;
-    _SalesOrder : Association to one SalesOrder {  };
+    _SalesOrder : Association to one SalesOrder on _SalesOrder.SalesOrder = SalesOrder;
   };
 
   @cds.external : true
@@ -1493,7 +1493,7 @@ service S4HC_CE_SALESORDER_0001 {
     @Common.DocumentationRef : 'urn:sap-com:documentation:key?=type=DE&id=WAERK'
     TransactionCurrency : String(3) not null;
     SAP__Messages : many SAP__Message not null;
-    _SalesOrder : Association to one SalesOrder {  };
+    _SalesOrder : Association to one SalesOrder on _SalesOrder.SalesOrder = SalesOrder;
   };
 
   @cds.external : true
@@ -1632,8 +1632,8 @@ service S4HC_CE_SALESORDER_0001 {
     @Common.QuickInfo : 'Movement Type (Inventory Management)'
     @Common.DocumentationRef : 'urn:sap-com:documentation:key?=type=DE&id=BWART'
     GoodsMovementType : String(3) not null;
-    _Item : Association to one SalesOrderItem {  };
-    _SalesOrder : Association to one SalesOrder {  };
+    _Item : Association to one SalesOrderItem on _Item.SalesOrderItem = SalesOrderItem;
+    _SalesOrder : Association to one SalesOrder on _SalesOrder.SalesOrder = SalesOrder;
   };
 
   @cds.external : true
@@ -1671,7 +1671,7 @@ service S4HC_CE_SALESORDER_0001 {
     @Common.Label : 'String'
     LongText : String not null;
     SAP__Messages : many SAP__Message not null;
-    _SalesOrder : Association to one SalesOrder {  };
+    _SalesOrder : Association to one SalesOrder on _SalesOrder.SalesOrder = SalesOrder;
   };
 
   @cds.external : true
@@ -1826,8 +1826,8 @@ service S4HC_CE_SALESORDER_0001 {
     @Common.Label : 'Assignment Type'
     @Common.QuickInfo : 'Characteristic Value Assignment Type'
     VarConfignValueAssignmentType : Integer not null;
-    _Characteristic : Association to one VarConfignCharacteristic {  };
-    _VariantConfiguration : Association to one VariantConfiguration {  };
+    _Characteristic : Association to one VarConfignCharacteristic on _Characteristic.Characteristic = Characteristic;
+    _VariantConfiguration : Association to one VariantConfiguration on _VariantConfiguration.VarConfigurationBusObjectKey = VarConfigurationBusObjectKey;
   };
 
   @cds.external : true
@@ -1932,9 +1932,9 @@ service S4HC_CE_SALESORDER_0001 {
     @Common.QuickInfo : 'Multiple Values Are Allowed'
     MultipleValuesAreAllowed : Boolean not null;
     @Common.Composition : true
-    _AssignedValue : Composition of many VarConfignAssignedValue {  };
-    _Instance : Association to one VariantConfigurationInstance {  };
-    _VariantConfiguration : Association to one VariantConfiguration {  };
+    _AssignedValue : Composition of many VarConfignAssignedValue on _AssignedValue._Characteristic = $self;
+    _Instance : Association to one VariantConfigurationInstance on _Instance.VarConfignInstceInternalID = VarConfignInstceInternalID;
+    _VariantConfiguration : Association to one VariantConfiguration on _VariantConfiguration.VarConfigurationBusObjectKey = VarConfigurationBusObjectKey;
   };
 
   @cds.external : true
@@ -1973,7 +1973,7 @@ service S4HC_CE_SALESORDER_0001 {
     VarConfignStatus : String(1) not null;
     SAP__Messages : many SAP__Message not null;
     @Common.Composition : true
-    _Instance : Composition of many VariantConfigurationInstance {  };
+    _Instance : Composition of many VariantConfigurationInstance on _Instance._VariantConfiguration = $self;
   };
 
   @cds.external : true
@@ -2054,8 +2054,8 @@ service S4HC_CE_SALESORDER_0001 {
     @Common.DocumentationRef : 'urn:sap-com:documentation:key?=type=DE&id=ISOCD_UNIT'
     VarConfignQuantityISOUnit : String(3);
     @Common.Composition : true
-    _Characteristic : Composition of many VarConfignCharacteristic {  };
-    _VariantConfiguration : Association to one VariantConfiguration {  };
+    _Characteristic : Composition of many VarConfignCharacteristic on _Characteristic._Instance = $self;
+    _VariantConfiguration : Association to one VariantConfiguration on _VariantConfiguration.VarConfigurationBusObjectKey = VarConfigurationBusObjectKey;
   };
 };
 

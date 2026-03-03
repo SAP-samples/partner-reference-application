@@ -55,6 +55,7 @@ class ConnectorS4HC extends Connector {
       ConnectorS4HC.DESTINATION_URL
     );
     const connector = new ConnectorS4HC(data);
+
     console.log(
       `SAP S/4HANA Cloud connector created - connected: ${data.isConnectedIndicator}`
     );
@@ -224,6 +225,21 @@ class ConnectorS4HC extends Connector {
         project: this.projectRecord.Project
       })
     );
+
+    try {
+      // Call extension point for business logic extensibility
+      let projectData = await cds.services.PoetrySlamService.extendProjectData(
+        this.projectRecord
+      );
+      if (projectData) {
+        this.projectRecord = projectData;
+      }
+    } catch (e) {
+      // Move on with application although there is an issue with business logic
+      console.error(
+        `Action getRemoteProjectData: Error while processing business logic extensibility: ${e.message}`
+      );
+    }
 
     // Determine project ID and UUID and return it as object
     return {

@@ -97,7 +97,10 @@ describe('Util Entity Calculations - Project', () => {
   // ----------------------------------------------------------------------------
   it('should retrieve a project and update the poetry slam entity', async () => {
     const req = {
-      params: [{ ID: 1 }]
+      params: [{ ID: 1 }],
+      warn: () => {
+        return;
+      }
     };
 
     const stubGetRemoteProject = sinon
@@ -108,6 +111,7 @@ describe('Util Entity Calculations - Project', () => {
       req,
       {},
       ConnectorByD,
+      'successTextText',
       'errorTextTest'
     );
 
@@ -123,13 +127,17 @@ describe('Util Entity Calculations - Project', () => {
 
   it('should insert a project and update the poetry slam entity', async () => {
     const req = {
-      params: [{ ID: 1 }]
+      params: [{ ID: 1 }],
+      warn: () => {
+        return;
+      }
     };
 
     await entityCalculations.createProject(
       req,
       {},
       ConnectorByD,
+      'successTextText',
       'errorTextTest'
     );
 
@@ -158,6 +166,7 @@ describe('Util Entity Calculations - Project', () => {
       req,
       {},
       ConnectorByD,
+      'successTextText',
       'errorTextTest'
     );
 
@@ -184,6 +193,7 @@ describe('Util Entity Calculations - Project', () => {
       req,
       {},
       ConnectorByD,
+      'successTextText',
       'errorTextTest'
     );
 
@@ -210,6 +220,7 @@ describe('Util Entity Calculations - Project', () => {
       req,
       {},
       ConnectorByD,
+      'successTextText',
       'errorTextTest'
     );
 
@@ -300,13 +311,16 @@ describe('Util Entity Calculations - Purchase Order', () => {
   // ----------------------------------------------------------------------------
   it('should insert a purchase order and update the poetry slam entity', async () => {
     const req = {
-      params: [{ ID: 1 }]
+      params: [{ ID: 1 }],
+      warn: () => {
+        return;
+      }
     };
 
     await entityCalculations.createPurchaseOrder(
       req,
-      {},
       ConnectorB1,
+      'successText',
       'errorTextTest'
     );
 
@@ -333,8 +347,8 @@ describe('Util Entity Calculations - Purchase Order', () => {
 
     await entityCalculations.createPurchaseOrder(
       req,
-      {},
       ConnectorB1,
+      'successText',
       'errorTextTest'
     );
 
@@ -359,8 +373,8 @@ describe('Util Entity Calculations - Purchase Order', () => {
 
     await entityCalculations.createPurchaseOrder(
       req,
-      {},
       ConnectorB1,
+      'successText',
       'errorTextTest'
     );
 
@@ -384,8 +398,8 @@ describe('Util Entity Calculations - Purchase Order', () => {
 
     await entityCalculations.createPurchaseOrder(
       req,
-      {},
       ConnectorB1,
+      'successText',
       'errorTextTest'
     );
 

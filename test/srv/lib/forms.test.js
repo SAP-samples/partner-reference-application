@@ -16,6 +16,7 @@ const {
 const Forms = require('../../../srv/lib/forms');
 const Logo = require('../../../srv/lib/logo');
 const serviceCredentials = require('../../../srv/lib/serviceCredentials');
+const { mimeTypes } = require('../../../srv/lib/codes');
 
 // Authentication for tests; role PoetrySlamManager
 axios.defaults.auth = { username: 'peter', password: 'welcome' };
@@ -117,7 +118,7 @@ describe('Util Forms', () => {
       const testContent = Buffer.from('test file content').toString('base64');
       const readable = await forms.getReadable(testContent);
       expect(readable.value instanceof Readable).eql(true);
-      expect(readable.$mediaContentType).eql('application/pdf');
+      expect(readable.$mediaContentType).eql(mimeTypes.application_pdf);
       expect(readable.$mediaContentDispositionFilename).eql('GuestList_2.pdf');
     });
   });
