@@ -13,7 +13,7 @@ The current version includes:
 - [Store Attachments](47-Multi-Tenancy-Features-Attachments.md): Use the SAP Document Management service to store attachments.
 - [Estimate the SAP Cloud Logging Service Consumption](29-Cloud-Logging-Consumption.md): Learn how to estimate the capacity units required for the SAP Cloud Logging service to maintain performance and cost efficiency.
 - [Enable Business-Logic Extensions](50a-Multi-Tenancy-Features-Tenant-BusinessLogicExtensibility.md): Create an extension that enables customers to enhance the logic for creating project tasks.
-- [Enhance the Generative Artificial Intelligence Feature](45-Multi-Tenancy-Features-GenAI.md): Use the SAP AI Core orechestration workflow to propose a tile and description for poetry slams.
+- [Enhance the Generative Artificial Intelligence Feature](45-Multi-Tenancy-Features-GenAI.md): Use the SAP AI Core orchestration workflow to propose a tile and description for poetry slams.
 - Smaller corrections, improvements, and updates
 
 ## Older Versions
