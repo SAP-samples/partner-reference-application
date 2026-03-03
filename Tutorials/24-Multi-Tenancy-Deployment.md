@@ -17,7 +17,7 @@ This tutorial guides you through the steps to deploy and configure the multi-ten
 
 2. Navigate to the root folder of the project.
 
-3. Run the command to install the npm packages on the root folder .
+3. Run the command to install the npm packages on the root folder.
     ```
     npm install
     ``` 
