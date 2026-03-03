@@ -1,6 +1,6 @@
 # Changes
 
-## Current Version - November 2025
+## Current Version - March 2026
 
 The current version is available in three branches:
 - Tutorials: [*main*](../../../)
@@ -8,14 +8,30 @@ The current version is available in three branches:
 - Additional features and ERP integration (based on the multi-tenant version): [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features)
 
 The current version includes:
+- [Usage of New SAP Build Service Plans](01-BillOfMaterials.md): The project now uses the new SAP Build service plans.
+- [Update the SAP Continuous Integration and Delivery Service Pipelines](62-Multi-Tenancy-Features-CICD.md): Migrate the pipelines to version 3.
+- [Store Attachments](47-Multi-Tenancy-Features-Attachments.md): Use the SAP Document Management service to store attachments.
+- [Estimate the SAP Cloud Logging Service Consumption](29-Cloud-Logging-Consumption.md): Learn how to estimate the capacity units required for the SAP Cloud Logging service to maintain performance and cost efficiency.
+- [Enable Business-Logic Extensions](50a-Multi-Tenancy-Features-Tenant-BusinessLogicExtensibility.md): Create an extension that enables customers to enhance the logic for creating project tasks.
+- [Enhance the Generative Artificial Intelligence Feature](45-Multi-Tenancy-Features-GenAI.md): Use the SAP AI Core orchestration workflow to propose a tile and description for poetry slams.
+- Smaller corrections, improvements, and updates
+
+## Older Versions
+
+### November 2025
+
+Includes:
 - [Send Notifications and Emails with SAP Build Work Zone](44c-Multi-Tenancy-Features-Notification.md): Use the SAP Alert Notification service for SAP BTP, integrated into SAP Build Work Zone, to send notifications and emails.
 - [Bruno Collection of Exemplary API Requests to the Partner Reference Application](./api-samples/): Use the provided Bruno collection to explore the different APIs of the Partner Reference Application.
 - Enhancements of the User Interface and the SAP Build Work Zone Launchpad:
   - Add additional business applications into the SAP Build Work Zone launchpad, for example, the [Audit Log Viewer](41-Multi-Tenancy-Features-Data-Privacy.md#add-audit-log-viewer-service-to-sap-build-work-zone) application or the [Print Service](44b-Multi-Tenancy-Features-Print.md#add-print-service-application-to-sap-build-work-zone) application.
-  - Use [Dynamic Tiles](14-Develop-Core-Application.md#dynamic-tiles) to display key performance indicators of your applications.
+  - Use [Dynamic Tiles](14a-Develop-Core-UserInterface.md#dynamic-tiles) to display key performance indicators of your applications.
 - Smaller corrections, improvements, and updates
 
-## Older Versions
+Corresponsing Tags
+- Tutorials: [release-tutorial-2511](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-tutorial-2511)
+- Multitenancy: [release-multi-tenant-2511](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-2511)
+- ERP/Features: [release-multi-tenant-features-2511](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-features-2511)
 
 ### July 2025
 

@@ -48,7 +48,7 @@ The goal of local tests is to connect to integrated ERP systems without using de
 
 
 ## Hybrid Testing
-In addition to testing the application in a strictly local setup, you can use a *hybrid setup* as described in the capire documentation about [hybrid testing](https://cap.cloud.sap/docs/advanced/hybrid-testing#hybrid-testing). Testing in a hybrid setup, runs the application locally (in SAP Business Application Studio), but using services on the SAP BTP, running in the Cloud Foundry runtime and destination definitions on the SAP BTP. This setup behaves more like a productive setup while still offering the flexibility and simplicity of a locally run application. However, testing your application in a hybrid setup requires some configuration in your SAP BTP subaccount and your development environment in SAP Business Application Studio.
+In addition to testing the application in a strictly local setup, you can use a *hybrid setup* as described in the capire documentation about [hybrid testing](https://cap.cloud.sap/docs/tools/cds-bind). Testing in a hybrid setup, runs the application locally (in SAP Business Application Studio), but using services on the SAP BTP, running in the Cloud Foundry runtime and destination definitions on the SAP BTP. This setup behaves more like a productive setup while still offering the flexibility and simplicity of a locally run application. However, testing your application in a hybrid setup requires some configuration in your SAP BTP subaccount and your development environment in SAP Business Application Studio.
 
 ### Setup in the Development SAP BTP Subaccount
 
@@ -66,7 +66,7 @@ In addition to testing the application in a strictly local setup, you can use a 
 
     3. In the enablement dialog, choose the following attributes:
         - Environment: *Cloud Foundry Runtime* (Selected by default and cannot be changed)
-        - Plan: *standard*
+        - Plan: *build-runtime*
         - Landscape: *cf-eu10*
         - Instance Name: *for example <username>*
         - Org Name: *dev*
@@ -111,7 +111,7 @@ In addition to testing the application in a strictly local setup, you can use a 
             ```cf create-service connectivity lite <service-name>```  
             ```cf create-service-key <service-name> <key-name>```
 
-        4. Bind the SAP Connectivity service to your local application with an additional configuration to use the HTTP-Proxy of the SAP Business Application Studio instead of the default HTTP-Proxy (CAP documentation: [Hybrid Testing > Overwrite Cloud Service Credentials](https://cap.cloud.sap/docs/advanced/hybrid-testing#overwriting-service-credentials)):
+        4. Bind the SAP Connectivity service to your local application with an additional configuration to use the HTTP-Proxy of the SAP Business Application Studio instead of the default HTTP-Proxy (CAP documentation: [Hybrid Testing > Overwrite Cloud Service Credentials](https://cap.cloud.sap/docs/tools/cds-bind#overwriting-service-credentials)):
 
             ```cds bind -2 <service-name>:<key-name> --credentials '{ "onpremise_proxy_host": "127.0.0.1", "onpremise_proxy_http_port": "8887" }'```  
     
@@ -199,7 +199,7 @@ In addition to testing the application in a strictly local setup, you can use a 
 
     - Change the default behavior of services, in case they do not need to be tested in *hybrid*-mode (Example: SAP Audit Log service):
           
-        Per default, the SAP Audit Log service is configured to be of kind *"audit-log-to-restv2"* in a *hybrid* setup (see [CAP Audit Logging Guide](https://cap.cloud.sap/docs/guides/data-privacy/audit-logging#setup)). To overwrite this configuration, you can set the following attribute in your cds configuration:
+        Per default, the SAP Audit Log service is configured to be of kind *"audit-log-to-restv2"* in a *hybrid* setup (see [CAP Audit Logging Guide](https://cap.cloud.sap/docs/guides/security/dpp-audit-logging#audit-logging)). To overwrite this configuration, you can set the following attribute in your cds configuration:
 
         ```json
         "requires": {
@@ -221,4 +221,4 @@ In addition to testing the application in a strictly local setup, you can use a 
 
 The information above is specific to the ERP integration. Find additional hints in the tutorials [Ensure Code Quality, Test, and Troubleshoot the Application](16-Test-Trace-Debug.md) and [Test and Troubleshoot Multitenancy](26-Test-Trace-Debug-Multi-Tenancy.md).
 
-For more information about hybrid testing, check out the chapter [Hybrid Testing](https://cap.cloud.sap/docs/advanced/hybrid-testing) in the official CAP documentation.
+For more information about hybrid testing, check out the chapter [Hybrid Testing](https://cap.cloud.sap/docs/tools/cds-bind) in the official CAP documentation.

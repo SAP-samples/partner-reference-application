@@ -1,11 +1,14 @@
 # Add Capabilities for Generative Artificial Intelligence (Gen AI)
 
 Put yourself in the shoes of a poetry slam manager who uses a poetry slam management application to manage the events. You want to easily create events with creative titles and descriptions. 
-For the title and description proposal, the Partner Reference Application uses [generative artificial intelligence (generative AI or genAI)](https://www.sap.com/products/artificial-intelligence/what-is-generative-ai.html) based on [large language models (LLM)](https://www.sap.com/resources/what-is-large-language-model). The [SAP AI Core service of the SAP BTP](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/what-is-sap-ai-core) and the [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) offer easy consumption of generative AI features.
+For the title and description proposal, the Partner Reference Application uses [generative artificial intelligence (generative AI or genAI)](https://www.sap.com/products/artificial-intelligence/what-is-generative-ai.html) based on [large language models (LLM)](https://www.sap.com/resources/what-is-large-language-model). The [SAP AI Core service of the SAP BTP](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/what-is-sap-ai-core) and the [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) offer easy consumption of generative AI features. For information about getting started with the JavaScript SDK, see the [Getting Started](https://sap.github.io/ai-sdk/docs/js/getting-started) documentation.
+You can find information on security, data protection, and privacy aspects of the SAP AI Core service in the [Security](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/security) chapter of the service documentation.
 
 ## AI Ethics
 
-SAP has introduced a [certification program](https://community.sap.com/t5/technology-blogs-by-sap/certification-for-partner-ai-apps-on-sap-btp-ensuring-reliability/ba-p/13751165) for partner applications developed on SAP Business Technology Platform (BTP) using [SAP Generative AI Hub](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/generative-ai-hub-in-sap-ai-core-7db524ee75e74bf8b50c167951fe34a5) that includes checks for Responsible AI compliance. The certification program enables partners to offer trusted, compliant, and enterprise-ready applications powered by AI services, leveraging SAP’s expertise in business data insights.
+SAP has introduced a [certification program](https://community.sap.com/t5/technology-blogs-by-sap/certification-for-partner-ai-apps-on-sap-btp-ensuring-reliability/ba-p/13751165) for partner applications developed on SAP Business Technology Platform (BTP) using the [generative AI hub](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/generative-ai-hub-in-sap-ai-core-7db524ee75e74bf8b50c167951fe34a5). This program includes checks for Responsible AI compliance. It enables partners to offer trusted, compliant, and enterprise-ready applications powered by AI services, leveraging SAP’s expertise in business data insights. Additionally, the [SAP Global AI Ethics Policy](https://www.sap.com/documents/2022/01/a8431b91-117e-0010-bca6-c68f7e60039b.html) and the [SAP AI Ethics Handbook](https://www.sap.com/documents/2023/03/7211ee96-647e-0010-bca6-c68f7e60039b.html) provide guidance on applying the SAP AI Policies. 
+
+Furthermore, the SAP Generative AI Hub offers capabilities like [Data Masking](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/data-masking-d9a54d9ca54b40beacbd24e1663ec3b4) to support data protection and privacy implementation.
 
 ## Bill of Materials
 
@@ -35,10 +38,11 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         1. Add a new action *createWithAI* to the *PoetrySlams* entity. This action creates a new poetry slam event and uses generative AI to propose a title and description. 
             ```cds
             @(cds.odata.bindingparameter.collection)
+            @(UI.IsAIOperation: true) // Add the AI Icon to the action button
             action createWithAI(
                 @(
-                    title:'{i18n>languageInput}',
-                    mandatory:true,
+                    title: '{i18n>languageInput}',
+                    mandatory: true,
                     Common:{
                         ValueListWithFixedValues: false,
                         ValueList               : {
@@ -62,16 +66,16 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
                         },
                     }
                 )
-                language : String,
+                language : String(50),
                 @(
-                    title:'{i18n>tagsInput}',
-                    UI.Placeholder:'{i18n>placeholder}',
-                    mandatory:true
+                    title: '{i18n>tagsInput}',
+                    UI.Placeholder: '{i18n>placeholder}',
+                    mandatory: true
                 )
-                tags : String,
+                tags : String(100),
                 @(
-                    title:'{i18n>rhymeInput}',
-                    UI.ParameterDefaultValue:true
+                    title: '{i18n>rhymeInput}',
+                    UI.ParameterDefaultValue: true
                 )
                 rhyme : Boolean, ) returns PoetrySlams;
             ```
@@ -82,7 +86,11 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
             entity Language    as projection on sap.common.Languages;
             ```
 
-    2. Copy the file [*srv/lib/genAI.js*](../../../tree/main-multi-tenant-features/srv/lib/genAI.js) with the genAI class to your project. The genAI class uses [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) to leverage the generative AI hub features.
+    2. Copy the [*srv/lib/genAI.js*](../../../tree/main-multi-tenant-features/srv/lib/genAI.js) file with the genAI class to your project. The genAI class uses [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) with the orchestration and prompt-registry package to leverage the generative AI hub features. Additionally, it defines which large language model is used for the proposal generation and defines the system prompt.
+
+        > Note: The implementation uses the [Azure content filter](https://sap.github.io/ai-sdk/docs/js/orchestration/chat-completion#content-filtering) for restricting content that is passed to and received from a generative AI model. Only safe content for input and output of different categories (such as hate) are allowed. 
+
+        > Note: The implementation uses the [masking module](https://sap.github.io/ai-sdk/docs/js/orchestration/chat-completion#data-masking) of the orchestration client to mask sensitive information in the prompt. It adds the masking provider [SAP Data Privacy Integration](https://sap.github.io/ai-sdk/docs/js/orchestration/chat-completion#sap-data-privacy-integration), which anonymizes or pseudonymizes sensitive information depending on the replacement strategy.
 
     3. Extend the service implementation file [*srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) with the implementation of the action.
 
@@ -95,27 +103,27 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         2. Add the action implementation.
 
             ```js
-            /// Entity action: Create a poetry slam with generative artificial intelligence
+            // Entity action: Create a poetry slam with generative artificial intelligence
             srv.on('createWithAI', async (req) => {
-                // GenAI constructor is synchronous
-                // It returns a promise as soon as it is resolved the instance can be used
-                const genAI = new GenAI();
-
-                await genAI.initializeModels();
-
-                // Check if the deployment does already exist if not create one
-                if (!(await genAI.checkAndCreateDeployment(req))) {
-                    return;
-                }
-
-                const response = await genAI.callAI(
-                    req.data.tags,
-                    req.data.language,
-                    req.data.rhyme,
-                    req
+                const genAI = await GenAI.init();
+            
+                const response = await genAI.callOrchestrationChatCompletion(
+                  req.data.tags,
+                  req.data.language,
+                  req.data.rhyme,
+                  req
                 );
 
-                return GenAI.createPoetrySlamWithAI(response, req, srv, db);
+                // In case the orchestration call could not be started, no draft will be created
+                if (!response) return null;
+            
+                const poetrySlamDraft = await GenAI.createPoetrySlamWithAI(
+                  response,
+                  req,
+                  srv,
+                  db
+                );
+                return poetrySlamDraft;
             });
             ```
 
@@ -136,9 +144,11 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     5. Add the message texts for the action error handling into the file [*srv/i18n/messages.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages.properties).
 
         ```
-        ACTION_AI_NO_ACCESS                                     = Access to SAP AI Core service isn’t possible. Please reach out to your application provider. 
-        ACTION_AI_SETUP                                         = The AI feature is setting up. Please try again shortly.
+        ACTION_AI_NO_ACCESS                                     = Access to SAP AI Core service isn’t possible. Please reach out to your application provider.
         ACTION_AI_MISSING_PARAMETERS                            = Please enter a language and tags. 
+        ACTION_AI_INVALID_PARAMETERS                            = Invalid parameters. Please check your input.
+        ACTION_AI_ORCHESTRATION_ERROR                           = An error occurred during AI orchestration. Check the logs for more details.
+        ACTION_AI_FILTER_VIOLATION                              = This content doesn't meet our safety guidelines. Please revise your input and try again.
         ```
 
         > Note: In the reference example, the file [*srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages_de.properties) with the German texts is available, too. You can adopt them accordingly.
@@ -167,9 +177,9 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     
     1. Open a terminal.
     
-    2. Run the command `npm add @sap-ai-sdk/ai-api`. The package provides tools to manage your scenarios and workflows in SAP AI Core.  
+    2. Run the command `npm add @sap-ai-sdk/orchestration`. This package incorporates generative AI orchestration capabilities into your AI activities in SAP AI Core. It is part of the SAP Cloud SDK for AI, which is the official Software Development Kit (SDK) for SAP AI Core, the generative AI hub, and orchestration workflow.
 
-    3. Run the command `npm add @sap-ai-sdk/foundation-models`. The package incorporates generative AI foundation models into your AI activities in SAP AI Core. 
+    3. Run the command `npm add @sap-ai-sdk/prompt-registry`. This package incorporates generative AI prompt registry capabilities into your AI activities in SAP AI Core. It is also part of the SAP Cloud SDK for AI.
 
 ### SAP BTP Configuration and Deployment
 
@@ -226,8 +236,15 @@ Unit tests are available to test the artificial intelligence feature:
 
 3. To run the automated SAP Cloud Application Programming Model tests:
 
-    1. Enter the command `npm install` in a terminal in SAP Business Application Studio.
-    2. Enter the command `npm run test`. All tests are carried out and the result is shown afterwards.
+    1. Enter the following command in a terminal in SAP Business Application Studio to install all required node modules.
+        ```
+        npm install
+        ```
+
+    2. Enter the following command to run all tests. The result is shown afterwards.
+        ```
+        npm run test
+        ```
 
 ## A Guided Tour to Explore the Generative Artificial Intelligence Feature
 
@@ -251,6 +268,4 @@ Now it is time to take you on a guided tour through the generative artificial In
 
 The use of models in the generative AI hub of the SAP AI Core service is metered using genAI tokens. For more information, refer to the documentation on [SAP Help Portal](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/metering-and-pricing-for-generative-ai). 
 
-In case you want to estimate how many input and output tokens are required for the use case of the Partner Reference Application, the method `callAI` of class `genAI` shows how to determine the used tokens per genAI request. On this basis, you can make an assumption for your use case.
-
-> Note: Additionally, content filtering, data masking, and non-generative AI components come into account. In the Partner Reference Application, these features are not used.
+In case you want to estimate how many input and output tokens are required for the use case of the Partner Reference Application, the method `callOrchestrationChatCompletion` of class `genAI` shows how to determine the used tokens per genAI request. On this basis, you can make an assumption for your use case.

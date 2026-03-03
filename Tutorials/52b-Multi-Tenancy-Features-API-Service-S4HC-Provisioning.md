@@ -206,3 +206,7 @@ This simulates an update of the Poetry Slam Manager application through the API 
 ## Remarks and Troubleshooting
 
 If you need more information on how to trace and debug your application with ERP integration, go to the section on [testing and troubleshooting](32-Test-Trace-Debug-ERP.md).
+
+## Usage
+
+After the Poetry Slam Manager application is enhanced and the provisioning is done, the **Poetry Slam Manager API** can be called from an on-stack extension within SAP S/4HANA Cloud Public Edition using the ABAP RESTful Application Programming Model (RAP). This is described in detail in the [Cross-Stack Partner Reference Extension Poetry Slam Event Commerce](https://github.com/SAP-samples/cross-stack-partner-reference-extension). The sales order information for the sponsoring data will be shown on the user interface of the Poetry Slam Manager, too.

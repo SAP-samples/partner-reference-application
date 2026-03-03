@@ -7,7 +7,7 @@ If you want to start right away with a working multi-tenant implementation, clon
 
 To fast-forward:
 
-1. In the development subaccount SAP BTP cockpit (subaccount level), navigate to *Instances and Subscriptions*, open *SAP Business Application Studio*, and open the dev space *PoetrySlams* created during the [Prepare Your SAP BTP Account for Development](./11-Prepare-BTP-Account.md).
+1. In the development subaccount SAP BTP cockpit (subaccount level), navigate to *Instances and Subscriptions*, open *SAP Business Application Studio*, and open the dev space *PartnerReferenceApplication* created during the [Prepare Your SAP BTP Account for Development](./11-Prepare-BTP-Account.md).
 
 2. Use the tile *Clone from Git* on the *Welcome* view to clone this GitHub repository (https://github.com/SAP-samples/partner-reference-application) and switch to the branch *main-multi-tenant*.
 
@@ -84,7 +84,7 @@ Now, follow the next steps to make further required changes:
                 - npx -p @sap/cds-dk cds build --production
         ```
 
-    3. Add and configure the destination content module. This is where you define destinations and service keys for the destinations that are automatically created in the provider subaccount. 
+    3. Add and configure the destination content module. This is where you define destinations and service keys for the destinations that are automatically created in the provider subaccount. The destination `poetry-slams-cdm` is a Common Data Model (CDM) design time destination, which points to the location of the stored CDM in the HTML5 repository.
 
         > Note that the subpath *poetryslammanager* in the attribute `URL` of the destination `poetry-slams-cdm` below must match the value in the field `service` of the object `sap.cloud` defined in the files [*./app/poetryslams/webapp/manifest.json*](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json) [*./app/visitors/webapp/manifest.json*](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json).
 
@@ -209,7 +209,7 @@ Now, follow the next steps to make further required changes:
 
     8. Adjust the destination service resource (*poetry-slams-destination*). This includes the *poetry-slams-srv-api* as defined in the *destination* for the route as defined in the web application configuration files [*./app/poetryslams/xs-app.json*](../../../tree/main-multi-tenant/app/poetryslams/xs-app.json) and [*./app/visitors/xs-app.json*](../../../tree/main-multi-tenant/app/visitors/xs-app.json) in the `requires` section.
 
-        > Note: There will be two destinations created that are required for the SAP Build Work Zone integration: the runtime destination of the launchpad and the destination to access the poetry slams service module. For detailed instructions, see [Developing HTML5 Business Solutions as Content Providers -> Procedure -> Step 2: Define destinations (provider subaccount)-> Runtime Destination](https://help.sap.com/docs/build-work-zone-standard-edition/sap-build-work-zone-standard-edition/developing-html5-apps-for-cross-subaccount-consumption?locale=en-US#procedure) on SAP Help Portal.
+        > Note: There will be two destinations created that are required for the SAP Build Work Zone integration: the runtime destination of the launchpad and the destination to access the poetry slams service module. The `poetry-slams-rt` is a Common Data Model (CDM) runtime destination which points to the Approuter URL. For detailed instructions, see [Developing HTML5 Business Solutions as Content Providers -> Procedure -> Step 2: Define destinations (provider subaccount)-> Runtime Destination](https://help.sap.com/docs/build-work-zone-standard-edition/sap-build-work-zone-standard-edition/developing-html5-apps-for-cross-subaccount-consumption?locale=en-US#procedure) on SAP Help Portal.
 
         ```yml
         resources:

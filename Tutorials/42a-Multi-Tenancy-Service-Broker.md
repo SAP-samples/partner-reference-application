@@ -41,7 +41,7 @@ If you want to have different access authorizations for APIs, such as full acces
     ```json
     {
       "name": "$XSAPPNAME.PoetrySlamReadonly",
-      "description": "Read-only Access to PoetrySlams"
+      "description": "Read-only Access to Poetry Slams"
     }
     ```
 

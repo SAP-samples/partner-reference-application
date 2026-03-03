@@ -2,19 +2,19 @@
 
 Put yourself in the shoes of an administrator of a poetry slam management application. Imagine it's your job to handle all legal requirements that must be met to run the application, for example, handling data privacy requirements of the application.
 
-Using the SAP Audit Log service of the SAP Cloud Application Programming Model, you ensure that your application is compliant to data privacy requirements. For more information, go to the SAP Cloud Application Programming Model documentation on [managing data privacy](https://cap.cloud.sap/docs/guides/data-privacy/).
+Using the SAP Audit Log service of the SAP Cloud Application Programming Model, you ensure that your application is compliant to data privacy requirements. For more information, go to the SAP Cloud Application Programming Model documentation on [managing data privacy](https://cap.cloud.sap/docs/guides/security/data-privacy).
 
 ## Bill of Materials
 
 ### Entitlements
 In addition to the entitlements listed for the [multitenancy version](./20-Multi-Tenancy-BillOfMaterials.md), the list shows the entitlements that are required in the different subaccounts to add data privacy. 
 
-| Subaccount    |  Entitlement Name                         | Service Plan          | Type          | Quantity                  | 
-| ------------- |  ---------------------------------------- | -----------------     | ------------- | ------------------------- |
-| Provider      |                                           |                       |               |                           |
-|               | SAP Audit Log service                     | premium               | Service       | 1                         |
-| Consumer      |                                           |                       |               |                           |
-|               | SAP Audit Log Viewer service for SAP BTP  | default               | Application   | 1                         |
+| Subaccount    | Entitlement Name                          | Service Technical Name | Service Plan         | Type          | Quantity                  | 
+| ------------- |  ---------------------------------------- | -----------------      |-----------------     | ------------- | ------------------------- |
+| Provider      |                                           |                        |                      |               |                           |
+|               | Audit Log service                         | auditlog               | premium              | Service       | 1                         |
+| Consumer      |                                           |                        |                      |               |                           |
+|               | Audit Log Viewer service                  | auditlog-viewer        | free                 | Application   | 1                         |
 
 ## Guide How to Enhance the Application Step by Step
 
@@ -87,7 +87,7 @@ The following section describes how to enhance the **main-multi-tenant** branch 
       type: org.cloudfoundry.managed-service
       parameters:
         service: auditlog
-        service-plan: premium
+        service-plan: premium 
     ```
 
 ### SAP BTP Configuration and Deployment
@@ -220,7 +220,7 @@ It is possible to also add the *Audit Log Viewer Service* application directly i
     2. In the Channel Manager, click *Map aliases* in the *Status* column of the *Poetry Slam Manager* content provider.
     3. In the *Alias Mapping* dialog box, select the *App Aliases* tab.
     4. Click on *Select aliases to map* and select the *audit-log-viewer-service* alias as defined in the *cdm.json* previously.
-    5. For the next dropdown list, called *runtime destination*, select the *audit-log-viewer-service* destination as defined in the SAP BTP Cockpit under *Destinations* previously.
+    5. For the next dropdown list, called *runtime destination*, select the *audit-log-viewer-service* destination as defined in the SAP BTP cockpit under *Destinations* previously.
     6. *Save* it.
 
 5. Go back to the *Site Directoy* and open the application. The SAP Build Work Zone launchpad of the deployed application opens.

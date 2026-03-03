@@ -49,7 +49,11 @@ The SAP Business ByDesign OData service is consumed by using a destination. SAP 
 
 4. Open the context menu of the *external_resources* folder and upload the *.edmx* file with the OData service.
 
-5. Open a terminal and ensure that you're in the root folder of the application. Import the *.edmx* file using the command `cds import ./external_resources/byd_khproject.edmx --as cds`.
+5. Open a terminal and ensure that you're in the root folder of the application. Import the *.edmx* file using the following command:
+
+   ```
+   cds import ./external_resources/byd_khproject.edmx --as cds
+   ```
 
     > Note: Don't use the CDS import command parameter `--keep-namespace` because it would result in the CDS service name *cust*, which would lead to service name clashes if you import multiple SAP Business ByDesign custom OData services.
 
@@ -63,9 +67,9 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
 
 1. Enhance the entity *PoetrySlams* with the following elements:
     ```javascript
-    projectID       : String;
-    projectObjectID : String;
-    projectSystem   : String;  
+    projectID             : String(24);
+    projectObjectID       : String(70);
+    projectSystem         : String(4);  
     ```  
 
 2. Enhance the annotations of entity *PoetrySlams* with the following elements:
@@ -121,11 +125,11 @@ In SAP Business Application Studio, enhance the SAP Cloud Application Programmin
             maxVisitorsNumber - freeVisitorSeats as bookedSeats                  : Integer @title     : '{i18n>bookedSeats}',
             // Relevant for coloring of status in UI to show criticality
             virtual null                         as statusCriticality            : Integer @title     : '{i18n>statusCriticality}',
-            virtual null                         as projectSystemName            : String  @title     : '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
+            virtual null                         as projectSystemName            : String(255)  @title     : '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
             // SAP Business ByDesign projects: visibility of button "Create Project in SAP Business ByDesign"
             virtual null                         as createByDProjectEnabled      : Boolean @odata.Type: 'Edm.Boolean',
             virtual null                         as isByD                        : Boolean @odata.Type: 'Edm.Boolean',
-            virtual null                         as projectURL                   : String  @title     : '{i18n>projectURL}'               @odata.Type: 'Edm.String',
+            virtual null                         as projectURL                   : String(255)  @title     : '{i18n>projectURL}'               @odata.Type: 'Edm.String',
             // Projection of remote service data as required by the UI
             toByDProject                                                         : Association to PoetrySlamService.ByDProjects on toByDProject.projectID = $self.projectID
     }
@@ -182,9 +186,13 @@ You can define reuse functions that handle the connection for the different Ente
 
 2. Since the npm module *@sap-cloud-sdk/connectivity* is used in the file *destination.js*, add the corresponding npm modules to your project. To do so, open a terminal and run the commands:
 
-    i. `npm add @sap-cloud-sdk/connectivity` 
+    1.  ```
+        npm add @sap-cloud-sdk/connectivity
+        ```
 
-    ii. `npm add @sap-cloud-sdk/http-client`
+    2.  ```
+        npm add @sap-cloud-sdk/http-client
+        ```
 
     The dependencies are added to the *dependencies* section in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) file. 
 
@@ -222,7 +230,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
         module.exports = async (srv) => {
             const {
                 ByDProjects
-            } = this.entities;
+            } = srv.entities;
             // -------------------------------------------------------------------------------------------------
             // Implementation of remote OData services (back-channel integration with SAP Business ByDesign)
             // -------------------------------------------------------------------------------------------------
@@ -510,7 +518,7 @@ Enhance the implementation of the SAP Cloud Application Programming Model servic
         ]
         ```
 
-    4. Add two buttons to the identification area:
+    4. Add two buttons to the fieldgroup *#ProjectData*:
         ```javascript
         // Create a project in the connected SAP Business ByDesign system
         {

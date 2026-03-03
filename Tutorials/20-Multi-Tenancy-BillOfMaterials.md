@@ -5,10 +5,10 @@ In the version of Poetry Slam Manager with multitenancy, the Partner Reference A
 
 ## Subaccounts
 The example setup serves four sample customers: 
--	*Andina Publications*: A well-established publishing house using SAP S/4HANA Cloud enterprise projects to run poetry slam events.
+-	*Gourmet Poetry*: A renowned food magazine known for its exquisite taste and celebration of culinary arts using SAP Cloud ERP enterprise projects to run poetry slam events that blend the art of spoken word with gourmet food experiences.
 -	*OEC computers*: A company whose employees frequently come together for poetry slams with a great buffet and all-you-can-eat mousse au chocolat. 
 -	*Almika Events Cleveland*: An event agency that plans events using SAP Business ByDesign as their ERP solution.
--	*Invictus Live Events*: A small poet startup without any ERP solution yet (but a promising ERP prospect if they stay on their exciting growth journey). 
+-	*Andina Live Events*: A small poet startup without any ERP solution yet (but a promising ERP prospect if they stay on their exciting growth journey). 
 
 > Note: The ERP integration will be done in a later step.
 
@@ -19,35 +19,36 @@ To develop and run the application for these consumers, the following directory 
 | Development                      |                                      |                                                                                                             |
 |                                  | Development                          | SAP Business Application Studio                                                                             |
 | Partner Reference Application    |                                      |                                                                                                             |
-|                                  | Provider: Poetry Slam Manager        | Application runtime, the database, other SAP BTP services used to run the application                       |
-|                                  | Consumer 1: Andina Publications      | Subscription to customer Andina Publications (to be connected to their SAP S/4HANA Cloud tenant)            |
+|                                  | Provider: Poetry Slam Manager        | Application runtime, the database, other SAP BTP services used to run the application                        |
+|                                  | Consumer 1: Gourmet Poetry           | Subscription to customer Gourmet Poetry (to be connected to their SAP S/4HANA Cloud tenant)            |
 |                                  | Consumer 2: OEC Computers            | Subscription to customer OEC Computers (to be connected to their SAP Business One system)                   |
 |                                  | Consumer 3: Almika Events Cleveland  | Subscription to customer Almika Events Cleveland (to be connected to their SAP Business ByDesign tenant)    |
-|                                  | Consumer 4: Invictus Live Events     | Subscription to customer Invictus Live Events who uses the application as a stand-alone solution            |
+|                                  | Consumer 4: Andina Live Events       | Subscription to customer Andina Live Events who uses the application as a stand-alone solution            |
 
 ## Entitlements
 The list shows the entitlements that are required in the different subaccounts to develop and run the Poetry Slam Manager application with a multi-tenant deployment and additional features. While some entitlements are included by default, you'll learn which ones to add manually.
 
-| Subaccount    |  Entitlement Name                                    | Service Plan              | Type          | Quantity                          | 
-| -----------   |  -------------------                                 | ---------                 | ---------     | ---------                         |
-| Development   |                                                      |                           |               |                                   |
-|               | SAP Business Application Studio                      | standard-edition          | Application   | 1 (per developer)                 |
-| Provider      |                                                      |                           |               |                                   |
-|               | SAP BTP Cloud Foundry runtime                        | standard                  | Environment   | 3 units                           |
-|               | SAP Custom Domain service                            | standard                  | Application   | 1                                 |
-|               | SAP Authorization and Trust Management service       | broker                    | Service       | 1                                 | 
-|               | SAP Destination service                              | lite                      | Service       | 1                                 | 
-|               | SAP Connectivity service                             | lite                      | Service       | 1                                 | 
-|               | SAP HTML5 Application Repository service for SAP BTP | app-host                  | Service       | 1                                 | 
-|               | SAP HTML5 Application Repository service for SAP BTP | app-runtime               | Service       | 1                                 | 
-|               | SAP Software-as-a-Service Provisioning service       | application               | Service       | 1                                 | 
-|               | SAP HANA Cloud                                       | hana-td                   | Service       | 1                                 | 
-|               | SAP HANA Cloud                                       | tools                     | Application   | 1                                 | 
-|               | SAP HANA Schemas & HDI Containers                    | hdi-shared                | Service       | 1                                 | 
-|               | SAP Service Manager service                          | container                 | Service       | 1                                 |  
-| Consumer      |                                                      |                           |               |                                   |
-|               | SAP Build Work Zone, standard edition                | standard (Application)    | Application   | 1                                 |
+| Subaccount    |  Service Display Name                          																								| Service Technical Name | Service Plan     | Type          | Quantity           | 
+| -----------   |  -------------------                           																							    | ---------              | ---------------  | ---------     | ---------          |             
+| Development     |                                                																		    					|                          |      |                  |               |
+|               | [SAP Business Application Studio](https://discovery-center.cloud.sap/serviceCatalog/sap-build)  												| sapappstudio           | build-default    | Application   | 1 (per developer)  |
+| Provider        |                                                      																							|                      |      |                  |               |
+|               | [Cloud Foundry Environment](https://discovery-center.cloud.sap/serviceCatalog/sap-build)  													| cloudfoundry           | build-runtime    | Environment   | 3 units            |
+|               | [Custom Domain service](https://discovery-center.cloud.sap/serviceCatalog/custom-domain)  							  						| custom-domain-manager  | standard         | Application   | 1                  |
+|               | [Authorization and Trust Management service](https://discovery-center.cloud.sap/serviceCatalog/authorization-and-trust-management-service)   	| xsuaa       		     | broker           | Service       | 1                  | 
+|               | [Destination service](https://discovery-center.cloud.sap/serviceCatalog/destination-service)       											| destination            | lite             | Service       | 1                  | 
+|               | [Connectivity service](https://discovery-center.cloud.sap/serviceCatalog/connectivity-service)   												| connectivity           | lite             | Service       | 1                  | 
+|               | [HTML5 Application Repository service](https://discovery-center.cloud.sap/serviceCatalog/html5-application-repository-service)  				| html-apps-repo         | app-host         | Service       | 1                  | 
+|               | [HTML5 Application Repository service](https://discovery-center.cloud.sap/serviceCatalog/html5-application-repository-service)   				| html-apps-repo         | app-runtime      | Service       | 1                  | 
+|               | [SaaS Provisioning service](https://discovery-center.cloud.sap/serviceCatalog/saas-provisioning-service)   									| saas-registry          | application      | Service       | 1                  | 
+|               | [SAP HANA Cloud*](https://discovery-center.cloud.sap/serviceCatalog/sap-hana-cloud) 															| hana-cloud             | hana-td          | Service       | 1                  | 
+|               | [SAP HANA Cloud](https://discovery-center.cloud.sap/serviceCatalog/sap-hana-cloud) 															| hana-cloud-tools       | tools            | Application   | 1                  | 
+|               | [SAP HANA Schemas & HDI Containers](https://discovery-center.cloud.sap/serviceCatalog/sap-hana-cloud) 										| hana     				 | hdi-shared       | Service       | 1                  | 
+|               | [Service Manager](https://discovery-center.cloud.sap/serviceCatalog/service-manager)  														| service-manager        | container        | Service       | 1                  |  
+| Consumer        |                                                     																							|                      |      |                  |               |
+|               | [SAP Build Work Zone, Standard Edition](https://discovery-center.cloud.sap/serviceCatalog/sap-build)  										| SAPLaunchpad           | build-default    | Application   | 1                  |    
 
+> Note: The table outlines SAP BTP service plans used in SAP BTP environments for test, demo, and development. In productive environments, use the SAP HANA Cloud service plan 'hana'.
 
 ## Services Without Entitlements
 The list shows services that don't require entitlements.

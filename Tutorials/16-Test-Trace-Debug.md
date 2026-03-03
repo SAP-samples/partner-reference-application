@@ -199,13 +199,13 @@ The tests are located in the directories [*app/poetryslams/webapp/test*](../../.
 
 ## Testing Your Application During Development
 
-When developing your application in SAP Business Application Studio, you can always start your application using `cds watch` or `cds serve` (refer to [Jumpstart a Project](https://cap.cloud.sap/docs/get-started/in-a-nutshell#jumpstart)).
+When developing your application in SAP Business Application Studio, you can always start your application using `cds watch` or `cds serve` (refer to [Jumpstart a Project](https://cap.cloud.sap/docs/get-started/#jumpstart-projects)).
 
 > Note: In case you get the error "port 4004 already used" and you cannot close a previously started `cds watch` (because the corresponding terminal is already closed), you can stop this process using terminal commands. To achieve this, you can find the process using port 4004 with the command `netstat -nlp | grep 4004` in the terminal to find the process ID, and stop that process using `kill -2 <process id>`.
 
 ## Troubleshoot Your Application
 
-There are several out-of-the-box tools that can be used to troubleshoot your application. Besides the options explained in the SAP Cloud Application Programming Model documentation on [troubleshooting](https://cap.cloud.sap/docs/get-started/troubleshooting), a few general approaches are described below that can help identify where an issue originates from.
+There are several out-of-the-box tools that can be used to troubleshoot your application. Besides the options explained in the SAP Cloud Application Programming Model documentation on [troubleshooting](https://cap.cloud.sap/docs/get-started/get-help), a few general approaches are described below that can help identify where an issue originates from.
 
 ### Debug
 

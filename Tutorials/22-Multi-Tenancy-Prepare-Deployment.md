@@ -21,21 +21,26 @@ The steps that are required to create a *PoetrySlamsProvider* subaccount for you
     	> Note: If the value help doesn't offer an item referring to *Cloud Foundry*, select *Application runtime*. Save your changes and the name of the list item changes to *Cloud Foundry*. In your SAP BTP environment, this entitlement may already have been added by default.
 		- As *Plan*, select *MEMORY*.
 	- *SAP HANA Cloud* (1 unit)
-		- As *Plan*, select *hana*.
+		- As *Plan*, select *hana-td*.
+		- *Service Technical Name*: *hana-cloud*.
 	- *SAP HANA Cloud* (1 unit)
 		- As *Plan*, select *tools*.
+		- *Service Technical Name*: *hana-cloud-tools*.
 	- *SAP HANA Schemas & HDI Containers* (min. 5 units: for the provider and four tenants)
 		- As *Plan*, select *hdi-shared*.
-	- *SAP Authorization and Trust Management service* (1 unit)
+		- *Service Technical Name*: *hana*.
+	- *Authorization and Trust Management service* (1 unit)
 		- As *Plan*, select *broker*.
-	- *SAP Custom Domain Service*
+		- *Service Technical Name*: *xsuaa*.
+	- *Custom Domain Service*
 		- As *Plan*, select *standard (Application)*.
+		- *Service Technical Name*: *custom-domain-manager*.
 
 	The relevant entitlements are selected by default when the subaccount is created (no action is required):
 
-	- *Service Manager*, service plan *container*
-	- *SaaS Provisioning Service*, service plan *application*
-	- *HTML5 Application Repository Service*, service plans *app-runtime* and *app-host*
+	- *Service Manager*, service plan *container*, service technical name *service-manager*
+	- *SaaS Provisioning Service*, service plan *application*, service technical name *saas-registry*
+	- *HTML5 Application Repository Service*, service plans *app-runtime* and *app-host*, service technical name *html-apps-repo*
 
 ### Maintain Provider Subaccount Administrators
 
@@ -49,7 +54,7 @@ In the SAP BTP cockpit (provider subaccount), maintain the application administr
 In the SAP BTP cockpit (provider subaccount), create an SAP BTP Cloud Foundry runtime space to host the database and the runtime:
 
 1. Go to *Overview* in the subaccount and choose *Enable Cloud Foundry*. Enter the following information:
-    - As *Plan*, select *standard*.
+    - As *Plan*, select *build-runtime*.
 	- As *Landscape*, select *cf-eu10*. 
 	- As *Instance Name*, enter `psm-mt`.
     - As *Org Name*, enter a name, for example, an abbreviation for you as a partner and the solution you want to host.
@@ -76,6 +81,7 @@ In the SAP BTP cockpit (provider subaccount), create an SAP BTP Cloud Foundry ru
 2. Create a subscription of *SAP HANA Cloud* with
     - *Service*: *SAP HANA Cloud*
     - *Plan*: *tools*
+	- *Service Technical Name*: *hana-cloud-tools*
 
 		> Note: The subscribed application *SAP HANA Cloud* (also called *SAP HANA Cloud Central*) can be used to manage the database configuration, to upgrade the database, to create backups and start a recovery, and to access the stored data.
 

@@ -5,11 +5,11 @@ Imagine you're developing and operating the Poetry Slam Manager application for 
 ## Bill of Materials
 
 ### Entitlements
-| Subaccount            |  Entitlement Name                                 | Service Plan          | Type          | Quantity                  | 
-| ----------------------|  -----------------------------------------------  | -----------------     | ------------- | ------------------------- |
-| Development Account   |                                                   |                       |               |                           |
-|                       | SAP Continuous Integration and Delivery service   | default               | Service       | 1                         | 
-|                       | SAP Alert Notification service                    | standard              | Service       | 1                         | 
+| Subaccount            |  Entitlement Name                                | Service Technical Name | Service Plan          | Type          | Quantity  | 
+| ----------------------|  ----------------------------------------------- |--------------------    | -----------------     | ------------- | -------   |
+| Development Account   |                                                  |                        |                       |               |           |
+|                       | SAP Continuous Integration and Delivery service  | cicd-app               | build-runtime         | Application   |  1        | 
+|                       | SAP Alert Notification service                   | alert-notification     | build-runtime         | Service       |  1        | 
 
 
 ## Guide How to Enhance the Application Step by Step
@@ -40,9 +40,9 @@ In the provided example, the *Compliance* and *Release* steps are skipped.
 
 ## SAP BTP Configuration and Deployment
 1. Open the SAP BTP cockpit of the development subaccount and add the required entitlements:
-    - *Continuous Integration and Delivery* with the *default* plan to add CI/CD-app.
+    - *Continuous Integration and Delivery* with the *build-runtime* plan to add CI/CD-app.
 2. Navigate to *Instances and Subscriptions* and choose *Create*.
-3. Search for Continuous Integration & Delivery, select the *default* plan, and create the application.
+3. Search for Continuous Integration & Delivery, select the *build-runtime* plan, and create the application.
 4. Next, go to *Users and Security* and assign the roles to your user.
     - The *CI/CD Service Administrator* can trigger, create, delete, and change the builds.
     - The *CI/CD Service Developer* is only able to trigger the build.
@@ -80,60 +80,40 @@ This guide explains the first option.
 1. Open the application coding of the Partner Reference Application in the Business Application Studio.
 2. Check out or create a new branch to add your CI/CD config file.
     - > Note: After merging this into the branch, the config.yml file is used to run the job.
-3. In the Partner Reference Application root folder, create a new folder called *.pipeline*.
-4. Navigate to the *.pipeline* folder and create a file named config.yml. This file will contain the required stages and steps that the CI/CD-job executes.
+3. In the Partner Reference Application root folder, create a new folder called *.sap_cid*.
+4. Navigate to the *.sap_cid* folder and create a file named config.yml. This file will contain the required stages and steps that the CI/CD-job executes.
 
-For a first deployment, copy the example configuration below. It contains the steps Build, Additional Unit Tests, Malware Scan, and Acceptance. Replace the placeholders for *cfApiEndpoint*, *cfOrg* and *cfSpace*. You can find these values in your provider subaccount.
+For a first deployment, copy the example configuration below. It contains the steps build, additionalTests, malwareScan, and acceptance. Replace the placeholders for *apiEndpoint*, *org*, and *space*. You can find these values in your provider subaccount.
 
 1. Open your SAP BTP provider subaccount.
 2. Make sure you're on the *Overview* page.
-3. Copy the information found under Cloud Foundry Environment:
-    1. cfApiEndpoint = API Endpoint
-    2. cfOrg = Org Name
-    3. cfSpace = Space Name
+3. Copy the information found under Cloud Foundry environment:
+    1. apiEndpoint = API Endpoint
+    2. org = Org Name
+    3. space = Space Name
 
 In the config.yml file, the same steps are configurable as described in *Supported Pipeline Phases of the SAP Continuous Integration and Delivery Service*.
 
 ```yaml
 ---
-general:
+stages:
+  build:
     buildTool: 'mta'
-service:
-    buildToolVersion: 'MBTJ21N20'
-    stages:
-    Build:
-        mavenExecuteStaticCodeChecks: false
-        npmExecuteLint: false
-    Acceptance:
-        cfApiEndpoint: '<ENTER YOUR ENDPOINT>'
-        cfOrg: '<ENTER YOUR ORG>'
-        cfSpace: '<ENTER YOUR SPACE>'
-        deployType: 'standard'
-        cloudFoundryDeploy: true
-        npmExecuteEndToEndTests: false
-    Malware Scan:
-        malwareExecuteScan: true
-    Release:
-        tmsExport: false
-        tmsUpload: false
-        cloudFoundryDeploy: false
-    Additional Unit Tests:
-        npmExecuteScripts: true
-    Compliance:
-        sonarExecuteScan: false
-steps:
-    cloudFoundryDeploy:
-        mtaDeployParameters: '-f --version-rule ALL'
-    npmExecuteScripts:
-        runScripts:
-        - 'prebuild'
-        - 'test'
-    artifactPrepareVersion:
-        versioningType: 'cloud_noTag'
+    buildToolVersion: 'MBTJ21N22'
+  malwareScan:
+    scan: true
+  additionalTests:
+    npmTests:
+      npmScript: 'cicd-run'
+  acceptance:
+    cfDeploy:
+      apiEndpoint: '<ENTER YOUR ENDPOINT>'
+      org: '<ENTER YOUR ORG>'
+      space: '<ENTER YOUR SPACE>'
 ```
 Push and merge your config.yml file into the GitHub branch you want to run the job for. Next, go back to the *Jobs* tab and activate the job you've created. The job is is now automatically triggered as soon as changes are merged to the selected branch. For the first time, the job needs to be triggered manually by choosing *Run*. This starts the build and deploys it to the configured test account.
 
-You can have a look at the complete [config.yml](../../../tree/main-multi-tenant-features/.pipeline/config.yml) file provided in the main-multi-tenant-features branch. It includes more steps that are described later.
+You can have a look at the complete [config.yml](../../../tree/main-multi-tenant-features/.sap_cid/config.yml) file provided in the main-multi-tenant-features branch. It includes more steps that are described later.
 
 
 ### Run the Job for Initial Deployment
@@ -157,29 +137,31 @@ You have two options to see the log:
 After the first run is triggered, you have to subscribe the application to your subscriber subaccount as described in the [following tutorial](./25-Multi-Tenancy-Provisioning.md). Now, you need to [configure the service broker](./42b-Multi-Tenancy-Provisioning-Service-Broker.md).
 
 ### Enhance the config.yml File to Complete the Configuration
-After the successful initial deployment, you can have a look at the [config.yml](../../../tree/main-multi-tenant-features/.pipeline/config.yml) file that includes additional steps to execute integration tests. To execute these additional tests and use the complete sample, the credentials must be maintained in the config.yml file.
+After the successful initial deployment, you can have a look at the [config.yml](../../../tree/main-multi-tenant-features/.sap_cid/config.yml) file that includes additional steps to execute integration tests. To execute these additional tests and use the complete sample, the credentials must be maintained in the config.yml file.
 
 ```yaml
-credentialVariables:
-    # Credentials for integration test
-    - name: 'service_broker_endpoint'
-        credentialId: 'release-service-broker-endpoint'
-    - name: 'service_broker_auth_server'
-        credentialId: 'release-service-broker-auth-server'
-    - name: 'service_broker_client_id'
-        credentialId: 'release-service-broker-client-id'
-    - name: 'service_broker_client_secret'
-        credentialId: 'release-service-broker-client-secret'
-    # Credentials for subscription updates
-    - name: 'registry_clientid'
-        credentialId: 'release-registry-clientid'
-    - name: 'registry_clientsecret'
-        credentialId: 'release-registry-clientsecret'
-    - name: 'registry_uaa_url'
-        credentialId: 'release-registry-uaa-url'
-    - name: 'registry_saasreg_url'
-        credentialId: 'release-registry-saasreg-url'
-    cfCredentialsId: 'cloudfoundrydeploy'
+_additional:
+    credentialVariables:
+        # Credentials for integration test
+        - name: 'service_broker_endpoint'
+            valueSource: 'release-service-broker-endpoint'
+        - name: 'service_broker_auth_server'
+            valueSource: 'release-service-broker-auth-server'
+        - name: 'service_broker_client_id'
+            valueSource: 'release-service-broker-client-id'
+        - name: 'service_broker_client_secret'
+            valueSource: 'release-service-broker-client-secret'
+        # Credentials for subscription updates
+        - name: 'registry_clientid'
+            valueSource: 'release-registry-clientid'
+        - name: 'registry_clientsecret'
+            valueSource: 'release-registry-clientsecret'
+        - name: 'registry_uaa_url'
+            valueSource: 'release-registry-uaa-url'
+        - name: 'registry_saasreg_url'
+            valueSource: 'release-registry-saasreg-url'
+cfDeploy:
+    credential: 'cloudfoundrydeploy'
 ```
 Now add the shell scripts to your partner reference application.
 1. Create a new folder called *cicd* under *test*.
@@ -212,15 +194,16 @@ To run the complete script, you have to create the secrets listed in the script 
 6. For the *cloudfoundrydeploy* secret, maintain a (technical) user and its password. This user must be added as *Org Member* of the Cloud Foundry environment in the provider subaccount with the *Org User* role and as *Space Developer* of the Cloud Foundry environment to which the application is deployed.
 
 ```yaml
-    Build:
+    build:
       runFirst:
         command: 'cp ./test/cicd/* cloudcitransfer'
-    Acceptance:
+    ...
+    acceptance:
       runLast:
         command: './cloudcitransfer/cicd_all_tests.sh'
 ```
 Here's a brief explanation of the commands above: 
-The *runFirst* command under *Build* copies the files located under [./test/cicd/*](../../../tree/main-multi-tenant-features/test/cicd) to the CI/CD workspace folder called *cloudcitransfer* at runtime. This step ensures the scripts are available for execution. After copying, the build process continues. In the Acceptance stage, the *runLast* command executes the scripts stored in the *cloudcitransfer* folder.
+The *runFirst* command under *build* copies the files located under [./test/cicd/*](../../../tree/main-multi-tenant-features/test/cicd) to the CI/CD workspace folder called *cloudcitransfer* at runtime. This step ensures the scripts are available for execution. After copying, the build process continues. In the acceptance stage, the *runLast* command executes the scripts stored in the *cloudcitransfer* folder.
 
 > Note: *runFirst* executes a command before the actual step. To run it after a step, use *runLast*.
 
@@ -230,7 +213,7 @@ For more information on the job configuration, see [Configure a Cloud Foundry En
 To receive email notifications about the job execution status, use the SAP Alert Notification service. This feature actively informs users whether a build runs successfully or encounters issues.
 
 #### SAP BTP Configuration and Deployment
-1. Go to the entitlements in your development subaccount and add the *SAP Alert Notification service* with the *standard* plan.
+1. Go to the entitlements in your development subaccount and add the *SAP Alert Notification service* with the *build-runtime* plan.
 2. Navigate to the *Instances and Subscriptions* view and create an instance of the newly entitled service.
 3. Search for the *Alert Notification* service, provide a name, for example *pra-alert-notification*, and create it.
 4. Open the instance and create a service key of the alert notification service.
