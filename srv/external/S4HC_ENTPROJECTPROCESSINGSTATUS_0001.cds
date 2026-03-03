@@ -1,4 +1,4 @@
-/* checksum : 1af2d0583c56ec2f4d66134a8bc3c29d */
+/* checksum : 528094e1b4168da0dcc7baf09df33ee5 */
 @cds.external : true
 @Aggregation.ApplySupported.Transformations : [ 'aggregate', 'groupby', 'filter' ]
 @Aggregation.ApplySupported.Rollup : #None
@@ -59,7 +59,7 @@ service S4HC_ENTPROJECTPROCESSINGSTATUS_0001 {
     @Common.QuickInfo : 'Processing Status Text'
     ProcessingStatusText : String(60) not null;
     @Common.Composition : true
-    _ProcessingStatusText : Composition of many ProcessingStatusText {  };
+    _ProcessingStatusText : Composition of many ProcessingStatusText on _ProcessingStatusText._ProcessingStatus = $self;
   };
 
   @cds.external : true
@@ -85,7 +85,7 @@ service S4HC_ENTPROJECTPROCESSINGSTATUS_0001 {
     @Common.Heading : 'Processing Status Text'
     @Common.QuickInfo : 'Processing Status Text'
     ProcessingStatusText : String(60) not null;
-    _ProcessingStatus : Association to one ProcessingStatus {  };
+    _ProcessingStatus : Association to one ProcessingStatus on _ProcessingStatus.ProcessingStatus = ProcessingStatus;
   };
 };
 

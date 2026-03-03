@@ -44,6 +44,7 @@ modules:
       - name: poetry-slams-print-service
       - name: poetry-slams-aicore
       - name: poetry-slams-jobscheduler
+      - name: poetry-slams-sdm-integration
     provides:
       - name: poetry-slams-srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
@@ -52,6 +53,8 @@ modules:
       buildpack: nodejs_buildpack
       readiness-health-check-http-endpoint: /health
       readiness-health-check-type: http
+    properties:
+      REPOSITORY_ID: PSM_REPO
     build-parameters:
       builder: npm-ci
 
@@ -206,8 +209,10 @@ modules:
       - name: poetry-slams-adsrestapi
       - name: poetry-slams-aicore
       - name: poetry-slams-jobscheduler
+      - name: poetry-slams-sdm-integration
       - name: app-api
         properties:
+          REPOSITORY_ID: PSM_REPO
           SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}.~{app-uri}
 
   # The service broker for the poetry slam manager
@@ -373,12 +378,12 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: cloud-logging
-      service-plan: standard
+      service-plan: dev
       config:
         ingest_otlp:
           enabled: true
         backend:
-          api_enabled: true
+          api_enabled: false
 
   # Cloud Logging Service (Option 2: Shared SAP Cloud Logging Instance)
   # - name: shared-cloud-logging
@@ -405,7 +410,7 @@ resources:
       service: aicore
       service-plan: extended
 
-  # Job scheduler Service
+  # Job Scheduler Service
   - name: poetry-slams-jobscheduler
     type: org.cloudfoundry.managed-service
     parameters:
@@ -413,3 +418,10 @@ resources:
       service-plan: standard
       config:
         enable-xsuaa-support: true
+
+  # Document Management Service, Integration Option
+  - name: poetry-slams-sdm-integration
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: sdm
+      service-plan: build-runtime

@@ -7,7 +7,7 @@ const { httpCodes } = require('../../../srv/lib/codes');
 const sinon = require('sinon');
 const JobSchedulerActionImplementation = require('../../../srv/lib/jobSchedulerActionImplementation');
 
-// Executes an action, like 'sendNotification'
+// Executes an action, like 'generateConsumerJobs' or 'sendReminder'
 const ACTION = (url, name, data = {}, parameters = {}) =>
   POST(url + `/JobSchedulerService.${name}`, data, parameters);
 

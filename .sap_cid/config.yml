@@ -1,0 +1,40 @@
+---
+stages:
+  build:
+    runFirst:
+      command: 'cp ./test/cicd/* cloudcitransfer'
+    buildTool: 'mta'
+    buildToolVersion: 'MBTJ21N22'
+  malwareScan:
+    scan: true
+  additionalTests:
+    npmTests:
+      npmScript: 'cicd-run'
+  acceptance:
+    runLast:
+      command: './cloudcitransfer/cicd_all_tests.sh'
+    _additional:
+      credentialVariables:
+        # Credentials for integration test
+        - name: 'service_broker_endpoint'
+          valueSource: 'release-service-broker-endpoint'
+        - name: 'service_broker_auth_server'
+          valueSource: 'release-service-broker-auth-server'
+        - name: 'service_broker_client_id'
+          valueSource: 'release-service-broker-client-id'
+        - name: 'service_broker_client_secret'
+          valueSource: 'release-service-broker-client-secret'
+        # Credentials for subscription updates
+        - name: 'registry_clientid'
+          valueSource: 'release-registry-clientid'
+        - name: 'registry_clientsecret'
+          valueSource: 'release-registry-clientsecret'
+        - name: 'registry_uaa_url'
+          valueSource: 'release-registry-uaa-url'
+        - name: 'registry_saasreg_url'
+          valueSource: 'release-registry-saasreg-url'
+    cfDeploy:
+      credential: 'cloudfoundrydeploy'
+      apiEndpoint: 'https://api.cf.eu10-004.hana.ondemand.com'
+      org: 'mecs_psm_cicd'
+      space: 'cicd'

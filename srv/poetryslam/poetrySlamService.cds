@@ -21,22 +21,22 @@ service PoetrySlamService @(
       maxVisitorsNumber - freeVisitorSeats as bookedSeats                  : Integer @title     : '{i18n>bookedSeats}',
       // Relevant for coloring of status in UI to show criticality
       virtual null                         as statusCriticality            : Integer @title     : '{i18n>statusCriticality}',
-      virtual null                         as projectSystemName            : String  @title: '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
+      virtual null                         as projectSystemName            : String(255)  @title: '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
       // SAP Business ByDesign projects: visibility of button "Create Project in SAP Business ByDesign"
       virtual null                         as createByDProjectEnabled      : Boolean @odata.Type: 'Edm.Boolean',
       virtual null                         as isByD                        : Boolean @odata.Type: 'Edm.Boolean',
       // SAP S/4HANA Cloud projects: visibility of button "Create Project in SAP S/4HANA Cloud", code texts
       virtual null                         as createS4HCProjectEnabled     : Boolean @odata.Type: 'Edm.Boolean',
-      virtual null                         as projectProfileCodeText       : String  @title: '{i18n>projectProfile}'           @odata.Type: 'Edm.String',
-      virtual null                         as processingStatusText         : String  @title: '{i18n>processingStatus}'         @odata.Type: 'Edm.String',
-      virtual null                         as projectURL                   : String  @title: '{i18n>projectURL}'               @odata.Type: 'Edm.String',
-      virtual null                         as customerFullName             : String  @title: '{i18n>customerFullName}'         @odata.Type: 'Edm.String',
-      virtual null                         as salesOrderURL                : String  @title: '{i18n>salesOrderURL}'            @odata.Type: 'Edm.String',
+      virtual null                         as projectProfileCodeText       : String(40)  @title: '{i18n>projectProfile}'           @odata.Type: 'Edm.String',
+      virtual null                         as processingStatusText         : String(60)  @title: '{i18n>processingStatus}'         @odata.Type: 'Edm.String',
+      virtual null                         as projectURL                   : String(255)  @title: '{i18n>projectURL}'               @odata.Type: 'Edm.String',
+      virtual null                         as customerFullName             : String(80)  @title: '{i18n>customerFullName}'         @odata.Type: 'Edm.String',
+      virtual null                         as salesOrderURL                : String(255)  @title: '{i18n>salesOrderURL}'            @odata.Type: 'Edm.String',
       virtual null                         as isS4HC                       : Boolean @odata.Type: 'Edm.Boolean',
       // SAP Business One purchase order: visibility of button "Create Purchase Order in SAP Business One"
       virtual null                         as createB1PurchaseOrderEnabled : Boolean @odata.Type: 'Edm.Boolean',
-      virtual null                         as purchaseOrderSystemName      : String  @title: '{i18n>purchaseOrderSystemName}'  @odata.Type: 'Edm.String',
-      virtual null                         as purchaseOrderURL             : String  @title: '{i18n>purchaseOrderURL}'         @odata.Type: 'Edm.String',
+      virtual null                         as purchaseOrderSystemName      : String(255)  @title: '{i18n>purchaseOrderSystemName}'  @odata.Type: 'Edm.String',
+      virtual null                         as purchaseOrderURL             : String(255) @title: '{i18n>purchaseOrderURL}'         @odata.Type: 'Edm.String',
       virtual null                         as isB1                         : Boolean @odata.Type: 'Edm.Boolean',
       virtual null                         as isJobStatusShown             : Boolean @odata.Type: 'Edm.Boolean',
 
@@ -143,25 +143,26 @@ service PoetrySlamService @(
             },
           }
         )
-        printQueue : String
+        printQueue : String(50)
       );
 
       @(cds.odata.bindingparameter.collection)
+      @(UI.IsAIOperation: true) // Add the AI Icon to the action button
       action createWithAI(
-        @(
-          title: '{i18n>languageInput}',
-          mandatory: true,
-          UI.ParameterDefaultValue: 'EN',
-          Common: {
-            ValueListWithFixedValues: false,
-            ValueList               : {
-              $Type         : 'Common.ValueListType',
-              CollectionPath: 'Language',
-              Parameters    : [
-                {
-                  $Type            : 'Common.ValueListParameterInOut',
-                  ValueListProperty: 'name',
-                  LocalDataProperty: language,
+                          @(
+                            title: '{i18n>languageInput}',
+                            mandatory: true,
+                            UI.ParameterDefaultValue: 'EN',
+                            Common: {
+                              ValueListWithFixedValues: false,
+                              ValueList               : {
+                                $Type         : 'Common.ValueListType',
+                                CollectionPath: 'Language',
+                                Parameters    : [
+                                  {
+                                    $Type            : 'Common.ValueListParameterInOut',
+                                    ValueListProperty: 'name',
+                                    LocalDataProperty: language,
 
                 },
                 {
@@ -176,13 +177,13 @@ service PoetrySlamService @(
             },
           }
         )
-        language : String,
+        language : String(50),
         @(
           title: '{i18n>tagsInput}',
           UI.Placeholder: '{i18n>placeholder}',
           mandatory: true
         )
-        tags : String,
+        tags : String(100),
         @(
           title: '{i18n>rhymeInput}',
           UI.ParameterDefaultValue: true,
@@ -215,8 +216,8 @@ service PoetrySlamService @(
   @readonly
   @cds.persistence.skip
   entity PrintQueues {
-    key name  : String;
-        descr : String;
+    key name  : String(50);
+        descr : String(255);
   };
 
   // Visitors
@@ -228,9 +229,9 @@ service PoetrySlamService @(
       * // Selects all fields of the Visitors database model
     };
 
-      // Visits
-  @Common.SemanticObject: 'visits'
-  @Common.SemanticKey   : [ID]
+  // Visits
+  @Common.SemanticObject : 'visits'
+  @Common.SemanticKey: [ID]
   entity Visits      as
     projection on poetrySlamManagerModel.Visits {
       *, // Selects all fields of the Visits database model
@@ -275,7 +276,7 @@ service PoetrySlamService @(
   entity PDFDocument {
     key ID        : UUID;
         content   : LargeBinary @Core.MediaType  : mediaType;
-        mediaType : String      @Core.IsMediaType: true;
+        mediaType : String(50)      @Core.IsMediaType: true;
   }
 
   // Currencies
@@ -293,15 +294,15 @@ service PoetrySlamService @(
   };
 
   type user {
-    id     : String;
-    locale : String;
+    id     : String(255);
+    locale : String(14);
     roles  : userRoles;
   };
 
-  function userInfo()       returns user;
+  function userInfo()                           returns user;
 
   @Common.SideEffects: {TargetEntities: ['/PoetrySlamService.EntityContainer/PoetrySlams']}
-  action   createTestData() returns Boolean;
+  action   createTestData()                     returns Boolean;
 }
 
 // -------------------------------------------------------------------------------
@@ -325,6 +326,26 @@ extend service PoetrySlamService with {
 // Extend service PoetrySlamService by S/4 projects
 
 using {S4HC_API_ENTERPRISE_PROJECT_SRV_0002 as RemoteS4HCProject} from '../external/S4HC_API_ENTERPRISE_PROJECT_SRV_0002';
+
+type s4HCProjectDataElements {
+  ProjectElement            : String(24);
+  ProjectElementDescription : String(60);
+  PlannedStartDate          : String(40);
+  PlannedEndDate            : String(40);
+};
+
+type s4HCProjectData {
+  Project                     : PoetrySlamService.S4HCProjects:project;
+  ProjectDescription          : PoetrySlamService.S4HCProjects:projectDescription;
+  ProjectStartDate            : String(40);
+  ProjectEndDate              : String(40);
+  EntProjectIsConfidential    : Boolean;
+  ResponsibleCostCenter       : PoetrySlamService.S4HCProjects:responsibleCostCenter;
+  ProfitCenter                : String(10);
+  ProjectProfileCode          : PoetrySlamService.S4HCProjects:projectProfileCode;
+  ProjectCurrency             : String(5);
+  to_EnterpriseProjectElement : array of s4HCProjectDataElements
+};
 
 extend service PoetrySlamService with {
   entity S4HCProjects          as
@@ -369,3 +390,10 @@ extend service PoetrySlamService with {
           DocCurrency  as docCurrency
     }
 };
+
+// -------------------------------------------------------------------------------
+// Extend service PoetrySlamService with extension points for business logic extensibility:
+// Function to extend the project data
+extend service PoetrySlamService with {
+  function extendProjectData(Project: s4HCProjectData) returns s4HCProjectData;
+}

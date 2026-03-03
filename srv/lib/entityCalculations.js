@@ -148,7 +148,7 @@ function subtractDaysFormatRFC3339(date, days = 0) {
 }
 
 // Create a project in a ERP system
-async function createProject(req, srv, ConnectorClass, errorText) {
+async function createProject(req, srv, ConnectorClass, successText, errorText) {
   const connector = await ConnectorClass.createConnectorInstance(req);
 
   if (!connector.isConnected()) {
@@ -218,6 +218,8 @@ async function createProject(req, srv, ConnectorClass, errorText) {
         projectSystem: ConnectorClass.ERP_SYSTEM
       })
       .where({ ID: poetrySlamID });
+
+    req.info(httpCodes.ok, successText, [remoteProject.projectID]);
   } catch (error) {
     // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
     console.error(`ACTION_CREATE_PROJECT_FAILED; ${error}`);
@@ -228,7 +230,12 @@ async function createProject(req, srv, ConnectorClass, errorText) {
 }
 
 // Create a purchase order in a ERP system
-async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
+async function createPurchaseOrder(
+  req,
+  ConnectorClass,
+  successText,
+  errorText
+) {
   const connector = await ConnectorClass.createConnectorInstance(req);
 
   if (!connector.isConnected()) {
@@ -304,6 +311,8 @@ async function createPurchaseOrder(req, srv, ConnectorClass, errorText) {
         purchaseOrderSystem: ConnectorClass.ERP_SYSTEM
       })
       .where({ ID: poetrySlamID });
+
+    req.info(httpCodes.ok, successText, [remotePurchaseOrder.purchaseOrderID]);
   } catch (error) {
     // App reacts error tolerant in case of calling the remote service, mostly if the remote service is not available of if the destination is missing
     console.info(`ACTION_CREATE_PURCHASE_ORDER_FAILED; ${error}`);

@@ -4,215 +4,212 @@
 const { httpCodes } = require('./codes');
 
 class GenAI {
-  chatClient;
   static AI_PROMPT_INTRO =
     'You work in the marketing department of a company that organizes Poetry Slams. For these events, propose a title and description to attract a large audience. ' +
     "Your task is to convince people to attend as spectators. For each Poetry Slam, you're given tags that should be incorporated into the title and description. " +
     'The title should be short and eye-catching, and the description should be maximum six lines long. ' +
     'The title and the description may have line breaks but not written as control characters, like \\n. ';
-  static AI_PROMPT_RHYME = 'The description should be written in rhymes.';
+  static AI_PROMPT_RHYME = 'The description should be written in rhymes: ';
   static AI_PROMPT_LANGUAGE =
     'The title and the description should be in language: ';
+  static MODEL_NAME = 'gpt-4.1-mini';
 
-  // Defines the large language model that is used
-  static MODEL_NAME = 'gpt-4o';
-  static AI_RESOURCE_GROUP = 'default';
+  orchestration; // The @sap-ai-sdk/orchestration module
+  orchestrationConfigsApi; // The API for managing orchestration configurations of the @sap-ai-sdk/prompt-registry module
+  orchestrationConfig; // Stores the orchestration configuration
 
-  async initializeModels() {
-    const { AzureOpenAiChatClient } = await import(
-      '@sap-ai-sdk/foundation-models'
-    );
-
-    // For a chat client
-    this.chatClient = new AzureOpenAiChatClient({ modelName: 'gpt-4o' });
+  // Always call the init function to create an instance of the GenAI class, since the constructor needs to be async to load the orchestration module
+  constructor(orchestration, orchestrationConfigsApi, orchestrationConfig) {
+    this.orchestration = orchestration;
+    this.orchestrationConfigsApi = orchestrationConfigsApi;
+    this.orchestrationConfig = orchestrationConfig;
   }
 
-  // Creates a configuration for a SAP AI Core service deployment
-  async createConfiguration(req) {
-    const { ConfigurationApi } = await import('@sap-ai-sdk/ai-api');
-    const configurationBaseData = {
-      name: GenAI.MODEL_NAME,
-      executableId: 'azure-openai',
-      scenarioId: 'foundation-models',
-      parameterBindings: [
-        {
-          key: 'modelName',
-          value: GenAI.MODEL_NAME
-        },
-        {
-          key: 'modelVersion',
-          value: 'latest'
+  static async init() {
+    const orchestration = await import('@sap-ai-sdk/orchestration');
+    const orchestrationConfigsApi = (
+      await import('@sap-ai-sdk/prompt-registry')
+    ).OrchestrationConfigsApi;
+
+    const orchestrationConfig = {
+      scenario: 'poetry-slam-creation',
+      name: 'PoetrySlamCreationConfig',
+      version: '1.0.0',
+      spec: {
+        modules: {
+          prompt_templating: {
+            model: {
+              name: GenAI.MODEL_NAME,
+              params: {
+                temperature: 0.5,
+                max_tokens: 300
+              }
+            },
+            prompt: {
+              template: [
+                {
+                  role: 'user',
+                  content: [
+                    {
+                      type: 'text',
+                      text:
+                        `Tags: {{?tags}}.` +
+                        `\n${GenAI.AI_PROMPT_RHYME} {{?rhyme}}.` +
+                        `\n${GenAI.AI_PROMPT_LANGUAGE} {{?language}}.`
+                    }
+                  ]
+                },
+                {
+                  role: 'system',
+                  content: [
+                    {
+                      type: 'text',
+                      text: `${GenAI.AI_PROMPT_INTRO}`
+                    }
+                  ]
+                }
+              ],
+              response_format: {
+                type: 'json_schema',
+                json_schema: {
+                  name: 'PRA',
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      title: { type: 'string' },
+                      description: { type: 'string' }
+                    },
+                    required: ['title', 'description'],
+                    additionalProperties: false
+                  }
+                }
+              }
+            }
+          },
+          filtering: {
+            input: {
+              filters: [
+                orchestration.buildAzureContentSafetyFilter('input', {
+                  hate: 'ALLOW_SAFE',
+                  self_harm: 'ALLOW_SAFE',
+                  sexual: 'ALLOW_SAFE',
+                  violence: 'ALLOW_SAFE',
+                  prompt_shield: true
+                })
+              ]
+            },
+            output: {
+              filters: [
+                orchestration.buildAzureContentSafetyFilter('output', {
+                  hate: 'ALLOW_SAFE',
+                  self_harm: 'ALLOW_SAFE',
+                  sexual: 'ALLOW_SAFE',
+                  violence: 'ALLOW_SAFE',
+                  protected_material_code: true
+                })
+              ]
+            }
+          },
+          masking: {
+            providers: [
+              orchestration.buildDpiMaskingProvider({
+                method: 'anonymization',
+                entities: [
+                  {
+                    type: 'profile-email',
+                    replacement_strategy: {
+                      method: 'fabricated_data'
+                    }
+                  },
+                  {
+                    type: 'profile-person',
+                    replacement_strategy: {
+                      method: 'constant',
+                      value: 'REDACTED_PERSON'
+                    }
+                  }
+                ]
+              })
+            ]
+          }
         }
-      ],
-      inputArtifactBindings: []
-    };
-
-    try {
-      const configurationCreationResponse =
-        await ConfigurationApi.configurationCreate(configurationBaseData, {
-          'AI-Resource-Group': GenAI.AI_RESOURCE_GROUP
-        }).execute();
-      return configurationCreationResponse;
-    } catch (errorData) {
-      console.error(
-        'CREATE_WITH_AI: Configuration creation not possible: ',
-        errorData.message
-      );
-      req.error(
-        httpCodes.internal_server_error,
-        `Configuration creation failed: ${errorData.message}`
-      );
-    }
-  }
-
-  // Creates a deployment of the SAP AI Core service
-  async createDeployment(configId, req) {
-    if (!configId) {
-      console.error(
-        'CREATE_WITH_AI: Deployment creation failed: Configuration ID missing'
-      );
-      req.error(
-        httpCodes.internal_server_error,
-        `Deployment creation failed: Configuration ID missing`
-      );
-    }
-    const { DeploymentApi } = await import('@sap-ai-sdk/ai-api');
-    const deploymentCreationRequest = {
-      configurationId: configId
-    };
-
-    try {
-      const deploymentCreationResponse = await DeploymentApi.deploymentCreate(
-        deploymentCreationRequest,
-        { 'AI-Resource-Group': GenAI.AI_RESOURCE_GROUP }
-      ).execute();
-      return deploymentCreationResponse;
-    } catch (errorData) {
-      console.error(
-        'CREATE_WITH_AI: Deployment creation not possible: ',
-        errorData.message
-      );
-      req.error(
-        httpCodes.internal_server_error,
-        `Deployment creation failed: ${errorData.message}`
-      );
-    }
-  }
-
-  // Reads the SAP AI Core service deployments
-  async getDeployments(req) {
-    const { DeploymentApi } = await import('@sap-ai-sdk/ai-api');
-    try {
-      const response = await DeploymentApi.deploymentQuery(
-        { executableIds: ['azure-openai'], scenarioId: 'foundation-models' },
-        { 'AI-Resource-Group': GenAI.AI_RESOURCE_GROUP }
-      ).execute();
-      return JSON.stringify(response.resources);
-    } catch (errorData) {
-      console.error(
-        'CREATE_WITH_AI: Deployments cannot be read: ',
-        errorData.message
-      );
-      req.error(
-        httpCodes.internal_server_error,
-        `Deployments cannot be read: ${errorData.message}`
-      );
-    }
-  }
-
-  // Check if the deployment does already exist if not create one
-  async checkAndCreateDeployment(req) {
-    try {
-      const deployment = JSON.parse(await this.getDeployments(req));
-
-      if (deployment.length === 0) {
-        const config = await this.createConfiguration(req);
-        await this.createDeployment(config.id, req);
-        req.info(httpCodes.internal_server_error, 'ACTION_AI_SETUP');
-        console.log('CREATE_WITH_AI: Deployment will be created.');
-        return false;
-      } else if (deployment[0].status !== 'RUNNING') {
-        req.info(httpCodes.internal_server_error, 'ACTION_AI_SETUP');
-        console.log('CREATE_WITH_AI: Deployment not yet running.');
-        return false;
       }
-    } catch {
-      return false;
-    }
+    };
 
-    return true;
+    return new GenAI(
+      orchestration,
+      orchestrationConfigsApi,
+      orchestrationConfig
+    );
   }
 
-  // Calls AI LLM
-  async callAI(tags, language, rhyme, req) {
+  // Call an orchestration client with the given orchestrationConfig and parameters and return an object with title and description for the Poetry Slam
+  async callOrchestrationChatCompletion(tags, language, rhyme, req) {
+    if (
+      typeof tags !== 'string' ||
+      typeof language !== 'string' ||
+      typeof rhyme !== 'boolean'
+    ) {
+      console.error('CREATE_WITH_AI: Invalid parameters provided.');
+      req.error(httpCodes.bad_request, 'ACTION_AI_INVALID_PARAMETERS');
+      return null;
+    }
+
     if (!tags?.trim() || !language || tags?.trim().length <= 0) {
       console.error(
         'CREATE_WITH_AI: Mandatory parameters language or tags missing.'
       );
-      req.error(httpCodes.bad_Request, 'ACTION_AI_MISSING_PARAMETERS');
-      return;
+      req.error(httpCodes.bad_request, 'ACTION_AI_MISSING_PARAMETERS');
+      return null;
     }
 
-    const response = await this.chatClient.run(
-      {
-        messages: [
-          {
-            role: 'user',
-            content: `tags: ${tags}`
-          },
-          {
-            role: 'system',
-            content:
-              `${GenAI.AI_PROMPT_INTRO} ${rhyme ? GenAI.AI_PROMPT_RHYME : ''} ` +
-              `${GenAI.AI_PROMPT_LANGUAGE}${language}.`
-          }
-        ],
-        // The response format json_schema sets the output response to a given JSON schema
-        response_format: {
-          type: 'json_schema',
-          json_schema: {
-            name: 'PRA',
-            schema: {
-              type: 'object',
-              properties: {
-                title: { type: 'string' },
-                description: { type: 'string' }
-              },
-              required: ['title', 'description'],
-              additionalProperties: false
-            }
-          }
-        },
-        // The temperature defines how deterministic AI is (lower value more deterministic, higher value more creative).
-        temperature: 0.5,
-        max_tokens: 300
-      },
-      {
-        params: {
-          // Use the newer API version to support the JSON schema in the response format
-          'api-version': '2024-10-21'
-        }
-      }
+    const orchestrationClient = await this.getOrchestrationClient(
+      this.orchestrationConfig.scenario,
+      this.orchestrationConfig.name,
+      this.orchestrationConfig.version
     );
 
+    let response;
+    try {
+      response = await orchestrationClient.chatCompletion({
+        placeholderValues: {
+          tags: tags,
+          language: language,
+          rhyme: rhyme.toString()
+        }
+      });
+    } catch (error) {
+      const errorData = error?.cause?.response?.data?.error;
+
+      // Specific error handling for content safety input filter violations
+      if (errorData?.location === 'Filtering Module - Input Filter') {
+        console.error(
+          `CREATE_WITH_AI: Orchestration client returned an error: ${errorData.message}`
+        );
+        req.error(httpCodes.bad_request, 'ACTION_AI_FILTER_VIOLATION');
+
+        return null;
+      }
+
+      // Generic error handling for orchestration client errors
+      console.error(
+        `CREATE_WITH_AI: Error while calling the orchestration client: ${error.message}`
+      );
+      req.error(
+        httpCodes.internal_server_error,
+        'ACTION_AI_ORCHESTRATION_ERROR'
+      );
+      return null;
+    }
+
     const tokenUsage = response.getTokenUsage();
+    const responseObject = JSON.parse(response.getContent());
 
     console.info(
       `createWithAI: Total tokens consumed by the request: ${tokenUsage.total_tokens}\n` +
         `Input prompt tokens consumed: ${tokenUsage.prompt_tokens}\n` +
         `Output text completion tokens consumed: ${tokenUsage.completion_tokens}\n`
     );
-
-    let responseObject;
-    try {
-      responseObject = JSON.parse(response.getContent());
-    } catch (error) {
-      req.error(httpCodes.internal_server_error, 'ACTION_AI_NO_ACCESS');
-      console.error(
-        `CREATE_WITH_AI: AI response has not the correct JSON format: ${error}`
-      );
-      return { title: '', description: '' };
-    }
 
     if (
       !Object.prototype.hasOwnProperty.call(responseObject, 'title') ||
@@ -228,8 +225,40 @@ class GenAI {
     return responseObject;
   }
 
+  // Returns an orchestration client based on the orchestrationConfig
+  // If no orchestration configuration is found, it creates a new one based on the orchestrationConfig
+  async getOrchestrationClient(scenario, name, version) {
+    const orchestrationConfigList = await this.orchestrationConfigsApi
+      .listOrchestrationConfigs({
+        scenario: scenario,
+        name: name,
+        version: version
+      })
+      .execute();
+
+    let orchestrationConfigId;
+    if (orchestrationConfigList.count >= 1) {
+      if (orchestrationConfigList.count > 1) {
+        console.warn(
+          `CREATE_WITH_AI: More than one orchestration configuration found. Using the first one.`
+        );
+      }
+      orchestrationConfigId = orchestrationConfigList.resources[0].id;
+    } else {
+      orchestrationConfigId = (
+        await this.orchestrationConfigsApi
+          .createUpdateOrchestrationConfig(this.orchestrationConfig)
+          .execute()
+      ).id;
+    }
+
+    return new this.orchestration.OrchestrationClient({
+      id: orchestrationConfigId
+    });
+  }
+
   // Creates a poetry slam with AI data and shows it as draft
-  static async createPoetrySlamWithAI(aiResult, req, srv, db) {
+  static async createPoetrySlamWithAI(data, req, srv, db) {
     const { DraftAdministrativeData } = srv.entities;
     const { PoetrySlams } = srv.entities;
 
@@ -258,8 +287,8 @@ class GenAI {
     await db.run(
       INSERT.into(PoetrySlams.drafts.name).entries({
         ID: ID,
-        title: aiResult.title,
-        description: aiResult.description,
+        title: data.title,
+        description: data.description,
         maxVisitorsNumber: 100,
         visitorsFeeAmount: 42,
         dateTime: proposedEventDate,

@@ -6,7 +6,7 @@ const escape = require('xml-escape');
 const { XMLBuilder } = require('fast-xml-parser');
 const { Readable } = require('stream');
 
-const { httpCodes } = require('./codes');
+const { httpCodes, mimeTypes } = require('./codes');
 
 const Logo = require('./logo');
 
@@ -143,7 +143,7 @@ class Forms {
 
       const { fileContent } = await ADSRenderRequestApi.renderingPdfPost(form)
         .addCustomHeaders({ Authorization: `Bearer ${access_token}` })
-        .addCustomHeaders({ 'Content-Type': 'application/json' })
+        .addCustomHeaders({ 'Content-Type': mimeTypes.application_json })
         .execute({ url: credentials.uri });
 
       return fileContent;
@@ -201,16 +201,21 @@ class Forms {
       console.error('Util Forms: missing file content');
       throw new Error('Util Forms: missing file content');
     }
-    const readable = new Readable();
-    readable.push(Buffer.from(fileContent, 'base64'));
-    // Signal the end of the stream
-    readable.push(null);
+
+    // Create a new readable stream and implement the _read method
+    const readable = new Readable({
+      read() {
+        this.push(Buffer.from(fileContent, 'base64'));
+        // Signal the end of the stream
+        this.push(null);
+      }
+    });
 
     const fileName = (await this.getFileName()) + '.pdf';
     // Return the readable stream along with metadata for content type and file name
     return {
       value: readable,
-      $mediaContentType: 'application/pdf',
+      $mediaContentType: mimeTypes.application_pdf,
       $mediaContentDispositionFilename: fileName
     };
   }

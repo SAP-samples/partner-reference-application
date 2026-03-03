@@ -8,6 +8,7 @@ using {
   cuid
 } from '@sap/cds/common';
 using from '@sap/cds-common-content';
+using {Attachments} from '@cap-js/sdm';
 
 //Poetry Slams table
 //Enforces uniqueness checks on all CREATE and UPDATE operations for the specified fields
@@ -18,7 +19,7 @@ entity PoetrySlams : cuid, managed {
   description         : String(1000);
   dateTime            : DateTime;
   maxVisitorsNumber   : Integer;
-  freeVisitorSeats    : Integer;
+  freeVisitorSeats    : Integer default 0;
   visitorsFeeAmount   : Decimal(6, 2);
   visitorsFeeCurrency : Association to one sap.common.Currencies;
   status              : Association to one PoetrySlamStatusCodes @assert.integrity;
@@ -27,14 +28,15 @@ entity PoetrySlams : cuid, managed {
 }
 
 extend PoetrySlams with {
-  projectID             : String;
-  projectObjectID       : String;
-  projectSystem         : String;
-  purchaseOrderID       : String;
-  purchaseOrderObjectID : String;
-  purchaseOrderSystem   : String;
-  salesOrderID          : String;
+  projectID             : String(24);
+  projectObjectID       : String(70);
+  projectSystem         : String(4);
+  purchaseOrderID       : String(70);
+  purchaseOrderObjectID : String(70);
+  purchaseOrderSystem   : String(4);
+  salesOrderID          : String(70);
   jobStatusText         : String(255) default 'Job not triggered yet';
+  attachments           : Composition of many Attachments;
 }
 
 //Enforces uniqueness checks on all CREATE and UPDATE operations for the specified fields
@@ -54,9 +56,9 @@ entity Visits : cuid, managed {
 
 //Visitors table
 entity Visitors : cuid, managed {
-  name   : String;
+  name   : String(255);
   // Regex annotation to validate the input of the email
-  email  : String @assert.format: '^[\w\-\.]+@([\w-]+\.)+[\w-]{2,4}$';
+  email  : String(255) @assert.format: '^[\w\-\.]+@([\w-]+\.)+[\w-]{2,4}$';
   visits : Association to many Visits
              on visits.visitor = $self;
 }
@@ -96,6 +98,18 @@ annotate PoetrySlams with @fiori.draft.enabled {
   purchaseOrderSystem    @title: '{i18n>purchaseOrderSystem}'    @readonly;
   salesOrderID           @title: '{i18n>salesOrderID}';
   jobStatusText          @title: '{i18n>jobStatusText}'          @readonly;
+}
+
+annotate PoetrySlams.attachments with {
+  note       @(title: '{i18n>note}');
+  filename   @(title: '{i18n>filename}');
+  content    @(title: '{i18n>attachment}');
+  url        @readonly;
+  modifiedAt @(odata.etag: null);
+  content    @Core.ContentDisposition: {
+    Filename: filename,
+    Type    : 'inline'
+  };
 }
 
 annotate Visits with {

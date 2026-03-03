@@ -371,7 +371,9 @@ module.exports = async (srv) => {
       .set(updateValues)
       .where({ ID: poetrySlamID });
 
-    if (result !== 1) {
+    if (result === 1) {
+      req.info(httpCodes.ok, 'ACTION_CLEAR_PROJECT_DATA_SUCCESS');
+    } else {
       console.error('PoetrySlam could not be updated.');
       req.error(
         httpCodes.internal_server_error,
@@ -409,7 +411,9 @@ module.exports = async (srv) => {
       .set(updateValues)
       .where({ ID: poetrySlamID });
 
-    if (result !== 1) {
+    if (result === 1) {
+      req.info(httpCodes.ok, 'ACTION_CLEAR_PURCHASE_ORDER_DATA_SUCCESS');
+    } else {
       console.error('PoetrySlam could not be updated.');
       req.error(
         httpCodes.internal_server_error,
@@ -430,6 +434,7 @@ module.exports = async (srv) => {
       req,
       srv,
       ConnectorByD,
+      'ACTION_ASSIGN_PROJECT_SUCCESS',
       'ACTION_CREATE_PROJECT_NO_SAP_BUSINESS_BY_DESIGN_SYSTEM'
     );
   });
@@ -445,6 +450,7 @@ module.exports = async (srv) => {
       req,
       srv,
       ConnectorS4HC,
+      'ACTION_ASSIGN_PROJECT_SUCCESS',
       'ACTION_CREATE_PROJECT_NO_S4_HANA_CLOUD_SYSTEM'
     );
   });
@@ -458,31 +464,25 @@ module.exports = async (srv) => {
   srv.on('createB1PurchaseOrder', async (req) => {
     await createPurchaseOrder(
       req,
-      srv,
       ConnectorB1,
+      'ACTION_ASSIGN_PURCHASE_ORDER_SUCCESS',
       'ACTION_CREATE_PURCHASE_ORDER_NO_B1_SYSTEM'
     );
   });
 
-  // Entity action: Create a poetry slam with generative artifical intelligence
+  // Entity action: Create a poetry slam with generative artificial intelligence
   srv.on('createWithAI', async (req) => {
-    // GenAI constructor is synchronous
-    // It returns a promise as soon as it is resolved the instance can be used
-    const genAI = new GenAI();
+    const genAI = await GenAI.init();
 
-    await genAI.initializeModels();
-
-    // Check if the deployment does already exist if not create one
-    if (!(await genAI.checkAndCreateDeployment(req))) {
-      return;
-    }
-
-    const response = await genAI.callAI(
+    const response = await genAI.callOrchestrationChatCompletion(
       req.data.tags,
       req.data.language,
       req.data.rhyme,
       req
     );
+
+    // In case the orchestration call could not be started, no draft will be created
+    if (!response) return null;
 
     const poetrySlamDraft = await GenAI.createPoetrySlamWithAI(
       response,

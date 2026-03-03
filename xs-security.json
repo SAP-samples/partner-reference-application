@@ -2,15 +2,15 @@
   "scopes": [
     {
       "name": "$XSAPPNAME.PoetrySlamFull",
-      "description": "Full Read/Write Access to PoetrySlams"
+      "description": "Full Read/Write Access to Poetry Slams"
     },
     {
       "name": "$XSAPPNAME.PoetrySlamRestricted",
-      "description": "Restricted Read/Write Access to PoetrySlams"
+      "description": "Restricted Read/Write Access to Poetry Slams"
     },
     {
       "name": "$XSAPPNAME.PoetrySlamReadonly",
-      "description": "Read-only Access to PoetrySlams"
+      "description": "Read-only Access to Poetry Slams"
     },
     {
       "name": "$XSAPPNAME.mtcallback",
@@ -35,7 +35,7 @@
   "role-templates": [
     {
       "name": "PoetrySlamManagerRole",
-      "description": "Full Access to PoetrySlams",
+      "description": "Full Access to Poetry Slams",
       "scope-references": [
         "$XSAPPNAME.PoetrySlamFull",
         "$XSAPPNAME.JobScheduler"
@@ -44,7 +44,7 @@
     },
     {
       "name": "PoetrySlamVisitorRole",
-      "description": "Restricted Access to PoetrySlams for Visitors",
+      "description": "Restricted Access to Poetry Slams for Visitors",
       "scope-references": ["$XSAPPNAME.PoetrySlamRestricted"],
       "attribute-references": []
     },
@@ -62,8 +62,18 @@
       "role-template-references": [
         "$XSAPPNAME.PoetrySlamExtensionDeveloperRole"
       ]
+    },
+    {
+      "name": "PoetrySlamDocumentManagementRoleCollection",
+      "description": "Manage attachments of Poetry Slams",
+      "role-template-references": [
+        "$XSSERVICENAME(poetry-slams-sdm-integration).SDM_User"
+      ]
     }
   ],
+  "oauth2-configuration": {
+    "credential-types": ["binding-secret"]
+  },
   "authorities": ["$XSAPPNAME.cds.ExtensionDeveloper"],
   "authorities-inheritance": false
 }

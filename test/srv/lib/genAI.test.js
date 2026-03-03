@@ -1,276 +1,319 @@
-'strict';
-
-const sinon = require('sinon');
+'use strict';
 
 const cds = require('@sap/cds');
+const sinon = require('sinon');
 const { expect } = cds.test(__dirname + '/../../..');
-
-// Code to test
 const GenAI = require('../../../srv/lib/genAI');
 
-describe('Util GenAI', () => {
+describe('GenAI', () => {
   let genAIInstance;
-
-  const genAITokens = {
-    completion_tokens: 72,
-    prompt_tokens: 165,
-    total_tokens: 237
-  };
+  let req;
 
   beforeEach(async () => {
-    genAIInstance = new GenAI();
+    genAIInstance = await GenAI.init();
+    req = {
+      error: sinon.stub(),
+      info: sinon.stub()
+    };
   });
 
-  describe('GenAI', () => {
-    let stubConsoleError;
-    let stubConsoleInfo;
-    let reqStub;
-    let req;
+  describe('callOrchestrationChatCompletion', () => {
+    it('should return error for invalid parameters', async () => {
+      await genAIInstance.callOrchestrationChatCompletion(123, 'de', true, req);
+      expect(req.error.calledOnce).to.be.true;
 
-    beforeEach(() => {
-      stubConsoleError = sinon.stub(console, 'error');
-      stubConsoleInfo = sinon.stub(console, 'info');
-      req = {
-        error: function () {
-          return;
-        }
+      await genAIInstance.callOrchestrationChatCompletion('tags', 1, true, req);
+      expect(req.error.calledTwice).to.be.true;
+
+      await genAIInstance.callOrchestrationChatCompletion(
+        'tags',
+        'de',
+        'true',
+        req
+      );
+      expect(req.error.calledThrice).to.be.true;
+    });
+
+    it('should return error for missing tags or language', async () => {
+      let response = await genAIInstance.callOrchestrationChatCompletion(
+        '',
+        'de',
+        true,
+        req
+      );
+      expect(req.error.calledOnce).to.be.true;
+      expect(response).to.be.null;
+
+      response = await genAIInstance.callOrchestrationChatCompletion(
+        ' ',
+        'de',
+        true,
+        req
+      );
+      expect(req.error.calledTwice).to.be.true;
+      expect(response).to.be.null;
+
+      response = await genAIInstance.callOrchestrationChatCompletion(
+        'tags',
+        '',
+        true,
+        req
+      );
+      expect(req.error.calledThrice).to.be.true;
+      expect(response).to.be.null;
+    });
+
+    it('should call orchestrationClient and return responseObject', async () => {
+      const orchestrationClientMock = {
+        chatCompletion: sinon.stub().resolves({
+          getTokenUsage: () => ({
+            total_tokens: 10,
+            prompt_tokens: 5,
+            completion_tokens: 5
+          }),
+          getContent: () =>
+            JSON.stringify({ title: 'Titel', description: 'Description' })
+        })
       };
 
-      reqStub = sinon.stub(req, 'error');
+      sinon
+        .stub(genAIInstance, 'getOrchestrationClient')
+        .resolves(orchestrationClientMock);
+
+      const result = await genAIInstance.callOrchestrationChatCompletion(
+        'tags',
+        'EN',
+        true,
+        req
+      );
+      expect(result).to.deep.equal({
+        title: 'Titel',
+        description: 'Description'
+      });
+
+      genAIInstance.getOrchestrationClient.restore();
+    });
+
+    it('should handle invalid AI response format', async () => {
+      const orchestrationClientMock = {
+        chatCompletion: sinon.stub().resolves({
+          getTokenUsage: () => ({}),
+          getContent: () => JSON.stringify({ wrong: 'data' })
+        })
+      };
+      sinon
+        .stub(genAIInstance, 'getOrchestrationClient')
+        .resolves(orchestrationClientMock);
+      const result = await genAIInstance.callOrchestrationChatCompletion(
+        'tags',
+        'de',
+        true,
+        req
+      );
+      expect(req.error.calledOnce).to.be.true;
+      expect(result).to.deep.equal({ title: '', description: '' });
+      genAIInstance.getOrchestrationClient.restore();
+    });
+
+    it('should handle generic orchestration client errors', async () => {
+      const orchestrationClientMock = {
+        chatCompletion: sinon.stub().rejects(new Error('Orchestration error'))
+      };
+      sinon
+        .stub(genAIInstance, 'getOrchestrationClient')
+        .resolves(orchestrationClientMock);
+      const result = await genAIInstance.callOrchestrationChatCompletion(
+        'tags',
+        'en',
+        true,
+        req
+      );
+      expect(req.error.calledOnce).to.be.true;
+      expect(req.error.args[0][0]).to.be.equal(500);
+      expect(req.error.args[0][1]).to.be.equal('ACTION_AI_ORCHESTRATION_ERROR');
+      expect(result).to.be.null;
+      genAIInstance.getOrchestrationClient.restore();
+    });
+
+    it('should handle AI response with safety filter violation', async () => {
+      const orchestrationClientMock = {
+        chatCompletion: sinon.stub().rejects(
+          new Error('400 - Input Filter Violation', {
+            cause: {
+              response: {
+                data: {
+                  error: {
+                    code: '400',
+                    location: 'Filtering Module - Input Filter',
+                    message: 'Input Filter Violation'
+                  }
+                }
+              }
+            }
+          })
+        )
+      };
+      sinon
+        .stub(genAIInstance, 'getOrchestrationClient')
+        .resolves(orchestrationClientMock);
+      const result = await genAIInstance.callOrchestrationChatCompletion(
+        'tags',
+        'en',
+        true,
+        req
+      );
+      expect(req.error.calledOnce).to.be.true;
+      expect(req.error.args[0][0]).to.be.equal(400);
+      expect(req.error.args[0][1]).to.be.equal('ACTION_AI_FILTER_VIOLATION');
+      expect(result).to.be.null;
+      genAIInstance.getOrchestrationClient.restore();
+    });
+  });
+
+  describe('getOrchestrationClient', () => {
+    let listOrchestrationConfigsStub, createUpdateOrchestrationConfigStub;
+
+    beforeEach(() => {
+      listOrchestrationConfigsStub = sinon.stub(
+        genAIInstance.orchestrationConfigsApi,
+        'listOrchestrationConfigs'
+      );
+      createUpdateOrchestrationConfigStub = sinon.stub(
+        genAIInstance.orchestrationConfigsApi,
+        'createUpdateOrchestrationConfig'
+      );
     });
 
     afterEach(() => {
-      if (stubConsoleError) {
-        stubConsoleError.restore();
-        stubConsoleError = undefined;
-      }
-
-      if (stubConsoleInfo) {
-        stubConsoleInfo.restore();
-        stubConsoleInfo = undefined;
-      }
-
-      if (reqStub) {
-        reqStub.restore();
-        reqStub = undefined;
-      }
+      listOrchestrationConfigsStub.restore();
+      createUpdateOrchestrationConfigStub.restore();
     });
 
-    it('should initialize the chat client and set the model GPT 4o in constructor', async () => {
-      await genAIInstance.initializeModels();
-      expect(genAIInstance.chatClient).exist;
-      expect(genAIInstance.chatClient.modelDeployment.modelName).eql('gpt-4o');
-    });
+    it('should use first config if multiple exist', async () => {
+      listOrchestrationConfigsStub.returns({
+        execute: sinon
+          .stub()
+          .resolves({ count: 2, resources: [{ id: 'id1' }, { id: 'id2' }] })
+      });
 
-    it('should test response of callAI function', async () => {
-      let paramToTest;
-
-      const expectedConsoleLog =
-        'createWithAI: Total tokens consumed by the request: 237\n' +
-        'Input prompt tokens consumed: 165\n' +
-        'Output text completion tokens consumed: 72';
-
-      // Mocking of chat client to test chat response
-      genAIInstance.chatClient = {
-        run: async function (param) {
-          paramToTest = param;
-          return {
-            getContent: function () {
-              return '{"title":"tilte test", "description": "description test"}';
-            },
-            getTokenUsage: function () {
-              return genAITokens;
-            }
-          };
-        }
-      };
-
-      let respone = await genAIInstance.callAI(
-        'tagsTest',
-        'languageTest',
-        true,
-        req
+      const client = await genAIInstance.getOrchestrationClient(
+        'scenario',
+        'name',
+        '1.0.0'
       );
-      expect(respone.title).eql('tilte test');
-      expect(respone.description).eql('description test');
-      expect(paramToTest.messages.length).eql(2);
-      expect(paramToTest.messages[0].role).eql('user');
-      expect(paramToTest.messages[0].content).eql('tags: tagsTest');
-      sinon.assert.calledOnceWithMatch(stubConsoleInfo, expectedConsoleLog);
+      expect(client.config.id).to.equal('id1');
 
-      expect(paramToTest.messages[1].role).eql('system');
-      expect(paramToTest.messages[1].content.startsWith('You work')).to.be.true;
-      expect(paramToTest.messages[1].content).contains('rhyme');
-      expect(paramToTest.messages[1].content).contains('languageTest');
-
-      await genAIInstance.callAI('tagsTest', 'languageTest', false);
-      expect(paramToTest.messages[1].content.startsWith('You work')).to.be.true;
-      expect(paramToTest.messages[1].content).does.not.contain('rhyme');
-      expect(paramToTest.messages[1].content).contains('languageTest');
-
-      await genAIInstance.callAI('tagsTest', 'EN', false);
-      expect(paramToTest.messages[1].content.startsWith('You work')).to.be.true;
-      expect(paramToTest.messages[1].content).does.not.contain('rhyme');
-      expect(paramToTest.messages[1].content).contains('EN');
+      listOrchestrationConfigsStub.restore();
     });
 
-    it('should throw error when AI result does not have a JSON format', async () => {
-      // Mocking of chat client to test chat response
-      genAIInstance.chatClient = {
-        run: async function () {
-          return {
-            getContent: function () {
-              return 'test';
-            },
-            getTokenUsage: function () {
-              return genAITokens;
-            }
-          };
-        }
-      };
+    it('should create config if none exist', async () => {
+      listOrchestrationConfigsStub.returns({
+        execute: sinon.stub().resolves({ count: 0, resources: [] })
+      });
+      createUpdateOrchestrationConfigStub.returns({
+        execute: sinon.stub().resolves({ id: 'id3' })
+      });
 
-      let respone = await genAIInstance.callAI(
-        'tagsTest',
-        'languageTest',
-        true,
-        req
+      const client = await genAIInstance.getOrchestrationClient(
+        'scenario',
+        'name',
+        '1.0.0'
       );
-      expect(respone.title).eql('');
-      expect(respone.description).eql('');
-      sinon.assert.calledOnce(reqStub);
-    });
+      expect(client.config.id).to.be.equal('id3');
 
-    it('should throw error when AI result does not have a correct JSON format (missing title)', async () => {
-      // Mocking of chat client to test chat response
-      genAIInstance.chatClient = {
-        run: async function () {
-          return {
-            getContent: function () {
-              return '{"description": "description test"}';
-            },
-            getTokenUsage: function () {
-              return genAITokens;
-            }
-          };
-        }
-      };
-
-      let respone = await genAIInstance.callAI(
-        'tagsTest',
-        'languageTest',
-        true,
-        req
-      );
-      expect(respone.title).eql('');
-      expect(respone.description).eql('');
-      sinon.assert.calledOnce(reqStub);
-    });
-
-    it('should test mandatory parameters of callAI function', async () => {
-      await genAIInstance.callAI('tagsTest', null, false, req);
-      sinon.assert.calledOnce(reqStub);
-
-      reqStub.resetHistory();
-
-      await genAIInstance.callAI(null, 'languageTest', false, req);
-      sinon.assert.calledOnce(reqStub);
-    });
-
-    it('should fail creating configuration without credentials', async () => {
-      await expect(genAIInstance.createConfiguration()).to.rejectedWith();
-      sinon.assert.calledOnce(stubConsoleError);
-    });
-
-    it('should fail creating deployment without credentials', async () => {
-      await expect(
-        genAIInstance.createDeployment('configIdTest')
-      ).to.rejectedWith();
-      sinon.assert.calledOnce(stubConsoleError);
-    });
-
-    it('should fail creating deployment without configuration ID', async () => {
-      await expect(genAIInstance.createDeployment()).to.rejectedWith();
-      sinon.assert.calledOnce(stubConsoleError);
-    });
-
-    it('should fail reading deployments without configuration ID', async () => {
-      await expect(genAIInstance.getDeployments()).to.rejectedWith();
-      sinon.assert.calledOnce(stubConsoleError);
+      listOrchestrationConfigsStub.restore();
+      createUpdateOrchestrationConfigStub.restore();
     });
   });
 
-  describe('Create Poetry Slam with GenAI', () => {
-    let stubINSERT;
-    let dataPoetrySlam;
+  describe('createPoetrySlamWithAI', () => {
+    const TITEL = 'Titel';
+    const DESCRIPTION = 'Description';
+    const UUID_DRAFT = 'uuid1';
+    const UUID_ENTITY = 'uuid2';
+    const USER = 'user1';
+    let dbStub, insertStub, selectOneStub, uuidStub;
+    const capturedEntries = [];
+    const srvMock = {
+      entities: {
+        DraftAdministrativeData: { name: 'DraftAdministrativeData' },
+        PoetrySlams: { drafts: { name: 'PoetrySlams' } }
+      }
+    };
+    const reqMock = {
+      context: {
+        timestamp: new Date(),
+        user: { id: USER }
+      }
+    };
 
-    beforeEach(() => {
-      dataPoetrySlam = [];
-      stubINSERT = sinon.stub(INSERT, 'into').returns({
-        entries: (poetrySlam) => {
-          dataPoetrySlam.push(poetrySlam);
-          return poetrySlam;
+    before(() => {
+      dbStub = {
+        run: sinon.stub().callsFake((query) => {
+          return Promise.resolve(query);
+        })
+      };
+
+      insertStub = sinon.stub(INSERT, 'into').returns({
+        entries: (data) => {
+          capturedEntries.push(data);
+          return data;
         }
       });
+
+      selectOneStub = sinon.stub(SELECT.one, 'from').returns({
+        where: (data) => {
+          capturedEntries.push(data);
+          return data;
+        }
+      });
+
+      uuidStub = sinon.stub(cds.utils, 'uuid');
+      uuidStub.onFirstCall().returns(UUID_DRAFT);
+      uuidStub.onSecondCall().returns(UUID_ENTITY);
     });
 
-    afterEach(() => {
-      if (stubINSERT) {
-        stubINSERT.restore();
-        stubINSERT = undefined;
-      }
-    });
-
-    it('should create a poetry slam with title and description generated by AI', async () => {
-      const paramAI = {
-        description: 'AI generated Description',
-        title: 'AI generated Title'
-      };
-
-      const paramSrv = {
-        entities: {
-          DraftAdministrativeData: '',
-          PoetrySlams: { drafts: { name: 'Test Name' } }
-        }
-      };
-
-      const paramReq = {
-        context: {
-          timestamp: new Date(),
-          user: {
-            id: 'User ID'
-          }
-        }
-      };
-
-      const paramDB = {
-        run: () => {
-          return [{ DraftUUID: 'Test UUID' }];
-        }
-      };
-
+    it('should create a poetry slam draft', async () => {
+      const data = { title: TITEL, description: DESCRIPTION };
       const result = await GenAI.createPoetrySlamWithAI(
-        paramAI,
-        paramReq,
-        paramSrv,
-        paramDB
+        data,
+        reqMock,
+        srvMock,
+        dbStub
       );
-      expect(result[0].DraftUUID).eql('Test UUID');
-      expect(dataPoetrySlam.length).eql(2);
+      sinon.assert.calledTwice(insertStub);
+      sinon.assert.calledOnce(selectOneStub);
+      sinon.assert.calledTwice(uuidStub);
+      expect(capturedEntries[0]).to.deep.equal([
+        {
+          DraftUUID: UUID_DRAFT,
+          CreationDateTime: reqMock.context.timestamp,
+          CreatedByUser: USER,
+          DraftIsCreatedByMe: true,
+          LastChangeDateTime: reqMock.context.timestamp,
+          LastChangedByUser: USER,
+          InProcessByUser: USER,
+          DraftIsProcessedByMe: true
+        }
+      ]);
+      expect(capturedEntries[1]).to.include({
+        ID: UUID_ENTITY,
+        title: TITEL,
+        description: DESCRIPTION,
+        DraftAdministrativeData_DraftUUID: UUID_DRAFT,
+        HasActiveEntity: false,
+        HasDraftEntity: false
+      });
 
-      expect(dataPoetrySlam[0][0].CreatedByUser).eql('User ID');
-      expect(dataPoetrySlam[0][0].DraftIsCreatedByMe).eql(true);
-      expect(dataPoetrySlam[0][0].DraftIsProcessedByMe).eql(true);
-      expect(dataPoetrySlam[0][0].InProcessByUser).eql('User ID');
-      expect(dataPoetrySlam[0][0].LastChangedByUser).eql('User ID');
+      expect(capturedEntries[1].ID).to.equal(capturedEntries[2].ID);
+      expect(result.ID).to.equal(UUID_ENTITY);
+      expect(result.IsActiveEntity).to.be.false;
+    });
 
-      expect(dataPoetrySlam[1].description).eql('AI generated Description');
-      expect(dataPoetrySlam[1].DraftAdministrativeData_DraftUUID).eql(
-        'Test UUID'
-      );
-      expect(dataPoetrySlam[1].HasActiveEntity).eql(false);
-      expect(dataPoetrySlam[1].HasDraftEntity).eql(false);
-      expect(dataPoetrySlam[1].title).eql('AI generated Title');
-      sinon.assert.calledTwice(stubINSERT);
+    after(() => {
+      insertStub.restore();
+      selectOneStub.restore();
+      uuidStub.restore();
     });
   });
 });

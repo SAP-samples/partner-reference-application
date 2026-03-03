@@ -49,7 +49,6 @@ describe('personal data audit logging in CRUD', () => {
     await POST(`/odata/v4/poetryslamservice/createTestData`);
   });
 
-  // Check when PersonalDataModified is available again in the audit log.
   it('should log audit log messages when a visitor is changed and activated', async function () {
     const id = '79ceab87-300d-4b66-8cc3-182c679b7c01';
 

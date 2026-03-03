@@ -1,4 +1,4 @@
-/* checksum : ebe78cc4adcd33fce129ac1bc86a9828 */
+/* checksum : bce06a1d1b64b74379418381ca30dd7b */
 @cds.external : true
 @Aggregation.ApplySupported.Transformations : [ 'aggregate', 'groupby', 'filter' ]
 @Aggregation.ApplySupported.Rollup : #None
@@ -59,7 +59,7 @@ service S4HC_ENTPROJECTPROFILECODE_0001 {
     @Common.QuickInfo : 'Text for Profile'
     ProjectProfileCodeText : String(40) not null;
     @Common.Composition : true
-    _ProjectProfileCodeText : Composition of many ProjectProfileCodeText {  };
+    _ProjectProfileCodeText : Composition of many ProjectProfileCodeText on _ProjectProfileCodeText._ProjectProfileCode = $self;
   };
 
   @cds.external : true
@@ -84,7 +84,7 @@ service S4HC_ENTPROJECTPROFILECODE_0001 {
     @Common.Label : 'Description'
     @Common.QuickInfo : 'Text for Profile'
     ProjectProfileCodeText : String(40) not null;
-    _ProjectProfileCode : Association to one ProjectProfileCode {  };
+    _ProjectProfileCode : Association to one ProjectProfileCode on _ProjectProfileCode.ProjectProfileCode = ProjectProfileCode;
   };
 };
 
