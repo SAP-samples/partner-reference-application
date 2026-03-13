@@ -41,16 +41,16 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 2. Generate access classes to the SAP Print Service API.
 
-    1. Download the definition of the [SAP Print Service API](https://api.sap.com/api/PRINTAPI/overview) which you can find on the overview page under *API Specification* as *JSON* .
+    1. Download the definition of the [SAP Print Service API](https://api.sap.com/api/PRINTAPI/overview) which you can find on the overview page under *API Specification* as *JSON*.
 
     2. Copy the downloaded openAPI definition file (*PRINTAPI.json*) to the folder *external_resources*.
 
-    3. Add a `prebuild` script to your [*package.json*](../../../tree/main-multi-tenant-features/package.json). This will generate the access classes out of the uploaded definition whenever you run the `npm run build` command. If you need to execute several commands in the *prebuild* step, you can concatenate them with `&&`.
+    3. Add a `prebuild` script to your [*package.json*](../../../blob/main-multi-tenant-features/package.json). This will generate the access classes out of the uploaded definition whenever you run the `npm run build` command. If you need to execute several commands in the *prebuild* step, you can concatenate them with `&&`.
         ```json
         "prebuild": "npm ci && npx openapi-generator --input external_resources/PRINTAPI.json --outputDir srv/external -t --overwrite && npx openapi-generator --input external_resources/FORMSAPI.json --outputDir srv/external -t --overwrite",
         ```
 
-    4. Add the folder for the generated files to [*.gitignore*](../../../tree/main-multi-tenant-features/.gitignore).
+    4. Add the folder for the generated files to [*.gitignore*](../../../blob/main-multi-tenant-features/.gitignore).
         ```
         # generated openapi artefacts
         srv/external/
@@ -109,7 +109,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         };
         ```
 
-    3. Provide an implementation for the action in [*srv/poetryslam/poetrySlamServiceOutputImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceOutputImplementation.js)
+    3. Provide an implementation for the action in [*srv/poetryslam/poetrySlamServiceOutputImplementation.js*](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceOutputImplementation.js)
         ```javascript
         const cds = require('@sap/cds');
         const { getPrintQueues, print } = require('../lib/print');
@@ -129,9 +129,9 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         };
         ```
 
-    4. Copy the implementation of [srv/lib/print.js](../../../tree/main-multi-tenant-features/srv/lib/print.js). This file contains the logic to call the SAP Print Service APIs (read print queues, create documents, create print tasks).
+    4. Copy the implementation of [srv/lib/print.js](../../../blob/main-multi-tenant-features/srv/lib/print.js). This file contains the logic to call the SAP Print Service APIs (read print queues, create documents, create print tasks).
 
-    5. Provide translatable messages for your implementation in [*srv/i18n/messages.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages.properties). Add the corresponding translation to the language-specific file [*srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages_de.properties).
+    5. Provide translatable messages for your implementation in [*srv/i18n/messages.properties*](../../../blob/main-multi-tenant-features/srv/i18n/messages.properties). Add the corresponding translation to the language-specific file [*srv/i18n/messages_de.properties*](../../../blob/main-multi-tenant-features/srv/i18n/messages_de.properties).
         ```
         ACTION_PRINT_NO_ACCESS                                  = Access to print service not possible.
         ACTION_PRINT_NO_QUEUE                                   = No print queue available.
@@ -142,7 +142,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
         ```
 
-    6. Use the implementation in [*srv/poetryslam/poetrySlamServiceImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js)
+    6. Use the implementation in [*srv/poetryslam/poetrySlamServiceImplementation.js*](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js)
         ```js
         const outputHandler = require('./poetrySlamServiceOutputImplementation');
         module.exports = class extends cds.ApplicationService {
@@ -169,7 +169,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
         > Note: The action is only available for saved poetry slams, not for drafts.
 
-    2. Provide the translatable texts for the button label, action parameter and file name in [*srv/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n.properties). Add the corresponding translation to the language-specific file [*srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n_de.properties).
+    2. Provide the translatable texts for the button label, action parameter and file name in [*srv/i18n/i18n.properties*](../../../blob/main-multi-tenant-features/srv/i18n/i18n.properties). Add the corresponding translation to the language-specific file [*srv/i18n/i18n_de.properties*](../../../blob/main-multi-tenant-features/srv/i18n/i18n_de.properties).
         ```
         printGuestList          = Print Guest List
         selectPrintQueue        = Select Print Queue
@@ -180,7 +180,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 1. Add the *Print Service* as a resource to your application.
 
-    1. Add the resource in [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml).
+    1. Add the resource in [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml).
         ```yaml
         modules:
         - name: poetry-slams-srv
@@ -200,7 +200,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
               service-plan: sender
         ```
 
-    2. Register the service in the multi-tenant environment [*mtx/sidecar/package.json*](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json) (see [SaaS Registry Dependencies](https://cap.cloud.sap/docs/guides/multitenancy/#saas-dependencies)):
+    2. Register the service in the multi-tenant environment [*mtx/sidecar/package.json*](../../../blob/main-multi-tenant-features/mtx/sidecar/package.json) (see [SaaS Registry Dependencies](https://cap.cloud.sap/docs/guides/multitenancy/#saas-dependencies)):
         ```yaml
           "cds": {
             ...
@@ -257,7 +257,7 @@ Next, you and/or your customer need to install the *SAP Print Manager for Pull I
 
 It is possible to also add the *Print Service* application directly into the SAP Build Work Zone launchpad. This can be achieved by the following steps.
 
-1. In the Business Application Studio, copy the [*cdm.json*](../../../tree/main-multi-tenant-features/workzone/cdm.json) into the *./workzone* folder. This includes a *businessapp* schema for the *Print Service* application as described in [About the Common Data Model - Business App Schema](https://help.sap.com/docs/build-work-zone-standard-edition/sap-build-work-zone-standard-edition-on-china-shanghai-region/creating-cdm-json-file-for-multi-tenancy-html5-app?locale=en-US). 
+1. In the Business Application Studio, copy the [*cdm.json*](../../../blob/main-multi-tenant-features/workzone/cdm.json) into the *./workzone* folder. This includes a *businessapp* schema for the *Print Service* application as described in [About the Common Data Model - Business App Schema](https://help.sap.com/docs/build-work-zone-standard-edition/sap-build-work-zone-standard-edition-on-china-shanghai-region/creating-cdm-json-file-for-multi-tenancy-html5-app?locale=en-US). 
 
     ```json
     {
@@ -401,7 +401,7 @@ Testing in a hybrid setup, runs the application locally (in SAP Business Applica
 
 #### Unit Tests for Printing
 
-To support automatic testing of the print feature, a sample unit test implementation is provided in [*print.test.js*](../../../tree/main-multi-tenant-features/test/srv/lib/print.test.js). The test uses *stubs* to decouple from the external services.
+To support automatic testing of the print feature, a sample unit test implementation is provided in [*print.test.js*](../../../blob/main-multi-tenant-features/test/srv/lib/print.test.js). The test uses *stubs* to decouple from the external services.
 
 To run the automated SAP Cloud Application Programming Model tests:
 

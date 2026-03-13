@@ -42,7 +42,7 @@ For general guidelines on how to connect your local test against services in the
 
 ### Prerequisites
 When this project was created, the SAP HANA Cloud capability was included. As a result, the dependency @sap/cds_hana is listed in the file *package.json* and the
-file *[.hdiconfig](../../../tree/main-multi-tenant/db/src/.hdiconfig)* has been added to the project.
+file *[.hdiconfig](../../../blob/main-multi-tenant/db/src/.hdiconfig)* has been added to the project.
 
 Now, you need to provide the credentials to connect to the SAP HANA Cloud database.
 

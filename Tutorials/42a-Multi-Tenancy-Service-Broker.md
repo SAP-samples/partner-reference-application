@@ -82,7 +82,7 @@ If you want to have different access authorizations for APIs, such as full acces
 4. Add the service broker framework:
    
    Execute the command `npm install @sap/sbf` in the *broker* folder to download the *@sap/sbf* package and add it to your service broker.
-     > Note: Make sure that you execute the commands above in the [*broker folder*](../../../blob/main-multi-tenant-features/broker). This will add a dependency in your *package.json*. It also creates a *node_modules* folder and a *package-lock.json*.
+     > Note: Make sure that you execute the commands above in the [*broker folder*](../../../tree/main-multi-tenant-features/broker). This will add a dependency in your *package.json*. It also creates a *node_modules* folder and a *package-lock.json*.
 
 5. Add the service broker start script:
     
@@ -95,7 +95,7 @@ If you want to have different access authorizations for APIs, such as full acces
 
 6. Create the service catalog:
    1. Create a file called [*catalog.json*](../../../blob/main-multi-tenant-features/broker/catalog.json) in the *broker* directory and describe the service catalog.
-      > Note: The service catalog describes the services offered by this service broker. It's defined in a JSON format as described in the [SAP BTP Cloud Foundry runtime documentation](https://docs.cloudfoundry.org/services/api.html#catalog-management).
+      > Note: The service catalog describes the services offered by this service broker. It's defined in a JSON format as described in the [SAP BTP Cloud Foundry runtime documentation](https://github.com/cloudfoundry/servicebroker/blob/master/spec.md#catalog-management).
 
       > Note: The Partner Reference Application defines 3 different plans. The plans are used to define different authorization scopes, which is done in the `mta.yaml` further below.
     Here's an example of the `catalog.json`:

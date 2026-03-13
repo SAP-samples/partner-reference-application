@@ -55,7 +55,7 @@ There are different options to configure the Cloud Foundry environment of the de
 
 The [Multi-Target Application Development Descriptor (mta.yaml)](https://help.sap.com/docs/SAP_HANA_PLATFORM/4505d0bdaf4948449b7f7379d24d0f0d/4486ada1af824aadaf56baebc93d0256.html) defines with which configuration the application is deployed:
 
-1. Open the file [mta.yaml](../../../tree/main-multi-tenant/mta.yaml) in the root directory of the project.
+1. Open the file [mta.yaml](../../../blob/main-multi-tenant/mta.yaml) in the root directory of the project.
 2. Navigate to the *modules* section and check the configuration of the applications to be deployed (for example, poetry-slams-srv, poetry-slams-mtx and poetry-slams).
 3. The module-specific *parameters* section can be configured. In case a parameter is not listed, it automatically gets a default value assigned during deployment (refer to the documentation on [parameters](https://help.sap.com/docs/SAP_HANA_PLATFORM/4505d0bdaf4948449b7f7379d24d0f0d/4050fee4c469498ebc31b10f2ae15ff2.html#parameters) on SAP Help Portal):
     

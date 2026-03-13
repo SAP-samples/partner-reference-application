@@ -21,13 +21,13 @@ To protect the application against unauthorized access, add user-based authentic
 
 First define the *Roles* as part of the application definition concept. For the Poetry Slam Manager application, two roles are defined: *PoetrySlamManager* and *PoetrySlamVisitor*.
 
-The authorization is always defined on service level; in this application on the level of the */srv/poetryslam/poetrySlamService.cds*. For better readability, separate the authorization definitions from the service definitions by creating a new file */srv/poetryslam/poetrySlamServiceAuthorizations.cds* that contains all authorization-relevant model parts. Copy the content from the example implementation [srv/poetryslam/poetrySlamServiceAuthorizations.cds](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamServiceAuthorizations.cds). Enhance the file [*/srv/services.cds*](../../../tree/main-multi-tenant/srv/services.cds) with the reference to the Poetry Slam Service Authorizations:
+The authorization is always defined on service level; in this application on the level of the */srv/poetryslam/poetrySlamService.cds*. For better readability, separate the authorization definitions from the service definitions by creating a new file */srv/poetryslam/poetrySlamServiceAuthorizations.cds* that contains all authorization-relevant model parts. Copy the content from the example implementation [srv/poetryslam/poetrySlamServiceAuthorizations.cds](../../../blob/main-multi-tenant/srv/poetryslam/poetrySlamServiceAuthorizations.cds). Enhance the file [*/srv/services.cds*](../../../blob/main-multi-tenant/srv/services.cds) with the reference to the Poetry Slam Service Authorizations:
 
 ```cds
 using from './poetryslam/poetrySlamServiceAuthorizations';
 ```
 
-The wizard created all runtime-relevant security settings of our application. It generated the [*xs-security.json*](../../../tree/main-multi-tenant/xs-security.json). Open the generated file and replace it. It defines two roles. 
+The wizard created all runtime-relevant security settings of our application. It generated the [*xs-security.json*](../../../blob/main-multi-tenant/xs-security.json). Open the generated file and replace it. It defines two roles. 
 
 ```json
 {
@@ -66,7 +66,7 @@ The wizard created all runtime-relevant security settings of our application. It
 }
 ```
 
-Additionally, replace the CDS section in the [*package.json*](../../../tree/main-multi-tenant/package.json). It tells the CDS framework that you use the cloud security services integration library service of SAP Business Technology Platform.
+Additionally, replace the CDS section in the [*package.json*](../../../blob/main-multi-tenant/package.json). It tells the CDS framework that you use the cloud security services integration library service of SAP Business Technology Platform.
 
 ```json
   "cds": {
@@ -102,7 +102,7 @@ Additionally, replace the CDS section in the [*package.json*](../../../tree/main
   }
 ```
 
-Last but not least, in the [*.cdsrc.json*](../../../tree/main-multi-tenant/.cdsrc.json), define users and their roles for local testing. Here's an example of how you define three users with names, passwords, and assigned roles: 
+Last but not least, in the [*.cdsrc.json*](../../../blob/main-multi-tenant/.cdsrc.json), define users and their roles for local testing. Here's an example of how you define three users with names, passwords, and assigned roles: 
 
 ```json
 {
@@ -140,16 +140,16 @@ In the next step, the second application *visitors* is added. You can already ma
 
 In this section, you learn how to add a second application *Visitors* to the business solution and how to implement the navigation between the *Poetry Slams* and *Visitors* applications. 
 
-1. Add a `visitor` service by copying the service definition from [*srv/visitor/visitorService.cds*](../../../tree/main-multi-tenant/srv/visitor/visitorService.cds) to a new folder `visitor` in the `srv`-folder of your project. 
+1. Add a `visitor` service by copying the service definition from [*srv/visitor/visitorService.cds*](../../../blob/main-multi-tenant/srv/visitor/visitorService.cds) to a new folder `visitor` in the `srv`-folder of your project. 
     > Note: The poetryslam service cannot be used for the *Visitors* application as the `visitor` entity is defined as a read-only Poetry Slams service, but it should be changeable in the *Visitors* application. The recommendation is to define a unique service for each application.
 
     > Note: The *Visitors* application does not have a Java Script implementation as no specific logic is added.
 
     > Note: The entity `visitors` needs to be draft-enabled in the service, otherwise SAP Fiori Elements only renders a read-only object list.
 
-2. Add the authorizations for the `visitor` service by copying the [*srv/visitor/visitorServiceAuthorizations.cds*](../../../tree/main-multi-tenant/srv/visitor/visitorServiceAuthorizations.cds).
+2. Add the authorizations for the `visitor` service by copying the [*srv/visitor/visitorServiceAuthorizations.cds*](../../../blob/main-multi-tenant/srv/visitor/visitorServiceAuthorizations.cds).
 
-3. Enhance the file [*/srv/services.cds*](../../../tree/main-multi-tenant/srv/services.cds) with the reference to the Visitor Service and the Visitor Service Authorizations:
+3. Enhance the file [*/srv/services.cds*](../../../blob/main-multi-tenant/srv/services.cds) with the reference to the Visitor Service and the Visitor Service Authorizations:
 
     ```cds
     using from './visitor/visitorService';
@@ -174,18 +174,18 @@ In this section, you learn how to add a second application *Visitors* to the bus
 
     > Note: The wizard will create the folder [*/app/visitors*](../../../tree/main-multi-tenant/app/visitors) with the content of a *SAP Fiori elements application*.
 
-5. Copy the [*content of the ui5.yaml*](../../../tree/main-multi-tenant/app/visitors/ui5.yaml).
+5. Copy the [*content of the ui5.yaml*](../../../blob/main-multi-tenant/app/visitors/ui5.yaml).
 
 6. Copy i18n-files with the texts of the *Visitors* UI from [*app/visitors/i18n*-folder](../../../tree/main-multi-tenant/app/visitors/i18n) and [*app/visitors/webapp/i18n*-folder](../../../tree/main-multi-tenant/app/visitors/webapp/i18n).
 
-7. Adopt the generated file [app/visitors/annotations.cds](../../../tree/main-multi-tenant/app/visitors/annotations.cds) to adjust the auto-generated list and object Page to your needs. You can either copy the complete file or perform individual adjustments, for example:
+7. Adopt the generated file [app/visitors/annotations.cds](../../../blob/main-multi-tenant/app/visitors/annotations.cds) to adjust the auto-generated list and object Page to your needs. You can either copy the complete file or perform individual adjustments, for example:
    1. Rename the *UI.FieldGroup* from *#GeneratedGroup* to something more meaningful.
    2. Use *Capabilities.InsertRestrictions*, *Capabilities.UpdateRestrictions*, *Capabilities.DeleteRestrictions* to enable *Create*, *Edit*, *Delete* buttons.
    3. Add *HeaderInfo* and *SelectionFields*, as well as additional *UI.FieldGroups* and *Facets*.
    4. Add annotations for associations (in our case *Visits*).
    5. Add the navigation logic between the *Poetry Slams* and the *Visitors* applications by adding the [*intent-based navigation*](https://sapui5.hana.ondemand.com/sdk/#/topic/d782acf8bfd74107ad6a04f0361c5f62) of SAP Fiori elements.
 
-      1. Add the navigation from the poetry slams object page of the poetry slams app to the visitors list of the visitors app by enhancing the [app/poetryslams/annotations.cds](../../../tree/main-multi-tenant/app/poetryslams/annotations.cds). Add the following code to the *Identification* section of the *service.PoetrySlams* annotations.
+      1. Add the navigation from the poetry slams object page of the poetry slams app to the visitors list of the visitors app by enhancing the [app/poetryslams/annotations.cds](../../../blob/main-multi-tenant/app/poetryslams/annotations.cds). Add the following code to the *Identification* section of the *service.PoetrySlams* annotations.
 
           ```cds
           {
@@ -196,7 +196,7 @@ In this section, you learn how to add a second application *Visitors* to the bus
           }
           ```
 
-      2. Add the navigation from the visits object page of the poetry slams app to the visitors list of the visitors app by enhancing the [app/poetryslams/annotations.cds](../../../tree/main-multi-tenant/app/poetryslams/annotations.cds). Add the following code to the *UI* section of the *service.PoetrySlams* annotations.
+      2. Add the navigation from the visits object page of the poetry slams app to the visitors list of the visitors app by enhancing the [app/poetryslams/annotations.cds](../../../blob/main-multi-tenant/app/poetryslams/annotations.cds). Add the following code to the *UI* section of the *service.PoetrySlams* annotations.
 
           ```cds
           Identification                : [{
@@ -212,7 +212,7 @@ In this section, you learn how to add a second application *Visitors* to the bus
           }],
           ```
 
-      3. Add the navigation from the visitors object page of the visitors app to the poetry slams list of the poetry slams app by enhancing the [app/visitors/annotations.cds](../../../tree/main-multi-tenant/app/visitors/annotations.cds). Add the following code to the *UI* section of the *service.Visitors* annotations.
+      3. Add the navigation from the visitors object page of the visitors app to the poetry slams list of the poetry slams app by enhancing the [app/visitors/annotations.cds](../../../blob/main-multi-tenant/app/visitors/annotations.cds). Add the following code to the *UI* section of the *service.Visitors* annotations.
 
           ```cds
           Identification                : [{
@@ -223,7 +223,7 @@ In this section, you learn how to add a second application *Visitors* to the bus
           }],
           ```
    
-8. Ensure that both applications ([*poetryslams*](../../../tree/main-multi-tenant/app/poetryslams) and [*visitors*](../../../tree/main-multi-tenant/app/visitors)) use the value `poetryslammanager` for `service` in the section `sap.cloud` of the [manifest.json](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json) file. This value specifies the name under which both UI definitions will be stored in the html5 repository, and this must be the same for all the applications of one solution (in our case, the two applications *poetryslams* and *visitors* make up the solution *poetryslammanager*):
+8. Ensure that both applications ([*poetryslams*](../../../tree/main-multi-tenant/app/poetryslams) and [*visitors*](../../../tree/main-multi-tenant/app/visitors)) use the value `poetryslammanager` for `service` in the section `sap.cloud` of the [manifest.json](../../../blob/main-multi-tenant/app/visitors/webapp/manifest.json) file. This value specifies the name under which both UI definitions will be stored in the html5 repository, and this must be the same for all the applications of one solution (in our case, the two applications *poetryslams* and *visitors* make up the solution *poetryslammanager*):
     
     ```json
     "sap.cloud": {
@@ -232,7 +232,7 @@ In this section, you learn how to add a second application *Visitors* to the bus
     }
     ```
 
-9. Make sure the [app/visitors/webapp/manifest.json](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json) includes the following configurations:
+9. Make sure the [app/visitors/webapp/manifest.json](../../../blob/main-multi-tenant/app/visitors/webapp/manifest.json) includes the following configurations:
     1. Add the parameter `ID` to the `signature` of the inbound navigation `visitors-display`, which is required to enable the intent-based navigation from the *poetryslams* application to the *visitors* application:
         
         ```json

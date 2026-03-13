@@ -35,7 +35,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 ### Application Enablement 
 
-1. Enhance the Poetry Slam Manager [domain model](../../../tree/main-multi-tenant-features/db/poetrySlamManagerModel.cds). Add the **Attachments** aspect to the domain model. This provides a reuse component which handles the storage of attachments in the SAP Document Management Service repository. More details are described in the [cap-js/sdm](https://github.com/cap-js/sdm?tab=readme-ov-file#use-cap-jssdm-plugin) documentation on GitHub. 
+1. Enhance the Poetry Slam Manager [domain model](../../../blob/main-multi-tenant-features/db/poetrySlamManagerModel.cds). Add the **Attachments** aspect to the domain model. This provides a reuse component which handles the storage of attachments in the SAP Document Management Service repository. More details are described in the [cap-js/sdm](https://github.com/cap-js/sdm?tab=readme-ov-file#use-cap-jssdm-plugin) documentation on GitHub. 
     
     ```cds
         using { Attachments } from '@cap-js/sdm';
@@ -45,7 +45,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         }
     ```
 
-2. Add the required npm modules as dependencies to the **package.json** files of your project. Refer to the **root** [package.json](../../../tree/main-multi-tenant-features/package.json) file and the **mtx/sidecar/** [package.json](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json) file of the sample application.
+2. Add the required npm modules as dependencies to the **package.json** files of your project. Refer to the **root** [package.json](../../../blob/main-multi-tenant-features/package.json) file and the **mtx/sidecar/** [package.json](../../../blob/main-multi-tenant-features/mtx/sidecar/package.json) file of the sample application.
     
     1. Open a terminal in the root folder of the project.
     
@@ -55,7 +55,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         npm add @cap-js/sdm
         ```
     
-    3. Open the **root** [package.json](../../../tree/main-multi-tenant-features/package.json) file and add the *cds.xt.DeploymentService* to it. It manages the provisioning of the repository per subscription and stores its details. For unsubscriptions, it securely cleans up the repository.
+    3. Open the **root** [package.json](../../../blob/main-multi-tenant-features/package.json) file and add the *cds.xt.DeploymentService* to it. It manages the provisioning of the repository per subscription and stores its details. For unsubscriptions, it securely cleans up the repository.
 
         ```json
             "cds": {
@@ -76,7 +76,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         npm add @cap-js/sdm
         ```
 
-    6. Open the [package.json](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json) in the **./mtx/sidecar/** folder and add the SAP Document Management Service, Integration option to the CDS requires section. 
+    6. Open the [package.json](../../../blob/main-multi-tenant-features/mtx/sidecar/package.json) in the **./mtx/sidecar/** folder and add the SAP Document Management Service, Integration option to the CDS requires section. 
 
         ```json
             "cds": {
@@ -113,9 +113,9 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     > Note: This file serves as the SAP Document Management Service repository configuration and can be adjusted based on preference, as seen in [Internal Repository](https://help.sap.com/docs/document-management-service/sap-document-management-service/internal-repository) on SAP Help Portal. To store attachments with the SAP Document Management Service, a tenant-specific repository is created when you subscribe to the SaaS application. It is deleted when you unsubscribe, based on the configuration in the `SDMRepositoryConfig.js` file. Once the repository is created upon subscription, you can't update the configuration by changing the file and redeploying it. You need to update it using the APIs provided on [SAP Business Accelerator Hub](https://api.sap.com/api/AdminAPI/resource/Repository_Configuration).
 
 
-4. Add the [sample catering PDF](../../../tree/main-multi-tenant-features/srv/poetryslam/sample_data/echoesOfThoughtPoetrySlamSpectacle_catering.pdf) file to the **./srv/poetryslam/sample_data/** folder. The PDF is used to test the upload of an attachment and includes event-specific catering options for guests.
+4. Add the [sample catering PDF](../../../blob/main-multi-tenant-features/srv/poetryslam/sample_data/echoesOfThoughtPoetrySlamSpectacle_catering.pdf) file to the **./srv/poetryslam/sample_data/** folder. The PDF is used to test the upload of an attachment and includes event-specific catering options for guests.
 
-5. Open the [xs-security.json](../../../tree/main-multi-tenant-features/xs-security.json) file in the root and create a new *PoetrySlamDocumentManagementRoleCollection* role collection with the *SDM_User* scope, required to manage attachments.
+5. Open the [xs-security.json](../../../blob/main-multi-tenant-features/xs-security.json) file in the root and create a new *PoetrySlamDocumentManagementRoleCollection* role collection with the *SDM_User* scope, required to manage attachments.
 
     ```json
         "role-collections": [
@@ -130,7 +130,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     ```
     > Note: **poetry-slams-sdm-integration** is the resource *name* parameter of the *SAP Document Management Service* definition in the mta.yaml file that is added in a later step.
 
-6. Enhance the OData action called *createTestData* in the [Poetry Slams service implementation](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js) with the new method `handleAttachmentTestData`. This method adds the [sample catering PDF](../../../tree/main-multi-tenant-features/srv/poetryslam/sample_data/echoesOfThoughtPoetrySlamSpectacle_catering.pdf) file as an attachment to the first poetry slam. 
+6. Enhance the OData action called *createTestData* in the [Poetry Slams service implementation](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js) with the new method `handleAttachmentTestData`. This method adds the [sample catering PDF](../../../blob/main-multi-tenant-features/srv/poetryslam/sample_data/echoesOfThoughtPoetrySlamSpectacle_catering.pdf) file as an attachment to the first poetry slam. 
 
     > Note: To add the PDF file to the first poetry slam, ensure that both the SAP Document Management Service and the Authorization and Trust Management (XSUAA) service are connected.
 
@@ -149,11 +149,11 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         });
     ```
 
-7. Copy the [*./srv/lib/attachments.js*](../../../tree/main-multi-tenant-features/srv/lib/attachments.js) file to your project to implement the `handleAttachmentTestData` method.
+7. Copy the [*./srv/lib/attachments.js*](../../../blob/main-multi-tenant-features/srv/lib/attachments.js) file to your project to implement the `handleAttachmentTestData` method.
 
 8. (Optional) The next step moves the **Attachments** section, provided by the plugin, below the **Visitors and Artists** section on the poetry slams object page. It shows how a [CDS aspect](https://cap.cloud.sap/docs/cds/cdl#aspects) can be overwritten with custom configurations. If this step is skipped, the **Attachments** aspect is the last section on the object page by default.
 
-    8.1. Enhance the [*./app/poetryslams/annotations.cds*](../../../tree/main-multi-tenant-features/app/poetryslams/annotations.cds) file. This file overwrites the default set annotations of the **Attachments** aspect.
+    8.1. Enhance the [*./app/poetryslams/annotations.cds*](../../../blob/main-multi-tenant-features/app/poetryslams/annotations.cds) file. This file overwrites the default set annotations of the **Attachments** aspect.
 
         ```cds
             annotate service.PoetrySlams with @(
@@ -204,7 +204,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
             };
         ```
 
-    8.2. Take over the rest of the annotations from the **Attachments** aspect and add them to the [*/db/poetrySlamManagerModel.cds*](../../../tree/main-multi-tenant-features/db/poetrySlamManagerModel.cds) file.
+    8.2. Take over the rest of the annotations from the **Attachments** aspect and add them to the [*/db/poetrySlamManagerModel.cds*](../../../blob/main-multi-tenant-features/db/poetrySlamManagerModel.cds) file.
 
         ```cds
             annotate PoetrySlams.attachments with {
@@ -232,7 +232,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
      2. **SAP Document Management Service** with the technical name *sdm-repository* and *build-runtime* plan to connect to the SAP Document Management Service repository.
 
-2. Add the **SAP Document Management Service, Integration option** as resource into the [mta.yaml](../../../tree/main-multi-tenant-features/mta.yaml) file. 
+2. Add the **SAP Document Management Service, Integration option** as resource into the [mta.yaml](../../../blob/main-multi-tenant-features/mta.yaml) file. 
     ```yaml
         # Document Management Service, Integration Option
         - name: poetry-slams-sdm-integration
@@ -260,7 +260,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
             - name: poetry-slams-sdm-integration
     ```
 
-4. Furthermore, a repository ID needs to be provided in both the **poetry-slams-srv** and **poetry-slams-mtx** modules. The provided **REPOSITORY_ID** corresponds to the [externalId](https://help.sap.com/docs/document-management-service/sap-document-management-service/add-your-repository-using-onboarding-api) parameter of the created repository. It serves as a unique name for the repository. You can see this in the [mta.yaml](../../../tree/main-multi-tenant-features/mta.yaml) file.
+4. Furthermore, a repository ID needs to be provided in both the **poetry-slams-srv** and **poetry-slams-mtx** modules. The provided **REPOSITORY_ID** corresponds to the [externalId](https://help.sap.com/docs/document-management-service/sap-document-management-service/add-your-repository-using-onboarding-api) parameter of the created repository. It serves as a unique name for the repository. You can see this in the [mta.yaml](../../../blob/main-multi-tenant-features/mta.yaml) file.
     ```yaml
         # Service module
         # Defines the microservice or application that will be serviced.
@@ -301,7 +301,7 @@ As of now it is only possible to test the **SAP Document Management Service** in
 
 Unit tests are available to test the generation of test data including an attached sample PDF file:
 
-1. Copy the [*test/srv/lib/attachments.test.js*](../../../tree/main-multi-tenant-features/test/srv/lib/attachments.test.js) file to your project. This file tests the *Attachments* class.
+1. Copy the [*test/srv/lib/attachments.test.js*](../../../blob/main-multi-tenant-features/test/srv/lib/attachments.test.js) file to your project. This file tests the *Attachments* class.
 
 2. To run the automated SAP Cloud Application Programming Model tests, follow these steps:
 
@@ -333,9 +333,9 @@ Now it's time to take you on a guided tour through the attachment feature of the
 6. Test the upload of a new attachment file.
 
     1. Select a poetry slam event to upload an attachment.
-        > Note: The first poetry slam event already has an attachment uploaded with the [sample catering menu PDF](../../../tree/main-multi-tenant-features/srv/poetryslam/sample_data/echoesOfThoughtPoetrySlamSpectacle_catering.pdf) file.
+        > Note: The first poetry slam event already has an attachment uploaded with the [sample catering menu PDF](../../../blob/main-multi-tenant-features/srv/poetryslam/sample_data/echoesOfThoughtPoetrySlamSpectacle_catering.pdf) file.
 
-    2. Edit the event and upload the provided [sample catering menu PDF](../../../tree/main-multi-tenant-features/srv/poetryslam/sample_data/echoesOfThoughtPoetrySlamSpectacle_catering.pdf) file.
+    2. Edit the event and upload the provided [sample catering menu PDF](../../../blob/main-multi-tenant-features/srv/poetryslam/sample_data/echoesOfThoughtPoetrySlamSpectacle_catering.pdf) file.
 
     3. Save the draft.
     

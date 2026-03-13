@@ -58,9 +58,9 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
     2. Rename the downloaded metadata file to *FORMSAPI.json*.
     
-    3. In SAP Business Application Studio, upload the [*FORMSAPI.json*](../../../tree/main-multi-tenant-features/external_resources/FORMSAPI.json) to the [*external_resources* folder](../../../tree/main-multi-tenant-features/external_resources).     
+    3. In SAP Business Application Studio, upload the [*FORMSAPI.json*](../../../blob/main-multi-tenant-features/external_resources/FORMSAPI.json) to the [*external_resources* folder](../../../tree/main-multi-tenant-features/external_resources).     
     
-    4. Enhance the npm build script in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) of your project to generate the API that is required to access the SAP Forms Service by Adobe.     
+    4. Enhance the npm build script in the [*package.json*](../../../blob/main-multi-tenant-features/package.json) of your project to generate the API that is required to access the SAP Forms Service by Adobe.     
 
         ```json
         "scripts": {
@@ -68,17 +68,17 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         }
         ```
 
-    5. Add the folder `srv/external/` to the [.gitignore file](../../../tree/main-multi-tenant-features/.gitignore). Since the files of the forms API will always be generated during the build step they should not be pushed to GitHub.
+    5. Add the folder `srv/external/` to the [.gitignore file](../../../blob/main-multi-tenant-features/.gitignore). Since the files of the forms API will always be generated during the build step they should not be pushed to GitHub.
 
         ```
         srv/external/
         ```
 
-    6. Add the [logo](../../../tree/main-multi-tenant-features/srv/poetryslam/sample_data/poetrySlamLogo.jpg) with file name poetrySlamLogo.jpg for your generated form to path *srv/poetryslam/sample_data/*. This can be replaced by a customer-specific logo.
+    6. Add the [logo](../../../blob/main-multi-tenant-features/srv/poetryslam/sample_data/poetrySlamLogo.jpg) with file name poetrySlamLogo.jpg for your generated form to path *srv/poetryslam/sample_data/*. This can be replaced by a customer-specific logo.
 
 2. Enhance the poetry slam service.
 
-    1. Add a new read-only and not persisted entity *PDFDocument* to the [poetry slam service](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds). The *ID* is the ID of the poetry slam. It is used to read the poetry slam data, such as event description and visitors. The *content* element indicates that it contains media data through the LargeBinary datatype and the *@Core.MediaType* annotation, refer to [Reading LargeBinary/BLOB - capire documentation](https://cap.cloud.sap/docs/guides/databases#reading-largebinary-blob). As soon as a redirect to *../PDFDocument/content* is done, a custom media stream is created and returned as response, refer to the capire documentation on [Custom Streaming](https://cap.cloud.sap/docs/node.js/best-practices#custom-streaming-beta).
+    1. Add a new read-only and not persisted entity *PDFDocument* to the [poetry slam service](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds). The *ID* is the ID of the poetry slam. It is used to read the poetry slam data, such as event description and visitors. The *content* element indicates that it contains media data through the LargeBinary datatype and the *@Core.MediaType* annotation, refer to [Reading LargeBinary/BLOB - capire documentation](https://cap.cloud.sap/docs/guides/databases#reading-largebinary-blob). As soon as a redirect to *../PDFDocument/content* is done, a custom media stream is created and returned as response, refer to the capire documentation on [Custom Streaming](https://cap.cloud.sap/docs/node.js/best-practices#custom-streaming-beta).
     
         ```cds
         // Generated PDF document with SAP Forms Service by Adobe
@@ -94,22 +94,22 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         }
         ```
 
-    2. Copy the forms class [*forms.js*](../../../tree/main-multi-tenant-features/srv/lib/forms.js) to your project. The forms class handles the usage of the SAP Forms service by Adobe API. 
+    2. Copy the forms class [*forms.js*](../../../blob/main-multi-tenant-features/srv/lib/forms.js) to your project. The forms class handles the usage of the SAP Forms service by Adobe API. 
 
-    3. Provide a translatable text for the file name in [*srv/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n.properties). Add the corresponding translation to the language-specific file [*srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n_de.properties).
+    3. Provide a translatable text for the file name in [*srv/i18n/i18n.properties*](../../../blob/main-multi-tenant-features/srv/i18n/i18n.properties). Add the corresponding translation to the language-specific file [*srv/i18n/i18n_de.properties*](../../../blob/main-multi-tenant-features/srv/i18n/i18n_de.properties).
         ```
         guestList               = Guest List
         ```
 
         > Note: The function *getFileName* in the file *forms.js* provides an example of how to access the texts (in the user's language) using the cds i18n module [cds.i18n.labels](https://cap.cloud.sap/docs/node.js/cds-i18n#labels).
 
-    4. Copy the logo class [*logo.js*](../../../tree/main-multi-tenant-features/srv/lib/logo.js) to your project. 
+    4. Copy the logo class [*logo.js*](../../../blob/main-multi-tenant-features/srv/lib/logo.js) to your project. 
 
-    5. Copy the service credentials class [*serviceCredentials.js*](../../../tree/main-multi-tenant-features/srv/lib/serviceCredentials.js) to your project. This class offers functionality to get the required logon to bound services (like the SAP Forms Service by Adobe API).
+    5. Copy the service credentials class [*serviceCredentials.js*](../../../blob/main-multi-tenant-features/srv/lib/serviceCredentials.js) to your project. This class offers functionality to get the required logon to bound services (like the SAP Forms Service by Adobe API).
 
     > Note: The `getAppUrl`-function is not required for the forms feature and can be removed.
 
-    6. Copy the [poetry slam service output management implementation](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceOutputImplementation.js) with an on-READ event of the *PDFDocument* entity to your project. The implementation reads the poetry slam data including artists and visitors. Furthermore, it creates the form with the data and returns a media streaming object that includes the rendered PDF, a valid content type, and a file name for the guest list which is to be downloaded as PDF.
+    6. Copy the [poetry slam service output management implementation](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceOutputImplementation.js) with an on-READ event of the *PDFDocument* entity to your project. The implementation reads the poetry slam data including artists and visitors. Furthermore, it creates the form with the data and returns a media streaming object that includes the rendered PDF, a valid content type, and a file name for the guest list which is to be downloaded as PDF.
         ```javascript
         const cds = require('@sap/cds');
 
@@ -124,7 +124,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         };
         ```
 
-    7. Add the output management implementation handler to the [srv/poetryslam/poetrySlamServiceImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js).
+    7. Add the output management implementation handler to the [srv/poetryslam/poetrySlamServiceImplementation.js](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js).
     
         ```javascript
         const outputHandler = require('./poetrySlamServiceOutputImplementation');
@@ -139,7 +139,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 3. Enhance the Fiori elements UI of the *Poetry Slams* application. 
 
-    1. Enhance the [manifest.json](../../../tree/main-multi-tenant-features/app/poetryslams/webapp/manifest.json) to add a button to the header of the poetry slams object page which triggers the guest list creation. The button is only enabled in read-only mode.
+    1. Enhance the [manifest.json](../../../blob/main-multi-tenant-features/app/poetryslams/webapp/manifest.json) to add a button to the header of the poetry slams object page which triggers the guest list creation. The button is only enabled in read-only mode.
          ```json
         "CreateGuestList": {
             "press": "poetryslams.ext.customActions.createGuestList",
@@ -149,7 +149,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         }
         ```   
 
-    2. Add the custom action implementation of the *CreateGuestList* button in the [customActions.js](../../../tree/main-multi-tenant-features/app/poetryslams/webapp/ext/customActions.js). The action redirects to read the element *content* of the *PDFDocument* entity with the ID of the currently displayed poetry slam. The service responds with the downloaded guest list PDF file. 
+    2. Add the custom action implementation of the *CreateGuestList* button in the [customActions.js](../../../blob/main-multi-tenant-features/app/poetryslams/webapp/ext/customActions.js). The action redirects to read the element *content* of the *PDFDocument* entity with the ID of the currently displayed poetry slam. The service responds with the downloaded guest list PDF file. 
         
         1. Add the *createGuestList* function.
 
@@ -165,16 +165,16 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
             }
             ``` 
 
-    3. Add the texts into the [*/app/poetryslams/webapp/i18n/i18n.properties* file](../../../tree/main-multi-tenant-features/app/poetryslams/webapp/i18n/i18n.properties).
+    3. Add the texts into the [*/app/poetryslams/webapp/i18n/i18n.properties* file](../../../blob/main-multi-tenant-features/app/poetryslams/webapp/i18n/i18n.properties).
 
         ```
         #XBUT
         createGuestList         = Create Guest List
         ```
 
-        > Note: In the reference example, the [*/app/poetryslams/webapp/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/webapp/i18n/i18n_de.properties) file with the German texts is also available. You can adopt them accordingly.
+        > Note: In the reference example, the [*/app/poetryslams/webapp/i18n/i18n_de.properties*](../../../blob/main-multi-tenant-features/app/poetryslams/webapp/i18n/i18n_de.properties) file with the German texts is also available. You can adopt them accordingly.
     
-4. Add the required npm modules as dependencies to the *package.json* of your project. Refer to the file [package.json](../../../tree/main-multi-tenant-features/package.json) of the sample application.
+4. Add the required npm modules as dependencies to the *package.json* of your project. Refer to the file [package.json](../../../blob/main-multi-tenant-features/package.json) of the sample application.
     
     1. Open a terminal.
     
@@ -198,7 +198,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
      2. *Forms Service by Adobe API* with the *standard* plan to connect to the forms service using the SAP BTP application and thus the REST API.
 
-2. Add the SAP Forms service by Adobe API service as resource into the [mta.yaml](../../../tree/main-multi-tenant-features/mta.yaml) file. Besides this, the resource is required as dependency in the service and mtx modules.
+2. Add the SAP Forms service by Adobe API service as resource into the [mta.yaml](../../../blob/main-multi-tenant-features/mta.yaml) file. Besides this, the resource is required as dependency in the service and mtx modules.
 
     ```yaml
     modules:
@@ -265,7 +265,7 @@ After you have deployed your application with the SAP Forms service by Adobe, yo
 
     3. Choose the downloaded schema and upload it.
 
-6. Make sure to adjust the form and schema variable in the [forms class *forms.js*](../../../tree/main-multi-tenant-features/srv/lib/forms.js) according to the name of the uploaded form and schema file given in the template store.
+6. Make sure to adjust the form and schema variable in the [forms class *forms.js*](../../../blob/main-multi-tenant-features/srv/lib/forms.js) according to the name of the uploaded form and schema file given in the template store.
 
 7. If the provided template and schema was used, the SAP custom font `72` needs to be uploaded to the configuration UI. To enable the SAP Forms service by Adobe to render the PDF correctly, the font needs to be provided since it was used for the template creation. Font 72, desktop version, can be downloaded [here](https://experience.sap.com/fiori-design-web/downloads/). How to upload a custom font to the SAP Forms service by Adobe, is described in [Upload a Font](https://help.sap.com/docs/forms-service-by-adobe/sap-forms-service-cf/upload-fonts?version=Cloud).
 
@@ -315,9 +315,9 @@ Testing in a hybrid setup, runs the application locally (in SAP Business Applica
 
 Unit tests are available to test the forms feature:
 
-1. Copy the [test/srv/poetryslam/poetrySlamServiceOutputImplemention.test.js](../../../tree/main-multi-tenant-features/test/srv/poetryslam/poetrySlamServiceOutputImplemention.test.js) to your project. This file checks the enhancements of the poetry slam service.
+1. Copy the [test/srv/poetryslam/poetrySlamServiceOutputImplemention.test.js](../../../blob/main-multi-tenant-features/test/srv/poetryslam/poetrySlamServiceOutputImplemention.test.js) to your project. This file checks the enhancements of the poetry slam service.
 
-2. Copy the [test/srv/lib/forms.test.js](../../../tree/main-multi-tenant-features/test/srv/lib/forms.test.js) to your project. This file checks the forms class.
+2. Copy the [test/srv/lib/forms.test.js](../../../blob/main-multi-tenant-features/test/srv/lib/forms.test.js) to your project. This file checks the forms class.
 
 3. To run the automated SAP Cloud Application Programming Model tests:
 

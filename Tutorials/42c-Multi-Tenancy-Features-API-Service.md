@@ -53,18 +53,18 @@ Defining an API service is similar to a service that is called from the UI. For 
 
     ```
 
-    > Note: The existing [PoetrySlamService](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds) differs in several ways:
+    > Note: The existing [PoetrySlamService](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds) differs in several ways:
     > * The API service definition does not include the draft-enabled annotation at the *PoetrySlams* entity
     > * The domain model fields that are exposed are selected explicitly.
     > * There is no implementation for the service defined.
     >
     > Since no service implementation exists, all fields are directly written to the database without any calculations. In contrast, the *PoetrySlamService*, used by the *poetryslams* SAP Fiori elements UI, performs calculations on some fields. It's important to consider this in the design of the services, as these fields aren't exposed in the API service.
 
-4. Copy the service authorizations definition from [*/srv/api/poetrySlamManagerAPIAuthorizations.cds*](../../../tree/main-multi-tenant-features/srv/api/poetrySlamManagerAPIAuthorizations.cds) into your project.
+4. Copy the service authorizations definition from [*/srv/api/poetrySlamManagerAPIAuthorizations.cds*](../../../blob/main-multi-tenant-features/srv/api/poetrySlamManagerAPIAuthorizations.cds) into your project.
 
     > Note: In this example, the same scopes apply to authorizations for both the API service and the user interface service. Generally, these scopes may differ. For the API service, only reading and updating the *PoetrySlams* entity is allowed. Creation and deletion aren't possible through the API service. The *visits* and *visitors* entities are read-only.
 
-5. Enhance the [*/srv/services.cds*](../../../tree/main-multi-tenant-features/srv/services.cds) file that references all the service definitions. Add the reference to the Poetry Slam Manager API service:
+5. Enhance the [*/srv/services.cds*](../../../blob/main-multi-tenant-features/srv/services.cds) file that references all the service definitions. Add the reference to the Poetry Slam Manager API service:
 
     ```cds
     using from './api/poetrySlamManagerAPI';
@@ -79,9 +79,9 @@ Unit tests are available to test this feature:
 
 1. Testing the API service:
 
-    1. Copy the [*test/srv/api/poetrySlamManagerAPI.test.js*](../../../tree/main-multi-tenant-features/test/srv/api/poetrySlamManagerAPI.test.js) file to your project to test the service.
+    1. Copy the [*test/srv/api/poetrySlamManagerAPI.test.js*](../../../blob/main-multi-tenant-features/test/srv/api/poetrySlamManagerAPI.test.js) file to your project to test the service.
 
-    2. Copy the [*test/srv/api/poetrySlamManagerAPIAuthorizations.test.js*](../../../tree/main-multi-tenant-features/test/srv/api/poetrySlamManagerAPIAuthorizations.test.js) file to your project to test the authorizations.
+    2. Copy the [*test/srv/api/poetrySlamManagerAPIAuthorizations.test.js*](../../../blob/main-multi-tenant-features/test/srv/api/poetrySlamManagerAPIAuthorizations.test.js) file to your project to test the authorizations.
 
 2. To run the automated SAP CAP tests:
 

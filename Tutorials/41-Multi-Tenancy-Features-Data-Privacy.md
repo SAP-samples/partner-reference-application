@@ -30,7 +30,7 @@ The following section describes how to enhance the **main-multi-tenant** branch 
 
 1. First, decide which entities and which attributes contain sensitive or personal data. 
 2. Create a new file *./srv/visitor/visitorServiceDataPrivacy.cds*.
-3. Add annotations for data privacy and the SAP Audit Log service. Refer to the [visitorServiceDataPrivacy.cds](../../../tree/main-multi-tenant-features/srv/visitor/visitorServiceDataPrivacy.cds) file of the sample application: 
+3. Add annotations for data privacy and the SAP Audit Log service. Refer to the [visitorServiceDataPrivacy.cds](../../../blob/main-multi-tenant-features/srv/visitor/visitorServiceDataPrivacy.cds) file of the sample application: 
     - Sensitive attributes are annotated with `IsPotentiallySensitive`, 
     - Personal attributes are annotated with `IsPotentiallyPersonal`. 
     
@@ -54,7 +54,7 @@ The following section describes how to enhance the **main-multi-tenant** branch 
     ```
     > Note: The data subsject role is not explicitly required. If it is not set like in the example, the entity name is used.
 
-4. Copy the [poetrySlamServiceDataPrivacy.cds](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceDataPrivacy.cds) file of the sample application to your project.
+4. Copy the [poetrySlamServiceDataPrivacy.cds](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceDataPrivacy.cds) file of the sample application to your project.
 
 5. Enhance the file */srv/services.cds* with the reference to the Poetry Slam and the Visitor Service Data Privacy files:
 
@@ -66,11 +66,11 @@ The following section describes how to enhance the **main-multi-tenant** branch 
 
 6. Open a terminal and run the command `npm add @cap-js/audit-logging`. As a result, a dependency to the latest version of the SAP Cloud Application Programming Model (CAP) audit-logging plug-in is added to the *package.json* of your project. 
 
-    Refer to the [package.json](../../../tree/main-multi-tenant-features/package.json) file of the sample application.
+    Refer to the [package.json](../../../blob/main-multi-tenant-features/package.json) file of the sample application.
 
 7. Open the *./mta.yaml* file and add the audit log resource and the module dependencies to the service module. 
 
-    Refer to the [mta file] (../../../tree/main-multi-tenant-features/mta.yaml) of the sample application.
+    Refer to the [mta file] (../../../blob/main-multi-tenant-features/mta.yaml) of the sample application.
     ```yaml
     modules:
     - name: poetry-slams-srv
@@ -119,7 +119,7 @@ The following section describes how to enhance the **main-multi-tenant** branch 
 
 It is possible to also add the *Audit Log Viewer Service* application directly into the SAP Build Work Zone launchpad. This can be achieved by the following steps.
 
-1. In the Business Application Studio, copy the [*cdm.json*](../../../tree/main-multi-tenant-features/workzone/cdm.json) file into the *./workzone* folder. This includes a *businessapp* schema for the *Audit Log Viewer Service* application as described in [About the Common Data Model - Business App Schema](https://help.sap.com/docs/build-work-zone-standard-edition/sap-build-work-zone-standard-edition-on-china-shanghai-region/creating-cdm-json-file-for-multi-tenancy-html5-app?locale=en-US) on SAP Help Portal. 
+1. In the Business Application Studio, copy the [*cdm.json*](../../../blob/main-multi-tenant-features/workzone/cdm.json) file into the *./workzone* folder. This includes a *businessapp* schema for the *Audit Log Viewer Service* application as described in [About the Common Data Model - Business App Schema](https://help.sap.com/docs/build-work-zone-standard-edition/sap-build-work-zone-standard-edition-on-china-shanghai-region/creating-cdm-json-file-for-multi-tenancy-html5-app?locale=en-US) on SAP Help Portal. 
 
     ```json
     {

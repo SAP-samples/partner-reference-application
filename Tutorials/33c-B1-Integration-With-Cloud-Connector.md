@@ -20,7 +20,7 @@ The following chapters are prerequisites for the SAP Business One integration us
 
 To access the Cloud Connector, the SAP BTP Connectivity service is required. The following steps show how to implement it in your application:
 
-1. In the [*mta.yaml*](../../../tree/main-multi-tenant/mta.yaml) file:
+1. In the [*mta.yaml*](../../../blob/main-multi-tenant/mta.yaml) file:
     1. Add the connectivity service to the resources section:
         ```YML
         resources:
@@ -46,7 +46,7 @@ To access the Cloud Connector, the SAP BTP Connectivity service is required. The
             # ...
             - name: poetry-slams-connectivity-service
         ```
-2. In the [*package.json*](../../../tree/main-multi-tenant/mtx/sidecar/package.json) of the MTX sidecar, add the *connectivity* attribute to the *mtx-sidecar* profile:
+2. In the [*package.json*](../../../blob/main-multi-tenant/mtx/sidecar/package.json) of the MTX sidecar, add the *connectivity* attribute to the *mtx-sidecar* profile:
     ```JSON
     {
     "name": "partner-reference-application-mtx",

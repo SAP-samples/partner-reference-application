@@ -34,7 +34,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 1. Enhance the poetry slam service.
 
-    1. Enhance the [poetry slam service definition](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds).
+    1. Enhance the [poetry slam service definition](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds).
         1. Add a new action *createWithAI* to the *PoetrySlams* entity. This action creates a new poetry slam event and uses generative AI to propose a title and description. 
             ```cds
             @(cds.odata.bindingparameter.collection)
@@ -86,13 +86,13 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
             entity Language    as projection on sap.common.Languages;
             ```
 
-    2. Copy the [*srv/lib/genAI.js*](../../../tree/main-multi-tenant-features/srv/lib/genAI.js) file with the genAI class to your project. The genAI class uses [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) with the orchestration and prompt-registry package to leverage the generative AI hub features. Additionally, it defines which large language model is used for the proposal generation and defines the system prompt.
+    2. Copy the [*srv/lib/genAI.js*](../../../blob/main-multi-tenant-features/srv/lib/genAI.js) file with the genAI class to your project. The genAI class uses [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) with the orchestration and prompt-registry package to leverage the generative AI hub features. Additionally, it defines which large language model is used for the proposal generation and defines the system prompt.
 
         > Note: The implementation uses the [Azure content filter](https://sap.github.io/ai-sdk/docs/js/orchestration/chat-completion#content-filtering) for restricting content that is passed to and received from a generative AI model. Only safe content for input and output of different categories (such as hate) are allowed. 
 
         > Note: The implementation uses the [masking module](https://sap.github.io/ai-sdk/docs/js/orchestration/chat-completion#data-masking) of the orchestration client to mask sensitive information in the prompt. It adds the masking provider [SAP Data Privacy Integration](https://sap.github.io/ai-sdk/docs/js/orchestration/chat-completion#sap-data-privacy-integration), which anonymizes or pseudonymizes sensitive information depending on the replacement strategy.
 
-    3. Extend the service implementation file [*srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) with the implementation of the action.
+    3. Extend the service implementation file [*srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) with the implementation of the action.
 
         1. Import the genAI class.
 
@@ -127,7 +127,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
             });
             ```
 
-    4. Add UI texts for the action parameter dialog into the file [*srv/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n.properties).
+    4. Add UI texts for the action parameter dialog into the file [*srv/i18n/i18n.properties*](../../../blob/main-multi-tenant-features/srv/i18n/i18n.properties).
 
         ```
         # -------------------------------------------------------------------------------------
@@ -139,9 +139,9 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         placeholder             = For example: creative, funny
         ```
 
-        > Note: In the reference example, the file [*srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n_de.properties) with the German texts is available, too. You can adopt them accordingly.
+        > Note: In the reference example, the file [*srv/i18n/i18n_de.properties*](../../../blob/main-multi-tenant-features/srv/i18n/i18n_de.properties) with the German texts is available, too. You can adopt them accordingly.
 
-    5. Add the message texts for the action error handling into the file [*srv/i18n/messages.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages.properties).
+    5. Add the message texts for the action error handling into the file [*srv/i18n/messages.properties*](../../../blob/main-multi-tenant-features/srv/i18n/messages.properties).
 
         ```
         ACTION_AI_NO_ACCESS                                     = Access to SAP AI Core service isn’t possible. Please reach out to your application provider.
@@ -151,11 +151,11 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         ACTION_AI_FILTER_VIOLATION                              = This content doesn't meet our safety guidelines. Please revise your input and try again.
         ```
 
-        > Note: In the reference example, the file [*srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages_de.properties) with the German texts is available, too. You can adopt them accordingly.
+        > Note: In the reference example, the file [*srv/i18n/messages_de.properties*](../../../blob/main-multi-tenant-features/srv/i18n/messages_de.properties) with the German texts is available, too. You can adopt them accordingly.
 
 2. Enhance the SAP Fiori elements UI of the *Poetry Slams* application. 
 
-    1. Enhance the section *LineItem* of the file [*app/poetryslams/annotations*](../../../tree/main-multi-tenant-features/app/poetryslams/annotations.cds) to add a button that triggers the action to create the poetry slam with generative AI. 
+    1. Enhance the section *LineItem* of the file [*app/poetryslams/annotations*](../../../blob/main-multi-tenant-features/app/poetryslams/annotations.cds) to add a button that triggers the action to create the poetry slam with generative AI. 
     
         ```cds
         {
@@ -165,15 +165,15 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         },
         ```      
 
-    2. Add the UI text for the button into the file [*/app/poetryslams/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n.properties).
+    2. Add the UI text for the button into the file [*/app/poetryslams/i18n/i18n.properties*](../../../blob/main-multi-tenant-features/app/poetryslams/i18n/i18n.properties).
 
         ```
         createWithAI            = Create with Slamtastic AI
         ```
 
-        > Note: In the reference example, the file [*/app/poetryslams/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n_de.properties) with the German texts is available, too. You can adopt them accordingly.
+        > Note: In the reference example, the file [*/app/poetryslams/i18n/i18n_de.properties*](../../../blob/main-multi-tenant-features/app/poetryslams/i18n/i18n_de.properties) with the German texts is available, too. You can adopt them accordingly.
 
-3. Add the required npm modules as dependencies to the *package.json* of your project. Refer to the file [*package.json*](../../../tree/main-multi-tenant-features/package.json) of the sample application.
+3. Add the required npm modules as dependencies to the *package.json* of your project. Refer to the file [*package.json*](../../../blob/main-multi-tenant-features/package.json) of the sample application.
     
     1. Open a terminal.
     
@@ -187,7 +187,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     
     - *SAP AI Core* with the *extended* plan to access the SAP AI Core service.
 
-2. Add the SAP AI Core service as a resource in the file [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml). Besides this, the resource is required as dependency in the service module and the mtx module. 
+2. Add the SAP AI Core service as a resource in the file [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml). Besides this, the resource is required as dependency in the service module and the mtx module. 
 
     ```yaml
     modules:
@@ -218,7 +218,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 Unit tests are available to test the artificial intelligence feature:
 
-1. Enhance the file [*test/srv/poetryslam/poetrySlamServicePoetrySlams.test.js*](../../../tree/main-multi-tenant-features/test/srv/poetryslam/poetrySlamServicePoetrySlams.test.js) with a test to check the action.
+1. Enhance the file [*test/srv/poetryslam/poetrySlamServicePoetrySlams.test.js*](../../../blob/main-multi-tenant-features/test/srv/poetryslam/poetrySlamServicePoetrySlams.test.js) with a test to check the action.
 
     ```js
     it('should reject createWithAI action without running SAP BTP AI Core service', async () => {
@@ -232,7 +232,7 @@ Unit tests are available to test the artificial intelligence feature:
     });
     ```
 
-2. Copy the file [*test/srv/lib/genAI.test.js*](../../../tree/main-multi-tenant-features/test/srv/lib/genAI.test.js) to your project. This file tests the genAI class.
+2. Copy the file [*test/srv/lib/genAI.test.js*](../../../blob/main-multi-tenant-features/test/srv/lib/genAI.test.js) to your project. This file tests the genAI class.
 
 3. To run the automated SAP Cloud Application Programming Model tests:
 

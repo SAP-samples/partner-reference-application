@@ -113,7 +113,7 @@ stages:
 ```
 Push and merge your config.yml file into the GitHub branch you want to run the job for. Next, go back to the *Jobs* tab and activate the job you've created. The job is is now automatically triggered as soon as changes are merged to the selected branch. For the first time, the job needs to be triggered manually by choosing *Run*. This starts the build and deploys it to the configured test account.
 
-You can have a look at the complete [config.yml](../../../tree/main-multi-tenant-features/.sap_cid/config.yml) file provided in the main-multi-tenant-features branch. It includes more steps that are described later.
+You can have a look at the complete [config.yml](../../../blob/main-multi-tenant-features/.sap_cid/config.yml) file provided in the main-multi-tenant-features branch. It includes more steps that are described later.
 
 
 ### Run the Job for Initial Deployment
@@ -137,7 +137,7 @@ You have two options to see the log:
 After the first run is triggered, you have to subscribe the application to your subscriber subaccount as described in the [following tutorial](./25-Multi-Tenancy-Provisioning.md). Now, you need to [configure the service broker](./42b-Multi-Tenancy-Provisioning-Service-Broker.md).
 
 ### Enhance the config.yml File to Complete the Configuration
-After the successful initial deployment, you can have a look at the [config.yml](../../../tree/main-multi-tenant-features/.sap_cid/config.yml) file that includes additional steps to execute integration tests. To execute these additional tests and use the complete sample, the credentials must be maintained in the config.yml file.
+After the successful initial deployment, you can have a look at the [config.yml](../../../blob/main-multi-tenant-features/.sap_cid/config.yml) file that includes additional steps to execute integration tests. To execute these additional tests and use the complete sample, the credentials must be maintained in the config.yml file.
 
 ```yaml
 _additional:
@@ -175,13 +175,13 @@ To run the complete script, you have to create the secrets listed in the script 
 1. In your development subaccount, go to *Instances and Subscriptions*.
 2. Under *Application*, open the Continuous Integration & Delivery UI.
 3. Go to the *Credentials* tab.
-4. Add the *Service Broker* service credentials for the [cicd_integration_test.sh](../../../tree/main-multi-tenant-features/test/cicd/cicd_integration_test.sh) test file.
+4. Add the *Service Broker* service credentials for the [cicd_integration_test.sh](../../../blob/main-multi-tenant-features/test/cicd/cicd_integration_test.sh) test file.
     1. Open your subscriber subaccount.
     2. Go to the *Instances and Subscriptions* tab.
     3. Choose the service broker instance.
     4. Choose *View Credentials*.
     5. Take the credentials and add them in the *Credentials* tab of the Integration & Delivery UI.
-5. Add the *SaaS Provisioning Service* credentials for the [tenant_update_registry.sh](../../../tree/main-multi-tenant-features/test/cicd/tenant_update_registry.sh) test file.
+5. Add the *SaaS Provisioning Service* credentials for the [tenant_update_registry.sh](../../../blob/main-multi-tenant-features/test/cicd/tenant_update_registry.sh) test file.
     1. Open your provider subaccount.
     2. Go to the *Instances and Subscriptions* tab.
     3. Choose the SaaS Provisioning Service instance.

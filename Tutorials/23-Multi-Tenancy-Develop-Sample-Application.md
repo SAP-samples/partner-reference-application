@@ -27,9 +27,9 @@ Follow the steps described in this section to enhance your application. Addition
 
 Make some adjustments to ensure that the application can be deployed to SAP BTP Cloud Foundry runtime as a central launchpad component.
 
-1. Adopt the [*./app/poetryslams/webapp/manifest.json*](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json).
+1. Adopt the [*./app/poetryslams/webapp/manifest.json*](../../../blob/main-multi-tenant/app/poetryslams/webapp/manifest.json).
   
-    1. Ensure that the service name is defined in the web app configuration file [*./app/poetryslams/webapp/manifest.json*](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json). 
+    1. Ensure that the service name is defined in the web app configuration file [*./app/poetryslams/webapp/manifest.json*](../../../blob/main-multi-tenant/app/poetryslams/webapp/manifest.json). 
 
         > Note: This service name must be unique within your account and will appear in the runtime URL of the application.
 
@@ -55,18 +55,18 @@ Make some adjustments to ensure that the application can be deployed to SAP BTP 
         }
         ```
 
-2. Do the same for the [*./app/visitors/webapp/manifest.json*](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json) of the *Visitors* application accordingly.
+2. Do the same for the [*./app/visitors/webapp/manifest.json*](../../../blob/main-multi-tenant/app/visitors/webapp/manifest.json) of the *Visitors* application accordingly.
 
 ### Adjust the Multitenancy and App Router Features 
 When creating the CAP project using the wizard in the tutorial [Develop the Core of the SAP BTP Application](14-Develop-Core-Application.md), several files were created that include the configuration for modules and resources required for multi-tenancy:
 
 - The folder [*app/router*](../../../tree/main-multi-tenant/app/router) containing an implemented approuter (also called standalone approuter).
-- The file [*mtx/sidecar/package.json*](../../../tree/main-multi-tenant/mtx/sidecar/package.json) providing a module to handle [multitenancy, feature toggles and extensibility](https://cap.cloud.sap/docs/guides/multitenancy/mtxs).
-- The file [*mta.yaml*](../../../tree/main-multi-tenant/mta.yaml) in the root folder, containing required modules and resources.
-- The [*package.json*](../../../tree/main-multi-tenant/package.json) file in the root folder.
+- The file [*mtx/sidecar/package.json*](../../../blob/main-multi-tenant/mtx/sidecar/package.json) providing a module to handle [multitenancy, feature toggles and extensibility](https://cap.cloud.sap/docs/guides/multitenancy/mtxs).
+- The file [*mta.yaml*](../../../blob/main-multi-tenant/mta.yaml) in the root folder, containing required modules and resources.
+- The [*package.json*](../../../blob/main-multi-tenant/package.json) file in the root folder.
 
 Now, follow the next steps to make further required changes: 
-1. Go to the [*mta.yaml*](../../../tree/main-multi-tenant/mta.yaml) file in the root folder. Note that a correct indentation is important in this file.
+1. Go to the [*mta.yaml*](../../../blob/main-multi-tenant/mta.yaml) file in the root folder. Note that a correct indentation is important in this file.
 
     1. Replace all occurrences of the string `partner-reference-application` with `poetry-slams`. This makes the names of the created service instances more consistent. You can also create a meaningful description.
 
@@ -86,7 +86,7 @@ Now, follow the next steps to make further required changes:
 
     3. Add and configure the destination content module. This is where you define destinations and service keys for the destinations that are automatically created in the provider subaccount. The destination `poetry-slams-cdm` is a Common Data Model (CDM) design time destination, which points to the location of the stored CDM in the HTML5 repository.
 
-        > Note that the subpath *poetryslammanager* in the attribute `URL` of the destination `poetry-slams-cdm` below must match the value in the field `service` of the object `sap.cloud` defined in the files [*./app/poetryslams/webapp/manifest.json*](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json) [*./app/visitors/webapp/manifest.json*](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json).
+        > Note that the subpath *poetryslammanager* in the attribute `URL` of the destination `poetry-slams-cdm` below must match the value in the field `service` of the object `sap.cloud` defined in the files [*./app/poetryslams/webapp/manifest.json*](../../../blob/main-multi-tenant/app/poetryslams/webapp/manifest.json) [*./app/visitors/webapp/manifest.json*](../../../blob/main-multi-tenant/app/visitors/webapp/manifest.json).
 
         ```yml
         modules:
@@ -194,7 +194,7 @@ Now, follow the next steps to make further required changes:
 
         3. Replace `srv-api` in the "`requires`" section with `poetry-slams-srv-api` (2 occurrences).
 
-            > Note: This name must be identical to the destination name defined in the [*./app/poetryslams/xs-app.json*](../../../tree/main-multi-tenant/app/poetryslams/xs-app.json).  
+            > Note: This name must be identical to the destination name defined in the [*./app/poetryslams/xs-app.json*](../../../blob/main-multi-tenant/app/poetryslams/xs-app.json).  
 
         4. Add `redirect-uris` to the properties of the provided function `app-api`:
 
@@ -207,7 +207,7 @@ Now, follow the next steps to make further required changes:
                       redirect-uris: ${protocol}://*.${default-uri}/** # Redirect URI to connect modules running on different Cloud Foundry landscapes (e.g. eu10 / eu10-004)
             ```
 
-    8. Adjust the destination service resource (*poetry-slams-destination*). This includes the *poetry-slams-srv-api* as defined in the *destination* for the route as defined in the web application configuration files [*./app/poetryslams/xs-app.json*](../../../tree/main-multi-tenant/app/poetryslams/xs-app.json) and [*./app/visitors/xs-app.json*](../../../tree/main-multi-tenant/app/visitors/xs-app.json) in the `requires` section.
+    8. Adjust the destination service resource (*poetry-slams-destination*). This includes the *poetry-slams-srv-api* as defined in the *destination* for the route as defined in the web application configuration files [*./app/poetryslams/xs-app.json*](../../../blob/main-multi-tenant/app/poetryslams/xs-app.json) and [*./app/visitors/xs-app.json*](../../../blob/main-multi-tenant/app/visitors/xs-app.json) in the `requires` section.
 
         > Note: There will be two destinations created that are required for the SAP Build Work Zone integration: the runtime destination of the launchpad and the destination to access the poetry slams service module. The `poetry-slams-rt` is a Common Data Model (CDM) runtime destination which points to the Approuter URL. For detailed instructions, see [Developing HTML5 Business Solutions as Content Providers -> Procedure -> Step 2: Define destinations (provider subaccount)-> Runtime Destination](https://help.sap.com/docs/build-work-zone-standard-edition/sap-build-work-zone-standard-edition/developing-html5-apps-for-cross-subaccount-consumption?locale=en-US#procedure) on SAP Help Portal.
 
@@ -282,12 +282,12 @@ Now, follow the next steps to make further required changes:
                 category: 'Applications / Multi-Customer Partner Solutions'
         ```
 
-    11. After you've applied the changes described above in the file *mta.yml*, this is what the file will look like: [the MTA file of the sample application](../../../tree/main-multi-tenant/mta.yaml).
+    11. After you've applied the changes described above in the file *mta.yml*, this is what the file will look like: [the MTA file of the sample application](../../../blob/main-multi-tenant/mta.yaml).
         > Note: There can be differences in comments or the sequence of entries. However, be aware that a correct indentation is required.
 
 2. In the folder [*app/router*](../../../tree/main-multi-tenant/app/router):
     1. *default-env.json*: You can delete this file. It is intended for local testing but not required. It is ignored by the *.gitignore* file of this repository anyway.
-    2. Go to the app router config file located in the *app/router* folder ([*xs-app.json*](../../../tree/main-multi-tenant/app/router/xs-app.json)). Ensure that the file is as follows:
+    2. Go to the app router config file located in the *app/router* folder ([*xs-app.json*](../../../blob/main-multi-tenant/app/router/xs-app.json)). Ensure that the file is as follows:
 
         ```json
         {
@@ -308,7 +308,7 @@ Now, follow the next steps to make further required changes:
         }
         ```
 
-3. In the *Poetry Slams* application routing config file that is located in the *app/poetryslams* folder ([xs-app.json](../../../tree/main-multi-tenant/app/poetryslams/xs-app.json)), route the default path to the `index.html` file and offer a path to the OData service. Remove the routes that are not required. You defined the destination *poetry-slams-srv-api* before as part of the project configuration *mta.yml* file. Ensure that the application [*xs-app.json*](../../../tree/main-multi-tenant/app/poetryslams/xs-app.json) config file is as follows: 
+3. In the *Poetry Slams* application routing config file that is located in the *app/poetryslams* folder ([xs-app.json](../../../blob/main-multi-tenant/app/poetryslams/xs-app.json)), route the default path to the `index.html` file and offer a path to the OData service. Remove the routes that are not required. You defined the destination *poetry-slams-srv-api* before as part of the project configuration *mta.yml* file. Ensure that the application [*xs-app.json*](../../../blob/main-multi-tenant/app/poetryslams/xs-app.json) config file is as follows: 
 
     ```json
     {
@@ -334,11 +334,11 @@ Now, follow the next steps to make further required changes:
 
     > Note: The order of routes is crucial as the most specific one must come first.
 
-4. In this project, the implemented approuter uses the [*index.html*](../../../tree/main-multi-tenant/app/poetryslams/webapp/index.html) file located in the */app/poetryslams/webapp/* folder to serve the web page. Copy the files [*initAppStyle.css*](../../../tree/main-multi-tenant/app/poetryslams/webapp/util/initAppStyle.css) and [*index.html*](../../../tree/main-multi-tenant/app/poetryslams/webapp/index.html) into the folder */app/poetryslams/webapp/util/* of your project to avoid inline style definitions and content security policy violations: 
+4. In this project, the implemented approuter uses the [*index.html*](../../../blob/main-multi-tenant/app/poetryslams/webapp/index.html) file located in the */app/poetryslams/webapp/* folder to serve the web page. Copy the files [*initAppStyle.css*](../../../blob/main-multi-tenant/app/poetryslams/webapp/util/initAppStyle.css) and [*index.html*](../../../blob/main-multi-tenant/app/poetryslams/webapp/index.html) into the folder */app/poetryslams/webapp/util/* of your project to avoid inline style definitions and content security policy violations: 
 
-5. Repeat steps 3 and 4 for the *Visitors* application (see [*index.html*](../../../tree/main-multi-tenant/app/visitors/webapp/index.html), [*initAppStyle.css*](../../../tree/main-multi-tenant/app/visitors/webapp/util/initAppStyle.css) and [*xs-app.json*](../../../tree/main-multi-tenant/app/visitors/xs-app.json)).
+5. Repeat steps 3 and 4 for the *Visitors* application (see [*index.html*](../../../blob/main-multi-tenant/app/visitors/webapp/index.html), [*initAppStyle.css*](../../../blob/main-multi-tenant/app/visitors/webapp/util/initAppStyle.css) and [*xs-app.json*](../../../blob/main-multi-tenant/app/visitors/xs-app.json)).
 
-6. Ensure that the scope `mtcallback` is available in the [*xs-security.json*](../../../tree/main-multi-tenant/xs-security.json).
+6. Ensure that the scope `mtcallback` is available in the [*xs-security.json*](../../../blob/main-multi-tenant/xs-security.json).
     ```json
       "scopes": [
         {
@@ -351,7 +351,7 @@ Now, follow the next steps to make further required changes:
       ]
     ```
         
-7. Adjust the [*package.json*](../../../tree/main-multi-tenant/package.json) in the *root* folder.
+7. Adjust the [*package.json*](../../../blob/main-multi-tenant/package.json) in the *root* folder.
 
     1. Ensure that the profile *mtx-sidecar* is available. For more information, check the documentation about [SaaS Registry Dependencies](https://cap.cloud.sap/docs/guides/multitenancy/#saas-dependencies).
 
@@ -363,7 +363,7 @@ Now, follow the next steps to make further required changes:
 
     2. Additionally, rename `partner-reference-application` in the *undeploy* step to `poetry-slams`.
 
-8. Adjust the [*package.json*](../../../tree/main-multi-tenant/mtx/sidecar/package.json) of the mtx module by adding the required services:
+8. Adjust the [*package.json*](../../../blob/main-multi-tenant/mtx/sidecar/package.json) of the mtx module by adding the required services:
 
     ```json
       "cds": {
@@ -385,7 +385,7 @@ Now, follow the next steps to make further required changes:
     ```
 
 ### Adopt NPM Modules
-The CDS libraries are offered as npm modules in the *package.json*. After the creation of the SAP Cloud Application Programming Model (CAP) project using the wizard, the npm *rimraf* module is added to the [*./package.json*](../../../tree/main-multi-tenant/package.json) as a development dependency. Move this module to the *dependencies* section. This facilitates the handling of the command `npm run build`.
+The CDS libraries are offered as npm modules in the *package.json*. After the creation of the SAP Cloud Application Programming Model (CAP) project using the wizard, the npm *rimraf* module is added to the [*./package.json*](../../../blob/main-multi-tenant/package.json) as a development dependency. Move this module to the *dependencies* section. This facilitates the handling of the command `npm run build`.
 
 ### Enhance the Application with the Common Data Model for SAP Build Work Zone
 SAP Build Work Zone is used as a central launchpad for the Partner Reference Application. To be content provider for [SAP Build Work Zone](https://help.sap.com/docs/build-work-zone-advanced-edition/sap-build-work-zone-advanced-edition/integrating-business-content), a [common data model (CDM)](https://help.sap.com/docs/cloud-portal-service/sap-cloud-portal-service-on-cloud-foundry/creating-cdm-json-file-for-multi-tenancy-html5-app) needs to be defined. The common data model defines the design-time business content of the application.
@@ -394,6 +394,6 @@ To add the CDM to your application, follow these steps:
 
 1. Create a folder under the root folder of your project named *workzone*.
 
-2. Copy the [*cdm.json*](../../../tree/main-multi-tenant/workzone/cdm.json) into the newly created *workzone* folder. This creates a group with the applications *poetryslams* and *visitors* and two roles during the SAP Build Work Zone configuration that is done during the provisiong of a customer subaccount. The *texts*-sections are required for translation.
+2. Copy the [*cdm.json*](../../../blob/main-multi-tenant/workzone/cdm.json) into the newly created *workzone* folder. This creates a group with the applications *poetryslams* and *visitors* and two roles during the SAP Build Work Zone configuration that is done during the provisiong of a customer subaccount. The *texts*-sections are required for translation.
   
 Your project is now consistent with the [*main-multi-tenant*](../../../tree/main-multi-tenant) branch. You can [deploy the multi-tenant application to the provider SAP BTP account](./24-Multi-Tenancy-Deployment.md).

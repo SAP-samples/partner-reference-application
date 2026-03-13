@@ -47,26 +47,26 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 2. Add a new OData service to the application called *jobSchedulerService*.
 
-    1. Copy the [job scheduler service definition](../../../tree/main-multi-tenant-features/srv/jobscheduler/jobSchedulerService.cds) to a new folder `jobscheduler` in the `srv` folder. The service offers actions to send reminders and to generate consumer jobs. Besides this, the required authorizations are defined.
+    1. Copy the [job scheduler service definition](../../../blob/main-multi-tenant-features/srv/jobscheduler/jobSchedulerService.cds) to a new folder `jobscheduler` in the `srv` folder. The service offers actions to send reminders and to generate consumer jobs. Besides this, the required authorizations are defined.
 
-    2. Copy the [job scheduler service implementation](../../../tree/main-multi-tenant-features/srv/jobscheduler/jobSchedulerServiceImplementation.js) to the `jobscheduler` folder. The file includes the registration of the actions that are triggered directly by the job scheduler.
+    2. Copy the [job scheduler service implementation](../../../blob/main-multi-tenant-features/srv/jobscheduler/jobSchedulerServiceImplementation.js) to the `jobscheduler` folder. The file includes the registration of the actions that are triggered directly by the job scheduler.
         > Note: When the SAP Job Scheduling service invokes an application endpoint, it provides request headers like the *Job ID*, the *Job Schedule ID*, the *Job Run ID* and the *SAP Job Scheduling service Host URI*. They can be utilized to use the SAP Job Scheduling service REST APIs and Node.js Client Library. For more information, see [Asynchronous Mode](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/asynchronous-mode) on SAP Help Portal.
 
-    3. Copy the [job scheduler action implementation](../../../tree/main-multi-tenant-features/srv/lib/jobSchedulerActionImplementation.js) to the `lib` folder in the `srv` folder. The file includes the implementation of the actions to send reminders and to generate consumer jobs.
+    3. Copy the [job scheduler action implementation](../../../blob/main-multi-tenant-features/srv/lib/jobSchedulerActionImplementation.js) to the `lib` folder in the `srv` folder. The file includes the implementation of the actions to send reminders and to generate consumer jobs.
 
-    4. Copy the [job scheduler class](../../../tree/main-multi-tenant-features/srv/lib/jobScheduler.js) to the `lib` folder. This class handles the access to the job scheduler service by using the Node.js module [@sap/jobs-client](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/node-js-client-library).
+    4. Copy the [job scheduler class](../../../blob/main-multi-tenant-features/srv/lib/jobScheduler.js) to the `lib` folder. This class handles the access to the job scheduler service by using the Node.js module [@sap/jobs-client](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/node-js-client-library).
 
-    5. Copy the service credentials class [*serviceCredentials.js*](../../../tree/main-multi-tenant-features/srv/lib/serviceCredentials.js) to the `lib` folder. This class provides functionalities to obtain credentials and tokens used for the authentication to the bound services, such as the SAP Job Scheduling service. Additionally, it includes helper functions to retrieve the provider tenant and determine the application service URL.
+    5. Copy the service credentials class [*serviceCredentials.js*](../../../blob/main-multi-tenant-features/srv/lib/serviceCredentials.js) to the `lib` folder. This class provides functionalities to obtain credentials and tokens used for the authentication to the bound services, such as the SAP Job Scheduling service. Additionally, it includes helper functions to retrieve the provider tenant and determine the application service URL.
 
-    6. Copy the tenant manager class [*tenantManager.js*](../../../tree/main-multi-tenant-features/srv/lib/tenantManager.js) to the `lib` folder. This class offers functionality to get tenant information from the Saas Provisioning service.
+    6. Copy the tenant manager class [*tenantManager.js*](../../../blob/main-multi-tenant-features/srv/lib/tenantManager.js) to the `lib` folder. This class offers functionality to get tenant information from the Saas Provisioning service.
 
-    7. Add the new service to the [srv/services.cds](../../../tree/main-multi-tenant-features/srv/services.cds) file.
+    7. Add the new service to the [srv/services.cds](../../../blob/main-multi-tenant-features/srv/services.cds) file.
 
         ```cds
         using from './jobscheduler/jobSchedulerService';
         ```
 
-    8. Include the success and error message texts for actions in the [*srv/i18n/messages.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages.properties) file.
+    8. Include the success and error message texts for actions in the [*srv/i18n/messages.properties*](../../../blob/main-multi-tenant-features/srv/i18n/messages.properties) file.
 
         ```
         ACTION_JOB_GENERATION_STARTED                           = The job was successfully scheduled.
@@ -77,9 +77,9 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         ACTION_JOB_REMINDER_NO_ID_OR_DATE                       = A valid Poetry Slam ID or date is missing.
         ```
 
-        > Note: In the reference example, the [*srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages_de.properties) file with the German texts is also available. You can adopt them accordingly.
+        > Note: In the reference example, the [*srv/i18n/messages_de.properties*](../../../blob/main-multi-tenant-features/srv/i18n/messages_de.properties) file with the German texts is also available. You can adopt them accordingly.
 
-    9. For local testing, define a new user in the [*.cdsrc.json*](../../../tree/main-multi-tenant-features/.cdsrc.json) file. This user has access only to the SAP Job Scheduling service.
+    9. For local testing, define a new user in the [*.cdsrc.json*](../../../blob/main-multi-tenant-features/.cdsrc.json) file. This user has access only to the SAP Job Scheduling service.
 
         ```cds
         "TechnicalJobSchedulerUser": {
@@ -89,7 +89,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         }
         ```
 
-3. Enhance the production section in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) of your project by enabling the CDS SaaS Provisioning service.     
+3. Enhance the production section in the [*package.json*](../../../blob/main-multi-tenant-features/package.json) of your project by enabling the CDS SaaS Provisioning service.     
 
     ```json
     "[production]": {
@@ -98,7 +98,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     }
     ```
 
-4. Add the following scope and role template to the [xs-security.json](../../../tree/main-multi-tenant-features/xs-security.json) file. It enables the SAP Job Scheduling service to access the Poetry Slam Manager application:
+4. Add the following scope and role template to the [xs-security.json](../../../blob/main-multi-tenant-features/xs-security.json) file. It enables the SAP Job Scheduling service to access the Poetry Slam Manager application:
 
     ```json
     {
@@ -117,7 +117,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     }
     ```
 
-5. Add the required npm modules as dependencies to the [package.json](../../../tree/main-multi-tenant-features/package.json) of your project:
+5. Add the required npm modules as dependencies to the [package.json](../../../blob/main-multi-tenant-features/package.json) of your project:
     
     1. Open a terminal. Ensure that your project root folder is selected.
     
@@ -143,7 +143,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 1. Enhance the poetry slam manager domain model.
 
-    1. Enhance the `PoetrySlams` entity of the [db/poetrySlamManagerModel.cds](../../../tree/main-multi-tenant-features/db/poetrySlamManagerModel.cds) domain model with a new field that describes the job status.
+    1. Enhance the `PoetrySlams` entity of the [db/poetrySlamManagerModel.cds](../../../blob/main-multi-tenant-features/db/poetrySlamManagerModel.cds) domain model with a new field that describes the job status.
 
         ```cds
         entity PoetrySlams : cuid, managed {
@@ -152,7 +152,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         }
         ```
         
-    2. Annotate the `PoetrySlams` entity of the [db/poetrySlamManagerModel.cds](../../../tree/main-multi-tenant-features/db/poetrySlamManagerModel.cds) domain model with the *jobStatus*.
+    2. Annotate the `PoetrySlams` entity of the [db/poetrySlamManagerModel.cds](../../../blob/main-multi-tenant-features/db/poetrySlamManagerModel.cds) domain model with the *jobStatus*.
 
         ```cds
         annotate PoetrySlams with @fiori.draft.enabled {
@@ -161,23 +161,23 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         }
         ```
 
-    3. Add the UI text for the field into the [*/db/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/db/i18n/i18n.properties) file.
+    3. Add the UI text for the field into the [*/db/i18n/i18n_de.properties*](../../../blob/main-multi-tenant-features/db/i18n/i18n.properties) file.
 
         ```
         jobStatusText               = Event Reminder Status
         ```
 
-        > Note: In the reference example, the [*/db/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/db/i18n/i18n_de.properties) file with the German texts is also available. You can adopt them accordingly.
+        > Note: In the reference example, the [*/db/i18n/i18n_de.properties*](../../../blob/main-multi-tenant-features/db/i18n/i18n_de.properties) file with the German texts is also available. You can adopt them accordingly.
 
 2. Enhance the poetry slam service. 
 
-    1. Add a new field named `isJobStatusShown` to the entity *PoetrySlams* in the [poetry slam service definition](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds). The field controls the visibility of the job scheduling status section on the user interface.
+    1. Add a new field named `isJobStatusShown` to the entity *PoetrySlams* in the [poetry slam service definition](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds). The field controls the visibility of the job scheduling status section on the user interface.
 
         ```cds
         virtual null                         as isJobStatusShown             : Boolean @odata.Type: 'Edm.Boolean',
         ```
     
-    2. Add a new action named `sendReminderForPoetrySlam` to the entity *PoetrySlams* in the [poetry slam service definition](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds). The action sends a notification to all visitors of a specific poetry slam.
+    2. Add a new action named `sendReminderForPoetrySlam` to the entity *PoetrySlams* in the [poetry slam service definition](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds). The action sends a notification to all visitors of a specific poetry slam.
 
         ```cds
 
@@ -194,7 +194,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         action sendReminderForPoetrySlam()  returns PoetrySlams;
         ```
         
-    3. Add the implementation of the *read*-handler of the poetry slam entity in the [poetry slam service](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) to set the value of the `isJobStatusShown` field.
+    3. Add the implementation of the *read*-handler of the poetry slam entity in the [poetry slam service](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) to set the value of the `isJobStatusShown` field.
 
         ```js
         srv.on('READ', [PoetrySlams.drafts, PoetrySlams], async (req, next) => {
@@ -231,9 +231,9 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         });
         ```
 
-    4. Copy the file [poetrySlamServiceJobSchedulerImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceJobSchedulerImplementation.js) to directory *srv/poetryslam/*. It includes the implementation of the action *sendReminderForPoetrySlams*, which schedules a job with predefined parameters. The parameters include the scheduling data, like the time to execute the job, a description and the poetry slam ID. Additionally, it states that the action `sendReminder` shall be triggered by the job.
+    4. Copy the file [poetrySlamServiceJobSchedulerImplementation.js](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceJobSchedulerImplementation.js) to directory *srv/poetryslam/*. It includes the implementation of the action *sendReminderForPoetrySlams*, which schedules a job with predefined parameters. The parameters include the scheduling data, like the time to execute the job, a description and the poetry slam ID. Additionally, it states that the action `sendReminder` shall be triggered by the job.
 
-    5. Add the job scheduling implementation handler to the [srv/poetryslam/poetrySlamServiceImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js) file.
+    5. Add the job scheduling implementation handler to the [srv/poetryslam/poetrySlamServiceImplementation.js](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js) file.
     
         ```javascript
         const jobSchedulerHandler = require('./poetrySlamServiceJobSchedulerImplementation');
@@ -248,7 +248,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 3. Enhance the SAP Fiori elements UI of the *Poetry Slams* application. 
 
-    1. Open the [*app/poetryslams/annotations.cds*](../../../tree/main-multi-tenant-features/app/poetryslams/annotations.cds) file to add a section that shows the job execution status. 
+    1. Open the [*app/poetryslams/annotations.cds*](../../../blob/main-multi-tenant-features/app/poetryslams/annotations.cds) file to add a section that shows the job execution status. 
     
         1. Annotate *service.PoetrySlams* with a new hidden field *isJobStatusShown*.    
             ```cds
@@ -290,18 +290,18 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
                 ![@UI.Hidden]: {$edmJson: {$Not: {$Path: 'IsActiveEntity'}}}
             },
             ```
-    2. Add the UI text for the button into the [*/app/poetryslams/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n.properties) file.
+    2. Add the UI text for the button into the [*/app/poetryslams/i18n/i18n.properties*](../../../blob/main-multi-tenant-features/app/poetryslams/i18n/i18n.properties) file.
 
         ```
         backgroundExecution         = Background Execution
         sendReminderForPoetrySlams  = Send Event Reminder
         ```
 
-        > Note: In the reference example, the file [*/app/poetryslams/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n_de.properties) with the German texts is also available. You can adopt them accordingly.
+        > Note: In the reference example, the file [*/app/poetryslams/i18n/i18n_de.properties*](../../../blob/main-multi-tenant-features/app/poetryslams/i18n/i18n_de.properties) with the German texts is also available. You can adopt them accordingly.
 
 ### SAP BTP Configuration and Deployment
 
-1. Add the SAP Job Scheduling service as resource into the [mta.yaml](../../../tree/main-multi-tenant-features/mta.yaml) file. In addition, the resource is also required as dependency in the service, mtx modules, and the app router.
+1. Add the SAP Job Scheduling service as resource into the [mta.yaml](../../../blob/main-multi-tenant-features/mta.yaml) file. In addition, the resource is also required as dependency in the service, mtx modules, and the app router.
 
     ```yaml
     modules:
@@ -335,9 +335,9 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
             config:
                 enable-xsuaa-support: true
     ```
-> Note: Since the job scheduler resource is referenced as a scope in the [*xs-security.json*](../../../tree/main-multi-tenant-features/xs-security.json#L23), it has to be created before the SAP Authorization and Trust Management Service (XSUAA) service. Therefore, ensure that `processed-after: [poetry-slams-jobscheduler]` is set for [*poetry-slams-auth*](../../../tree/main-multi-tenant-features/mta.yaml) otherwise the deployment might throw an error.
+> Note: Since the job scheduler resource is referenced as a scope in the [*xs-security.json*](../../../blob/main-multi-tenant-features/xs-security.json#L23), it has to be created before the SAP Authorization and Trust Management Service (XSUAA) service. Therefore, ensure that `processed-after: [poetry-slams-jobscheduler]` is set for [*poetry-slams-auth*](../../../blob/main-multi-tenant-features/mta.yaml) otherwise the deployment might throw an error.
 
-2. Register the service in the multi-tenant environment [*mtx/sidecar/package.json*](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json) (see [SaaS Registry Dependencies](https://cap.cloud.sap/docs/guides/multitenancy/#saas-dependencies)):
+2. Register the service in the multi-tenant environment [*mtx/sidecar/package.json*](../../../blob/main-multi-tenant-features/mtx/sidecar/package.json) (see [SaaS Registry Dependencies](https://cap.cloud.sap/docs/guides/multitenancy/#saas-dependencies)):
 
     ```yaml
     "cds": {
@@ -367,15 +367,15 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 To ensure good quality, it is crucial to test the new functionality. Unit tests are available to test this feature:
 
-1. Copy the [*test/srv/jobscheduler/jobSchedulerService.test.js*](../../../tree/main-multi-tenant-features/test/srv/jobscheduler/jobSchedulerService.test.js) file to your project. This file tests the implementation of the job scheduler service.
+1. Copy the [*test/srv/jobscheduler/jobSchedulerService.test.js*](../../../blob/main-multi-tenant-features/test/srv/jobscheduler/jobSchedulerService.test.js) file to your project. This file tests the implementation of the job scheduler service.
 
-2. Copy the [*test/srv/poetryslam/poetrySlamServiceJobSchedulerImplementation.test.js*](../../../tree/main-multi-tenant-features/test/srv/poetryslam/poetrySlamServiceJobSchedulerImplementation.test.js) file to your project. This file tests the implementation of the poetry slam service enhancements with the *sendReminderForPoetrySlam* action.
+2. Copy the [*test/srv/poetryslam/poetrySlamServiceJobSchedulerImplementation.test.js*](../../../blob/main-multi-tenant-features/test/srv/poetryslam/poetrySlamServiceJobSchedulerImplementation.test.js) file to your project. This file tests the implementation of the poetry slam service enhancements with the *sendReminderForPoetrySlam* action.
 
-3. Copy the [*test/srv/lib/jobScheduler.test.js*](../../../tree/main-multi-tenant-features/test/srv/lib/jobScheduler.test.js) file to your project. This file tests the jobScheduler class.
+3. Copy the [*test/srv/lib/jobScheduler.test.js*](../../../blob/main-multi-tenant-features/test/srv/lib/jobScheduler.test.js) file to your project. This file tests the jobScheduler class.
 
-4. Copy the [*test/srv/lib/jobSchedulerActionImplementation.test.js*](../../../tree/main-multi-tenant-features/test/srv/lib/jobSchedulerActionImplementation.test.js) file to your project. This file tests the jobSchedulerActionImplementation class.
+4. Copy the [*test/srv/lib/jobSchedulerActionImplementation.test.js*](../../../blob/main-multi-tenant-features/test/srv/lib/jobSchedulerActionImplementation.test.js) file to your project. This file tests the jobSchedulerActionImplementation class.
 
-5. Copy the [*test/srv/lib/tenantManager.test.js*](../../../tree/main-multi-tenant-features/test/srv/lib/tenantManager.test.js) file to your project. This file tests the tenantManager class.
+5. Copy the [*test/srv/lib/tenantManager.test.js*](../../../blob/main-multi-tenant-features/test/srv/lib/tenantManager.test.js) file to your project. This file tests the tenantManager class.
 
 6. To run the automated SAP Cloud Application Programming Model tests:
 
@@ -538,11 +538,11 @@ Now, let's have a look how you as the application provider can analyze the backg
 
 6. Open the schedule called *Immediately for Poetry Slam Number <Number of the poetry slam for which the reminder was sent>*. In the *Data (JSON)* section, the poetry slam ID, you'll find the poetry slam ID for which the reminder is sent.
 
-    > Note: The data section is set in the [poetry slam job scheduler implementation](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceJobSchedulerImplementation.js).
+    > Note: The data section is set in the [poetry slam job scheduler implementation](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceJobSchedulerImplementation.js).
 
 7. Navigate to the *Run Logs* view. An overview is shown with the executed runs. For each run, the scheduled time, execution time, completion time, and status is listed. 
 
 8. Choose a run to view its log. The log displays messages from the run.
 
-    > Note: One message is added in the [job scheduler action implementation](../../../tree/main-multi-tenant-features/srv/lib/jobSchedulerActionImplementation.js). This message informs you about the number of subscribed tenants for whom jobs were successfully scheduled.
+    > Note: One message is added in the [job scheduler action implementation](../../../blob/main-multi-tenant-features/srv/lib/jobSchedulerActionImplementation.js). This message informs you about the number of subscribed tenants for whom jobs were successfully scheduled.
 
