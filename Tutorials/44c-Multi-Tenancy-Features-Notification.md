@@ -21,19 +21,19 @@ To enable the Poetry Slam Manager, refer to [Developing Cloud Foundry Applicatio
 
 1. Enhance the poetry slam service.
 
-    1. Add a new action called *sendNotification* to the **visit** entity in the [poetry slam service](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds). This action sends a notification to the visitor of the selected visit. 
+    1. Add a new action called *sendNotification* to the **visit** entity in the [poetry slam service](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds). This action sends a notification to the visitor of the selected visit. 
         ```cds
         // Action: Inform the visitor about the event
         action sendNotification();
         ```
 
-    2. Copy the [*notification.js*](../../../tree/main-multi-tenant-features/srv/lib/notification.js) notification class to your project. The notification class manages the creation and sending of the notifications. The example implementation shows how to generate a notification in the user's language. It also shows how to navigate to a floorplan using the **NavigationTargetAction** and the **NavigationTargetObject** properties.
+    2. Copy the [*notification.js*](../../../blob/main-multi-tenant-features/srv/lib/notification.js) notification class to your project. The notification class manages the creation and sending of the notifications. The example implementation shows how to generate a notification in the user's language. It also shows how to navigate to a floorplan using the **NavigationTargetAction** and the **NavigationTargetObject** properties.
 
         > Note: For demonstration purposes, the notification type is directly created when sending the notification. In a production scenario, it's recommended to use a different approach since notification types are persisted. Each type has a specific version. As soon as the notification content is changed, the version of the type needs to be increased. Otherwise the content is not adapted. The old notification type version remains visible in the user's settings. To remove it completely, the application needs to delete it from the SAP Build Work Zone notifications.
         
-    3. Copy the [poetry slam service notification implementation](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceNotificationImplementation.js) file. The implementation handles the *sendNotification* action. 
+    3. Copy the [poetry slam service notification implementation](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceNotificationImplementation.js) file. The implementation handles the *sendNotification* action. 
 
-    4. Add the notification implementation handler to the [srv/poetryslam/poetrySlamServiceImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js).
+    4. Add the notification implementation handler to the [srv/poetryslam/poetrySlamServiceImplementation.js](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js).
     
         ```js
         const notificationHandler = require('./poetrySlamServiceNotificationImplementation');
@@ -46,9 +46,9 @@ To enable the Poetry Slam Manager, refer to [Developing Cloud Foundry Applicatio
         };
         ```    
 
-    5. Copy the [*srv/lib/destination.js*](../../../tree/main-multi-tenant-features/srv/lib/destination.js) file to your project. The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* are required to read the destination from the subscriber subaccount. To achieve this, pass the JSON Web Token (JWT) of the logged-in user to the function. The JWT contains the tenant information. The reuse function *getDestinationDescription* returns the destination description from the SAP BTP consumer subaccount.
+    5. Copy the [*srv/lib/destination.js*](../../../blob/main-multi-tenant-features/srv/lib/destination.js) file to your project. The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* are required to read the destination from the subscriber subaccount. To achieve this, pass the JSON Web Token (JWT) of the logged-in user to the function. The JWT contains the tenant information. The reuse function *getDestinationDescription* returns the destination description from the SAP BTP consumer subaccount.
     
-    6. Add the newly created message texts for the action success and error handling into the [*srv/i18n/messages.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages.properties) file.
+    6. Add the newly created message texts for the action success and error handling into the [*srv/i18n/messages.properties*](../../../blob/main-multi-tenant-features/srv/i18n/messages.properties) file.
 
         ```
         ACTION_NOTIFICATION_SEND_SUCCESS                        = The notification to {0} was sent successfully.
@@ -56,9 +56,9 @@ To enable the Poetry Slam Manager, refer to [Developing Cloud Foundry Applicatio
         ACTION_NOTIFICATION_SEND_CANCELLED                      = {0} has canceled the booking and won't receive a notification.
         ```
 
-        > Note: In the reference example, the [*srv/i18n/messages_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/messages_de.properties) file with the German texts is available, too. You can adopt them accordingly.
+        > Note: In the reference example, the [*srv/i18n/messages_de.properties*](../../../blob/main-multi-tenant-features/srv/i18n/messages_de.properties) file with the German texts is available, too. You can adopt them accordingly.
 
-    7. Add the newly created notification-specific texts, such as title and content of the generated notification in the [*srv/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n.properties) file.
+    7. Add the newly created notification-specific texts, such as title and content of the generated notification in the [*srv/i18n/i18n.properties*](../../../blob/main-multi-tenant-features/srv/i18n/i18n.properties) file.
 
         ```
         # -------------------------------------------------------------------------------------
@@ -82,11 +82,11 @@ To enable the Poetry Slam Manager, refer to [Developing Cloud Foundry Applicatio
             The Team {{poetry_slam_title}}
         ```
     
-        > Note: In the reference example, the [*srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n_de.properties) file with the German texts is available, too. You can adopt them accordingly.    
+        > Note: In the reference example, the [*srv/i18n/i18n_de.properties*](../../../blob/main-multi-tenant-features/srv/i18n/i18n_de.properties) file with the German texts is available, too. You can adopt them accordingly.    
 
 2. Enhance the SAP Fiori elements UI of the *Poetry Slams* application. 
 
-    1. Enhance the **LineItem #VisitorData** section of the [annotations file](../../../tree/main-multi-tenant-features/app/poetryslams/annotations.cds). Add a button that triggers the action to send the notification. 
+    1. Enhance the **LineItem #VisitorData** section of the [annotations file](../../../blob/main-multi-tenant-features/app/poetryslams/annotations.cds). Add a button that triggers the action to send the notification. 
     
         ```cds
         {
@@ -96,15 +96,15 @@ To enable the Poetry Slam Manager, refer to [Developing Cloud Foundry Applicatio
         }
         ```      
 
-    2. Add the newly created texts into the [*/app/poetryslams/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n.properties) file.
+    2. Add the newly created texts into the [*/app/poetryslams/i18n/i18n.properties*](../../../blob/main-multi-tenant-features/app/poetryslams/i18n/i18n.properties) file.
 
         ```
         sendNotification                = Send Confirmation Notification
         ```
 
-        > Note: In the reference example, the [*/app/poetryslams/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n_de.properties) file with the German texts is available, too. You can adopt them accordingly.
+        > Note: In the reference example, the [*/app/poetryslams/i18n/i18n_de.properties*](../../../blob/main-multi-tenant-features/app/poetryslams/i18n/i18n_de.properties) file with the German texts is available, too. You can adopt them accordingly.
 
-4. Add the required npm modules as dependencies to the *package.json* of your project. Refer to the [package.json](../../../tree/main-multi-tenant-features/package.json) file of the sample application.
+4. Add the required npm modules as dependencies to the *package.json* of your project. Refer to the [package.json](../../../blob/main-multi-tenant-features/package.json) file of the sample application.
     
     1. Open a terminal.
     
@@ -208,9 +208,9 @@ For quality assurance, it is important to test the new functionality.
 
 Unit tests are available to test the notification feature:
 
-1. Copy the [test/srv/poetryslam/poetrySlamServiceNotificationImplemention.test.js](../../../tree/main-multi-tenant-features/test/srv/poetryslam/poetrySlamServiceNotificationImplemention.test.js) file to your project. This file tests the enhancements of the poetry slam service.
+1. Copy the [test/srv/poetryslam/poetrySlamServiceNotificationImplemention.test.js](../../../blob/main-multi-tenant-features/test/srv/poetryslam/poetrySlamServiceNotificationImplemention.test.js) file to your project. This file tests the enhancements of the poetry slam service.
 
-2. Copy the [test/srv/lib/notification.test.js](../../../tree/main-multi-tenant-features/test/srv/lib/notification.test.js) file to your project. This file tests the notification class.
+2. Copy the [test/srv/lib/notification.test.js](../../../blob/main-multi-tenant-features/test/srv/lib/notification.test.js) file to your project. This file tests the notification class.
 
 3. To run the automated SAP Cloud Application Programming Model tests:
 

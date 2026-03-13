@@ -120,7 +120,7 @@ SAP Build Work Zone offers additional features besides navigation and theming su
 
 > Note: In the **Poetry Slam Manager**, the **Poetry Slam Manager Role** has full authorization to the application. The **Poetry Slam Visitor Role** is used to handle read-only access. 
 
-> Note: The roles are defined in the *Poetry Slam Manager* application. You can get more details in chapter [Add Authentication and Role-Based Authorization](https://github.com/SAP-samples/partner-reference-application/blob/main/Tutorials/14-Develop-Core-Application.md#add-authentication-and-role-based-authorization).
+> Note: The roles are defined in the *Poetry Slam Manager* application. You can get more details in chapter [Add Authentication and Role-Based Authorization](./14b-Develop-Core-Finetuning.md#add-authentication-and-role-based-authorization).
 
 ### Create a Launchpad Site
 

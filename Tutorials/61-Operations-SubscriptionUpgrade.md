@@ -21,7 +21,7 @@ In both cases, you need to update all subscriptions. Here are a few options:
 4. Dedicated tools like the [mtx-tool](https://cap-js-community.github.io/mtx-tool/cap-multitenancy/#upgrade-tenant-scaling) from the [SAP Cloud Application Programming Model Community](https://github.com/cap-js-community). This method also utilizes the APIs of the SAP SaaS Provisioning Service mentioned above.
 
 To use the APIs of the **SAP SaaS Provisioning Service**, follow these steps:
-1. The **SAP SaaS Provisioning Service** is already configured as a dependency in the [*mta.yaml*](../../../tree/main-multi-tenant/mta.yaml) file of the multi-tenant branch. It's listed as the resource named *poetry-slams-registry*. Add a line to create a stable service key named *poetry-slams-registry-key* for this service:
+1. The **SAP SaaS Provisioning Service** is already configured as a dependency in the [*mta.yaml*](../../../blob/main-multi-tenant/mta.yaml) file of the multi-tenant branch. It's listed as the resource named *poetry-slams-registry*. Add a line to create a stable service key named *poetry-slams-registry-key* for this service:
     ```yaml
     resources
       - name: poetry-slams-registry
@@ -32,7 +32,7 @@ To use the APIs of the **SAP SaaS Provisioning Service**, follow these steps:
           service-keys:
             - name: poetry-slams-registry-key
     ```
-    > Note: The multi-tenant-features branch already contains this line to create the service key in the [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml) file.
+    > Note: The multi-tenant-features branch already contains this line to create the service key in the [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml) file.
 
 2. After deployment, open the *Instances and Services* in the SAP BTP cockpit of your provider account. You can view the key in the details of the service instance *poetry-slams-registry*. From this key, you need the fields **clientid**, **clientsecret**, **url** (the url of the authorization service), and **saas_registry_url**.
 
@@ -43,7 +43,7 @@ To use the APIs of the **SAP SaaS Provisioning Service**, follow these steps:
 
 4. Use that token and **saas_registry_url** to trigger the update of the application subscriptions per [batch-update](https://saas-manager.cfapps.eu10.hana.ondemand.com/api#/a_ApplicationController%20API/batchUpdateApplicationAndTenantSubscriptionAsync) or per [tenant-id](https://saas-manager.cfapps.eu10.hana.ondemand.com/api#/a_ApplicationController%20API/updateApplicationAndTenantSubscriptionAsync)  and use the response (header attribute *Location*) to pull the [status of the update job](https://saas-manager.cfapps.eu10.hana.ondemand.com/api#/n_Job%20Management/getJobRelatedToSaasApplicationById):
 
-    The script [*tenant_update_registry.sh*](../../../tree/main-multi-tenant-features/test/cicd/tenant_update_registry.sh) in the *test* folder of the *multi-tenant-features* branch demonstrates how to perform these steps. You can also use this in pipelines. Provide the values of step 2 to the script as environment variables: **registry_clientid**, **registry_clientsecret**, **registry_uaa_url**, and **registry_saasreg_url**.
+    The script [*tenant_update_registry.sh*](../../../blob/main-multi-tenant-features/test/cicd/tenant_update_registry.sh) in the *test* folder of the *multi-tenant-features* branch demonstrates how to perform these steps. You can also use this in pipelines. Provide the values of step 2 to the script as environment variables: **registry_clientid**, **registry_clientsecret**, **registry_uaa_url**, and **registry_saasreg_url**.
 
 ## Handling Changes to the Data Model
 
@@ -58,9 +58,9 @@ In your multi-tenant cloud solution, these changes shouldn't break the applicati
 When deploying an update to your application that includes a new field, this new field won't appear in the databases of the various subscriptions immediately. You need to [update the subscriptions](./61-Operations-SubscriptionUpgrade.md#updating-subscriptions) first. Only then will the field be available in the database, allowing it to be consumed and exposed in services and UIs.
 
 To avoid breaking your UI, you need to introduce a new field in a "phased" approach consisting of several updates of the application in the productive environment:
-1. Update your application with the new field added to the database model. For example, add a new field, **eventType**, to the entity **PoetrySlams** in [db/poetrySlamManagerModel.cds](../../../tree/main-multi-tenant/db/poetrySlamManagerModel.cds).
+1. Update your application with the new field added to the database model. For example, add a new field, **eventType**, to the entity **PoetrySlams** in [db/poetrySlamManagerModel.cds](../../../blob/main-multi-tenant/db/poetrySlamManagerModel.cds).
 2. Update all subscriptions to extend the database schema of all existing subscriptions. New subscriptions automatically include the new database schema.
-3. Update your application by adding the new field in the service definitions, for example in [srv/poetryslam/poetrySlamService.cds](../../../tree/main-multi-tenant/srv/poetryslam/poetrySlamService.cds). Also, update the UI, for example [app/poetryslams/annotations.cds](../../../tree/main-multi-tenant/app/poetryslams/annotations.cds).
+3. Update your application by adding the new field in the service definitions, for example in [srv/poetryslam/poetrySlamService.cds](../../../blob/main-multi-tenant/srv/poetryslam/poetrySlamService.cds). Also, update the UI, for example [app/poetryslams/annotations.cds](../../../blob/main-multi-tenant/app/poetryslams/annotations.cds).
 
 <p align="center">
     <img src="./images/61_Flow_NewField.png" width="40%">

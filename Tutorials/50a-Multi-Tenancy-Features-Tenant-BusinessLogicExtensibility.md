@@ -44,7 +44,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
         > Note: The *@sap/cds-oyster* package is an alpha release.
 
-4. Enable code-extensibility in the application by enhancing the cds-requires-section of the [package.json](../../../tree/main-multi-tenant-features/package.json) file in the root directory of the project.
+4. Enable code-extensibility in the application by enhancing the cds-requires-section of the [package.json](../../../blob/main-multi-tenant-features/package.json) file in the root directory of the project.
 
 ```json
     "code-extensibility":  {
@@ -56,7 +56,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 > Note: The *maxTime* property specifies the maximum execution time, in milliseconds, allowed for the extension's code. The *maxMemory* property sets the maximum memory, in megabytes, that the extension can utilize.
 
-5. Configure code-extensibility and allow extensions for CRUD, function and action by enhancing the cds-requires-section in the [package.json](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json) file of the mtx sidecar.
+5. Configure code-extensibility and allow extensions for CRUD, function and action by enhancing the cds-requires-section in the [package.json](../../../blob/main-multi-tenant-features/mtx/sidecar/package.json) file of the mtx sidecar.
 
 ```json
     "cds.xt.ExtensibilityService": {
@@ -114,7 +114,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     }
 ```
 
-6. Extend the [Poetry Slam service](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds) with a function used for business logic extensibility.
+6. Extend the [Poetry Slam service](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds) with a function used for business logic extensibility.
 
     1. Define data types for the project data that is set as parameter for the function.
 
@@ -151,7 +151,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         }
         ```
 
-7. Enhance the `getRemoteProjectData` method of the [*connectorS4HC.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connectorS4HC.js) to call the extension point for the business logic extensibility. The `extendProjectData` extension point takes the project record as parameter. A customer-specific extension can enhance the project data with business logic and returns the enhanced project record. The Poetry Slam Manager then uses the enhanced project record to create the project in SAP S/4HANA Cloud Public Edition.
+7. Enhance the `getRemoteProjectData` method of the [*connectorS4HC.js*](../../../blob/main-multi-tenant-features/srv/poetryslam/connector/connectorS4HC.js) to call the extension point for the business logic extensibility. The `extendProjectData` extension point takes the project record as parameter. A customer-specific extension can enhance the project data with business logic and returns the enhanced project record. The Poetry Slam Manager then uses the enhanced project record to create the project in SAP S/4HANA Cloud Public Edition.
 
     ```javascript
     try {

@@ -16,10 +16,10 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 To enable tenant-specific extensions as a SaaS provider follow these steps. For more details, refer to capire documentation [Extending SaaS Applications → As a SaaS Provider](https://cap.cloud.sap/docs/guides/extensibility/customization#prep-as-provider).
 
 1. Run the command `cds add extensibility`. This enhances the following files:
-    - The extensibility flag is set to true in [package.json](../../../tree/main-multi-tenant-features/package.json).
-    - An MTX route is added to the approuter in [app/router/xs-app.json](../../../tree/main-multi-tenant-features/app/router/xs-app.json). This ensures that tenant-specific information needed for the extensions is provided to the MTX module.
-    - The [mta.yaml](../../../tree/main-multi-tenant-features/mta.yaml) is enhanced with a subscription URL.
-2. Add restriction points to the [MTX sidecar package.json](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json) to restrict which database and service entities can be extended. Besides this, it defines which annotations are allowed to be used for an extension.
+    - The extensibility flag is set to true in [package.json](../../../blob/main-multi-tenant-features/package.json).
+    - An MTX route is added to the approuter in [app/router/xs-app.json](../../../blob/main-multi-tenant-features/app/router/xs-app.json). This ensures that tenant-specific information needed for the extensions is provided to the MTX module.
+    - The [mta.yaml](../../../blob/main-multi-tenant-features/mta.yaml) is enhanced with a subscription URL.
+2. Add restriction points to the [MTX sidecar package.json](../../../blob/main-multi-tenant-features/mtx/sidecar/package.json) to restrict which database and service entities can be extended. Besides this, it defines which annotations are allowed to be used for an extension.
 
     ```json
     {
@@ -60,7 +60,7 @@ To enable tenant-specific extensions as a SaaS provider follow these steps. For 
     }
     ```
 
-3. Furthermore enhance the [MTX sidecar package.json](../../../tree/main-multi-tenant-features/mtx/sidecar/package.json) with the assert_integrity configuration as described in the capire documentation [Database Constraints](https://cap.cloud.sap/docs/guides/databases#database-constraints). This checks the integrity of the database schema. When set to "db", it ensures that the database schema matches the model definitions provided in the application.
+3. Furthermore enhance the [MTX sidecar package.json](../../../blob/main-multi-tenant-features/mtx/sidecar/package.json) with the assert_integrity configuration as described in the capire documentation [Database Constraints](https://cap.cloud.sap/docs/guides/databases#database-constraints). This checks the integrity of the database schema. When set to "db", it ensures that the database schema matches the model definitions provided in the application.
 
     ```json
     {
@@ -72,7 +72,7 @@ To enable tenant-specific extensions as a SaaS provider follow these steps. For 
     }
     ```
 
-4. Add the following roles to the [xs-security.json](../../../tree/main-multi-tenant-features/xs-security.json) file:
+4. Add the following roles to the [xs-security.json](../../../blob/main-multi-tenant-features/xs-security.json) file:
 
     ```json
     {

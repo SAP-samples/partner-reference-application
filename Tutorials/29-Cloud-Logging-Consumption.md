@@ -23,7 +23,7 @@ To understand how to implement the SAP Cloud Logging service, including the tele
 Captured logs, metrics, and traces can be influenced by configuring parameters such as **max_data_nodes**, **max_instances**, **retention_period**, and **ingest_otlp** in the SAP Cloud Logging service.
 
 ### Configuration of the SAP Cloud Logging Service
-The mentioned SAP Cloud Logging service parameters can be configured in the [**Multi-Target Application Development Descriptor (mta.yaml)**](../../../tree/main-multi-tenant-features/mta.yaml) file of your project: 
+The mentioned SAP Cloud Logging service parameters can be configured in the [**Multi-Target Application Development Descriptor (mta.yaml)**](../../../blob/main-multi-tenant-features/mta.yaml) file of your project: 
 
 ```yaml
   # Cloud Logging Service
@@ -42,7 +42,7 @@ The mentioned SAP Cloud Logging service parameters can be configured in the [**M
         retention_period: 7
 ```
 
-> Note: If parameters are omitted in the [mta.yaml](../../../tree/main-multi-tenant-features/mta.yaml) file, defaults apply as mentioned in [Configuration Parameters](https://help.sap.com/docs/cloud-logging/cloud-logging/configuration-parameters) on SAP Help Portal and shown above.
+> Note: If parameters are omitted in the [mta.yaml](../../../blob/main-multi-tenant-features/mta.yaml) file, defaults apply as mentioned in [Configuration Parameters](https://help.sap.com/docs/cloud-logging/cloud-logging/configuration-parameters) on SAP Help Portal and shown above.
 
 #### Data Nodes
 
@@ -191,7 +191,7 @@ The tests are performed in a setup with one provider and with 1, 20, and 100 sub
 
 #### Cloud Logging Service
 
-The SAP Cloud Logging service parameters are configured in the [**Multi-Target Application Development Descriptor (mta.yaml)**](../../../tree/main-multi-tenant-features/mta.yaml) file as follows: 
+The SAP Cloud Logging service parameters are configured in the [**Multi-Target Application Development Descriptor (mta.yaml)**](../../../blob/main-multi-tenant-features/mta.yaml) file as follows: 
 
 ```yaml
   # Cloud Logging Service

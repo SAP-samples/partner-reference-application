@@ -40,7 +40,7 @@ The following sections demonstrate both approaches.
 
 #### Option 1: Use a Dedicated SAP Cloud Logging Instance
 
-For the Partner Reference Application, an SAP Cloud Logging instance is created with [dev](https://help.sap.com/docs/cloud-logging/cloud-logging/service-plans?version=Cloud) service plan using the [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml) file:
+For the Partner Reference Application, an SAP Cloud Logging instance is created with [dev](https://help.sap.com/docs/cloud-logging/cloud-logging/service-plans?version=Cloud) service plan using the [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml) file:
 
 1. Enable the SAP Cloud Logging service instance and [OpenTelemetry](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-via-opentelemetry-api-endpoint?version=Cloud) by adding the following code snippet to the *resources* in the *mta.yaml*:
     ```yml
@@ -120,7 +120,7 @@ When you choose to share an existing SAP Cloud Logging instance, your applicatio
         ```  
     > Note: There are multiple ways to share the SAP Cloud Logging service resources, even across SAP BTP subaccounts. For more details, see [Ingest Observability Data](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-observability-data?locale=en-US&version=Cloud) on SAP Help Portal.
 
-3. Reference the existing SAP Cloud Logging service instance `shared-cloud-logging-service` in your [*mta.yaml*](../../../tree/main-multi-tenant-features/mta.yaml) file and bind it to your applications:
+3. Reference the existing SAP Cloud Logging service instance `shared-cloud-logging-service` in your [*mta.yaml*](../../../blob/main-multi-tenant-features/mta.yaml) file and bind it to your applications:
     1. Add the exisiting resource to the *resources* section in the *mta.yaml*:
         ```yml
         resources:
@@ -155,7 +155,7 @@ By enabling the telemetry plugin in your project, various kinds of telemetry dat
 
 For more information, refer to the CDS plugin [@cap-js/telemetry](https://github.com/cap-js/telemetry) and [Telemetry](https://cap.cloud.sap/docs/plugins/#telemetry).
 
-1. Add the required dependencies for telemetry to the [*package.json*](../../../tree/main-multi-tenant-features/package.json).
+1. Add the required dependencies for telemetry to the [*package.json*](../../../blob/main-multi-tenant-features/package.json).
 
     1. Open a terminal.
 
@@ -183,7 +183,7 @@ For more information, refer to the CDS plugin [@cap-js/telemetry](https://github
         npm add @opentelemetry/exporter-trace-otlp-grpc
         ```
 
-2. Make CDS write telemetry data to the SAP Cloud Logging service by adding the following code snippet to the profile `[production]` in the [*package.json*](../../../tree/main-multi-tenant-features/package.json):
+2. Make CDS write telemetry data to the SAP Cloud Logging service by adding the following code snippet to the profile `[production]` in the [*package.json*](../../../blob/main-multi-tenant-features/package.json):
     ```json
     "telemetry": {
       "kind": "to-cloud-logging"

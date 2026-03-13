@@ -52,7 +52,7 @@ You use the **Sales Order (A2X)** and **Business Partner (A2X)** OData services 
     1. `cds import ./external_resources/S4HC_CE_SALESORDER_0001.edmx --as cds` 
     2. `cds import ./external_resources/S4HC_API_BUSINESS_PARTNER.edmx --as cds` 
 
-    As a result, the system creates CDS files in the **./srv/external** folder for all remote services and enhances the [*package.json*](../../../tree/main-multi-tenant-features/package.json) file with CDS configurations referring to the remote services. Additionally, this command also adds the following node modules to your project:
+    As a result, the system creates CDS files in the **./srv/external** folder for all remote services and enhances the [*package.json*](../../../blob/main-multi-tenant-features/package.json) file with CDS configurations referring to the remote services. Additionally, this command also adds the following node modules to your project:
 
     - @sap-cloud-sdk/connectivity
     - @sap-cloud-sdk/http-client
@@ -60,7 +60,7 @@ You use the **Sales Order (A2X)** and **Business Partner (A2X)** OData services 
 
     > Note: Avoid using the `--keep-namespace` parameter in the CDS import command. It can cause service name clashes when importing multiple SAP S/4HANA Cloud Public Edition OData services.
 
-6. Enhance the [*package.json*](../../../tree/main-multi-tenant-features/package.json) file with development configurations for local testing and productive configurations. Ensure that the **csrf** and **csrfInBatch** flags are set in  **package.json** file. This enables the management of cross-site request forgery tokens, which are required for POST requests at runtime when using destinations.
+6. Enhance the [*package.json*](../../../blob/main-multi-tenant-features/package.json) file with development configurations for local testing and productive configurations. Ensure that the **csrf** and **csrfInBatch** flags are set in  **package.json** file. This enables the management of cross-site request forgery tokens, which are required for POST requests at runtime when using destinations.
 
     ```json
     "cds": {
@@ -113,7 +113,7 @@ You use the **Sales Order (A2X)** and **Business Partner (A2X)** OData services 
 
 ### Enhance the Entity Model to Store Sales Order Information
 
-In SAP Business Application Studio, enhance the SAP CAP entity models in [*/db/poetrySlamManagerModel.cds*](../../../tree/main-multi-tenant-features/db/poetrySlamManagerModel.cds) file with elements to store sales order information, which makes it possible to associate poetry slams with sales orders in the remote ERP system.
+In SAP Business Application Studio, enhance the SAP CAP entity models in [*/db/poetrySlamManagerModel.cds*](../../../blob/main-multi-tenant-features/db/poetrySlamManagerModel.cds) file with elements to store sales order information, which makes it possible to associate poetry slams with sales orders in the remote ERP system.
 
 1. Extend the **PoetrySlams** entity:
     ```cds
@@ -127,14 +127,14 @@ In SAP Business Application Studio, enhance the SAP CAP entity models in [*/db/p
     salesOrderID           @title: '{i18n>salesOrderID}';
     ```  
 
-3. Enhance the labels of **PoetrySlams** entity in the [*/db/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/db/i18n/i18n.properties) file with the following label: 
+3. Enhance the labels of **PoetrySlams** entity in the [*/db/i18n/i18n.properties*](../../../blob/main-multi-tenant-features/db/i18n/i18n.properties) file with the following label: 
     ```
     salesOrderID            = Sales Order
     ```
-     > In the reference example, the [*/db/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/db/i18n/i18n_de.properties) file with the German texts is available, too. You can use these texts as needed.
+     > In the reference example, the [*/db/i18n/i18n_de.properties*](../../../blob/main-multi-tenant-features/db/i18n/i18n_de.properties) file with the German texts is available, too. You can use these texts as needed.
 
 ### Enhance the API Service Model with the Sales Order Information
-1. In SAP Business Application Studio, open the [*srv/api/poetrySlamManagerAPI.cds*](../../../tree/main-multi-tenant-features/srv/api/poetrySlamManagerAPI.cds) service models file to extend the SAP CAP API service model by the sales order information.
+1. In SAP Business Application Studio, open the [*srv/api/poetrySlamManagerAPI.cds*](../../../blob/main-multi-tenant-features/srv/api/poetrySlamManagerAPI.cds) service models file to extend the SAP CAP API service model by the sales order information.
 
 2. Extend the PoetrySlams entity with the *salesOrderID*.
 
@@ -147,7 +147,7 @@ In SAP Business Application Studio, enhance the SAP CAP entity models in [*/db/p
 
 ### Enhance the Service Model with the Remote Service
 
-1. In SAP Business Application Studio, open the [*srv/poetryslam/poetrySlamService.cds*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds) service models file to extend the SAP CAP service model by remote entities.
+1. In SAP Business Application Studio, open the [*srv/poetryslam/poetrySlamService.cds*](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamService.cds) service models file to extend the SAP CAP service model by remote entities.
 
 2. Add a projection of the SAP S/4HANA Cloud Public Edition sales order partner to the service model for consumption in the SAP Fiori elements UI:
 
@@ -197,17 +197,17 @@ In SAP Business Application Studio, enhance the SAP CAP entity models in [*/db/p
 
 You can define reuse functions that handle the connection for the different ERP systems in separate files. 
 
-1. Copy the file [*srv/lib/destination.js*](../../../tree/main-multi-tenant-features/srv/lib/destination.js) to your project. The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* are required to read the destination from the subscriber subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information. The reuse function *getDestinationDescription* returns the destination description from the SAP BTP consumer subaccount.
+1. Copy the file [*srv/lib/destination.js*](../../../blob/main-multi-tenant-features/srv/lib/destination.js) to your project. The reuse functions *readDestination*, *getDestinationURL*, and *getDestinationDescription* are required to read the destination from the subscriber subaccount. This system behavior is achieved by passing the JSON Web Token of the logged-in user to the function to get the destination. The JSON Web Token contains the tenant information. The reuse function *getDestinationDescription* returns the destination description from the SAP BTP consumer subaccount.
 2. Create a new folder named **connector** in the */srv/poetryslam* path.
 3. Create a file with the path **/srv/poetryslam/connector/connector.js**. This file is reused for different ERP integrations.
-4. Copy the ERP connection reuse functions in the [*/srv/poetryslam/connector/connector.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connector.js) file into your project. It delegates the OData requests and reads the destinations.
+4. Copy the ERP connection reuse functions in the [*/srv/poetryslam/connector/connector.js*](../../../blob/main-multi-tenant-features/srv/poetryslam/connector/connector.js) file into your project. It delegates the OData requests and reads the destinations.
 
 ##### Create a File with Reuse Functions for SAP S/4HANA Cloud Public Edition
 
 Reuse functions specific to SAP S/4HANA Cloud Public Edition are defined in a separate file. 
 
 1. Create a file with the path **/srv/poetryslam/connector/connectorS4HC.js**. 
-2. Copy the general and sales order related constants and functions of the [*connectorS4HC.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/connector/connectorS4HC.js) file into the newly created file. They are grouped with a specific comment. These functions help to read SAP S/4HANA Cloud Public Edition sales order and business partner data, and to determine the navigation URL to the Sales Order application in SAP S/4HANA Cloud Public Edition of the customer.
+2. Copy the general and sales order related constants and functions of the [*connectorS4HC.js*](../../../blob/main-multi-tenant-features/srv/poetryslam/connector/connectorS4HC.js) file into the newly created file. They are grouped with a specific comment. These functions help to read SAP S/4HANA Cloud Public Edition sales order and business partner data, and to determine the navigation URL to the Sales Order application in SAP S/4HANA Cloud Public Edition of the customer.
 
 ##### Enhance the Business Logic to Operate on SAP S/4HANA Cloud Public Edition Data
 
@@ -217,7 +217,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP CAP se
 
     1. Create a new file named **srv/poetryslam/poetrySlamServiceERPImplementation.js** in your project. 
 
-    2. Copy the following code snippet into the newly created file. As a reference, you can have a look at the [poetrySlamServiceERPImplementation.js](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceERPImplementation.js) file in the reference application.
+    2. Copy the following code snippet into the newly created file. As a reference, you can have a look at the [poetrySlamServiceERPImplementation.js](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceERPImplementation.js) file in the reference application.
 
         ```javascript
         'strict'    
@@ -248,7 +248,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP CAP se
 
         > Note: Without delegation, the remote entities return the error code 500 with the message: *SQLITE_ERROR: no such table* (local testing).
 
-2. Enhance the [*/srv/poetryslam/poetrySlamServiceImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js) to call the ERP implementation.
+2. Enhance the [*/srv/poetryslam/poetrySlamServiceImplementation.js*](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceImplementation.js) to call the ERP implementation.
 
     ```javascript
     const erpForwardHandler = require('./poetrySlamServiceERPImplementation');
@@ -261,7 +261,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP CAP se
     };
      ```
 
-3.  In the [*/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) file, the poetry slams entity is enriched with SAP S/4HANA Cloud Public Edition specific data. The connected back-end system is determined and the sales order data is read from the remote system.
+3.  In the [*/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js*](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServicePoetrySlamsImplementation.js) file, the poetry slams entity is enriched with SAP S/4HANA Cloud Public Edition specific data. The connected back-end system is determined and the sales order data is read from the remote system.
 
     1. Import the SAP S/4HANA Cloud Public Edition connector.
 
@@ -322,7 +322,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP CAP se
 
     > Note: The destinations called *s4hc* and *s4hc-url* connect to the ERP system. You create the destinations later on in the SAP BTP consumer subaccount.
 
-4. In the *srv* folder, edit language-dependent labels in the [*/srv/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n.properties) file. Add labels for sales order fields:
+4. In the *srv* folder, edit language-dependent labels in the [*/srv/i18n/i18n.properties*](../../../blob/main-multi-tenant-features/srv/i18n/i18n.properties) file. Add labels for sales order fields:
     ```
     # -------------------------------------------------------------------------------------
     # Remote Sales Order Elements
@@ -330,11 +330,11 @@ In SAP Business Application Studio, enhance the implementation of the SAP CAP se
     salesOrderURL           = Sales Order URL
     ```        
 
-    > In the reference example, the [*/srv/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/srv/i18n/i18n_de.properties) file with the German texts is available, too. You can use these texts as needed.
+    > In the reference example, the [*/srv/i18n/i18n_de.properties*](../../../blob/main-multi-tenant-features/srv/i18n/i18n_de.properties) file with the German texts is available, too. You can use these texts as needed.
 
 ### Enhance the Authentication Model to Cover Remote Sales Order Partners
 
-1. In SAP Business Application Studio, open the [*srv/poetryslam/poetrySlamServiceAuthorizations.cds*](../../../tree/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceAuthorizations.cds) file with the authorization annotations to extend the authorization annotation of the SAP CAP service model by restrictions referring to the remote services.
+1. In SAP Business Application Studio, open the [*srv/poetryslam/poetrySlamServiceAuthorizations.cds*](../../../blob/main-multi-tenant-features/srv/poetryslam/poetrySlamServiceAuthorizations.cds) file with the authorization annotations to extend the authorization annotation of the SAP CAP service model by restrictions referring to the remote services.
 
 2. Enhance the authorization model for the **S4HCSalesOrderPartner** service entity:
     ```javascript
@@ -347,7 +347,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP CAP se
 
 ### Enhance the Web App to Display SAP S/4HANA Cloud Public Edition Data 
 
-1. Adopt the SAP Fiori elements annotations of the web app in the [*/app/poetryslams/annotations.cds*](../../../tree/main-multi-tenant-features/app/poetryslams/annotations.cds) file.
+1. Adopt the SAP Fiori elements annotations of the web app in the [*/app/poetryslams/annotations.cds*](../../../blob/main-multi-tenant-features/app/poetryslams/annotations.cds) file.
     
     1. Add project annotations to the **PoetrySlams** entity.
         ```javascript
@@ -403,7 +403,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP CAP se
             },
             ```
 
-2. In the web app folder, edit language-dependent labels in the [*app/poetryslams/i18n/i18n.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n.properties) file. Add a label for the facet project data:
+2. In the web app folder, edit language-dependent labels in the [*app/poetryslams/i18n/i18n.properties*](../../../blob/main-multi-tenant-features/app/poetryslams/i18n/i18n.properties) file. Add a label for the facet project data:
 
     ```
     salesOrderData          = Sponsoring Data
@@ -413,7 +413,7 @@ In SAP Business Application Studio, enhance the implementation of the SAP CAP se
     businessPartnerId       = Sponsoring Business Partner
     ``` 
 
-    > In the reference example, the [*app/poetryslams/i18n/i18n_de.properties*](../../../tree/main-multi-tenant-features/app/poetryslams/i18n/i18n_de.properties) file with the German texts is available, too. ou can use these texts as needed.
+    > In the reference example, the [*app/poetryslams/i18n/i18n_de.properties*](../../../blob/main-multi-tenant-features/app/poetryslams/i18n/i18n_de.properties) file with the German texts is available, too. ou can use these texts as needed.
 
 ### Unit Tests
 
@@ -421,7 +421,7 @@ Unit tests are available to test this feature:
 
 1. Testing the sales order enhancement:
 
-    1. Copy the [*test/srv/api/poetrySlamManagerSalesOrderAPI.test.js*](../../../tree/main-multi-tenant-features/test/srv/api/poetrySlamManagerAPI.test.js) file to your project.
+    1. Copy the [*test/srv/api/poetrySlamManagerSalesOrderAPI.test.js*](../../../blob/main-multi-tenant-features/test/srv/api/poetrySlamManagerAPI.test.js) file to your project.
 
 2. To run the automated SAP CAP tests:
 
@@ -432,7 +432,7 @@ Unit tests are available to test this feature:
 
 The goal of local tests is to connect to integrated ERP systems without using destinations. Therefore, you need to adjust the code slightly, as shown below:
 
-1. To edit the development credentials in the [*package.json*](../../../tree/main-multi-tenant-features/package.json) file, replace the placeholders such as `{{S4HC-hostname}}`, `{{test-user}}`, and `{{test-password}}` with the information of your ERP test system.
+1. To edit the development credentials in the [*package.json*](../../../blob/main-multi-tenant-features/package.json) file, replace the placeholders such as `{{S4HC-hostname}}`, `{{test-user}}`, and `{{test-password}}` with the information of your ERP test system.
 
 > Note: If you don't have a user, see the next chapter for information on how to provide one.
 
@@ -447,7 +447,7 @@ The goal of local tests is to connect to integrated ERP systems without using de
 
 3. Open a terminal and start the app with the development profile using the `cds watch --profile development` run command. 
 
-4. Use the test users as listed in the [*.cdsrc.json*](../../../tree/main-multi-tenant-features/.cdsrc.json) file. 
+4. Use the test users as listed in the [*.cdsrc.json*](../../../blob/main-multi-tenant-features/.cdsrc.json) file. 
 
 5. Test the **S4HCSalesOrderPartner** service endpoint to SAP S/4HANA Cloud Public Edition. The system returns the respective data from SAP S/4HANA Cloud Public Edition.
 

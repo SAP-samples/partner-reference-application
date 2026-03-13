@@ -16,9 +16,9 @@ The following provides a step-by-step description on how to add CDS Lint to your
 2. Open a terminal.
 3. Run the `cds add lint` command.
     > Note: The command installs ESLint, the CDS ESLint plugin, and adds the ESLint configuration.
-4. Replace the created ESLint configuration (eslint.config.js in the root folder of your project) with the [eslint.config.js](../../../tree/main-multi-tenant/eslint.config.js) file of the sample application.  
+4. Replace the created ESLint configuration (eslint.config.js in the root folder of your project) with the [eslint.config.js](../../../blob/main-multi-tenant/eslint.config.js) file of the sample application.  
     > Note: In this file, the recommended JavaScript rules of ESLint and all rules for CDS are set. The available rules for CDS are documented in [CDS Lint Rules Reference](https://cap.cloud.sap/docs/tools/cds-lint/rules/). The rules for JavaScript are found in [ESLint Rules Reference](https://eslint.org/docs/latest/rules/). You adapt them according to your needs.
-5. Add a new npm script to the [package.json](../../../tree/main-multi-tenant/package.json) file of your project. This script enables you to run ESLint checks with npm.
+5. Add a new npm script to the [package.json](../../../blob/main-multi-tenant/package.json) file of your project. This script enables you to run ESLint checks with npm.
   
     ```json
     "scripts": {
@@ -50,19 +50,19 @@ If there are issues, the console displays the errors. Successful execution doesn
 To keep the project up to date, regularly update the dependencies to open source and third party libraries:
 
 - Node Modules:
-  - [package.json](../../../tree/main-multi-tenant/package.json)
-  - [app/poetryslams/package.json](../../../tree/main-multi-tenant/app/poetryslams/package.json)
-  - [app/router/package.json](../../../tree/main-multi-tenant/app/router/package.json)
-  - [mtx/sidecar/package.json](../../../tree/main-multi-tenant/mtx/sidecar/package.json)
+  - [package.json](../../../blob/main-multi-tenant/package.json)
+  - [app/poetryslams/package.json](../../../blob/main-multi-tenant/app/poetryslams/package.json)
+  - [app/router/package.json](../../../blob/main-multi-tenant/app/router/package.json)
+  - [mtx/sidecar/package.json](../../../blob/main-multi-tenant/mtx/sidecar/package.json)
 - SAPUI5 version:
-  - [app/poetryslams/webapp/manifest.json](../../../tree/main-multi-tenant/app/poetryslams/webapp/manifest.json)
-  - [app/poetryslams/webapp/index.html](../../../tree/main-multi-tenant/app/poetryslams/webapp/index.html)
-  - [app/poetryslams/webapp/test/flpSandbox.html](../../../tree/main-multi-tenant/app/poetryslams/webapp/test/flpSandbox.html)
-  - [app/poetryslams/webapp/test/integration/opaTests.qunit.html](../../../tree/main-multi-tenant/app/poetryslams/webapp/test/integration/opaTests.qunit.html)
-  - [app/visitors/webapp/manifest.json](../../../tree/main-multi-tenant/app/visitors/webapp/manifest.json)
-  - [app/visitors/webapp/index.html](../../../tree/main-multi-tenant/app/visitors/webapp/index.html)
-  - [app/visitors/webapp/test/flpSandbox.html](../../../tree/main-multi-tenant/app/visitors/webapp/test/flpSandbox.html)
-  - [app/visitors/webapp/test/integration/opaTests.qunit.html](../../../tree/main-multi-tenant/app/visitors/webapp/test/integration/opaTests.qunit.html)
+  - [app/poetryslams/webapp/manifest.json](../../../blob/main-multi-tenant/app/poetryslams/webapp/manifest.json)
+  - [app/poetryslams/webapp/index.html](../../../blob/main-multi-tenant/app/poetryslams/webapp/index.html)
+  - [app/poetryslams/webapp/test/flpSandbox.html](../../../blob/main-multi-tenant/app/poetryslams/webapp/test/flpSandbox.html)
+  - [app/poetryslams/webapp/test/integration/opaTests.qunit.html](../../../blob/main-multi-tenant/app/poetryslams/webapp/test/integration/opaTests.qunit.html)
+  - [app/visitors/webapp/manifest.json](../../../blob/main-multi-tenant/app/visitors/webapp/manifest.json)
+  - [app/visitors/webapp/index.html](../../../blob/main-multi-tenant/app/visitors/webapp/index.html)
+  - [app/visitors/webapp/test/flpSandbox.html](../../../blob/main-multi-tenant/app/visitors/webapp/test/flpSandbox.html)
+  - [app/visitors/webapp/test/integration/opaTests.qunit.html](../../../blob/main-multi-tenant/app/visitors/webapp/test/integration/opaTests.qunit.html)
   - [@sap/ux-specification](https://www.npmjs.com/package/@sap/ux-specification?activeTab=versions): Keep the node module in sync with the currently used SAPUI5 version. For more details on mapping between the node module version and the SAPUI5 version, see this [overview](https://www.npmjs.com/package/@sap/ux-specification?activeTab=versions).
 
 > Note: You can find information on the available SAPUI5 versions and their maintenance status in this [overview](https://sapui5.hana.ondemand.com/versionoverview.html). Especially note the versions marked as *Long-term Maintenance*.
@@ -87,7 +87,7 @@ There are two ways to test the services in SAP Cloud Application Programming Mod
 
 #### Example of a Service API
 
-The service API is used to test the Poetry Slam Manager entity model in [poetrySlamManagerModel.test.js](../../../tree/main-multi-tenant/test/db/poetrySlamManagerModel.test.js).
+The service API is used to test the Poetry Slam Manager entity model in [poetrySlamManagerModel.test.js](../../../blob/main-multi-tenant/test/db/poetrySlamManagerModel.test.js).
 
 In the following example, a visit is selected from the database and is to be recreated. However, the creation must be rejected due to uniqueness of the pair *poetrySlam_ID* and *visitor_ID*. 
 
@@ -106,7 +106,7 @@ it('should ensure the uniqueness of the combination of visitor ID and poetry sla
 
 The HTTP API is used to test the Poetry Slam Manager service. There is one test file for each entity and a file to test the OData function of the service. Axios is used as HTTP client in the tests. The authorization is set to the user *Peter*.
 
-In the following example, in the *beforeEach* function, the [sample data is reset](https://cap.cloud.sap/docs/node.js/cds-test#test-data-reset) and newly created. Besides this, all poetry slams are read using an OData GET call. In the test, a published poetry slam is selected and the *Cancel* action is executed using OData. It checks if the status is correctly set to *Canceled*. Afterwards, the entry is read and the status code and criticality are checked. You can find the tests in [poetrySlamServicePoetrySlams.test.js](../../../tree/main-multi-tenant/test/srv/poetryslam/poetrySlamServicePoetrySlams.test.js).
+In the following example, in the *beforeEach* function, the [sample data is reset](https://cap.cloud.sap/docs/node.js/cds-test#test-data-reset) and newly created. Besides this, all poetry slams are read using an OData GET call. In the test, a published poetry slam is selected and the *Cancel* action is executed using OData. It checks if the status is correctly set to *Canceled*. Afterwards, the entry is read and the status code and criticality are checked. You can find the tests in [poetrySlamServicePoetrySlams.test.js](../../../blob/main-multi-tenant/test/srv/poetryslam/poetrySlamServicePoetrySlams.test.js).
 
 > Note: In the *beforeEach* function, the OData action *createTestData* is called. The action creates sample data for the entities *poetryslams*, *visitors* and *visits*. This is for demo purposes only.
 
@@ -164,10 +164,10 @@ To take over the unit tests and the configuration from the example implementatio
     1. Run command `npm add mocha -D`.
     2. Run command `npm add -D @cap-js/cds-test`.
   
-    > Note: You can compare this with the [*package.json* of the example implementation](../../../tree/main-multi-tenant/package.json). 
+    > Note: You can compare this with the [*package.json* of the example implementation](../../../blob/main-multi-tenant/package.json). 
 
 4. Copy the script with the name *test* to your *package.json*. 
-5. Copy the Mocha configuration file [*.mocharc.json*](../../../tree/main-multi-tenant/.mocharc.json) to your project.
+5. Copy the Mocha configuration file [*.mocharc.json*](../../../blob/main-multi-tenant/.mocharc.json) to your project.
 
 To run the automated SAP Cloud Application Programming Model tests:
 
@@ -183,7 +183,7 @@ OPA5 tests are built on the QUnit testing framework. They simulate and check use
 
 The tests are located in the directories [*app/poetryslams/webapp/test*](../../../tree/main-multi-tenant/app/poetryslams/webapp/test) and [*app/visitors/webapp/test*](../../../tree/main-multi-tenant/app/visitors/webapp/test).
 
-> Note: Before you can execute the file **opaTests.qunit.html**, adjust it manually. To run the tests, add `https://sapui5.hana.ondemand.com/<version>/` in front of the referenced resources in the file. You can have a look at the [*app/poetryslams/webapp/test/integration/opaTests.qunit.html*](../../../tree/main-multi-tenant/app/poetryslams/webapp/test/integration/opaTests.qunit.html) of the reference application. 
+> Note: Before you can execute the file **opaTests.qunit.html**, adjust it manually. To run the tests, add `https://sapui5.hana.ondemand.com/<version>/` in front of the referenced resources in the file. You can have a look at the [*app/poetryslams/webapp/test/integration/opaTests.qunit.html*](../../../blob/main-multi-tenant/app/poetryslams/webapp/test/integration/opaTests.qunit.html) of the reference application. 
 
 1. Start the local server: `npm run start`
 2. To execute OPA5 tests for the *Poetry Slams* application, open: `<host>/poetryslams/webapp/test/integration/opaTests.qunit.html` and open `<host>/visitors/webapp/test/integration/opaTests.qunit.html` for the *Visitors* application.
