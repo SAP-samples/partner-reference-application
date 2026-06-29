@@ -1,4 +1,4 @@
-'strict';
+'use strict';
 
 // Include cds libraries and utility files
 const cds = require('@sap/cds');

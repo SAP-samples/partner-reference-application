@@ -1,4 +1,4 @@
-'strict';
+'use strict';
 
 const cds = require('@sap/cds');
 

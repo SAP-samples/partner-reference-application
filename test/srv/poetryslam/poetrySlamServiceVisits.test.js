@@ -2,7 +2,7 @@
 // Initialization of test
 // CAP Unit Testing: https://cap.cloud.sap/docs/node.js/cds-test?q=cds.test#run
 // ----------------------------------------------------------------------------
-'strict';
+'use strict';
 
 // Adds cds module
 const cds = require('@sap/cds');
@@ -182,9 +182,9 @@ describe('Visits in PoetrySlamService', () => {
 
     // Read the status of the poetry slam and check that it was not changed
     let result = await GET(
-      `/odata/v4/poetryslamservice/PoetrySlams(ID=${visit.parent_ID},IsActiveEntity=true)/visits(ID=${visit.ID},IsActiveEntity=true)?$expand=parent`,
+      `/odata/v4/poetryslamservice/PoetrySlams(ID=${visit.parent_ID},IsActiveEntity=true)/visits(ID=${visit.ID},IsActiveEntity=true)`,
       {
-        params: { $select: `ID,status_code,parent_ID` }
+        params: { $select: `ID,status_code,parent_ID`, $expand: 'parent' }
       }
     );
     expect(result.data.status_code).to.eql(visitStatusCode.canceled);
