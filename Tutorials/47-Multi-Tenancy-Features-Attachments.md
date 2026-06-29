@@ -93,7 +93,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
             }
         ```
 
-3. In the **./mtx/sidecar/** folder create a file called `SDMRepositoryConfig.js` with the following configuration:
+3. In the **./mtx/sidecar/** folder create a file called [`SDMRepositoryConfig.js`](../../../blob/main-multi-tenant-features/mtx/sidecar/SDMRepositoryConfig.js) with the following configuration:
 
     ```JavaScript
         module.exports = {
@@ -105,14 +105,19 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
                     isVersionEnabled: 'false',
                     isVirusScanEnabled: 'true',
                     skipVirusScanForLargeFile: 'false',
-                    hashAlgorithms: 'SHA-256'
+                    hashAlgorithms: 'SHA-256',
+                    repositoryParams: {
+                        paramName: 'fileExtensions',
+                        paramValue: '{type:allow, list:[pdf, jpeg, png]}'
+                    }
                 }
             }
         };
     ```
-    > Note: This file serves as the SAP Document Management Service repository configuration and can be adjusted based on preference, as seen in [Internal Repository](https://help.sap.com/docs/document-management-service/sap-document-management-service/internal-repository) on SAP Help Portal. To store attachments with the SAP Document Management Service, a tenant-specific repository is created when you subscribe to the SaaS application. It is deleted when you unsubscribe, based on the configuration in the `SDMRepositoryConfig.js` file. Once the repository is created upon subscription, you can't update the configuration by changing the file and redeploying it. You need to update it using the APIs provided on [SAP Business Accelerator Hub](https://api.sap.com/api/AdminAPI/resource/Repository_Configuration).
+    > Note: This file serves as the SAP Document Management Service repository configuration and can be adjusted based on preference, as seen in [Internal Repository](https://help.sap.com/docs/document-management-service/sap-document-management-service/internal-repository) on SAP Help Portal. To store attachments with the SAP Document Management Service, a tenant-specific repository is created when you subscribe to the SaaS application. It is deleted when you unsubscribe, based on the configuration in the [`SDMRepositoryConfig.js`](../../../blob/main-multi-tenant-features/mtx/sidecar/SDMRepositoryConfig.js) file. Once the repository is created upon subscription, you can't update the configuration by changing the file and redeploying it. You need to update it using the APIs provided on [SAP Business Accelerator Hub](https://api.sap.com/api/AdminAPI/resource/Repository_Configuration).
 
-
+    > Note: Use the *fileExtensions* repository parameter to configure the supported file types. Files with other extensions can't be uploaded.
+    
 4. Add the [sample catering PDF](../../../blob/main-multi-tenant-features/srv/poetryslam/sample_data/echoesOfThoughtPoetrySlamSpectacle_catering.pdf) file to the **./srv/poetryslam/sample_data/** folder. The PDF is used to test the upload of an attachment and includes event-specific catering options for guests.
 
 5. Open the [xs-security.json](../../../blob/main-multi-tenant-features/xs-security.json) file in the root and create a new *PoetrySlamDocumentManagementRoleCollection* role collection with the *SDM_User* scope, required to manage attachments.
@@ -160,10 +165,10 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
                 UI                             : {
                     Facets                         : [
                         {
-                            $Type : 'UI.LineItem',
+                            $Type : 'UI.ReferenceFacet',
                             ID    : 'Attachments',
                             Label : '{i18n>Attachments}',
-                            Target: '@UI.LineItem#Attachments',
+                            Target: 'attachments/@UI.LineItem',
                         }
                     ]
                 }

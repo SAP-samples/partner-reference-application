@@ -9,70 +9,25 @@ This Partner Reference Application repository provides you with a “golden path
 The guidance covers building, running, and integrating scalable full-stack cloud applications. 
 It includes an ERP-agnostic design that lets you deliver your application as a side-by-side extension to consumers using any SAP solution, such as SAP S/4HANA Cloud Public Edition, SAP Business One, and SAP Business ByDesign. 
 
-By using SAP BTP services and the SAP Cloud Application Programming Model (CAP), your application meets SAP standards for enterprise-class business solutions. It offers a harmonized user experience and seamless integration, including:
--	centralized identity and access management,
--	a common launchpad,
--	cross-application front-end navigation,
--	and secure back-channel integration.
+By using SAP BTP services and the SAP Cloud Application Programming Model (CAP), your application meets SAP standards for enterprise-class business solutions. It offers a harmonized user experience and seamless integration.
 
 The repository includes the “Poetry Slam Manager” application as a ready-to-run example. It also provides tutorials on how to build the application from scratch using an incremental development approach. 
 
 Based on this sample application, you will find the bill of materials and a sizing example. This addresses the question "Which BTP resources do I need to subscribe to and in what quantities?" and serves as a basis for cost calculation.
 
 <p align="center">
-    <img src="./Tutorials/images/00_Partner-Persona.png" width="40%">  
+    <img src="./Tutorials/images/00_Multitenancy.png" width="70%" title="Concept of multitenancy">  
 </p>
 
 ### About the Sample Application *Poetry Slam Manager*
 
-Imagine you're an event manager, for example, Peter, and your job is to organize and host poetry slams. 
+Imagine you're an event manager, for example, Peter, and your job is to organize and host poetry slams. As your company runs its business on a cloud ERP system provided by SAP, you use its project management component to plan and staff events, to collect costs, and to purchase equipment. Additionally, an SAP partner provided you with a side-by-side application called Poetry Slam Manager (PSM) to publish poetry slam events and to manage bookings of visitors and artists. 
 
-As your company runs its business on a cloud ERP system provided by SAP, you use its project management component to plan and staff events, to collect costs, and to purchase equipment.
-Additionally, an SAP partner provided you with a side-by-side application called Poetry Slam Manager (PSM) to publish poetry slam events and to manage bookings of visitors and artists such as Julie.
-
-<p align="center">
-    <img src="./Tutorials/images/00_End-User_Flow-Persona.png" width="80%">  
-</p>
-
-For security and compliance reasons, it's crucial to you that event publishing and visitor registration are clearly separated from your ERP system. Nevertheless, as a power user working in both systems, you asked the partner to ensure a seamless user experience and navigation between the SAP system and Poetry Slam Manager.
+The sample showcases how a side-by-side application benefits from using SAP BTP. The qualities relevant for enterprise-grade partner applications, supported by SAP BTP services and programming models.
 
 <p align="center">
-    <img src="./Tutorials/images/00_readme_sample-use-case.png" width="100%">
+    <img src="./Tutorials/images/00_readme_sample-use-case.png" width="70%" title="Sample application">
 </p>
-
-The sample showcases how a side-by-side application benefits from using SAP BTP. The qualities relevant for enterprise-grade partner applications, supported by SAP BTP services and programming models, include:
-
-<p align="center">
-    <img src="./Tutorials/images/00_End-User_Flow-Peter-Part1.png" width="80%">  
-</p>
-
-Upcoming versions of the sample application might include further features provided by the SAP BTP:
-
-<p align="center">
-    <img src="./Tutorials/images/00_End-User_Flow-Peter-Part2-and-Julie.png" width="80%">  
-</p>
-
-### Features and Values
-
-- Create and change poetry slam events, publish, and cancel poetry slams.
-- Maintain, add, and remove visitors, cancel bookings.
-- Calculate the number of free seats and block overbookings.
-- Create projects for poetry slam events with one click and preview project information on the Poetry Slam Manager UI (here, ERP authorizations apply in the partner application as well).
-- Create and print a guest list.
-- Utilize artificial intelligence capabilities to generate innovative titles and descriptions for poetry slams.
-- As an ERP user, start Poetry Slam Manager from your ERP launchpad and navigate from Poetry Slam Manager to the associated project in the ERP system.
-- Make use of a standardized online development environment using SAP Business Application Studio.
-- Use a state-of-the-art web application architecture based on HTML5, Node.js, and SAP HANA Cloud.
-- Make use of a model-driven development based on the SAP Cloud Application Programming (CAP) Model, core data services (CDS), and SAP Fiori elements.
-- Offer a user experience that matches the SAP standard due to standard floorplan patterns, and out-of-the-box theming and personalization.
-- Provide a centralized launchpad that streamlines access to applications, offering a consistent user experience through predefined layout templates and navigation patterns.
-- Use a draft concept to allow users to change data in multiple steps without having to publish incomplete changes.
-- Benefit from enterprise-grade security by authentication and role-based authorizations in line with SAP product standards and technology alignments.
-- Achieve enterprise-grade compliance supported by audit logging.
-- Offer seamless and secure front-end and back-channel integration with SAP ERP solutions.
-- Deliver open solutions by integration-ready OData APIs and business events following SAP technology alignments.
-- Deploy the app as a multi-customer solution.
-- Analyze and monitor logging data of the customer deployment.
 
 **Join our community!**
 
@@ -82,27 +37,18 @@ Would you like to share your own ideas and best practices? Join our discussions 
 
 The application is based on SAP Business Technology Platform (SAP BTP) and SAP ERP solutions. Therefore, here's what you need:
 
-- An SAP BTP account, which includes SAP Business Application Studio as a standardized development environment,  
+- An SAP BTP account, which includes SAP Business Application Studio as a standardized development environment (a trial account is not sufficient),  
 - GitHub as your code repository, and 
 - an SAP ERP system.
 
-To get a more detailed list of the required entitlements, the proposed structure of subaccounts for the deployed Partner Reference Application, and the scaling effects of the multi-tenant solution, go to the [Bill of Materials](./Tutorials/01-BillOfMaterials.md).
-
-> [!IMPORTANT]
-> For software development projects, SAP implements the [Secure Software Development and Operations Lifecycle (secure SDOL) at SAP](https://www.sap.com/documents/2016/03/a248a699-627c-0010-82c7-eda71af511fa.html). This framework provides training, tools, and processes to ensure security is integrated at every stage of development: design, coding, testing, and deployment. This approach reduces vulnerabilities and enhances the overall security posture of applications. Following this process is advisable.
+The partner reference application targets SAP partners. To learn more about becoming an SAP partner, see the [partner program of SAP](https://www.sap.com/partners/partner-program.html). However, the tutorials also work for multi-tenant applications of SAP customers.
 
 ## Overview
 
-This repository explains the development journey along the path from
-1. development of the core application, 
-2. enhancement to a multi-customer ("multi-tenant") solution,
-3. integration with different ERP back ends,
-4. extension with additional features,
-5. enablement of the application for third-party integrations and extensibility, and
-6. adding operational aspects of multi-tenant SaaS applications.
+This repository explains the development journey along the path as shown in the picture:
 
 <p align="center">
-    <img src="./Tutorials/images/00_Dev_Journey.png" width="80%">  
+    <img src="./Tutorials/images/00_Dev_Journey.png" width="70%" title="Development journey of a multi-tenant application">  
 </p>
 
 A complete and working implementation of the above steps is available in separate branches:
@@ -117,14 +63,18 @@ Updates to this repository are documented in the [change history](./Tutorials/99
 
 ## Tutorials
 
+0. Getting started:
+    1. [Bill of Materials: Learn about the required entitlements and the proposed structure of subaccounts](./Tutorials/01-BillOfMaterials.md)
+    2. [Learn more about the architecture of the sample application](./Tutorials/03-Architecture.md)
+    3. [Prepare your SAP BTP account for development](./Tutorials/11-Prepare-BTP-Account.md)
+
 1. Develop the **core application** focusing on business models, business logic, and UI:
-    1. [Prepare your SAP BTP account for development](./Tutorials/11-Prepare-BTP-Account.md) 
-    2. Develop the core of the SAP BTP application
+    1. Develop the core of the SAP BTP application
         1. [Develop the domain model and the business logic with SAP Cloud Application Programming Model](./Tutorials/14-Develop-Core-Application.md)
         2. [Develop the user interface with SAP Fiori elements](./Tutorials/14a-Develop-Core-UserInterface.md)
         3. [Enhance the business solution with translation and authorization](./Tutorials/14b-Develop-Core-Finetuning.md)
-    3. [Go on a guided tour to explore the capabilities of the sample application](./Tutorials/17-Guided-Tour.md)
-    4. [Ensure code quality, test and troubleshoot the application](./Tutorials/16-Test-Trace-Debug.md)
+    2. [Go on a guided tour to explore the capabilities of the sample application](./Tutorials/17-Guided-Tour.md)
+    3. [Ensure code quality, test, and troubleshoot the application](./Tutorials/16-Test-Trace-Debug.md)
 
 2. Enhance the application for **multi-tenant deployments** to support multiple customers using shared SAP BTP resources:
     1. [Learn about multitenancy and get an overview of the bill of materials](./Tutorials/20-Multi-Tenancy-BillOfMaterials.md)
@@ -152,15 +102,15 @@ Updates to this repository are documented in the [change history](./Tutorials/99
     5. [Go on a guided tour to explore the ERP integration](./Tutorials/31-Guided-Tour-ERP-Integration.md)
 
 4. Add **additional features and capabilities** to your SAP BTP application:
-    1. [Manage data privacy](./Tutorials/41-Multi-Tenancy-Features-Data-Privacy.md)
-    2. [Observability: logging, metrics, and tracing](./Tutorials/43-Multi-Tenancy-Features-Observability.md)
+    1. [Manage data privacy with the SAP Audit Log service](./Tutorials/41-Multi-Tenancy-Features-Data-Privacy.md)
+    2. [Observability: logging, metrics, and tracing using SAP Cloud Logging service](./Tutorials/43-Multi-Tenancy-Features-Observability.md)
     3. Add capabilities for output management to your application:
-        1. [Manage forms](./Tutorials/44a-Multi-Tenancy-Features-Forms.md)
-        2. [Print documents](./Tutorials/44b-Multi-Tenancy-Features-Print.md)
+        1. [Manage forms with the SAP Forms service by Adobe](./Tutorials/44a-Multi-Tenancy-Features-Forms.md)
+        2. [Print documents using the SAP Print service](./Tutorials/44b-Multi-Tenancy-Features-Print.md)
     4. [Send notifications and emails with SAP Build Work Zone](./Tutorials/44c-Multi-Tenancy-Features-Notification.md)
-    5. [Add capabilities for generative artificial intelligence (GenAI)](./Tutorials/45-Multi-Tenancy-Features-GenAI.md)
-    6. [Schedule jobs and add background execution](./Tutorials/46-Multi-Tenancy-Features-Job-Scheduling.md)
-    7. [Store Attachments](./Tutorials/47-Multi-Tenancy-Features-Attachments.md)
+    5. [Add capabilities for generative artificial intelligence (GenAI) using SAP AI Core service](./Tutorials/45-Multi-Tenancy-Features-GenAI.md)
+    6. [Schedule jobs and add background execution with the SAP Job Scheduling service](./Tutorials/46-Multi-Tenancy-Features-Job-Scheduling.md)
+    7. [Store Attachments using SAP Document Management service](./Tutorials/47-Multi-Tenancy-Features-Attachments.md)
     
 5. Enable the application for **third-party integrations and extensibility**:
     1. Open the APIs of the SAP BTP application for third-party integrations:
@@ -183,17 +133,21 @@ Updates to this repository are documented in the [change history](./Tutorials/99
     5. [Capabilities of SAP Continuous Integration and Delivery Service](./Tutorials/62-Multi-Tenancy-Features-CICD.md)
 
 ## More Information
-- [SAP BTP Developer’s Guide](https://help.sap.com/docs/btp/btp-developers-guide/what-is-btp-developers-guide)
-- [SAP Cloud Application Programming Model](https://cap.cloud.sap/docs/)
-- [SAP Cloud SDK](https://sap.github.io/cloud-sdk/)
-- [SAP Discovery Center](https://discovery-center.cloud.sap/missionssearch)
-- [What's New for SAP Business Technology Platform](https://help.sap.com/whats-new/cf0cb2cb149647329b5d02aa96303f56?clear=all&locale=en-US)
-- [SAP HANA Cloud Administration Guide](https://help.sap.com/docs/hana-cloud/sap-hana-cloud-administration-guide/sap-hana-cloud-administration-guide)
+- [SAP Build](https://www.sap.com/products/technology-platform/build.html): Learn more about SAP Build product capabilities, use cases, and customer stories.
+- [SAP Build Learning](https://www.sap.com/products/technology-platform/build.html): Learn how to extend SAP applications by building AI agents, developing applications with or without code, automating processes, and offering digital workspaces.
+- [SAP Build Trial](https://www.sap.com/products/technology-platform/build/trial.html): Start your free trial of SAP Build.
+- [SAP BTP Developer’s Guide](https://help.sap.com/docs/btp/btp-developers-guide/what-is-btp-developers-guide): Introduction to the SAP BTP Developer’s Guide. The starting point for developing a business application on SAP BTP. 
+- [SAP Cloud Application Programming Model](https://cap.cloud.sap/docs/): Build enterprise-grade cloud applications with maximized productivity, fueled by proven best practices, served out of the box.
+- [SAP Cloud SDK](https://sap.github.io/cloud-sdk/): The one-stop shop for developing and extending SAP applications in the cloud.
+- [SAP Discovery Center](https://discovery-center.cloud.sap/missionssearch): Implement your use cases on SAP BTP, with step-by-step guidance and a well-established support from topic experts and SAP Community.
+- [What's New for SAP Business Technology Platform](https://help.sap.com/whats-new/cf0cb2cb149647329b5d02aa96303f56?clear=all&locale=en-US): Get an overview of the new and changed features for SAP BTP.
+- [SAP HANA Cloud Administration Guide](https://help.sap.com/docs/hana-cloud/sap-hana-cloud-administration-guide/sap-hana-cloud-administration-guide): This guide describes how to create and configure SAP HANA Cloud instances using SAP HANA Cloud Central and the command line interface.
+- [SAP Partner Program](https://www.sap.com/partners/partner-program.html): The SAP PartnerEdge program offers four simple engagement models – Build, Sell, Service, and Run. 
   
-Further Partner Reference Applications: 
-- [Partner Reference Application Extension 'Catering Management' using SAP Cloud Application Programming Model (CAP)](https://github.com/SAP-samples/partner-reference-application-extension)
-- [Partner Reference Application 'Music Festival Manager' using ABAP RESTful Application Programming Model (RAP)](https://github.com/SAP-samples/abap-partner-reference-application)
-- [Cross-Stack Partner Reference Extension Poetry Slam Event Commerce on SAP S/4HANA Cloud Public Edition](https://github.com/SAP-samples/cross-stack-partner-reference-extension)
+The partner reference application family: 
+- [Partner reference application for a tenant-specific extension](https://github.com/SAP-samples/partner-reference-application-extension): Explore the Partner Reference Application Extension “Catering Management” and realize customer-specific extensions in multi-tenant applications.
+- [Partner reference application for a cross-stack extension](https://github.com/SAP-samples/cross-stack-partner-reference-extension): Explore the Cross-Stack Partner Reference Extension “Poetry Slam Event Commerce” and combine SAP S/4HANA Cloud Public Edition on-stack extensions with SAP BTP-based  multi-tenant solutions. 
+- [Partner Reference Application using ABAP RESTful Application Programming Model (RAP)](https://github.com/SAP-samples/abap-partner-reference-application): Explore the ABAP Partner Reference Application “Music Festival Manager” and learn how to develop multi-tenant solutions on the SAP BTP ABAP Environment. 
 
 ## Known Issues
 
@@ -205,7 +159,7 @@ This repository is provided "as-is", we don't offer support. For questions and c
 
 ## License
 
-Copyright (c) 2025 SAP SE or an SAP affiliate company. All rights reserved. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
+Copyright (c) 2026 SAP SE or an SAP affiliate company. All rights reserved. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
 
 ## Disclaimer
 This repository contains sample code provided “as is” for instructional purposes only. SAP makes no warranties and accepts no liability, except in cases of gross negligence or willful misconduct. All included data is fictitious and contains no real personal, confidential, or sensitive information. Do not use this tutorial app productively with real personal data. SAP is not responsible if anyone uses it to capture personal data.

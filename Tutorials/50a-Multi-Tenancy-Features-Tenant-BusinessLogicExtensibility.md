@@ -2,7 +2,7 @@
 
 In addition to caterer coordination, Gourmet Pages requires further tasks in the created project within the SAP S/4HANA Cloud Public Edition. Therefore, a business logic extension in the Poetry Slam Manager application is necessary. This extension enables customers to enhance the logic for creating project tasks.
 
-Based on the capire documentation [Extending SaaS Applications](https://cap.cloud.sap/docs/guides/extensibility/customization) and the [SAP Oyster SDK](https://www.npmjs.com/package/@sap/cds-oyster), you can extend the Partner Reference Application for a specific consumer while keeping the core application unchanged for others.
+Based on the capire documentation [Extending SaaS Applications](https://cap.cloud.sap/docs/guides/extensibility/customization) and [cds-oyster](https://www.npmjs.com/package/@sap/cds-oyster), you can extend the Partner Reference Application for a specific consumer while keeping the core application unchanged for others.
 
 ## Step-by-Step Guide to Enhance the Application 
 
@@ -20,11 +20,11 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
 
 2. To enable tenant-specific extensions as a SaaS provider, follow the steps described in the previous chapter: [Enable Consumer-Specific Extensions](50-Multi-Tenancy-Features-Tenant-Extensibility.md).
 
-3. Add the [SAP Oyster SDK](https://www.npmjs.com/package/@sap/cds-oyster) to extend the runtime. This addition provides the capability to execute tenant-specific custom code securely in a sandbox environment.
+3. Add [cds-oyster](https://www.npmjs.com/package/@sap/cds-oyster) to the project to extend the runtime. This addition provides the capability to execute tenant-specific custom code securely in a sandbox environment.
 
     1. Open a terminal. Ensure you're in the project's root folder.
 
-    2. Run the command to add the SAP Oyster SDK npm package. 
+    2. Run the command to add the [cds-oyster](https://www.npmjs.com/package/@sap/cds-oyster) npm package. 
 
         ```
         npm add @sap/cds-oyster
@@ -36,7 +36,7 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         cd mtx/sidecar
         ```
     
-    4. Run the command to add the SAP Oyster SDK npm package to the mtx sidecar. 
+    4. Run the command to add the [cds-oyster](https://www.npmjs.com/package/@sap/cds-oyster) npm package to the mtx sidecar. 
 
         ```
         npm add @sap/cds-oyster
@@ -67,7 +67,8 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
         "extension-allowlist": [
         {
             "for": [
-                "*"
+                "sap.samples.poetryslams.PoetrySlams",
+                "PoetrySlamService.PoetrySlams"
             ],
             "kind": "entity",
             "annotations": [
