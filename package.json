@@ -1,6 +1,6 @@
 {
   "name": "partner-reference-application",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "SAP Partner Reference Application Version 2.0",
   "repository": "github.com/sap-samples/partner-reference-application.git",
   "author": "SAP",
@@ -61,6 +61,7 @@
     "eslint": "eslint .",
     "cicd-run": "npm run prebuild && npm run test"
   },
+
   "cds": {
     "features": {
       "assert_integrity": "db"

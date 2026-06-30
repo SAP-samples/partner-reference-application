@@ -286,7 +286,7 @@ service PoetrySlamService @(
   entity Language    as projection on sap.common.Languages;
 
   // ----------------------------------------------------------------------------
-  // Function to get user information (example for entity-independend function)
+  // Function to get user information (example for entity-independent function)
 
   type userRoles {
     identified    : Boolean;

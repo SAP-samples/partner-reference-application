@@ -31,7 +31,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
     return;
   }
 
-  let visitConfirmedCount = 0;
+  let visitConfirmedCount;
   // Request contains visits
   if (req.data?.visits?.length) {
     visitConfirmedCount =
@@ -53,7 +53,7 @@ async function calculatePoetrySlamData(id, req, additionalVisits = 0) {
 
   // In case maxVisitorsNumber was changed, use the changed
   const maxVisitorsNumber =
-    req.data?.maxVisitorsNumber || poetrySlam.maxVisitorsNumber;
+    req.data?.maxVisitorsNumber ?? poetrySlam.maxVisitorsNumber;
 
   // Calculate the free seats
   changedData.freeVisitorSeats = Math.max(
@@ -91,7 +91,7 @@ function calculatePoetrySlamStatus(currentStatus, freeVisitorSeats) {
 async function updatePoetrySlam(
   poetrySlamID,
   newStatus,
-  newFeeVisitorSeats,
+  newFreeVisitorSeats,
   req,
   errorMessage,
   successMessage
@@ -100,8 +100,8 @@ async function updatePoetrySlam(
     status_code: newStatus
   };
 
-  if (newFeeVisitorSeats) {
-    updateValues.freeVisitorSeats = newFeeVisitorSeats;
+  if (newFreeVisitorSeats || newFreeVisitorSeats === 0) {
+    updateValues.freeVisitorSeats = newFreeVisitorSeats;
   }
 
   const result = await UPDATE(

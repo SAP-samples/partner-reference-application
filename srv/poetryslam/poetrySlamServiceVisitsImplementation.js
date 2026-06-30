@@ -1,4 +1,4 @@
-'strict';
+'use strict';
 // Type definition required for CDSLint
 /** @typedef {import('@sap/cds').CRUDEventHandler.On} OnHandler */
 
@@ -78,7 +78,7 @@ module.exports = async (srv) => {
     );
   });
 
-  // Updates the poetry slam status and freevistor seats in case of deletion of a visit
+  // Updates the poetry slam status and free visitor seats in case of deletion of a visit
   srv.before('DELETE', [Visits, Visits.drafts], async (req) => {
     if (!req.data.ID) {
       console.error('Visit ID not found');
@@ -104,7 +104,7 @@ module.exports = async (srv) => {
     const changedData = await calculatePoetrySlamData(
       currentVisit.parent_ID,
       req,
-      currentVisit.status_code === visitStatusCode.booked ? -1 : null
+      currentVisit.status_code === visitStatusCode.booked ? -1 : 0
     );
 
     await updatePoetrySlam(
@@ -129,7 +129,7 @@ module.exports = async (srv) => {
           visits.statusCriticality = color.green; // Booked visits are green
           break;
         case visitStatusCode.canceled:
-          visits.statusCriticality = color.red; // Canceled visits are yellow
+          visits.statusCriticality = color.red; // Canceled visits are red
           break;
         default:
           // In case the status is defined, but not filled, return statusCriticality with null, otherwise UI will break
@@ -160,11 +160,11 @@ module.exports = async (srv) => {
     }
 
     // Determine the visitorname for the success and error messages
-    const vistitorName = await readVisitorName(visit.visitor_ID);
+    const visitorName = await readVisitorName(visit.visitor_ID);
 
     if (visit.status_code === visitStatusCode.canceled) {
       console.info('Booking already canceled.');
-      req.info(httpCodes.ok, 'ACTION_CANCELED_ALREADY', [vistitorName]);
+      req.info(httpCodes.ok, 'ACTION_CANCELED_ALREADY', [visitorName]);
       return visit;
     }
 
@@ -179,7 +179,7 @@ module.exports = async (srv) => {
       changedData.status_code,
       changedData.freeVisitorSeats,
       req,
-      { text: 'ACTION_VISIT_CANCEL_NOT_POSSIBLE', param: vistitorName }
+      { text: 'ACTION_VISIT_CANCEL_NOT_POSSIBLE', param: visitorName }
     );
 
     if (!success) {
@@ -197,11 +197,11 @@ module.exports = async (srv) => {
       req.error(
         httpCodes.internal_server_error,
         'ACTION_VISIT_CANCEL_NOT_POSSIBLE',
-        [vistitorName]
+        [visitorName]
       );
       return;
     }
-    req.info(httpCodes.ok, 'ACTION_VISIT_CANCEL_SUCCESS', [vistitorName]);
+    req.info(httpCodes.ok, 'ACTION_VISIT_CANCEL_SUCCESS', [visitorName]);
 
     return visit; // Return the changed visit; visit data is returned in OData request
   });
@@ -218,15 +218,15 @@ module.exports = async (srv) => {
     // If visit was not found, throw an error
     if (!visit) {
       console.error('Visit not found');
-      req.error(httpCodes.bad_request, 'VISITS_NOT_FOUND', [id]);
+      req.error(httpCodes.bad_request, 'VISIT_NOT_FOUND', [id]);
       return;
     }
 
-    const vistitorName = await readVisitorName(visit.visitor_ID);
+    const visitorName = await readVisitorName(visit.visitor_ID);
 
     if (visit.status_code === visitStatusCode.booked) {
       console.info('Visit already booked.');
-      req.info(httpCodes.ok, 'ACTION_BOOKED_ALREADY', [vistitorName]);
+      req.info(httpCodes.ok, 'ACTION_BOOKED_ALREADY', [visitorName]);
       return visit;
     }
 
@@ -246,7 +246,7 @@ module.exports = async (srv) => {
       changedData.status_code,
       changedData.freeVisitorSeats,
       req,
-      { text: 'ACTION_VISIT_BOOK_NOT_POSSIBLE', param: vistitorName }
+      { text: 'ACTION_VISIT_BOOK_NOT_POSSIBLE', param: visitorName }
     );
 
     if (!success) {
@@ -263,12 +263,12 @@ module.exports = async (srv) => {
     if (result !== 1) {
       console.error('Visit could not be booked');
       req.error(httpCodes.bad_request, 'ACTION_VISIT_BOOK_NOT_POSSIBLE', [
-        vistitorName
+        visitorName
       ]);
       return;
     }
 
-    req.info(httpCodes.ok, 'ACTION_BOOKING_SUCCESS', [vistitorName]);
+    req.info(httpCodes.ok, 'ACTION_BOOKING_SUCCESS', [visitorName]);
 
     return visit;
   });

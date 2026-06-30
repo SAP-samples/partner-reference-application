@@ -21,7 +21,7 @@ annotate service.PoetrySlams with {
 };
 
 annotate service.PoetrySlams with @(
-  // Disable Delete Button for PoetrySlams not In Preperation and not canceled
+  // Disable Delete Button for PoetrySlams not In Preparation and not canceled
   Capabilities.DeleteRestrictions: {Deletable: {$edmJson: {$Or: [
     {$Eq: [
       {$Path: 'status/code'},
