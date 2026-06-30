@@ -354,31 +354,6 @@ describe('Poetryslams in PoetrySlamService', () => {
     expect(result.data.status_code).to.eql(poetrySlamStatusCode.inPreparation);
   });
 
-  //TODO: Test skipped because of problem with SDM and execute unit test locally or in our GitHub workflow
-  it.skip('should be possible to delete a poetry slam that is in preparation', async () => {
-    const id = poetrySlams.data.value.find(
-      (poetrySlam) =>
-        poetrySlam.status_code === poetrySlamStatusCode.inPreparation
-    ).ID;
-
-    const result = await DELETE(
-      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`
-    );
-    expect(result.status).to.eql(httpCodes.ok_no_content);
-  });
-
-  //TODO: Test skipped because of problem with SDM and execute unit test locally or in our GitHub workflow
-  it.skip('should be possible to delete a poetry slam that is canceled', async () => {
-    const id = poetrySlams.data.value.find(
-      (poetrySlam) => poetrySlam.status_code === poetrySlamStatusCode.canceled
-    ).ID;
-
-    const result = await DELETE(
-      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`
-    );
-    expect(result.status).to.eql(httpCodes.ok_no_content);
-  });
-
   it('should not be possible to delete a poetry slam that is published', async () => {
     const id = poetrySlams.data.value.find(
       (poetrySlam) => poetrySlam.status_code === poetrySlamStatusCode.published
