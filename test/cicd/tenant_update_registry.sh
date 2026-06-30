@@ -49,16 +49,16 @@ for tenant in $tenant_ids; do
 
     echo "  Job Status: $job_status"
 
-    if [ "$job_status" == "SUCCEEDED" ]; then
+    if [[ "$job_status" == "SUCCEEDED" ]]; then
         echo "  Tenant $tenant update succeeded."
         break
     else
-        if [ "$job_status" == "FAILED" ]; then
+        if [[ "$job_status" == "FAILED" ]]; then
             echo "  Tenant $tenant update failed."
             update_not_successful_in_time+=("$tenant")
             break
         fi
-        if [ $counter -eq 5 ]; then
+        if [[ $counter -eq 5 ]]; then
             echo "  Tenant $tenant update did not succeed within expected time."
             echo "  Last Job Response: $job_response"
             update_not_successful_in_time+=("$tenant")
@@ -71,7 +71,7 @@ for tenant in $tenant_ids; do
     done
 done
 
-if [ ${#update_not_successful_in_time[@]} -ne 0 ]; then
+if [[ ${#update_not_successful_in_time[@]} -ne 0 ]]; then
     echo "The following tenants did not complete the update in time: ${update_not_successful_in_time[*]}"
     exit 1
 else

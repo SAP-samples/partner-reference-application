@@ -1,4 +1,4 @@
-'strict';
+'use strict';
 
 // Adds cds module
 const cds = require('@sap/cds');

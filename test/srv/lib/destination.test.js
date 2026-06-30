@@ -2,7 +2,7 @@
 // Initialization of test
 // CAP Unit Testing: https://cap.cloud.sap/docs/node.js/cds-test?q=cds.test#run
 // ----------------------------------------------------------------------------
-'strict';
+'use strict';
 const cds = require('@sap/cds');
 
 const destination = require('../../../srv/lib/destination');

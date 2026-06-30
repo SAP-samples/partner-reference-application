@@ -18,27 +18,27 @@ service PoetrySlamService @(
     select from poetrySlamManagerModel.PoetrySlams {
       // Selects all fields of the PoetrySlams domain model
       *,
-      maxVisitorsNumber - freeVisitorSeats as bookedSeats                  : Integer @title     : '{i18n>bookedSeats}',
+      maxVisitorsNumber - freeVisitorSeats as bookedSeats                  : Integer      @title     : '{i18n>bookedSeats}',
       // Relevant for coloring of status in UI to show criticality
-      virtual null                         as statusCriticality            : Integer @title     : '{i18n>statusCriticality}',
+      virtual null                         as statusCriticality            : Integer      @title     : '{i18n>statusCriticality}',
       virtual null                         as projectSystemName            : String(255)  @title: '{i18n>projectSystemName}'        @odata.Type: 'Edm.String',
       // SAP Business ByDesign projects: visibility of button "Create Project in SAP Business ByDesign"
-      virtual null                         as createByDProjectEnabled      : Boolean @odata.Type: 'Edm.Boolean',
-      virtual null                         as isByD                        : Boolean @odata.Type: 'Edm.Boolean',
+      virtual null                         as createByDProjectEnabled      : Boolean      @odata.Type: 'Edm.Boolean',
+      virtual null                         as isByD                        : Boolean      @odata.Type: 'Edm.Boolean',
       // SAP S/4HANA Cloud projects: visibility of button "Create Project in SAP S/4HANA Cloud", code texts
-      virtual null                         as createS4HCProjectEnabled     : Boolean @odata.Type: 'Edm.Boolean',
-      virtual null                         as projectProfileCodeText       : String(40)  @title: '{i18n>projectProfile}'           @odata.Type: 'Edm.String',
-      virtual null                         as processingStatusText         : String(60)  @title: '{i18n>processingStatus}'         @odata.Type: 'Edm.String',
+      virtual null                         as createS4HCProjectEnabled     : Boolean      @odata.Type: 'Edm.Boolean',
+      virtual null                         as projectProfileCodeText       : String(40)   @title: '{i18n>projectProfile}'           @odata.Type: 'Edm.String',
+      virtual null                         as processingStatusText         : String(60)   @title: '{i18n>processingStatus}'         @odata.Type: 'Edm.String',
       virtual null                         as projectURL                   : String(255)  @title: '{i18n>projectURL}'               @odata.Type: 'Edm.String',
-      virtual null                         as customerFullName             : String(80)  @title: '{i18n>customerFullName}'         @odata.Type: 'Edm.String',
+      virtual null                         as customerFullName             : String(80)   @title: '{i18n>customerFullName}'         @odata.Type: 'Edm.String',
       virtual null                         as salesOrderURL                : String(255)  @title: '{i18n>salesOrderURL}'            @odata.Type: 'Edm.String',
-      virtual null                         as isS4HC                       : Boolean @odata.Type: 'Edm.Boolean',
+      virtual null                         as isS4HC                       : Boolean      @odata.Type: 'Edm.Boolean',
       // SAP Business One purchase order: visibility of button "Create Purchase Order in SAP Business One"
-      virtual null                         as createB1PurchaseOrderEnabled : Boolean @odata.Type: 'Edm.Boolean',
+      virtual null                         as createB1PurchaseOrderEnabled : Boolean      @odata.Type: 'Edm.Boolean',
       virtual null                         as purchaseOrderSystemName      : String(255)  @title: '{i18n>purchaseOrderSystemName}'  @odata.Type: 'Edm.String',
-      virtual null                         as purchaseOrderURL             : String(255) @title: '{i18n>purchaseOrderURL}'         @odata.Type: 'Edm.String',
-      virtual null                         as isB1                         : Boolean @odata.Type: 'Edm.Boolean',
-      virtual null                         as isJobStatusShown             : Boolean @odata.Type: 'Edm.Boolean',
+      virtual null                         as purchaseOrderURL             : String(255)  @title: '{i18n>purchaseOrderURL}'         @odata.Type: 'Edm.String',
+      virtual null                         as isB1                         : Boolean      @odata.Type: 'Edm.Boolean',
+      virtual null                         as isJobStatusShown             : Boolean      @odata.Type: 'Edm.Boolean',
 
       // Projection of remote service data as required by the UI
       toByDProject                                                         : Association to PoetrySlamService.ByDProjects
@@ -121,30 +121,29 @@ service PoetrySlamService @(
 
       // Action: print guest list
       action printGuestList(
-        @(
-          title: '{i18n>selectPrintQueue}',
-          mandatory: true,
-          Common: {
-            ValueListWithFixedValues: true,
-            ValueList               : {
-              $Type         : 'Common.ValueListType',
-              CollectionPath: 'PrintQueues',
-              Parameters    : [
-                {
-                  $Type            : 'Common.ValueListParameterInOut',
-                  ValueListProperty: 'name',
-                  LocalDataProperty: printQueue
-                },
-                {
-                  $Type            : 'Common.ValueListParameterDisplayOnly',
-                  ValueListProperty: 'descr'
-                }
-              ]
-            },
-          }
-        )
-        printQueue : String(50)
-      );
+                            @(
+                              title: '{i18n>selectPrintQueue}',
+                              mandatory: true,
+                              Common: {
+                                ValueListWithFixedValues: true,
+                                ValueList               : {
+                                  $Type         : 'Common.ValueListType',
+                                  CollectionPath: 'PrintQueues',
+                                  Parameters    : [
+                                    {
+                                      $Type            : 'Common.ValueListParameterInOut',
+                                      ValueListProperty: 'name',
+                                      LocalDataProperty: printQueue
+                                    },
+                                    {
+                                      $Type            : 'Common.ValueListParameterDisplayOnly',
+                                      ValueListProperty: 'descr'
+                                    }
+                                  ]
+                                },
+                              }
+                            )
+                            printQueue: String(50));
 
       @(cds.odata.bindingparameter.collection)
       @(UI.IsAIOperation: true) // Add the AI Icon to the action button
@@ -164,32 +163,31 @@ service PoetrySlamService @(
                                     ValueListProperty: 'name',
                                     LocalDataProperty: language,
 
-                },
-                {
-                  $Type            : 'Common.ValueListParameterDisplayOnly',
-                  ValueListProperty: 'code'
-                },
-                {
-                  $Type            : 'Common.ValueListParameterDisplayOnly',
-                  ValueListProperty: 'descr'
-                }
-              ]
-            },
-          }
-        )
-        language : String(50),
-        @(
-          title: '{i18n>tagsInput}',
-          UI.Placeholder: '{i18n>placeholder}',
-          mandatory: true
-        )
-        tags : String(100),
-        @(
-          title: '{i18n>rhymeInput}',
-          UI.ParameterDefaultValue: true,
-        )
-        rhyme : Boolean
-      )                                   returns PoetrySlams;
+                                  },
+                                  {
+                                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                                    ValueListProperty: 'code'
+                                  },
+                                  {
+                                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                                    ValueListProperty: 'descr'
+                                  }
+                                ]
+                              },
+                            }
+                          )
+                          language: String(50),
+                          @(
+                            title: '{i18n>tagsInput}',
+                            UI.Placeholder: '{i18n>placeholder}',
+                            mandatory: true
+                          )
+                          tags: String(100),
+                          @(
+                            title: '{i18n>rhymeInput}',
+                            UI.ParameterDefaultValue: true,
+                          )
+                          rhyme: Boolean) returns PoetrySlams;
       // ERP systems: action to clear the project data
       @(
         Common.SideEffects             : {TargetEntities: [
@@ -230,8 +228,8 @@ service PoetrySlamService @(
     };
 
   // Visits
-  @Common.SemanticObject : 'visits'
-  @Common.SemanticKey: [ID]
+  @Common.SemanticObject: 'visits'
+  @Common.SemanticKey   : [ID]
   entity Visits      as
     projection on poetrySlamManagerModel.Visits {
       *, // Selects all fields of the Visits database model
@@ -276,7 +274,7 @@ service PoetrySlamService @(
   entity PDFDocument {
     key ID        : UUID;
         content   : LargeBinary @Core.MediaType  : mediaType;
-        mediaType : String(50)      @Core.IsMediaType: true;
+        mediaType : String(50)  @Core.IsMediaType: true;
   }
 
   // Currencies
@@ -299,10 +297,10 @@ service PoetrySlamService @(
     roles  : userRoles;
   };
 
-  function userInfo()                           returns user;
+  function userInfo()                                  returns user;
 
   @Common.SideEffects: {TargetEntities: ['/PoetrySlamService.EntityContainer/PoetrySlams']}
-  action   createTestData()                     returns Boolean;
+  action   createTestData()                            returns Boolean;
 }
 
 // -------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-'strict';
+'use strict';
 
 const { httpCodes } = require('../lib/codes');
 const JobAction = require('../lib/jobSchedulerActionImplementation');

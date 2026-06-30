@@ -35,7 +35,7 @@ class TenantManager {
       return subscribedTenants;
     } catch (error) {
       console.error('Error fetching tenants:', error);
-      throw new Error('Failed to retrieve tenants');
+      throw new Error('Failed to retrieve tenants', { cause: error });
     }
   }
 }

@@ -13,7 +13,7 @@ const Logo = require('./logo');
 // Generated OpenAPI interfaces
 const {
   StoreFormTemplatesApi,
-  ADSRenderRequestApi
+  ADSRenderRequestsApi
 } = require('../external/FORMSAPI');
 
 // Reuse functions to access service credentials
@@ -141,7 +141,7 @@ class Forms {
         printNotAllowed: Forms.PRINT_NOT_ALLOWED
       });
 
-      const { fileContent } = await ADSRenderRequestApi.renderingPdfPost(form)
+      const { fileContent } = await ADSRenderRequestsApi.renderingPdfPost(form)
         .addCustomHeaders({ Authorization: `Bearer ${access_token}` })
         .addCustomHeaders({ 'Content-Type': mimeTypes.application_json })
         .execute({ url: credentials.uri });

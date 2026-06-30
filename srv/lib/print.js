@@ -19,7 +19,7 @@ async function getPrintQueues() {
   //  Read the binding information for the Print Service and the target tenant
   const srvUrl =
     serviceCredentialsUtil.getServiceCredentials('print')?.service_url;
-  let jwt = '';
+  let jwt;
   try {
     jwt = await serviceCredentialsUtil.getServiceToken('print');
   } catch (e) {
@@ -63,10 +63,13 @@ async function print(req, printQueue, fileContent, fileName = 'Document') {
     return;
   }
 
+  // Convert Buffer to Blob
+  const blob = new Blob([fileContent], { type: 'application/pdf' });
+
   //  Read the binding information for the Print Service and the target tenant
   const srvUrl =
     serviceCredentialsUtil.getServiceCredentials('print')?.service_url;
-  let jwt = '';
+  let jwt;
   try {
     jwt = await serviceCredentialsUtil.getServiceToken('print');
   } catch (e) {
@@ -78,7 +81,7 @@ async function print(req, printQueue, fileContent, fileName = 'Document') {
   try {
     //  Upload the document
     const documentResponse = await DocumentsApi.createDmApiV1RestPrintDocuments(
-      fileContent,
+      { file: blob },
       { 'If-None-Match': '*', scan: true }
     )
       .addCustomHeaders({ Authorization: `Bearer ${jwt}` })

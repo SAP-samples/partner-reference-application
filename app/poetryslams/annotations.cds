@@ -95,10 +95,10 @@ annotate service.PoetrySlams with @(
         @UI.Hidden: {$value: (status.code = 1)}
       },
       {
-        $Type : 'UI.LineItem',
+        $Type : 'UI.ReferenceFacet',
         ID    : 'Attachments',
         Label : '{i18n>Attachments}',
-        Target: '@UI.LineItem#Attachments',
+        Target: 'attachments/@UI.LineItem',
       },
       {
         $Type        : 'UI.ReferenceFacet',

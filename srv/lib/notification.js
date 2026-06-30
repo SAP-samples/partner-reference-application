@@ -26,7 +26,7 @@ class Notification {
       html: text,
       notificationSubtitle: notificationSubtitle,
       title: visit.title,
-      description: visit.description,
+      description: visit.description ?? '',
       dateTime: new Date(visit.dateTime),
       visitorName: visit.visitorName,
       visitStatusCode: visit.visitStatusCode
