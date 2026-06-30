@@ -99,7 +99,7 @@ service PoetrySlamService @(
   entity Currencies  as projection on sap.common.Currencies;
 
   // ----------------------------------------------------------------------------
-  // Function to get user information (example for entity-independend function)
+  // Function to get user information (example for entity-independent function)
 
   type userRoles {
     identified    : Boolean;
