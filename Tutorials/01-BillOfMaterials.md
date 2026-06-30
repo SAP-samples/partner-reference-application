@@ -120,7 +120,7 @@ Provided by SAP:
 # Scaling
 To get an overview of how the services scale and how many entitlements you require for an application, here's an example based on the projected use of the Partner Reference Application.
 
-Let's assume a typical data volume of two poetry slams per week (or 125 slams per year), with 200 visits per event. After three years, if you assume that one visitor books on average two different poetry slams, for 20 subscriptions (customers), this results in a volume of:
+Assume a typical data volume of two poetry slams per week (or 125 slams per year), with 200 visits per event. After three years, if you assume that one visitor books on average two different poetry slams, for 20 subscriptions (customers), this results in a volume of:
  - 7,500 poetry slam events
  - 750,000 visitors and artists
  - 1,500,000 bookings
@@ -132,7 +132,7 @@ The table below shows how the required quantities scale with typical numbers of 
 |  Service Display Name           | Service Technical Name | Service Plan              | 5 Customers                     | 20 Customers                     | 100 Customers                     | 
 | -------------------             | ---------------------  | ---------                 | ---------                       | ---------                        | ---------                         |
 |   Cloud Foundry Environment   | cloudfoundry |build-runtime                  | 2 GB                            | 2 GB                             | 6 GB                             |
-| SAP HANA Cloud*                | hana-cloud   | hana-td                   | 900 CU                          | 900 CU                           | 1000 CU                           |
+| SAP HANA Cloud*                | hana-cloud   | hana-td                   | 500 CU                          | 900 CU                           | 1000 CU                           |
 | Custom Domain service      | custom-domain-manager | standard                  | 1 Domain                        | 1 Domain                         | 1 Domain                          |
 | Audit Log service          | auditlog | premium                   | 1 GB Storage, 1 GB Writing      | 1 GB Storage, 1 GB Writing       | 1 GB Storage, 1 GB Writing        ​|
 | Cloud Logging* |   cloudlogging   | dev                  | 95/538 CU                          | 95/538 CU                           | 95/538 CU                            |
@@ -140,8 +140,10 @@ The table below shows how the required quantities scale with typical numbers of 
 | SAP Business Application Studio | sapappstudio| build-default         | 2 Users                         | 2 Users                          | 2 Users                            |
 | SAP Build Work Zone, Standard Edition | SAPLaunchpad | build-default            | 100 Active Users                | 100 Active Users                 | 500 Active Users                   |
 
-> Note: The table outlines SAP BTP service plans used in SAP BTP environments for test, demo, and development. In productive environments, use the SAP HANA Cloud service plan 'hana' and the Cloud Logging service plan 'standard'. The Cloud Logging service plan 'dev' requires 95 capacity units (CUs), and the service plan 'standard' requires 538 CUs.
+> Note: The table outlines SAP BTP service plans used in SAP BTP environments for test, demo, and development. In productive environments, use the SAP HANA Cloud service plan 'hana' and the Cloud Logging service plan 'standard'. The Cloud Logging service plan 'dev' requires 95 capacity units (CUs), and the service plan 'standard' requires 538 CUs. In our setup, a 16 GB instance is sufficient for SAP HANA Cloud. 
 
 # Information on Versions and What's New
 
-The SAP Help page ["What's New for SAP Business Technology Platform"](https://help.sap.com/whats-new/cf0cb2cb149647329b5d02aa96303f56?clear=all&locale=en-US) allows you to subscribe for updates. 
+[What's New for SAP Business Technology Platform](https://help.sap.com/whats-new/cf0cb2cb149647329b5d02aa96303f56?clear=all&locale=en-US) on SAP Help Portal provides an overview of the new and changed features for SAP BTP. You can subscribe to receive updates.
+
+In the next chapter, you will [learn more about the architecture of the sample application](./03-Architecture.md).

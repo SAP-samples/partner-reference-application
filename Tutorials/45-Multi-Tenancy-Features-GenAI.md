@@ -144,7 +144,8 @@ The following describes how to enhance the **main-multi-tenant** branch (option 
     5. Add the message texts for the action error handling into the file [*srv/i18n/messages.properties*](../../../blob/main-multi-tenant-features/srv/i18n/messages.properties).
 
         ```
-        ACTION_AI_NO_ACCESS                                     = Access to SAP AI Core service isn’t possible. Please reach out to your application provider.
+        ACTION_AI_NO_ACCESS                                     = Access to SAP AI Core service isn’t possible. Please reach out to your application provider. 
+        ACTION_AI_SETUP                                         = The AI feature is setting up. Please try again shortly.
         ACTION_AI_MISSING_PARAMETERS                            = Please enter a language and tags. 
         ACTION_AI_INVALID_PARAMETERS                            = Invalid parameters. Please check your input.
         ACTION_AI_ORCHESTRATION_ERROR                           = An error occurred during AI orchestration. Check the logs for more details.
