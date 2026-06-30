@@ -2,7 +2,7 @@
 
 # Prep (Download jq)
 cd ./cloudcitransfer
-wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.7/jq-linux64
+wget --max-redirect=1 -O jq https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64
 chmod +x ./jq
 ls -lisa
 PATH=$PATH:$(pwd)

@@ -1,19 +1,19 @@
 {
   "name": "partner-reference-application-mtx",
   "dependencies": {
-    "@cap-js/sdm": "^1.8.2",
-    "@cap-js/hana": "^2.6.0",
-    "@sap/cds": "^9.7.1",
-    "@sap/cds-mtxs": "^3.7.1",
-    "@sap/xssec": "^4.12.2",
-    "@sap/cds-oyster": "^0.2.1",
+    "@cap-js/sdm": "^1.10.0",
+    "@cap-js/hana": "^2.8.0",
+    "@sap/cds": "^9.9.1",
+    "@sap/cds-mtxs": "^3.9.3",
+    "@sap/xssec": "^4.13.0",
+    "@sap/cds-oyster": "^0.3.1",
     "express": "^5.2.1"
   },
   "engines": {
     "node": ">=22.0.0"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^2.1.3"
+    "@cap-js/sqlite": "^2.4.0"
   },
   "scripts": {
     "start": "cds-serve"
@@ -69,7 +69,8 @@
         "extension-allowlist": [
           {
             "for": [
-              "*"
+              "sap.samples.poetryslams.PoetrySlams",
+              "PoetrySlamService.PoetrySlams"
             ],
             "kind": "entity",
             "annotations": [

@@ -21,7 +21,7 @@ annotate service.PoetrySlams with {
 };
 
 annotate service.PoetrySlams with @(
-  // Disable Delete Button for PoetrySlams not In Preperation and not canceled
+  // Disable Delete Button for PoetrySlams not In Preparation and not canceled
   Capabilities.DeleteRestrictions: {Deletable: {$edmJson: {$Or: [
     {$Eq: [
       {$Path: 'status/code'},
@@ -95,10 +95,10 @@ annotate service.PoetrySlams with @(
         @UI.Hidden: {$value: (status.code = 1)}
       },
       {
-        $Type : 'UI.LineItem',
+        $Type : 'UI.ReferenceFacet',
         ID    : 'Attachments',
         Label : '{i18n>Attachments}',
-        Target: '@UI.LineItem#Attachments',
+        Target: 'attachments/@UI.LineItem',
       },
       {
         $Type        : 'UI.ReferenceFacet',

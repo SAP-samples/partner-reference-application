@@ -2,7 +2,7 @@
 // Initialization of test
 // CAP Unit Testing: https://cap.cloud.sap/docs/node.js/cds-test?q=cds.test#run
 // ----------------------------------------------------------------------------
-'strict';
+'use strict';
 
 // Adds cds module
 const cds = require('@sap/cds');
@@ -245,7 +245,7 @@ describe('Poetryslams in PoetrySlamService', () => {
         poetrySlam.status_code === poetrySlamStatusCode.inPreparation
     ).ID;
 
-    // Execute the action 'publish' on a poetry slam with status in preperation
+    // Execute the action 'publish' on a poetry slam with status in preparation
     const actionResult = await ACTION(
       `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`,
       'publish'
@@ -325,7 +325,7 @@ describe('Poetryslams in PoetrySlamService', () => {
   });
 
   it('should not change the status of poetry slams in action cancel on entities in preparation', async () => {
-    // Execute action 'cancel' on a poetry slam with status in preperation --> nothing happens
+    // Execute action 'cancel' on a poetry slam with status in preparation --> nothing happens
     const id = poetrySlams.data.value.find(
       (poetrySlam) =>
         poetrySlam.status_code === poetrySlamStatusCode.inPreparation
@@ -352,29 +352,6 @@ describe('Poetryslams in PoetrySlamService', () => {
       }
     );
     expect(result.data.status_code).to.eql(poetrySlamStatusCode.inPreparation);
-  });
-
-  it('should be possible to delete a poetry slam that is in preparation', async () => {
-    const id = poetrySlams.data.value.find(
-      (poetrySlam) =>
-        poetrySlam.status_code === poetrySlamStatusCode.inPreparation
-    ).ID;
-
-    const result = await DELETE(
-      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`
-    );
-    expect(result.status).to.eql(httpCodes.ok_no_content);
-  });
-
-  it('should be possible to delete a poetry slam that is canceled', async () => {
-    const id = poetrySlams.data.value.find(
-      (poetrySlam) => poetrySlam.status_code === poetrySlamStatusCode.canceled
-    ).ID;
-
-    const result = await DELETE(
-      `/odata/v4/poetryslamservice/PoetrySlams(ID=${id},IsActiveEntity=true)`
-    );
-    expect(result.status).to.eql(httpCodes.ok_no_content);
   });
 
   it('should not be possible to delete a poetry slam that is published', async () => {

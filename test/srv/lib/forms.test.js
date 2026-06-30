@@ -1,4 +1,4 @@
-'strict';
+'use strict';
 
 // Adds cds module
 const cds = require('@sap/cds');
@@ -11,7 +11,7 @@ const { XMLBuilder } = require('fast-xml-parser');
 const { Readable } = require('stream');
 const {
   StoreFormTemplatesApi,
-  ADSRenderRequestApi
+  ADSRenderRequestsApi
 } = require('../../../srv/external/FORMSAPI');
 const Forms = require('../../../srv/lib/forms');
 const Logo = require('../../../srv/lib/logo');
@@ -132,7 +132,7 @@ describe('Util Forms', () => {
     let getCredentialsStub;
     let getTokenStub;
     let StoreFormTemplatesApiStub;
-    let ADSRenderRequestApiStub;
+    let ADSRenderRequestsApiStub;
     let bufferStub;
     let readableStub;
 
@@ -158,8 +158,8 @@ describe('Util Forms', () => {
             execute: () => Promise.resolve({ xdpTemplate: mockXdpTemplate })
           })
         });
-      ADSRenderRequestApiStub = sinon
-        .stub(ADSRenderRequestApi, 'renderingPdfPost')
+      ADSRenderRequestsApiStub = sinon
+        .stub(ADSRenderRequestsApi, 'renderingPdfPost')
         .returns({
           addCustomHeaders: () => ({
             addCustomHeaders: () => ({
@@ -174,7 +174,7 @@ describe('Util Forms', () => {
       StoreFormTemplatesApiStub.restore();
       getCredentialsStub.restore();
       getTokenStub.restore();
-      ADSRenderRequestApiStub.restore();
+      ADSRenderRequestsApiStub.restore();
       bufferStub.restore();
       readableStub.restore();
     });
@@ -187,7 +187,7 @@ describe('Util Forms', () => {
       sinon.assert.calledOnce(getCredentialsStub);
       sinon.assert.calledOnce(getTokenStub);
       sinon.assert.calledOnce(StoreFormTemplatesApiStub);
-      sinon.assert.calledOnce(ADSRenderRequestApiStub);
+      sinon.assert.calledOnce(ADSRenderRequestsApiStub);
     });
   });
 

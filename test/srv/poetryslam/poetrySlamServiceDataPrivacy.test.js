@@ -2,7 +2,7 @@
 // Initialization of test
 // CAP Unit Testing: https://cap.cloud.sap/docs/node.js/cds-test?q=cds.test#run
 // ----------------------------------------------------------------------------
-'strict';
+'use strict';
 
 // Executes an action, like draftActivate, draftEdit or publish
 const ACTION = (url, name, parameters = {}) =>

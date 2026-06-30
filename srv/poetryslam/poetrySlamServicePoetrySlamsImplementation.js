@@ -1,4 +1,4 @@
-'strict';
+'use strict';
 // Type definition required for CDSLint
 /** @typedef {import('@sap/cds').CRUDEventHandler.On} OnHandler */
 
@@ -273,7 +273,7 @@ module.exports = async (srv) => {
     }
 
     if (poetrySlam.status_code === poetrySlamStatusCode.inPreparation) {
-      // Poetry slams that are in preperation shall be deleted
+      // Poetry slams that are in preparation shall be deleted
       console.info(
         `Poetry Slam can't be canceled as it's being prepared. Deletion possible.`
       );

@@ -2,15 +2,100 @@
   "components": {
     "schemas": {
       "API Error": {
-        "description": "Constrait Violation error",
+        "description": "API error response",
         "properties": {
-          "errorMessage": {
+          "errorLevel": {
             "type": "string"
           },
-          "jsonFieldName": {
+          "errorPDF": {
+            "description": "ADS calls only. Added if TraceLevel \u003E 0.",
             "type": "string"
           },
-          "jsonInvalidValue": {
+          "message": {
+            "enum": [
+              "100 CONTINUE",
+              "101 SWITCHING_PROTOCOLS",
+              "102 PROCESSING",
+              "103 EARLY_HINTS",
+              "103 CHECKPOINT",
+              "200 OK",
+              "201 CREATED",
+              "202 ACCEPTED",
+              "203 NON_AUTHORITATIVE_INFORMATION",
+              "204 NO_CONTENT",
+              "205 RESET_CONTENT",
+              "206 PARTIAL_CONTENT",
+              "207 MULTI_STATUS",
+              "208 ALREADY_REPORTED",
+              "226 IM_USED",
+              "300 MULTIPLE_CHOICES",
+              "301 MOVED_PERMANENTLY",
+              "302 FOUND",
+              "302 MOVED_TEMPORARILY",
+              "303 SEE_OTHER",
+              "304 NOT_MODIFIED",
+              "305 USE_PROXY",
+              "307 TEMPORARY_REDIRECT",
+              "308 PERMANENT_REDIRECT",
+              "400 BAD_REQUEST",
+              "401 UNAUTHORIZED",
+              "402 PAYMENT_REQUIRED",
+              "403 FORBIDDEN",
+              "404 NOT_FOUND",
+              "405 METHOD_NOT_ALLOWED",
+              "406 NOT_ACCEPTABLE",
+              "407 PROXY_AUTHENTICATION_REQUIRED",
+              "408 REQUEST_TIMEOUT",
+              "409 CONFLICT",
+              "410 GONE",
+              "411 LENGTH_REQUIRED",
+              "412 PRECONDITION_FAILED",
+              "413 PAYLOAD_TOO_LARGE",
+              "413 REQUEST_ENTITY_TOO_LARGE",
+              "414 URI_TOO_LONG",
+              "414 REQUEST_URI_TOO_LONG",
+              "415 UNSUPPORTED_MEDIA_TYPE",
+              "416 REQUESTED_RANGE_NOT_SATISFIABLE",
+              "417 EXPECTATION_FAILED",
+              "418 I_AM_A_TEAPOT",
+              "419 INSUFFICIENT_SPACE_ON_RESOURCE",
+              "420 METHOD_FAILURE",
+              "421 DESTINATION_LOCKED",
+              "422 UNPROCESSABLE_ENTITY",
+              "423 LOCKED",
+              "424 FAILED_DEPENDENCY",
+              "425 TOO_EARLY",
+              "426 UPGRADE_REQUIRED",
+              "428 PRECONDITION_REQUIRED",
+              "429 TOO_MANY_REQUESTS",
+              "431 REQUEST_HEADER_FIELDS_TOO_LARGE",
+              "451 UNAVAILABLE_FOR_LEGAL_REASONS",
+              "500 INTERNAL_SERVER_ERROR",
+              "501 NOT_IMPLEMENTED",
+              "502 BAD_GATEWAY",
+              "503 SERVICE_UNAVAILABLE",
+              "504 GATEWAY_TIMEOUT",
+              "505 HTTP_VERSION_NOT_SUPPORTED",
+              "506 VARIANT_ALSO_NEGOTIATES",
+              "507 INSUFFICIENT_STORAGE",
+              "508 LOOP_DETECTED",
+              "509 BANDWIDTH_LIMIT_EXCEEDED",
+              "510 NOT_EXTENDED",
+              "511 NETWORK_AUTHENTICATION_REQUIRED"
+            ],
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "results": {
+            "type": "string"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "trace": {
             "type": "string"
           }
         },
@@ -270,6 +355,10 @@
       },
       "File Output": {
         "properties": {
+          "errorPDF": {
+            "description": "Added when TraceLevel = 2 and Output type is PDL for successful rendering.",
+            "type": "string"
+          },
           "fileContent": {
             "description": "File encoded as Base64 string",
             "type": "string"
@@ -384,8 +473,95 @@
           "name": "PDF"
         }
       },
+      "Render CAB Input": {
+        "description": "XdpTemplate file and XmlData file are encoded in BASE64.\n\u003Cbr /\u003E\u003Cbr /\u003E**For rendering, templates can be retrieved directly from the data storage:**\n\u003Cbr /\u003E\u003Cbr /\u003EAs value field of key field 'xdpTemplate' include either `{your_formName}/{your_templateName}` + as QueryParam add `?templateSource = storageName`or `{your_formName}/{your_templateObjectId}` + as QueryParam add `?templateSource = storageId`.\u003Cbr /\u003E\n\u003Cbr /\u003E\u003Cbr /\u003E**FormLocale Options:**  Combination of ISO-639 language code and ISO-3166 country code (language_country)., [en_US] - `default`.\n\u003Cbr /\u003E\u003Cbr /\u003E**XDCConfig Options:**  XDC file is printer description in XML format that ADS requires to create print files for the cab output type, supported standard files: [cab300.xdc], [cab600.xdc], [cab203.xdc] - `default`.\nTo provide a custom XDC file the format should be `XDC/Customer/\u003Ccustom_xdcfileName\u003E.xdc`.\n\u003Cbr /\u003E\u003Cbr /\u003E**UseCustomLocale Options:** [false] - `default`, [true]. Indicates whether to use a custom locale for rendering. If set to true, the custom locale specified in 'formLocale' will be used. Enabling this option bypasses the default ISO-639 and ISO-3166 validation.",
+        "properties": {
+          "formLocale": {
+            "default": "en_US",
+            "type": "string"
+          },
+          "useCustomLocale": {
+            "default": false,
+            "type": "boolean"
+          },
+          "xdcConfig": {
+            "default": "cab203.xdc",
+            "type": "string"
+          },
+          "xdpTemplate": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          },
+          "xmlData": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["xdpTemplate", "xmlData"],
+        "type": "object"
+      },
+      "Render DPL Input": {
+        "description": "XdpTemplate file and XmlData file are encoded in BASE64.\n\u003Cbr /\u003E\u003Cbr /\u003E**For rendering, templates can be retrieved directly from the data storage:**\n\u003Cbr /\u003E\u003Cbr /\u003EAs value field of key field 'xdpTemplate' include either `{your_formName}/{your_templateName}` + as QueryParam add `?templateSource = storageName`or `{your_formName}/{your_templateObjectId}` + as QueryParam add `?templateSource = storageId`.\u003Cbr /\u003E\n\u003Cbr /\u003E\u003Cbr /\u003E**FormLocale Options:**  Combination of ISO-639 language code and ISO-3166 country code (language_country)., [en_US] - `default`.\n\u003Cbr /\u003E\u003Cbr /\u003E**XDCConfig Options:**  XDC file is printer description in XML format that ADS requires to create print files for the dpl output type, supported standard files: [dpl300.xdc], [dpl406.xdc], [dpl600.xdc], [dpl203.xdc] - `default`.\nTo provide a custom XDC file the format should be `XDC/Customer/\u003Ccustom_xdcfileName\u003E.xdc`.\n\u003Cbr /\u003E\u003Cbr /\u003E**UseCustomLocale Options:** [false] - `default`, [true]. Indicates whether to use a custom locale for rendering. If set to true, the custom locale specified in 'formLocale' will be used. Enabling this option bypasses the default ISO-639 and ISO-3166 validation.",
+        "properties": {
+          "formLocale": {
+            "default": "en_US",
+            "type": "string"
+          },
+          "useCustomLocale": {
+            "default": false,
+            "type": "boolean"
+          },
+          "xdcConfig": {
+            "default": "dpl203.xdc",
+            "type": "string"
+          },
+          "xdpTemplate": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          },
+          "xmlData": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["xdpTemplate", "xmlData"],
+        "type": "object"
+      },
+      "Render IPL Input": {
+        "description": "XdpTemplate file and XmlData file are encoded in BASE64.\n\u003Cbr /\u003E\u003Cbr /\u003E**For rendering, templates can be retrieved directly from the data storage:**\n\u003Cbr /\u003E\u003Cbr /\u003EAs value field of key field 'xdpTemplate' include either `{your_formName}/{your_templateName}` + as QueryParam add `?templateSource = storageName`or `{your_formName}/{your_templateObjectId}` + as QueryParam add `?templateSource = storageId`.\u003Cbr /\u003E\n\u003Cbr /\u003E\u003Cbr /\u003E**FormLocale Options:**  Combination of ISO-639 language code and ISO-3166 country code (language_country)., [en_US] - `default`.\n\u003Cbr /\u003E\u003Cbr /\u003E**XDCConfig Options:**  XDC file is printer description in XML format that ADS requires to create print files for the ipl output type, supported standard files: [ipl300.xdc], [ipl400.xdc], [ipl203.xdc] - `default`.\nTo provide a custom XDC file the format should be `XDC/Customer/\u003Ccustom_xdcfileName\u003E.xdc`.\n\u003Cbr /\u003E\u003Cbr /\u003E**UseCustomLocale Options:** [false] - `default`, [true]. Indicates whether to use a custom locale for rendering. If set to true, the custom locale specified in 'formLocale' will be used. Enabling this option bypasses the default ISO-639 and ISO-3166 validation.",
+        "properties": {
+          "formLocale": {
+            "default": "en_US",
+            "type": "string"
+          },
+          "useCustomLocale": {
+            "default": false,
+            "type": "boolean"
+          },
+          "xdcConfig": {
+            "default": "ipl203.xdc",
+            "type": "string"
+          },
+          "xdpTemplate": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          },
+          "xmlData": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["xdpTemplate", "xmlData"],
+        "type": "object"
+      },
       "Render Input": {
-        "description": "XdpTemplate file and XmlData file are encoded in BASE64.\n\u003Cbr /\u003E\u003Cbr /\u003E**For rendering, templates can be retrieved directly from the data storage:**\n\u003Cbr /\u003E\u003Cbr /\u003EAs value field of key field 'xdpTemplate' include either `{your_formName}/{your_templateName}` + as QueryParam add `?templateSource = storageName`or `{your_formName}/{your_templateObjectId}` + as QueryParam add `?templateSource = storageId`.\u003Cbr /\u003E\n\u003Cbr /\u003E\u003Cbr /\u003E**FormType Options:** [Print] - `default`, [Interactive], [DynamicInteractive].\n\u003Cbr /\u003E\u003Cbr /\u003E**FormLocale Options:**  Combination of ISO-639 language code and ISO-3166 country code (language_country)., [en_US] - `default`.\n\u003Cbr /\u003E\u003Cbr /\u003E**TaggedPDF Options:** [1] - `default`, [0].\n\u003Cbr /\u003E\u003Cbr /\u003E**EmbedFont Options:** [1], [0] - `default`.\n\u003Cbr /\u003E\u003Cbr /\u003E**ChangeNotAllowed Options:** [false] - `default`, [true].\n\u003Cbr /\u003E\u003Cbr /\u003E**PrintNotAllowed Options:** [false] - `default`, [true].\n",
+        "description": "XdpTemplate file and XmlData file are encoded in BASE64.\n\u003Cbr /\u003E\u003Cbr /\u003E**For rendering, templates can be retrieved directly from the data storage:**\n\u003Cbr /\u003E\u003Cbr /\u003EAs value field of key field 'xdpTemplate' include either `{your_formName}/{your_templateName}` + as QueryParam add `?templateSource = storageName`or `{your_formName}/{your_templateObjectId}` + as QueryParam add `?templateSource = storageId`.\u003Cbr /\u003E\n\u003Cbr /\u003E\u003Cbr /\u003E**FormType Options:** [Print] - `default`, [Interactive], [DynamicInteractive].\n\u003Cbr /\u003E\u003Cbr /\u003E**FormLocale Options:** Combination of ISO-639 language code and ISO-3166 country code (language_country), [en_US] - `default`.\n\u003Cbr /\u003E\u003Cbr /\u003E**TaggedPDF Options:** [1] - `default`, [0].\n\u003Cbr /\u003E\u003Cbr /\u003E**EmbedFont Options:** [1], [0] - `default`.\n\u003Cbr /\u003E\u003Cbr /\u003E**ChangeNotAllowed Options:** [false] - `default`, [true].\n\u003Cbr /\u003E\u003Cbr /\u003E**PrintNotAllowed Options:** [false] - `default`, [true].\n\u003Cbr /\u003E\u003Cbr /\u003E**UseCustomLocale Options:** [false] - `default`, [true]. Indicates whether to use a custom locale for rendering. If set to true, the custom locale specified in 'formLocale' will be used. Enabling this option bypasses the default ISO-639 and ISO-3166 validation.",
         "properties": {
           "changeNotAllowed": {
             "default": false,
@@ -416,6 +592,126 @@
             "enum": [0, 1],
             "format": "int32",
             "type": "integer"
+          },
+          "useCustomLocale": {
+            "default": false,
+            "type": "boolean"
+          },
+          "xdpTemplate": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          },
+          "xmlData": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["xdpTemplate", "xmlData"],
+        "type": "object"
+      },
+      "Render PCL Input": {
+        "description": "XdpTemplate file and XmlData file are encoded in BASE64.\n\u003Cbr /\u003E\u003Cbr /\u003E**For rendering, templates can be retrieved directly from the data storage:**\n\u003Cbr /\u003E\u003Cbr /\u003EAs value field of key field 'xdpTemplate' include either `{your_formName}/{your_templateName}` + as QueryParam add `?templateSource = storageName`or `{your_formName}/{your_templateObjectId}` + as QueryParam add `?templateSource = storageId`.\u003Cbr /\u003E\n\u003Cbr /\u003E\u003Cbr /\u003E**FormLocale Options:**  Combination of ISO-639 language code and ISO-3166 country code (language_country)., [en_US] - `default`.\n\u003Cbr /\u003E\u003Cbr /\u003E**XDCConfig Options:**  XDC file is printer description in XML format that ADS requires to create print files for the pcl output type, supported standard files: [hp4350pcl5e.xdc], [hppcl5c.xdc], [lmt644pcl5e.xdc], [hppcl5e.xdc]- `default`.\nTo provide a custom XDC file the format should be `XDC/Customer/\u003Ccustom_xdcfileName\u003E.xdc`.\n\u003Cbr /\u003E\u003Cbr /\u003E**UseCustomLocale Options:** [false] - `default`, [true]. Indicates whether to use a custom locale for rendering. If set to true, the custom locale specified in 'formLocale' will be used. Enabling this option bypasses the default ISO-639 and ISO-3166 validation.",
+        "properties": {
+          "formLocale": {
+            "default": "en_US",
+            "type": "string"
+          },
+          "useCustomLocale": {
+            "default": false,
+            "type": "boolean"
+          },
+          "xdcConfig": {
+            "default": "hppcl5c.xdc",
+            "type": "string"
+          },
+          "xdpTemplate": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          },
+          "xmlData": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["xdpTemplate", "xmlData"],
+        "type": "object"
+      },
+      "Render PS Input": {
+        "description": "XdpTemplate file and XmlData file are encoded in BASE64.\n\u003Cbr /\u003E\u003Cbr /\u003E**For rendering, templates can be retrieved directly from the data storage:**\n\u003Cbr /\u003E\u003Cbr /\u003EAs value field of key field 'xdpTemplate' include either `{your_formName}/{your_templateName}` + as QueryParam add `?templateSource = storageName`or `{your_formName}/{your_templateObjectId}` + as QueryParam add `?templateSource = storageId`.\u003Cbr /\u003E\n\u003Cbr /\u003E\u003Cbr /\u003E**FormLocale Options:**  Combination of ISO-639 language code and ISO-3166 country code (language_country)., [en_US] - `default`.\n\u003Cbr /\u003E\u003Cbr /\u003E**XDCConfig Options:**  XDC file is printer description in XML format that ADS requires to create print files for the postscript output type, supported standard files: [hp4350ps.xdc], [lmt644ps.xdc], [ps_bw.xdc], [ps_plain_mt.xdc], [ps_plain_level3.xdc], [ps_plain.xdc]- `default`.\nTo provide a custom XDC file the format should be `XDC/Customer/\u003Ccustom_xdcfileName\u003E.xdc`.\n\u003Cbr /\u003E\u003Cbr /\u003E**UseCustomLocale Options:** [false] - `default`, [true]. Indicates whether to use a custom locale for rendering. If set to true, the custom locale specified in 'formLocale' will be used. Enabling this option bypasses the default ISO-639 and ISO-3166 validation.",
+        "properties": {
+          "formLocale": {
+            "default": "en_US",
+            "type": "string"
+          },
+          "useCustomLocale": {
+            "default": false,
+            "type": "boolean"
+          },
+          "xdcConfig": {
+            "default": "ps_plain.xdc",
+            "type": "string"
+          },
+          "xdpTemplate": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          },
+          "xmlData": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["xdpTemplate", "xmlData"],
+        "type": "object"
+      },
+      "Render TPCL Input": {
+        "description": "XdpTemplate file and XmlData file are encoded in BASE64.\n\u003Cbr /\u003E\u003Cbr /\u003E**For rendering, templates can be retrieved directly from the data storage:**\n\u003Cbr /\u003E\u003Cbr /\u003EAs value field of key field 'xdpTemplate' include either `{your_formName}/{your_templateName}` + as QueryParam add `?templateSource = storageName`or `{your_formName}/{your_templateObjectId}` + as QueryParam add `?templateSource = storageId`.\u003Cbr /\u003E\n\u003Cbr /\u003E\u003Cbr /\u003E**FormLocale Options:**  Combination of ISO-639 language code and ISO-3166 country code (language_country)., [en_US] - `default`.\n\u003Cbr /\u003E\u003Cbr /\u003E**XDCConfig Options:**  XDC file is printer description in XML format that ADS requires to create print files for the tpcl output type, supported standard files: [tpcl305.xdc], [tpcl600.xdc], [tpcl203.xdc]- `default`.\nTo provide a custom XDC file the format should be `XDC/Customer/\u003Ccustom_xdcfileName\u003E.xdc`.\n\u003Cbr /\u003E\u003Cbr /\u003E**UseCustomLocale Options:** [false] - `default`, [true]. Indicates whether to use a custom locale for rendering. If set to true, the custom locale specified in 'formLocale' will be used. Enabling this option bypasses the default ISO-639 and ISO-3166 validation.",
+        "properties": {
+          "formLocale": {
+            "default": "en_US",
+            "type": "string"
+          },
+          "useCustomLocale": {
+            "default": false,
+            "type": "boolean"
+          },
+          "xdcConfig": {
+            "default": "tpcl203.xdc",
+            "type": "string"
+          },
+          "xdpTemplate": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          },
+          "xmlData": {
+            "default": "Base64 String",
+            "description": "File encoded as Base64 string",
+            "type": "string"
+          }
+        },
+        "required": ["xdpTemplate", "xmlData"],
+        "type": "object"
+      },
+      "Render ZPL Input": {
+        "description": "XdpTemplate file and XmlData file are encoded in BASE64.\n\u003Cbr /\u003E\u003Cbr /\u003E**For rendering, templates can be retrieved directly from the data storage:**\n\u003Cbr /\u003E\u003Cbr /\u003EAs value field of key field 'xdpTemplate' include either `{your_formName}/{your_templateName}` + as QueryParam add `?templateSource = storageName`or `{your_formName}/{your_templateObjectId}` + as QueryParam add `?templateSource = storageId`.\u003Cbr /\u003E\n\u003Cbr /\u003E\u003Cbr /\u003E**FormLocale Options:**  Combination of ISO-639 language code and ISO-3166 country code (language_country)., [en_US] - `default`.\n\u003Cbr /\u003E\u003Cbr /\u003E**XDCConfig Options:**  XDC file is printer description in XML format that ADS requires to create print files for the zpl output type, supported standard files: [zpl600.xdc], [zpl300.xdc], [zpl203.xdc]- `default`.\nTo provide a custom XDC file the format should be `XDC/Customer/\u003Ccustom_xdcfileName\u003E.xdc`.\n\u003Cbr /\u003E\u003Cbr /\u003E**UseCustomLocale Options:** [false] - `default`, [true]. Indicates whether to use a custom locale for rendering. If set to true, the custom locale specified in 'formLocale' will be used. Enabling this option bypasses the default ISO-639 and ISO-3166 validation.",
+        "properties": {
+          "formLocale": {
+            "default": "en_US",
+            "type": "string"
+          },
+          "useCustomLocale": {
+            "default": false,
+            "type": "boolean"
+          },
+          "xdcConfig": {
+            "default": "zpl203.xdc",
+            "type": "string"
           },
           "xdpTemplate": {
             "default": "Base64 String",
@@ -856,6 +1152,454 @@
   },
   "openapi": "3.0.1",
   "paths": {
+    "/v1/adsRender/cab": {
+      "post": {
+        "description": "Post template and data files to generate a CAB specific Output. TraceLevel set to 1 or 2 adds a [traceString] node to response JSON. TraceLevel set to 2 or in case of rendering errors, [errorPDF] node will be attached to the error response.",
+        "operationId": "renderingCABPost",
+        "parameters": [
+          {
+            "description": "storageId or storageName",
+            "in": "query",
+            "name": "templateSource",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Render CAB Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Generate a CAB Output",
+        "tags": ["ADS - Render Requests"]
+      }
+    },
+    "/v1/adsRender/dpl": {
+      "post": {
+        "description": "Post template and data files to generate a DPL specific Output. TraceLevel set to 1 or 2 adds a [traceString] node to response JSON. TraceLevel set to 2 or in case of rendering errors, [errorPDF] node will be attached to the error response.",
+        "operationId": "renderingDPLPost",
+        "parameters": [
+          {
+            "description": "storageId or storageName",
+            "in": "query",
+            "name": "templateSource",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Render DPL Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Generate a DPL Output",
+        "tags": ["ADS - Render Requests"]
+      }
+    },
+    "/v1/adsRender/ipl": {
+      "post": {
+        "description": "Post template and data files to generate a IPL specific Output. TraceLevel set to 1 or 2 adds a [traceString] node to response JSON. TraceLevel set to 2 or in case of rendering errors, [errorPDF] node will be attached to the error response.",
+        "operationId": "renderingIPLPost",
+        "parameters": [
+          {
+            "description": "storageId or storageName",
+            "in": "query",
+            "name": "templateSource",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Render IPL Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Generate a IPL Output",
+        "tags": ["ADS - Render Requests"]
+      }
+    },
+    "/v1/adsRender/pcl": {
+      "post": {
+        "description": "Post template and data files to generate a PCL specific Output. TraceLevel set to 1 or 2 adds a [traceString] node to response JSON. TraceLevel set to 2 or in case of rendering errors, [errorPDF] node will be attached to the error response.",
+        "operationId": "renderingPCLPost",
+        "parameters": [
+          {
+            "description": "storageId or storageName",
+            "in": "query",
+            "name": "templateSource",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Render PCL Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Generate a PCL Output",
+        "tags": ["ADS - Render Requests"]
+      }
+    },
     "/v1/adsRender/pdf": {
       "post": {
         "description": "Post template and data files to render an interactive, dynamic interactive or print pdf object. TraceLevel set to 1 or 2 adds a [traceString] node to response JSON. In case of rendering errors, [errorPDF] node will be attached to the error response.",
@@ -964,8 +1708,344 @@
             "description": "Internal Server Error"
           }
         },
-        "summary": "Render a PDF Form",
-        "tags": ["ADS - Render Request"]
+        "summary": "Render a PDF Output",
+        "tags": ["ADS - Render Requests"]
+      }
+    },
+    "/v1/adsRender/ps": {
+      "post": {
+        "description": "Post template and data files to generate a Postscript specific Output. TraceLevel set to 1 or 2 adds a [traceString] node to response JSON. TraceLevel set to 2 or in case of rendering errors, [errorPDF] node will be attached to the error response.",
+        "operationId": "renderingPSPost",
+        "parameters": [
+          {
+            "description": "storageId or storageName",
+            "in": "query",
+            "name": "templateSource",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Render PS Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Generate a Postscript Output",
+        "tags": ["ADS - Render Requests"]
+      }
+    },
+    "/v1/adsRender/tpcl": {
+      "post": {
+        "description": "Post template and data files to generate a TPCL specific Output. TraceLevel set to 1 or 2 adds a [traceString] node to response JSON. TraceLevel set to 2 or in case of rendering errors, [errorPDF] node will be attached to the error response.",
+        "operationId": "renderingTPCLPost",
+        "parameters": [
+          {
+            "description": "storageId or storageName",
+            "in": "query",
+            "name": "templateSource",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Render TPCL Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Generate a TPCL Output",
+        "tags": ["ADS - Render Requests"]
+      }
+    },
+    "/v1/adsRender/zpl": {
+      "post": {
+        "description": "Post template and data files to generate a ZPL specific Output. TraceLevel set to 1 or 2 adds a [traceString] node to response JSON. TraceLevel set to 2 or in case of rendering errors, [errorPDF] node will be attached to the error response.",
+        "operationId": "renderingZPLPost",
+        "parameters": [
+          {
+            "description": "storageId or storageName",
+            "in": "query",
+            "name": "templateSource",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "0,1,2",
+            "in": "query",
+            "name": "TraceLevel",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Render ZPL Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File Output"
+                }
+              }
+            },
+            "description": "Successful"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Invalid Input"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "415": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsupported Media Type"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Generate a ZPL Output",
+        "tags": ["ADS - Render Requests"]
       }
     },
     "/v1/forms": {
@@ -3373,8 +4453,8 @@
       "name": "Store - Form Templates"
     },
     {
-      "description": "Render a PDF file by sending a template and a data file.",
-      "name": "ADS - Render Request"
+      "description": "Render different output types by sending a template and a data file.",
+      "name": "ADS - Render Requests"
     },
     {
       "description": "Creates a new template store repository.",

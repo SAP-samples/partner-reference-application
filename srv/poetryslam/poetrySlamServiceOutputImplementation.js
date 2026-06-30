@@ -1,4 +1,4 @@
-'strict';
+'use strict';
 // Type definition required for CDSLint
 /** @typedef {import('@sap/cds').CRUDEventHandler.On} OnHandler */
 

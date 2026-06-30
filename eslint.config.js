@@ -1,4 +1,4 @@
-'strict';
+'use strict';
 const js = require('@eslint/js');
 const cdsEslintPlugin = require('@sap/eslint-plugin-cds');
 
@@ -46,7 +46,8 @@ module.exports = [
         URL: true,
         // SAPUI5
         $: true,
-        atob: true
+        atob: true,
+        Blob: true
       }
     },
     rules: {

@@ -7,7 +7,11 @@ module.exports = {
       isVersionEnabled: 'false',
       isVirusScanEnabled: 'true',
       skipVirusScanForLargeFile: 'false',
-      hashAlgorithms: 'SHA-256'
+      hashAlgorithms: 'SHA-256',
+      repositoryParams: {
+        paramName: 'fileExtensions',
+        paramValue: '{type:allow, list:[pdf, jpeg, png]}'
+      }
     }
   }
 };
