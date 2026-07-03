@@ -8,6 +8,16 @@ The current version is available in three branches:
 - Additional features and ERP integration (based on the multi-tenant version): [*main-multi-tenant-features*](../../../tree/main-multi-tenant-features)
 
 The current version includes:
+- [Store Attachments](47-Multi-Tenancy-Features-Attachments.md): Enhanced functionality with configurable file type restrictions
+- Refined tutorial with updated overview of [SAP BTP services](01-BillOfMaterials.md) and [architecture](03-Architecture.md)
+- Smaller corrections, improvements, and updates
+
+
+## Older Versions
+
+### March 2026
+
+Includes:
 - [Usage of New SAP Build Service Plans](01-BillOfMaterials.md): The project now uses the new SAP Build service plans.
 - [Update the SAP Continuous Integration and Delivery Service Pipelines](62-Multi-Tenancy-Features-CICD.md): Migrate the pipelines to version 3.
 - [Store Attachments](47-Multi-Tenancy-Features-Attachments.md): Use the SAP Document Management service to store attachments.
@@ -16,7 +26,11 @@ The current version includes:
 - [Enhance the Generative Artificial Intelligence Feature](45-Multi-Tenancy-Features-GenAI.md): Use the SAP AI Core orchestration workflow to propose a tile and description for poetry slams.
 - Smaller corrections, improvements, and updates
 
-## Older Versions
+Corresponding Tags
+- Tutorials: [release-tutorial-2063](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-tutorial-2603)
+- Multitenancy: [release-multi-tenant-2603](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-2603)
+- ERP/Features: [release-multi-tenant-features-2603](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-features-2603)
+
 
 ### November 2025
 
@@ -28,7 +42,7 @@ Includes:
   - Use [Dynamic Tiles](14a-Develop-Core-UserInterface.md#dynamic-tiles) to display key performance indicators of your applications.
 - Smaller corrections, improvements, and updates
 
-Corresponsing Tags
+Corresponding Tags
 - Tutorials: [release-tutorial-2511](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-tutorial-2511)
 - Multitenancy: [release-multi-tenant-2511](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-2511)
 - ERP/Features: [release-multi-tenant-features-2511](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-features-2511)
@@ -42,7 +56,7 @@ Includes
 - [Shared SAP Cloud Logging Instance for Observability](43-Multi-Tenancy-Features-Observability.md#option-2-use-a-shared-sap-cloud-logging-instance): Share a SAP Cloud Logging Instance across applications and subaccounts.
 - Smaller corrections, improvements, and updates
 
-Corresponsing Tags
+Corresponding Tags
 - Tutorials: [release-tutorial-2507](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-tutorial-2507)
 - Multitenancy: [release-multi-tenant-2507](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-2507)
 - ERP/Features: [release-multi-tenant-features-2507](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-features-2507)
