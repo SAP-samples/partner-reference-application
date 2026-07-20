@@ -27,7 +27,7 @@ Includes:
 - Smaller corrections, improvements, and updates
 
 Corresponding Tags
-- Tutorials: [release-tutorial-2063](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-tutorial-2603)
+- Tutorials: [release-tutorial-2603](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-tutorial-2603)
 - Multitenancy: [release-multi-tenant-2603](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-2603)
 - ERP/Features: [release-multi-tenant-features-2603](https://github.com/SAP-samples/partner-reference-application/releases/tag/release-multi-tenant-features-2603)
 
