@@ -1,6 +1,6 @@
 # Changes
 
-## Current Version - March 2026
+## Current Version - June 2026
 
 The current version is available in three branches:
 - Tutorials: [*main*](../../../)
