@@ -8,6 +8,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sap/sbf": "^6.11.5"
+    "@sap/sbf": "^6.11.9"
   }
 }

@@ -16,9 +16,10 @@ const {
   POST: _POST,
   PATCH: _PATCH,
   axios,
-  test,
-  sleep
+  test
 } = cds.test(__dirname + '/../../..');
+
+const { setTimeout: sleep } = require('node:timers/promises');
 
 // As the log is only updated with delay, the requests need to be slowed down (only required for jest test execution)
 const _slowify =
